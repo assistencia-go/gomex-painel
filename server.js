@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3001;
+const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
 const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
 const SUPABASE_KEY = process.env.SUPABASE_KEY || Buffer.from(FALLBACK_KEY_B64, 'base64').toString('utf8');
 
@@ -37,7 +38,17 @@ const server = http.createServer((req, res) => {
 
   // Proxy seguro para /api/checklists
   if (pathname === '/api/checklists') {
-    const targetUrl = new URL('/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500', SUPABASE_URL);
+    const select = parsedUrl.searchParams.get('select') || '*';
+    const idParam = parsedUrl.searchParams.get('id');
+    if (!/^[a-z_,*]+$/i.test(select) || (idParam !== null && !/^\d+$/.test(idParam))) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Parâmetros inválidos' }));
+      return;
+    }
+    const query = idParam !== null
+      ? `select=${select}&id=eq.${idParam}`
+      : `select=${select}&order=id.desc&limit=500`;
+    const targetUrl = new URL(`/rest/v1/veiculo_checklists?${query}`, SUPABASE_URL);
     const options = {
       method: 'GET',
       headers: {
