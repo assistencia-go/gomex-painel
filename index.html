@@ -2,838 +2,643 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b0f19">
-<title>Painel Executivo de Frota · Gomex Distribuidora</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0f1a">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Painel interno de gestão das vistorias da frota Gomex.">
+<title>Vistorias da frota · Gomex</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232b66e8'/%3E%3Cpath d='M7 21V11a1.5 1.5 0 0 1 1.5-1.5H17A1.5 1.5 0 0 1 18.5 11v10M18.5 13h3.2l3.3 4v4h-2' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3Ccircle cx='21' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- jsPDF para emissão de 2ª via oficial de PDFs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 
 <style>
+  /* ============================================================================
+     DESIGN TOKENS — superfície escura azulada, um único acento (azul),
+     cor semântica só para situação (liberado / ressalva / bloqueado)
+     ============================================================================ */
   :root {
-    --bg-base: #0b0f19;
-    --bg-card: #111827;
-    --bg-card-hover: #172033;
-    --bg-elevated: #1e293b;
-    --border: #1f293d;
-    --border-subtle: #1e293b;
-    --border-focus: #3b82f6;
-    
-    --brand: #2563eb;
-    --brand-light: #38bdf8;
-    --brand-dark: #1e2a78;
-    
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-dim: #64748b;
-    
-    --ok: #10b981;
-    --ok-bg: rgba(16, 185, 129, 0.12);
-    --ok-border: rgba(16, 185, 129, 0.3);
-    
-    --warn: #f59e0b;
-    --warn-bg: rgba(245, 158, 11, 0.12);
-    --warn-border: rgba(245, 158, 11, 0.3);
-    
-    --bad: #ef4444;
-    --bad-bg: rgba(239, 68, 68, 0.12);
-    --bad-border: rgba(239, 68, 68, 0.3);
-    
-    --radius: 12px;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+
+    --bg: #0a0f1a;
+    --panel: #0f1624;
+    --panel-2: #0c1320;
+    --raised: #151e30;
+    --hover: #131c2e;
+    --line: #1c2640;
+    --line-strong: #2a3757;
+
+    --ink: #eef2f9;
+    --ink-2: #b0bbcf;
+    --ink-3: #8392ab;
+
+    --accent: #2b66e8;
+    --accent-hi: #5b93ff;
+    --accent-tint: rgba(91, 147, 255, 0.14);
+
+    --ok: #3ddc97;
+    --ok-tint: rgba(61, 220, 151, 0.12);
+    --warn: #f2b84b;
+    --warn-tint: rgba(242, 184, 75, 0.13);
+    --bad: #fa8a8a;
+    --bad-tint: rgba(248, 120, 120, 0.13);
+
+    --r-sm: 6px;
+    --r: 10px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --topbar-h: 56px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; scrollbar-width: thin; scrollbar-color: #26324f transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: #26324f; border-radius: 8px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-base);
-    color: var(--text-main);
+    font-family: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 14px; line-height: 1.5;
+    background: var(--bg); color: var(--ink);
     min-height: 100vh;
-    font-size: 14px;
-    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
-  }
-
-  /* ============================================================================== */
-  /* TELA DE LOGIN PRIVADA & SEGURA */
-  /* ============================================================================== */
-  #loginOverlay {
-    position: fixed; inset: 0; z-index: 9999;
-    background: radial-gradient(circle at 50% 20%, #172554 0%, #0b0f19 80%);
-    display: flex; align-items: center; justify-content: center; padding: 20px;
-    transition: opacity 0.35s ease, visibility 0.35s ease;
-  }
-  #loginOverlay.hidden {
-    opacity: 0; visibility: hidden; pointer-events: none;
-  }
-
-  .login-card {
-    background: rgba(17, 24, 39, 0.92);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(59, 130, 246, 0.25);
-    border-radius: 20px;
-    padding: 36px 32px;
-    width: 100%;
-    max-width: 410px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(37, 99, 235, 0.15);
-    text-align: center;
-  }
-
-  .login-icon-box {
-    width: 64px; height: 64px; margin: 0 auto 16px;
-    background: linear-gradient(135deg, #1e2a78 0%, #2563eb 100%);
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    border-radius: 18px;
-    display: grid; place-items: center;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
-  }
-
-  .login-title {
-    font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.3px; margin-bottom: 4px;
-  }
-  .login-sub {
-    font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
-  }
-
-  .login-form {
-    display: flex; flex-direction: column; gap: 14px; text-align: left;
-  }
-
-  .login-fld {
-    display: flex; flex-direction: column; gap: 6px;
-  }
-  .login-fld label {
-    font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
-  }
-
-  .input-wrap {
-    position: relative; display: flex; align-items: center;
-  }
-  .input-icon {
-    position: absolute; left: 14px; color: var(--text-dim); pointer-events: none; display: flex;
-  }
-  .input-wrap input {
-    width: 100%; height: 46px; padding: 0 14px 0 42px;
-    background: #0b0f19; border: 1.5px solid var(--border);
-    border-radius: 10px; color: #fff; font-size: 14px; font-family: inherit;
-    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .input-wrap input:focus {
-    border-color: var(--brand);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-  }
-
-  .btn-toggle-pwd {
-    position: absolute; right: 12px; background: transparent; border: none;
-    color: var(--text-dim); cursor: pointer; display: flex; padding: 4px;
-  }
-  .btn-toggle-pwd:hover { color: var(--text-muted); }
-
-  .login-remember {
-    display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); cursor: pointer;
-    user-select: none; margin-top: 2px;
-  }
-  .login-remember input {
-    accent-color: var(--brand); width: 16px; height: 16px; cursor: pointer;
-  }
-
-  .btn-login {
-    height: 48px; margin-top: 8px; border: none; border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: #fff; font-size: 15px; font-weight: 700; font-family: inherit;
-    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35); transition: all 0.2s;
-  }
-  .btn-login:hover {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
-    transform: translateY(-1px);
-  }
-  .btn-login:active { transform: translateY(0); }
-
-  .login-error {
-    background: var(--bad-bg); border: 1px solid var(--bad-border);
-    color: #fca5a5; font-size: 12.5px; padding: 10px 12px; border-radius: 8px;
-    display: none; align-items: center; gap: 8px; margin-top: 6px;
-  }
-  .login-error.show { display: flex; animation: shake 0.3s ease; }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-  }
-
-  .login-badge-hint {
-    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
-    font-size: 11.5px; color: var(--text-dim);
-  }
-  .login-badge-hint code {
-    background: #1e293b; color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px;
-  }
-
-  /* ============================================================================== */
-  /* LAYOUT PRINCIPAL DO PAINEL */
-  /* ============================================================================== */
-  .app-layout {
-    display: flex; flex-direction: column; min-height: 100vh;
-  }
-
-  /* Header Topo */
-  header.admin-header {
-    background: #0d1322; border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px);
-  }
-  .header-container {
-    max-width: 1400px; margin: 0 auto; padding: 12px 24px;
-    display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  }
-
-  .brand-group {
-    display: flex; align-items: center; gap: 12px;
-  }
-  .brand-icon {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: linear-gradient(135deg, #1e2a78, #2563eb);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    display: grid; place-items: center;
-  }
-  .brand-text h1 {
-    font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.2px; line-height: 1.2;
-  }
-  .brand-text span {
-    font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-
-  .header-actions {
-    display: flex; align-items: center; gap: 12px;
-  }
-
-  .live-status {
-    background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25);
-    color: #6ee7b7; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 20px;
-    display: inline-flex; align-items: center; gap: 6px;
-  }
-  .live-dot {
-    width: 7px; height: 7px; border-radius: 50%; background: #10b981;
-    box-shadow: 0 0 8px #10b981;
-  }
-
-  .user-badge {
-    background: #172033; border: 1px solid var(--border);
-    padding: 6px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
-  }
-  .user-avatar {
-    width: 24px; height: 24px; border-radius: 6px; background: #2563eb;
-    color: #fff; font-weight: 800; font-size: 11px; display: grid; place-items: center;
-  }
-  .user-name {
-    font-size: 13px; font-weight: 700; color: #fff;
-  }
-
-  .btn-logout {
-    background: transparent; border: 1px solid var(--border); color: var(--text-muted);
-    font-size: 12.5px; font-weight: 600; padding: 7px 12px; border-radius: 8px;
-    cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
-    font-family: inherit;
-  }
-  .btn-logout:hover {
-    background: #1e293b; color: #f87171; border-color: rgba(239, 68, 68, 0.3);
-  }
-
-  /* Conteúdo Principal */
-  main.admin-content {
-    max-width: 1400px; margin: 0 auto; padding: 24px; width: 100%; flex: 1;
-  }
-
-  /* ============================================================================== */
-  /* KPI CARDS (MÉTRICAS DO PAINEL) */
-  /* ============================================================================== */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px; margin-bottom: 24px;
-  }
-
-  .kpi-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 18px 20px;
-    box-shadow: var(--shadow); position: relative; overflow: hidden;
-    transition: transform 0.2s, border-color 0.2s;
-  }
-  .kpi-card:hover {
-    transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.4);
-  }
-  .kpi-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  }
-  .kpi-card.blue::before { background: #3b82f6; }
-  .kpi-card.green::before { background: #10b981; }
-  .kpi-card.yellow::before { background: #f59e0b; }
-  .kpi-card.red::before { background: #ef4444; }
-
-  .kpi-header {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
-  }
-  .kpi-title {
-    font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .kpi-icon {
-    width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
-  }
-  .kpi-card.blue .kpi-icon { background: rgba(59, 130, 246, 0.15); color: #38bdf8; }
-  .kpi-card.green .kpi-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-  .kpi-card.yellow .kpi-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-  .kpi-card.red .kpi-icon { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-
-  .kpi-val {
-    font-size: 30px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 4px;
     font-variant-numeric: tabular-nums;
   }
-  .kpi-sub {
-    font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px;
-  }
-  .kpi-sub b { color: var(--text-muted); font-weight: 600; }
+  body.lock { overflow: hidden; }
+  ::selection { background: rgba(91, 147, 255, 0.38); color: #fff; }
 
-  /* ============================================================================== */
-  /* BARRA DE FILTROS & AÇÕES */
-  /* ============================================================================== */
-  .toolbar-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px;
-    box-shadow: var(--shadow);
-  }
-
-  .toolbar-row {
-    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; border-radius: 4px; }
+  input { caret-color: var(--accent-hi); }
+  input[type="checkbox"] { accent-color: var(--accent); }
+  select option { background: #0f1624; color: var(--ink); }
+  input:-webkit-autofill {
+    -webkit-text-fill-color: var(--ink);
+    -webkit-box-shadow: 0 0 0 1000px #0a1120 inset;
+    caret-color: var(--ink);
   }
 
-  .search-wrap {
-    flex: 1 1 300px; max-width: 420px; position: relative; display: flex; align-items: center;
-  }
-  .search-wrap svg {
-    position: absolute; left: 14px; color: var(--text-dim); pointer-events: none;
-  }
-  .search-wrap input {
-    width: 100%; height: 40px; padding: 0 14px 0 40px;
-    background: #0b0f19; border: 1.5px solid var(--border);
-    border-radius: 8px; color: #fff; font-size: 13.5px; font-family: inherit;
-    outline: none; transition: border-color 0.2s;
-  }
-  .search-wrap input:focus { border-color: var(--brand); }
-
-  .filter-controls {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
 
-  select.filter-select {
-    height: 40px; padding: 0 12px; background: #0b0f19; border: 1.5px solid var(--border);
-    border-radius: 8px; color: var(--text-main); font-size: 13px; font-family: inherit;
-    outline: none; cursor: pointer; transition: border-color 0.2s;
-  }
-  select.filter-select:focus { border-color: var(--brand); }
-
-  .btn-filter-action {
-    height: 40px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
-    font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
-    transition: all 0.2s; border: none;
-  }
-  .btn-refresh {
-    background: #172033; color: var(--text-main); border: 1px solid var(--border);
-  }
-  .btn-refresh:hover { background: #1e293b; color: #38bdf8; }
-  .btn-refresh svg.spin { animation: spin 0.8s linear infinite; }
-  @keyframes spin { 100% { transform: rotate(360deg); } }
-
-  .btn-export {
-    background: #064e3b; color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4);
-  }
-  .btn-export:hover { background: #065f46; color: #a7f3d0; }
-
-  .btn-clear {
-    background: transparent; color: var(--text-dim); border: 1px solid transparent;
-  }
-  .btn-clear:hover { color: var(--text-muted); border-color: var(--border); }
-
-  /* ============================================================================== */
-  /* TABELA DE VISTORIAS */
-  /* ============================================================================== */
-  .table-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  .i {
+    width: 16px; height: 16px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.75;
+    stroke-linecap: round; stroke-linejoin: round;
   }
 
-  .table-responsive {
-    overflow-x: auto; width: 100%;
+  /* ============================================================================
+     BOTÕES
+     ============================================================================ */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 36px; padding: 0 14px; border-radius: var(--r-sm);
+    border: 1px solid var(--line-strong); background: var(--raised);
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    transition: background-color 150ms, border-color 150ms, color 150ms;
+    white-space: nowrap;
   }
+  .btn:hover:not(:disabled) { background: #1b2742; border-color: #3a4b74; }
+  .btn:active:not(:disabled) { background: #16213a; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #2457cf; border-color: #2457cf; }
+  .btn-primary:active:not(:disabled) { background: #2559cf; }
+  .btn-ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
+  .btn-ghost:hover:not(:disabled) { background: var(--raised); border-color: transparent; color: var(--ink); }
+  .btn-icon { width: 34px; padding: 0; }
+  .btn.is-loading .i { animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  table.admin-table {
-    width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;
+  /* ============================================================================
+     LOGIN
+     ============================================================================ */
+  .login {
+    min-height: 100vh; display: grid;
+    grid-template-columns: minmax(320px, 1fr) minmax(380px, 540px);
   }
-  table.admin-table th {
-    background: #0d1322; color: var(--text-muted); font-size: 11.5px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.5px; padding: 14px 16px;
-    border-bottom: 1.5px solid var(--border); white-space: nowrap; user-select: none;
+  .login-brand {
+    position: relative; overflow: hidden;
+    background: var(--panel-2); border-right: 1px solid var(--line);
+    padding: 40px 48px; display: flex; flex-direction: column; justify-content: space-between;
   }
-  table.admin-table th.sortable { cursor: pointer; }
-  table.admin-table th.sortable:hover { color: #fff; }
+  .login-art {
+    position: absolute; right: -60px; bottom: -40px; width: 460px; height: 460px;
+    stroke-width: 0.45; color: #172340; fill: none; stroke: currentColor;
+    stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
+  }
+  .login-tagline {
+    position: relative; max-width: 22ch;
+    font-size: 30px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .login-tagline span { color: var(--ink-3); font-weight: 600; }
+  .login-pane { display: grid; place-items: center; padding: 32px 28px; }
+  .login-form { width: 100%; max-width: 360px; display: grid; gap: 18px; }
+  .login-form h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; }
+  .login-form .lead { color: var(--ink-3); font-size: 14px; margin-top: 4px; }
 
-  table.admin-table td {
-    padding: 14px 16px; border-bottom: 1px solid var(--border-subtle);
-    vertical-align: middle; white-space: nowrap;
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 9px; background: var(--accent);
+    display: grid; place-items: center; color: #fff;
   }
-  table.admin-table tr:hover td {
-    background: var(--bg-card-hover);
-  }
+  .brand-mark .i { width: 20px; height: 20px; stroke-width: 1.9; }
+  .brand-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+  .brand-sub { font-size: 12px; color: var(--ink-3); }
 
-  /* Badges & Tags */
-  .badge-num {
-    background: #1e293b; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);
-    font-family: monospace; font-size: 12.5px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
+  .field { display: grid; gap: 6px; }
+  .field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
+  .input {
+    width: 100%; height: 44px; padding: 0 12px;
+    background: #0a1120; border: 1px solid var(--line-strong); border-radius: 8px;
+    transition: border-color 150ms;
   }
+  .input::placeholder { color: var(--ink-3); }
+  .input:hover { border-color: #3a4b74; }
+  .input:focus-visible { border-color: var(--accent-hi); outline-offset: 0; }
+  .pwd { position: relative; }
+  .pwd .input { padding-right: 46px; }
+  .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; }
+  .check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); cursor: pointer; user-select: none; }
+  .check input { width: 16px; height: 16px; }
+  .form-error {
+    display: none; align-items: center; gap: 8px;
+    padding: 10px 12px; border-radius: 8px;
+    background: var(--bad-tint); color: #fecaca; font-size: 13px;
+  }
+  .form-error.show { display: flex; }
+  .login-form .btn-primary { height: 44px; font-size: 14px; }
 
-  .plate-tag {
-    background: #ffffff; color: #000; font-weight: 800; font-size: 12px;
-    padding: 2px 7px; border-radius: 4px; border: 1.5px solid #000;
-    display: inline-flex; align-items: center; letter-spacing: 0.5px;
+  /* ============================================================================
+     TOPBAR + PÁGINA
+     ============================================================================ */
+  .topbar {
+    position: sticky; top: 0; z-index: 40; height: var(--topbar-h);
+    background: var(--bg); border-bottom: 1px solid var(--line);
   }
+  .topbar-in {
+    max-width: 1320px; height: 100%; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .topbar .brand-mark { width: 32px; height: 32px; border-radius: 8px; }
+  .spacer { flex: 1; }
 
-  .status-tag {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;
-  }
-  .status-tag.liberado {
-    background: var(--ok-bg); color: #34d399; border: 1px solid var(--ok-border);
-  }
-  .status-tag.ressalva {
-    background: var(--warn-bg); color: #fbbf24; border: 1px solid var(--warn-border);
-  }
-  .status-tag.bloqueado {
-    background: var(--bad-bg); color: #f87171; border: 1px solid var(--bad-border);
-  }
+  .sync { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+  .sync[data-state="ok"] .sync-dot { background: var(--ok); }
+  .sync[data-state="loading"] .sync-dot { background: var(--warn); }
+  .sync[data-state="error"] .sync-dot { background: var(--bad); }
+  .sync[data-state="error"] { color: var(--bad); }
 
-  .chip-avarias {
-    font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 12px; display: inline-flex;
-  }
-  .chip-avarias.clean { background: rgba(16, 185, 129, 0.1); color: #34d399; }
-  .chip-avarias.warn { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+  .whoami { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); padding-left: 16px; border-left: 1px solid var(--line); height: 24px; }
 
-  /* Botões de Ação na Linha */
-  .row-actions {
-    display: flex; align-items: center; gap: 6px;
-  }
-  .btn-row-action {
-    background: #1e293b; border: 1px solid var(--border); color: var(--text-main);
-    font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 6px;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
-    transition: all 0.15s;
-  }
-  .btn-row-action:hover {
-    background: #2563eb; color: #fff; border-color: #2563eb;
-  }
-  .btn-row-pdf:hover {
-    background: #059669; color: #fff; border-color: #059669;
-  }
+  .page { max-width: 1320px; margin: 0 auto; padding: 28px 24px 56px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .page-head h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+  .page-head p { color: var(--ink-3); margin-top: 4px; max-width: 60ch; }
+  .head-actions { display: flex; gap: 8px; }
 
-  /* Paginação da Tabela */
-  .table-footer {
-    display: flex; align-items: center; justify-content: space-between; padding: 12px 20px;
-    background: #0d1322; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-muted);
-  }
-  .pagination-btns {
-    display: flex; align-items: center; gap: 6px;
-  }
-  .btn-page {
-    background: #172033; border: 1px solid var(--border); color: var(--text-main);
-    padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700;
-  }
-  .btn-page:disabled { opacity: 0.35; cursor: not-allowed; }
-  .btn-page:not(:disabled):hover { background: #1e293b; color: #38bdf8; }
+  /* ============================================================================
+     RESUMO
+     ============================================================================ */
+  .summary { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; margin-bottom: 16px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); }
+  .stat { background: var(--panel); padding: 14px 18px 16px; min-width: 0; }
+  .stat dt { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+  .stat dd { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin-top: 2px; }
+  .split { display: flex; height: 4px; background: var(--line-strong); }
+  .split i { display: block; flex-grow: 0; flex-basis: 0; transition: flex-grow 400ms var(--ease); }
+  .split .s-ok { background: var(--ok); }
+  .split .s-warn { background: var(--warn); }
+  .split .s-bad { background: var(--bad); }
 
-  /* Estado Vazio */
-  .empty-state {
-    text-align: center; padding: 60px 20px; color: var(--text-muted);
+  /* ============================================================================
+     QUADRO: ABAS + FILTROS + TABELA
+     ============================================================================ */
+  .board { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+  .tabs { display: flex; gap: 4px; padding: 0 12px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 12px;
+    background: transparent; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    font-size: 13px; font-weight: 600; color: var(--ink-2); white-space: nowrap;
+    transition: color 150ms, border-color 150ms;
   }
-  .empty-state svg { color: var(--text-dim); margin-bottom: 12px; }
-  .empty-state h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-  .empty-state p { font-size: 13px; max-width: 320px; margin: 0 auto; color: var(--text-dim); }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--accent-hi); }
+  .tab .cnt {
+    min-width: 22px; padding: 0 7px; height: 20px; border-radius: 10px;
+    display: inline-grid; place-items: center;
+    background: var(--raised); color: var(--ink-2); font-size: 12px; font-weight: 600;
+  }
+  .tab[aria-pressed="true"] .cnt { background: var(--accent-tint); color: #cfe0ff; }
+  .tab .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .dot-ok { background: var(--ok); } .dot-warn { background: var(--warn); } .dot-bad { background: var(--bad); }
 
-  /* ============================================================================== */
-  /* MODAL DE DETALHES DA VISTORIA (INSPECTOR) */
-  /* ============================================================================== */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 100;
-    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px);
-    display: none; align-items: center; justify-content: center; padding: 16px;
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .search { position: relative; flex: 1 1 240px; max-width: 400px; }
+  .search .i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--ink-3); pointer-events: none; }
+  .search .input { height: 36px; padding-left: 34px; padding-right: 36px; font-size: 13px; }
+  .search kbd {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    min-width: 20px; height: 20px; display: grid; place-items: center;
+    border: 1px solid var(--line-strong); border-radius: 5px; background: var(--raised);
+    font: 600 11px/1 inherit; color: var(--ink-3); pointer-events: none;
   }
-  .modal-overlay.open { display: flex; }
+  .select {
+    height: 36px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 8px;
+    background: #0a1120; font-size: 13px; color: var(--ink);
+  }
+  .select:hover { border-color: #3a4b74; }
+  .toolbar .spacer { flex: 1; }
 
-  .detail-modal {
-    background: #111827; border: 1px solid var(--border); border-radius: 18px;
-    width: min(850px, 100%); max-height: 90vh; display: flex; flex-direction: column;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7); overflow: hidden;
+  .table-wrap { overflow-x: auto; }
+  .grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+  .grid th {
+    padding: 0 16px; height: 38px; text-align: left; white-space: nowrap;
+    font-size: 12px; font-weight: 600; color: var(--ink-3);
+    background: var(--panel-2); border-bottom: 1px solid var(--line);
   }
+  .grid td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .grid tbody tr { cursor: pointer; }
+  .grid tbody tr:hover td { background: var(--hover); }
+  .grid tbody tr:last-child td { border-bottom: 0; }
+  .th-sort { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 4px 0; font: inherit; color: inherit; }
+  .th-sort:hover { color: var(--ink); }
+  .th-sort .i { width: 13px; height: 13px; opacity: 0; transition: transform 150ms, opacity 150ms; }
+  th[aria-sort="ascending"] .th-sort .i, th[aria-sort="descending"] .th-sort .i { opacity: 1; }
+  th[aria-sort="ascending"] .th-sort .i { transform: rotate(180deg); }
+  th[aria-sort="ascending"], th[aria-sort="descending"] { color: var(--ink); }
 
-  .detail-header {
-    background: #0d1322; padding: 16px 22px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  .t1 { display: block; font-weight: 600; color: var(--ink); }
+  .t2 { display: block; font-size: 12px; color: var(--ink-3); }
+  .muted { color: var(--ink-3); }
+  .c-act { width: 1%; text-align: right; }
+  .num {
+    background: none; border: 0; padding: 2px 0; font-weight: 700; font-size: 13px; color: var(--accent-hi);
+    text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px;
+    transition: text-decoration-color 150ms;
   }
-  .detail-header-left { display: flex; align-items: center; gap: 12px; }
-  .btn-close-modal {
-    background: transparent; border: none; color: var(--text-muted); cursor: pointer;
-    font-size: 20px; display: grid; place-items: center; padding: 4px; border-radius: 6px;
+  .num:hover { text-decoration-color: currentColor; }
+  .plate {
+    display: inline-block; padding: 3px 7px; border-radius: 4px;
+    background: #eef1f7; color: #0b1220; border: 1px solid #c3cde0;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.06em; line-height: 1.3;
   }
-  .btn-close-modal:hover { color: #fff; background: #1f293d; }
+  .stack { display: grid; gap: 3px; justify-items: start; }
+  .txt-warn { color: var(--warn); font-weight: 600; }
+  .txt-bad { color: var(--bad); font-weight: 600; }
 
-  .detail-body {
-    padding: 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px;
+    border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap;
   }
+  .tag .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .tag-ok { background: var(--ok-tint); color: var(--ok); }
+  .tag-warn { background: var(--warn-tint); color: var(--warn); }
+  .tag-bad { background: var(--bad-tint); color: var(--bad); }
+  .tag-neutral { background: var(--raised); color: var(--ink-2); }
 
-  .detail-section {
-    background: #0b0f19; border: 1px solid var(--border); border-radius: 12px; padding: 16px;
-  }
-  .detail-section-title {
-    font-size: 12.5px; font-weight: 800; color: #38bdf8; text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-  }
+  .row-new td { animation: rowIn 2.4s ease-out; }
+  @keyframes rowIn { from { background: rgba(91, 147, 255, 0.2); } to { background: transparent; } }
 
-  .info-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+  .sk {
+    display: block; height: 12px; border-radius: 6px; width: 70%;
+    background: linear-gradient(90deg, #131c2f 25%, #1a2540 50%, #131c2f 75%);
+    background-size: 200% 100%; animation: shimmer 1.4s linear infinite;
   }
-  .info-item { display: flex; flex-direction: column; gap: 2px; }
-  .info-lbl { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
-  .info-val { font-size: 13.5px; font-weight: 700; color: #fff; }
+  .sk.w40 { width: 40%; } .sk.w55 { width: 55%; } .sk.w90 { width: 90%; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
 
-  /* Visualização da Van no Modal */
-  .modal-van-box {
-    background: #fff; border-radius: 10px; padding: 12px; margin-top: 6px;
-  }
-  .modal-van-box svg { width: 100%; height: auto; display: block; }
+  .empty { padding: 56px 24px !important; text-align: center; cursor: default; }
+  .grid tbody tr:has(.empty) { cursor: default; }
+  .grid tbody tr:has(.empty):hover td { background: transparent; }
+  .empty .i { width: 28px; height: 28px; color: var(--ink-3); margin-bottom: 12px; }
+  .empty h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .empty p { color: var(--ink-3); max-width: 44ch; margin: 0 auto 16px; }
 
-  /* Tabela de Pneus no Modal */
-  .tires-table {
-    width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px;
-  }
-  .tires-table th, .tires-table td {
-    padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left;
-  }
-  .tires-table th { background: #172033; color: var(--text-muted); font-size: 11px; }
+  .board-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
+  .pager { display: flex; align-items: center; gap: 8px; }
+  .pager .btn { height: 32px; padding: 0 10px; }
 
-  /* Assinaturas no Modal */
-  .signatures-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 6px;
+  /* ============================================================================
+     GAVETA DE DETALHES
+     ============================================================================ */
+  .scrim { position: fixed; inset: 0; z-index: 50; background: rgba(4, 7, 13, 0.62); opacity: 0; visibility: hidden; transition: opacity 200ms, visibility 0s 200ms; }
+  .scrim.open { opacity: 1; visibility: visible; transition: opacity 200ms, visibility 0s; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
+    width: min(580px, 100vw); display: flex; flex-direction: column;
+    background: var(--panel); border-left: 1px solid var(--line-strong);
+    box-shadow: -24px 0 48px -20px rgba(0, 0, 0, 0.7);
+    transform: translateX(100%); visibility: hidden;
+    transition: transform 240ms var(--ease), visibility 0s 240ms;
   }
-  .sig-card-preview {
-    background: #172033; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center;
-  }
-  .sig-card-preview img {
-    max-height: 80px; width: auto; max-width: 100%; background: #fff; border-radius: 6px; padding: 4px; margin: 8px 0;
-  }
-  .sig-card-preview .sig-role { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
-  .sig-card-preview .sig-status { font-size: 12px; font-weight: 700; }
+  .drawer.open { transform: none; visibility: visible; transition: transform 240ms var(--ease), visibility 0s; }
+  .dr-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px 14px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .dr-head h2 { font-size: 16px; font-weight: 700; letter-spacing: -0.005em; }
+  .dr-head .spacer { flex: 1; }
+  .dr-body { flex: 1; overflow-y: auto; padding: 4px 20px 24px; }
+  .sec { padding: 20px 0; border-top: 1px solid var(--line); }
+  .sec:first-child { border-top: 0; }
+  .sec h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 12px; }
+  .sec h3 small { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+  .kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; }
+  .kv dt { font-size: 12px; color: var(--ink-3); }
+  .kv dd { font-size: 14px; font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+  .map { background: #fff; border-radius: 8px; padding: 8px; }
+  .map svg { display: block; width: 100%; height: auto; }
+  .legend { margin-top: 10px; font-size: 12px; color: var(--ink-3); }
+  .mini { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .mini th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-3); padding: 0 8px 8px 0; }
+  .mini td { padding: 8px 8px 8px 0; border-top: 1px solid var(--line); }
+  .nok { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .nok li { display: flex; gap: 10px; align-items: flex-start; }
+  .nok .i { color: var(--bad); margin-top: 2px; }
+  .nok .grp { display: block; font-size: 12px; color: var(--ink-3); }
+  .all-ok { display: flex; align-items: center; gap: 8px; color: var(--ok); font-weight: 600; }
+  .notes { color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 65ch; }
+  .sigs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .sig { background: var(--raised); border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; text-align: center; }
+  .sig-role { font-size: 12px; color: var(--ink-3); }
+  .sig img { max-width: 100%; max-height: 60px; margin: 0 auto; padding: 4px; background: #fff; border-radius: 4px; }
+  .sig-st { font-size: 12px; font-weight: 600; color: var(--ink-3); }
+  .sig-st.ok { color: var(--ok); }
+  .dr-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); background: var(--panel-2); }
 
-  .detail-footer {
-    background: #0d1322; padding: 14px 22px; border-top: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  /* ============================================================================
+     TOAST
+     ============================================================================ */
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; z-index: 90; transform: translate(-50%, 16px);
+    display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px);
+    padding: 10px 14px; border-radius: 8px; background: var(--raised); border: 1px solid var(--line-strong);
+    box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.7); font-size: 13px; font-weight: 600;
+    opacity: 0; visibility: hidden; transition: opacity 200ms, transform 240ms var(--ease), visibility 0s 240ms;
   }
-  .btn-modal-action {
-    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; font-family: inherit;
-    cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: none;
+  .toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); transition: opacity 200ms, transform 240ms var(--ease), visibility 0s; }
+  .toast .i { color: var(--ok); }
+  .toast.error .i { color: var(--bad); }
+
+  /* ============================================================================
+     RESPONSIVO — colapso estrutural, não fluido
+     ============================================================================ */
+  @media (max-width: 1100px) {
+    .c-pneu { display: none; }
   }
-  .btn-modal-download { background: #10b981; color: #fff; }
-  .btn-modal-download:hover { background: #059669; }
-  .btn-modal-close { background: #1f293d; color: var(--text-main); }
-  .btn-modal-close:hover { background: #334155; }
+  @media (max-width: 900px) {
+    .login { grid-template-columns: 1fr; }
+    .login-brand { padding: 20px 24px; border-right: 0; border-bottom: 1px solid var(--line); }
+    .login-tagline, .login-art { display: none; }
+    .summary-grid { grid-template-columns: repeat(3, 1fr); }
+    .c-nok { display: none; }
+    .whoami { display: none; }
+  }
+  @media (max-width: 760px) {
+    .topbar-in, .page { padding-left: 16px; padding-right: 16px; }
+    .brand-sub { display: none; }
+    .sync span:last-child { display: none; }
+    .grid thead { display: none; }
+    .grid, .grid tbody { display: block; }
+    .grid tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .grid tbody tr:last-child { border-bottom: 0; }
+    .grid td { display: block; padding: 0; border: 0; }
+    .grid td.c-num { grid-column: 1; grid-row: 1; }
+    .grid td.c-status { grid-column: 2; grid-row: 1; justify-self: end; }
+    .grid td.c-veic { grid-column: 1 / -1; grid-row: 2; }
+    .grid td.c-driver { grid-column: 1; grid-row: 3; }
+    .grid td.c-date { grid-column: 2; grid-row: 3; text-align: right; }
+    .grid td.c-av { grid-column: 1 / -1; grid-row: 4; }
+    .grid td.c-act, .grid td.c-pneu, .grid td.c-nok { display: none; }
+    .grid .stack { display: flex; align-items: center; gap: 8px; }
+    .grid td.c-veic .t2 { display: inline; }
+    .empty { grid-column: 1 / -1; }
+    .dr-body .sigs { grid-template-columns: 1fr; }
+    .head-actions .btn span { display: none; }
+    .head-actions .btn { width: 36px; padding: 0; }
+  }
+  @media (max-width: 560px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .kv { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ============================================================================== -->
-<!-- 1. TELA DE LOGIN PRIVADA (ACESSO EXECUTIVO) -->
-<!-- ============================================================================== -->
-<div id="loginOverlay">
-  <div class="login-card">
-    <div class="login-icon-box">
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
-        <path d="M15 18H9"/>
-        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
-        <circle cx="17" cy="18.5" r="2.5" fill="#38bdf8"/>
-        <circle cx="7" cy="18.5" r="2.5" fill="#38bdf8"/>
-      </svg>
-    </div>
-    <h2 class="login-title">Gomex Frota</h2>
-    <p class="login-sub">Painel Executivo de Vistorias & Gestão de Frota</p>
+<!-- Ícones (traço único, 1.75) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.7 5.1A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2"/><path d="M6.6 6.7A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.3 3.9-8.5 14.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></symbol>
+    <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  </defs>
+</svg>
 
-    <form class="login-form" id="frmLogin" autocomplete="off" onsubmit="return false">
-      <div class="login-fld">
-        <label>Usuário</label>
-        <div class="input-wrap">
-          <span class="input-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          </span>
-          <input type="text" id="loginUser" placeholder="Digite seu usuário" value="gomex" required autofocus>
-        </div>
+<!-- ========================================================================== -->
+<!-- LOGIN -->
+<!-- ========================================================================== -->
+<div class="login" id="login">
+  <aside class="login-brand">
+    <div class="brand">
+      <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+      <div>
+        <div class="brand-name">Gomex Frota</div>
+        <div class="brand-sub">Painel de vistorias</div>
+      </div>
+    </div>
+    <p class="login-tagline">Cada vistoria da frota, <span>assim que o motorista assina.</span></p>
+    <svg class="login-art" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg>
+  </aside>
+
+  <main class="login-pane">
+    <form class="login-form" id="frmLogin" novalidate>
+      <div>
+        <h1>Entrar no painel</h1>
+        <p class="lead">Acesso restrito à gestão da frota.</p>
       </div>
 
-      <div class="login-fld">
-        <label>Senha</label>
-        <div class="input-wrap">
-          <span class="input-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          </span>
-          <input type="password" id="loginPass" placeholder="Digite sua senha" required>
-          <button type="button" class="btn-toggle-pwd" id="btnTogglePwd" title="Mostrar/Ocultar Senha">
-            <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      <div class="field">
+        <label for="loginUser">Usuário</label>
+        <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="gomex" required>
+      </div>
+
+      <div class="field">
+        <label for="loginPass">Senha</label>
+        <div class="pwd">
+          <input class="input" type="password" id="loginPass" name="password" autocomplete="current-password" required>
+          <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha" aria-pressed="false">
+            <svg class="i" id="eyeIcon"><use href="#i-eye"/></svg>
           </button>
         </div>
       </div>
 
-      <label class="login-remember">
-        <input type="checkbox" id="chkRemember" checked>
-        <span>Lembrar acesso neste computador</span>
-      </label>
+      <label class="check"><input type="checkbox" id="chkRemember" checked> Manter conectado neste computador</label>
 
-      <div class="login-error" id="loginError">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span id="loginErrorMsg">Usuário ou senha incorretos.</span>
+      <div class="form-error" id="loginError" role="alert">
+        <svg class="i"><use href="#i-alert"/></svg>
+        <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
       </div>
 
-      <button type="submit" class="btn-login" id="btnLogin">
-        <span>Acessar Painel Executivo</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <button type="submit" class="btn btn-primary" id="btnLogin">Entrar</button>
     </form>
-
-    <div class="login-badge-hint">
-      Acesso restrito · Gomex Distribuidora S/A
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================================== -->
-<!-- 2. SHELL DO PAINEL EXECUTIVO -->
-<!-- ============================================================================== -->
-<div class="app-layout">
-  <header class="admin-header">
-    <div class="header-container">
-      <div class="brand-group">
-        <div class="brand-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
-            <path d="M15 18H9"/>
-            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
-            <circle cx="17" cy="18.5" r="2.5" fill="#38bdf8"/>
-            <circle cx="7" cy="18.5" r="2.5" fill="#38bdf8"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <h1>Gomex Frota</h1>
-          <span>Painel de Gestão & Vistorias</span>
-        </div>
-      </div>
-
-      <div class="header-actions">
-        <div class="live-status">
-          <span class="live-dot"></span>
-          <span id="statusSyncText">Ao Vivo com Supabase</span>
-        </div>
-
-        <div class="user-badge">
-          <div class="user-avatar">G</div>
-          <span class="user-name" id="userNameLabel">gomex</span>
-        </div>
-
-        <button type="button" class="btn-logout" id="btnLogout" title="Encerrar Sessão">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          <span>Sair</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="admin-content">
-    <!-- Grade de KPIs -->
-    <section class="kpi-grid">
-      <div class="kpi-card blue">
-        <div class="kpi-header">
-          <span class="kpi-title">Total de Vistorias</span>
-          <div class="kpi-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiTotal">0</div>
-        <div class="kpi-sub">
-          <span id="kpiHoje">0 hoje</span> • <span id="kpiMes">0 este mês</span>
-        </div>
-      </div>
-
-      <div class="kpi-card green">
-        <div class="kpi-header">
-          <span class="kpi-title">Veículos Liberados</span>
-          <div class="kpi-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiLiberados">0</div>
-        <div class="kpi-sub">
-          <b id="kpiTaxaConformidade">100%</b> de conformidade
-        </div>
-      </div>
-
-      <div class="kpi-card yellow">
-        <div class="kpi-header">
-          <span class="kpi-title">Com Ressalva</span>
-          <div class="kpi-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiRessalva">0</div>
-        <div class="kpi-sub">
-          Requer atenção da equipe de manutenção
-        </div>
-      </div>
-
-      <div class="kpi-card red">
-        <div class="kpi-header">
-          <span class="kpi-title">Bloqueados / Avarias</span>
-          <div class="kpi-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-          </div>
-        </div>
-        <div class="kpi-val" id="kpiBloqueados">0</div>
-        <div class="kpi-sub">
-          <b id="kpiComAvarias">0</b> veículos com avarias marcadas
-        </div>
-      </div>
-    </section>
-
-    <!-- Toolbar com Filtros e Ações Rápidas -->
-    <div class="toolbar-card">
-      <div class="toolbar-row">
-        <div class="search-wrap">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="filtroBusca" placeholder="Buscar por placa, motorista ou nº vistoria...">
-        </div>
-
-        <div class="filter-controls">
-          <select class="filter-select" id="filtroLiberacao">
-            <option value="">Todas as Situações</option>
-            <option value="Liberado">Liberados</option>
-            <option value="Ressalva">Com Ressalva</option>
-            <option value="Não liberado">Bloqueados</option>
-          </select>
-
-          <select class="filter-select" id="filtroVeiculo">
-            <option value="">Todos os Veículos</option>
-            <option value="Kombi">Kombi</option>
-            <option value="Transit">Transit</option>
-            <option value="Master">Master</option>
-            <option value="Outro">Outros</option>
-          </select>
-
-          <select class="filter-select" id="filtroPeriodo">
-            <option value="">Qualquer Período</option>
-            <option value="hoje">Hoje</option>
-            <option value="7dias">Últimos 7 dias</option>
-            <option value="30dias">Últimos 30 dias</option>
-          </select>
-
-          <button type="button" class="btn-filter-action btn-refresh" id="btnRefresh" title="Atualizar dados do Supabase">
-            <svg id="refreshIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-            <span>Atualizar</span>
-          </button>
-
-          <button type="button" class="btn-filter-action btn-export" id="btnExport" title="Exportar dados para Excel">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Exportar Excel</span>
-          </button>
-
-          <button type="button" class="btn-filter-action btn-clear" id="btnClearFilters">
-            Limpar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabela Principal de Vistorias -->
-    <div class="table-card">
-      <div class="table-responsive">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th class="sortable" data-col="numero">Nº Vistoria</th>
-              <th class="sortable" data-col="data">Data & Hora</th>
-              <th class="sortable" data-col="veiculo">Veículo & Placa</th>
-              <th class="sortable" data-col="motorista">Motorista</th>
-              <th>Tipo</th>
-              <th>Combustível</th>
-              <th>Avarias</th>
-              <th>Pneus</th>
-              <th class="sortable" data-col="liberacao">Situação</th>
-              <th style="text-align:right">Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- Linhas geradas via JavaScript -->
-          </tbody>
-        </table>
-      </div>
-
-      <div class="table-footer">
-        <div id="tableInfo">Exibindo 0 vistorias</div>
-        <div class="pagination-btns">
-          <button type="button" class="btn-page" id="btnPrevPage" disabled>Anterior</button>
-          <span id="pageIndicator" style="font-weight:700">Pág. 1 de 1</span>
-          <button type="button" class="btn-page" id="btnNextPage" disabled>Próxima</button>
-        </div>
-      </div>
-    </div>
   </main>
 </div>
 
-<!-- ============================================================================== -->
-<!-- 3. MODAL DE DETALHES COMPLETOS DA VISTORIA -->
-<!-- ============================================================================== -->
-<div class="modal-overlay" id="detailModal">
-  <div class="detail-modal">
-    <div class="detail-header">
-      <div class="detail-header-left">
-        <span class="badge-num" id="modalNumero">000000</span>
-        <span class="plate-tag" id="modalPlaca">PLACA</span>
-        <span class="status-tag" id="modalStatusBadge">Liberado</span>
+<!-- ========================================================================== -->
+<!-- APLICAÇÃO -->
+<!-- ========================================================================== -->
+<div id="app" hidden>
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="brand">
+        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+        <div>
+          <div class="brand-name">Gomex Frota</div>
+          <div class="brand-sub">Painel de vistorias</div>
+        </div>
       </div>
-      <button type="button" class="btn-close-modal" id="btnCloseModal">✕</button>
+      <div class="spacer"></div>
+      <div class="sync" id="sync" data-state="loading" role="status">
+        <i class="sync-dot"></i><span id="syncText">Conectando…</span>
+      </div>
+      <div class="whoami"><svg class="i"><use href="#i-user"/></svg><span id="userNameLabel">gomex</span></div>
+      <button type="button" class="btn btn-ghost" id="btnLogout" aria-label="Sair do painel">
+        <svg class="i"><use href="#i-logout"/></svg><span>Sair</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <h1>Vistorias da frota</h1>
+        <p>Check-lists enviados pelos motoristas. A lista se atualiza sozinha a cada poucos segundos.</p>
+      </div>
+      <div class="head-actions">
+        <button type="button" class="btn" id="btnRefresh"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
+        <button type="button" class="btn" id="btnExport"><svg class="i"><use href="#i-download"/></svg><span>Exportar CSV</span></button>
+      </div>
     </div>
 
-    <div class="detail-body" id="modalContent">
-      <!-- Seção 1: Identificação Geral -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          Identificação da Operação
-        </div>
-        <div class="info-grid">
-          <div class="info-item"><span class="info-lbl">Veículo</span><span class="info-val" id="dVeiculo">-</span></div>
-          <div class="info-item"><span class="info-lbl">Placa</span><span class="info-val" id="dPlaca">-</span></div>
-          <div class="info-item"><span class="info-lbl">Motorista</span><span class="info-val" id="dMotorista">-</span></div>
-          <div class="info-item"><span class="info-lbl">Km Atual</span><span class="info-val" id="dKm">-</span></div>
-          <div class="info-item"><span class="info-lbl">Data / Hora</span><span class="info-val" id="dDataHora">-</span></div>
-          <div class="info-item"><span class="info-lbl">Tipo de Vistoria</span><span class="info-val" id="dTipo">-</span></div>
-          <div class="info-item"><span class="info-lbl">Nível Combustível</span><span class="info-val" id="dComb">-</span></div>
-          <div class="info-item"><span class="info-lbl">Condição Motorista</span><span class="info-val" id="dCondicao">-</span></div>
-        </div>
+    <section class="summary" aria-label="Resumo das vistorias">
+      <dl class="summary-grid">
+        <div class="stat"><dt>Vistorias</dt><dd id="stTotal">–</dd></div>
+        <div class="stat"><dt>Hoje</dt><dd id="stHoje">–</dd></div>
+        <div class="stat"><dt>Neste mês</dt><dd id="stMes">–</dd></div>
+        <div class="stat"><dt>Liberadas</dt><dd id="stConf">–</dd></div>
+        <div class="stat"><dt>Com avarias</dt><dd id="stAv">–</dd></div>
+      </dl>
+      <div class="split" id="split" role="img" aria-label="Sem dados ainda">
+        <i class="s-ok" id="splitOk"></i><i class="s-warn" id="splitWarn"></i><i class="s-bad" id="splitBad"></i>
+      </div>
+    </section>
+
+    <section class="board" aria-label="Lista de vistorias">
+      <div class="tabs" id="tabs">
+        <button type="button" class="tab" data-status="" aria-pressed="true">Todas <span class="cnt" id="cntAll">0</span></button>
+        <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
+        <button type="button" class="tab" data-status="Ressalva" aria-pressed="false"><i class="dot dot-warn"></i>Com ressalva <span class="cnt" id="cntRes">0</span></button>
+        <button type="button" class="tab" data-status="Não liberado" aria-pressed="false"><i class="dot dot-bad"></i>Bloqueadas <span class="cnt" id="cntBlk">0</span></button>
       </div>
 
-      <!-- Seção 2: Mapa de Avarias -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          Mapa da Carroceria & Avarias (<span id="dAvariasCount">0 marcas</span>)
+      <div class="toolbar">
+        <div class="search">
+          <svg class="i"><use href="#i-search"/></svg>
+          <label for="filtroBusca" class="sr-only">Buscar vistoria</label>
+          <input class="input" type="search" id="filtroBusca" placeholder="Placa, motorista ou número" autocomplete="off">
+          <kbd aria-hidden="true">/</kbd>
         </div>
-        <div class="modal-van-box">
-          <svg id="modalVanSvg" viewBox="0 0 300 182">
+        <label class="sr-only" for="filtroVeiculo">Veículo</label>
+        <select class="select" id="filtroVeiculo">
+          <option value="">Todos os veículos</option>
+          <option value="Kombi">Kombi</option>
+          <option value="Transit">Transit</option>
+          <option value="Master">Master</option>
+          <option value="Outro">Outros</option>
+        </select>
+        <label class="sr-only" for="filtroPeriodo">Período</label>
+        <select class="select" id="filtroPeriodo">
+          <option value="">Qualquer período</option>
+          <option value="hoje">Hoje</option>
+          <option value="7dias">Últimos 7 dias</option>
+          <option value="30dias">Últimos 30 dias</option>
+        </select>
+        <button type="button" class="btn btn-ghost" id="btnClearFilters" hidden><svg class="i"><use href="#i-x"/></svg>Limpar filtros</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="grid">
+          <thead>
+            <tr>
+              <th class="c-num" data-col="numero" aria-sort="none"><button type="button" class="th-sort" data-sort="numero">Nº <svg class="i"><use href="#i-chev-down"/></svg></button></th>
+              <th class="c-date" data-col="data" aria-sort="descending"><button type="button" class="th-sort" data-sort="data">Data <svg class="i"><use href="#i-chev-down"/></svg></button></th>
+              <th class="c-veic" data-col="veiculo" aria-sort="none"><button type="button" class="th-sort" data-sort="veiculo">Veículo <svg class="i"><use href="#i-chev-down"/></svg></button></th>
+              <th class="c-driver">Motorista</th>
+              <th class="c-av">Avarias</th>
+              <th class="c-pneu">Pneus</th>
+              <th class="c-nok">Itens reprovados</th>
+              <th class="c-status" data-col="liberacao" aria-sort="none"><button type="button" class="th-sort" data-sort="liberacao">Situação <svg class="i"><use href="#i-chev-down"/></svg></button></th>
+              <th class="c-act"><span class="sr-only">Ações</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="board-foot">
+        <span id="tableInfo">Carregando…</span>
+        <div class="pager">
+          <button type="button" class="btn" id="btnPrevPage" aria-label="Página anterior" disabled><svg class="i"><use href="#i-chev-left"/></svg></button>
+          <span id="pageIndicator">Página 1 de 1</span>
+          <button type="button" class="btn" id="btnNextPage" aria-label="Próxima página" disabled><svg class="i"><use href="#i-chev-right"/></svg></button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ========================================================================== -->
+<!-- GAVETA: DETALHES DA VISTORIA -->
+<!-- ========================================================================== -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true" tabindex="-1">
+  <header class="dr-head">
+    <h2 id="drTitle">Vistoria</h2>
+    <span class="plate" id="drPlate"></span>
+    <span id="drStatus"></span>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-ghost btn-icon" id="drClose" aria-label="Fechar detalhes"><svg class="i"><use href="#i-x"/></svg></button>
+  </header>
+
+  <div class="dr-body" id="drBody">
+    <section class="sec">
+      <h3>Operação</h3>
+      <dl class="kv" id="drKv"></dl>
+    </section>
+
+    <section class="sec">
+      <h3>Avarias na carroceria <small id="drAvCount"></small></h3>
+      <div class="map">          <svg id="modalVanSvg" viewBox="0 0 300 182">
             <defs>
               <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
                 <path d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z" fill="#fafafa"/>
@@ -881,559 +686,555 @@
               <text x="257" y="174">TRASEIRA</text>
             </g>
             <g id="modalVanMarksLayer"></g>
-          </svg>
-        </div>
-      </div>
+          </svg></div>
+      <p class="legend">A amassado · R risco · Q quebrado · T trincado · F faltando</p>
+    </section>
 
-      <!-- Seção 3: Pneus & Calibragem -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>
-          Pneus e Calibragem
-        </div>
-        <table class="tires-table">
-          <thead>
-            <tr>
-              <th>Posição</th>
-              <th>Estado</th>
-              <th>PSI</th>
-              <th>Observação</th>
-            </tr>
-          </thead>
-          <tbody id="modalTiresBody">
-            <!-- Pneus inseridos via JS -->
-          </tbody>
-        </table>
-      </div>
+    <section class="sec">
+      <h3>Pneus</h3>
+      <table class="mini">
+        <thead><tr><th>Posição</th><th>Estado</th><th>PSI</th><th>Observação</th></tr></thead>
+        <tbody id="drTires"></tbody>
+      </table>
+    </section>
 
-      <!-- Seção 4: Assinaturas Digitais -->
-      <div class="detail-section">
-        <div class="detail-section-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-          Assinaturas Digitais Coletadas
-        </div>
-        <div class="signatures-grid">
-          <div class="sig-card-preview">
-            <span class="sig-role">Motorista / Vendedor</span>
-            <img id="modalSigMotorista" src="" alt="Assinatura" style="display:none">
-            <div class="sig-status" id="modalSigMotoristaStatus">Pendente</div>
-          </div>
-          <div class="sig-card-preview">
-            <span class="sig-role">Vistoriador</span>
-            <img id="modalSigVistoriador" src="" alt="Assinatura" style="display:none">
-            <div class="sig-status" id="modalSigVistoriadorStatus">Pendente</div>
-          </div>
-          <div class="sig-card-preview">
-            <span class="sig-role">Responsável / Frota</span>
-            <img id="modalSigResponsavel" src="" alt="Assinatura" style="display:none">
-            <div class="sig-status" id="modalSigResponsavelStatus">Pendente</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <section class="sec">
+      <h3>Itens reprovados <small id="drNokCount"></small></h3>
+      <div id="drNok"></div>
+    </section>
 
-    <div class="detail-footer">
-      <button type="button" class="btn-modal-action btn-modal-close" id="btnModalCloseAction">Fechar</button>
-      <button type="button" class="btn-modal-action btn-modal-download" id="btnModalDownloadPdf">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Baixar PDF Oficial</span>
-      </button>
-    </div>
+    <section class="sec" id="drNotesSec">
+      <h3>Observações</h3>
+      <p class="notes" id="drNotes"></p>
+    </section>
+
+    <section class="sec">
+      <h3>Assinaturas</h3>
+      <div class="sigs" id="drSigs"></div>
+    </section>
   </div>
-</div>
+
+  <footer class="dr-foot">
+    <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
+    <button type="button" class="btn btn-primary" id="drPdf"><svg class="i"><use href="#i-download"/></svg>Baixar PDF</button>
+  </footer>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i"><use href="#i-check"/></svg><span id="toastMsg"></span></div>
 
 <script>
+(() => {
+'use strict';
+
 // ==============================================================================
-// CONFIGURAÇÃO SUPABASE & CREDENCIAIS
+// CONFIGURAÇÃO
 // ==============================================================================
 const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
-// Chave publica de leitura segura para painel
 const KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
-function getApiKey() {
-  try {
-    return atob(KEY_B64);
-  } catch (e) {
-    return '';
-  }
+const apiKey = () => { try { return atob(KEY_B64); } catch (e) { return ''; } };
+
+const AUTH_KEY = 'gomex_painel_auth_v1';
+const POLL_MS = 6000;
+const PAGE_SIZE = 15;
+const LIST_COLS = 'id,numero,created_at,veiculo,veiculo_outro,placa,km,motorista,data,hora,tipo,combustivel,rev_ult_km,rev_ult_data,rev_prox_km,rev_prox_data,avarias,sem_avarias,pneus,pneu_dano,itens,obs,condicao_motorista,liberacao,status';
+const SIG_COLS = 'ass_motorista,ass_vistoriador,ass_responsavel';
+
+const $ = id => document.getElementById(id);
+
+const state = {
+  all: [], filtered: [], page: 1,
+  sortCol: 'data', sortAsc: false,
+  status: '', q: '', veic: '', per: '',
+  loaded: false, error: false, lastSync: 0, sig: '',
+  known: new Set(), fresh: new Set(),
+  sel: null, sigCache: {}
+};
+let authed = false, loading = false, pollTimer = null, lastFocus = null;
+
+// ==============================================================================
+// UTILIDADES
+// ==============================================================================
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pad = n => String(n).padStart(2, '0');
+const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const formatarData = iso => {
+  if (!iso) return '--/--/----';
+  const p = String(iso).split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+};
+const fmtKm = v => (v === null || v === undefined || v === '') ? '—' : `${Number(v).toLocaleString('pt-BR')} km`;
+const icon = (name, cls = '') => `<svg class="i ${cls}"><use href="#i-${name}"/></svg>`;
+
+const STATUS = {
+  'Liberado': { cls: 'ok', label: 'Liberado' },
+  'Ressalva': { cls: 'warn', label: 'Com ressalva' },
+  'Não liberado': { cls: 'bad', label: 'Bloqueado' }
+};
+const statusTag = lib => {
+  const m = STATUS[lib] || { cls: 'neutral', label: lib || '—' };
+  return `<span class="tag tag-${m.cls}"><i class="dot"></i>${esc(m.label)}</span>`;
+};
+
+const avariasOf = it => Array.isArray(it.avarias) ? it.avarias : [];
+const pneusOf = it => Array.isArray(it.pneus) ? it.pneus : [];
+const itensOf = it => Array.isArray(it.itens) ? it.itens : [];
+const nokOf = it => itensOf(it).filter(i => i && i.valor === 'NOK');
+const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p && p.estado === 'Gasto');
+
+let toastTimer = null;
+function toast(msg, kind = 'ok') {
+  const el = $('toast');
+  $('toastMsg').textContent = msg;
+  el.classList.toggle('error', kind === 'error');
+  el.querySelector('use').setAttribute('href', kind === 'error' ? '#i-alert' : '#i-check');
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-const AUTH_STORAGE_KEY = 'gomex_painel_auth_v1';
-let currentChecklists = [];
-let filteredChecklists = [];
-let currentSelectedChecklist = null;
-let currentPage = 1;
-const pageSize = 15;
-let currentSortCol = 'data';
-let currentSortAsc = false;
-
 // ==============================================================================
-// CONTROLE DE AUTENTICAÇÃO (User: gomex | Senha: Gomex@2026)
+// AUTENTICAÇÃO
 // ==============================================================================
-const loginOverlay = document.getElementById('loginOverlay');
-const frmLogin = document.getElementById('frmLogin');
-const loginUser = document.getElementById('loginUser');
-const loginPass = document.getElementById('loginPass');
-const btnTogglePwd = document.getElementById('btnTogglePwd');
-const loginError = document.getElementById('loginError');
-const loginErrorMsg = document.getElementById('loginErrorMsg');
-const chkRemember = document.getElementById('chkRemember');
-const btnLogout = document.getElementById('btnLogout');
-
-// Mostrar / Ocultar Senha
-btnTogglePwd.addEventListener('click', () => {
-  const isPwd = loginPass.type === 'password';
-  loginPass.type = isPwd ? 'text' : 'password';
-});
-
-// Checar sessão existente
 function checkExistingAuth() {
-  const saved = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
-  if (saved) {
-    try {
-      const auth = JSON.parse(saved);
-      if (auth.user === 'gomex' && auth.token) {
-        unlockDashboard(auth.user);
-        return;
-      }
-    } catch (e) {}
-  }
+  const saved = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
+  if (!saved) return false;
+  try {
+    const auth = JSON.parse(saved);
+    if (auth.user === 'gomex' && auth.token) { showApp(auth.user); return true; }
+  } catch (e) {}
+  return false;
 }
 
-frmLogin.addEventListener('submit', async () => {
-  loginError.classList.remove('show');
-  const u = loginUser.value.trim();
-  const p = loginPass.value;
+function showApp(user) {
+  authed = true;
+  $('userNameLabel').textContent = user;
+  $('login').hidden = true;
+  $('app').hidden = false;
+  renderTable();
+  load();
+  clearInterval(pollTimer);
+  pollTimer = setInterval(() => { if (!document.hidden) load({ silent: true }); }, POLL_MS);
+}
 
+$('btnTogglePwd').addEventListener('click', () => {
+  const input = $('loginPass');
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  $('btnTogglePwd').setAttribute('aria-pressed', String(show));
+  $('btnTogglePwd').setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+  $('eyeIcon').querySelector('use').setAttribute('href', show ? '#i-eye-off' : '#i-eye');
+});
+
+$('frmLogin').addEventListener('submit', e => {
+  e.preventDefault();
+  $('loginError').classList.remove('show');
+  const u = $('loginUser').value.trim();
+  const p = $('loginPass').value;
   if (u === 'gomex' && p === 'Gomex@2026') {
-    const authData = { user: 'gomex', token: 'auth_' + Date.now() };
-    if (chkRemember.checked) {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
-    } else {
-      sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
-    }
-    unlockDashboard('gomex');
+    const data = JSON.stringify({ user: 'gomex', token: 'auth_' + Date.now() });
+    (($('chkRemember').checked) ? localStorage : sessionStorage).setItem(AUTH_KEY, data);
+    showApp('gomex');
   } else {
-    loginErrorMsg.textContent = 'Usuário ou senha incorretos.';
-    loginError.classList.add('show');
+    $('loginError').classList.add('show');
+    $('loginPass').select();
   }
 });
 
-btnLogout.addEventListener('click', () => {
-  if (confirm('Deseja realmente sair do painel executivo?')) {
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+$('btnLogout').addEventListener('click', () => {
+  if (confirm('Sair do painel?')) {
+    localStorage.removeItem(AUTH_KEY);
+    sessionStorage.removeItem(AUTH_KEY);
     location.reload();
   }
 });
 
-function unlockDashboard(user) {
-  document.getElementById('userNameLabel').textContent = user;
-  loginOverlay.classList.add('hidden');
-  carregarVistoriasSupabase();
-}
-
 // ==============================================================================
-// CARREGAMENTO DE DADOS DO SUPABASE (COM FALLBACK AUTOMÁTICO E SINC. CONTÍNUA)
+// DADOS — proxy do servidor primeiro, Supabase direto como alternativa
 // ==============================================================================
-async function carregarVistoriasSupabase() {
-  const statusSync = document.getElementById('statusSyncText');
-  const refreshIcon = document.getElementById('refreshIcon');
-  if (refreshIcon) refreshIcon.classList.add('spin');
-  if (statusSync) statusSync.textContent = 'Sincronizando...';
+const authHeaders = () => ({ apikey: apiKey(), Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' });
 
-  let data = null;
-
-  // 1. Tenta carregar via proxy local/Cloudflare (Mais rápido e sem bloqueios de CORS/Firewall)
+async function getRows(proxyPath, directPath) {
   try {
-    const resLocal = await fetch('/api/checklists');
-    if (resLocal.ok) {
-      data = await resLocal.json();
-    }
+    const r = await fetch(proxyPath, { cache: 'no-store' });
+    if (r.ok) { const d = await r.json(); if (Array.isArray(d)) return d; }
   } catch (e) {}
-
-  // 2. Se falhar ou estiver direto via file://, chama o Supabase diretamente
-  if (!data || !Array.isArray(data)) {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500`, {
-        headers: {
-          'apikey': getApiKey(),
-          'Authorization': `Bearer ${getApiKey()}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (res.ok) {
-        data = await res.json();
-      }
-    } catch (err) {
-      console.warn('Falha na chamada direta ao Supabase:', err);
-    }
-  }
-
-  if (Array.isArray(data)) {
-    currentChecklists = data;
-    if (statusSync) statusSync.textContent = `Ao Vivo · ${currentChecklists.length} vistoria(s)`;
-    aplicarFiltros();
-    atualizarKpis();
-  } else {
-    if (statusSync) statusSync.textContent = 'Erro de sincronização';
-  }
-
-  if (refreshIcon) refreshIcon.classList.remove('spin');
+  try {
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/${directPath}`, { headers: authHeaders(), cache: 'no-store' });
+    if (r.ok) { const d = await r.json(); if (Array.isArray(d)) return d; }
+  } catch (e) {}
+  return null;
 }
+const fetchList = () => getRows(`/api/checklists?select=${LIST_COLS}`, `veiculo_checklists?select=${LIST_COLS}&order=id.desc&limit=500`);
+const fetchSigs = id => { id = Number(id); return getRows(`/api/checklists?id=${id}&select=${SIG_COLS}`, `veiculo_checklists?id=eq.${id}&select=${SIG_COLS}`); };
 
-// Sincronização automática contínua a cada 6 segundos
-setInterval(carregarVistoriasSupabase, 6000);
-
-// ==============================================================================
-// CÁLCULO DE KPIS
-// ==============================================================================
-function atualizarKpis() {
-  const total = currentChecklists.length;
-  document.getElementById('kpiTotal').textContent = total;
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  const hoje = currentChecklists.filter(c => c.data === todayStr).length;
-  document.getElementById('kpiHoje').textContent = `${hoje} hoje`;
-
-  const now = new Date();
-  const mesAtual = currentChecklists.filter(c => {
-    if (!c.data) return false;
-    const d = new Date(c.data);
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }).length;
-  document.getElementById('kpiMes').textContent = `${mesAtual} este mês`;
-
-  const liberados = currentChecklists.filter(c => c.liberacao === 'Liberado').length;
-  document.getElementById('kpiLiberados').textContent = liberados;
-
-  const taxa = total > 0 ? Math.round((liberados / total) * 100) : 100;
-  document.getElementById('kpiTaxaConformidade').textContent = `${taxa}%`;
-
-  const ressalvas = currentChecklists.filter(c => c.liberacao === 'Ressalva').length;
-  document.getElementById('kpiRessalva').textContent = ressalvas;
-
-  const bloqueados = currentChecklists.filter(c => c.liberacao === 'Não liberado').length;
-  document.getElementById('kpiBloqueados').textContent = bloqueados;
-
-  const comAvarias = currentChecklists.filter(c => Array.isArray(c.avarias) && c.avarias.length > 0).length;
-  document.getElementById('kpiComAvarias').textContent = comAvarias;
+function setSync(kind) { $('sync').dataset.state = kind; renderSyncText(); }
+function renderSyncText() {
+  const kind = $('sync').dataset.state;
+  const el = $('syncText');
+  if (kind === 'error') { el.textContent = 'Sem conexão · tentando de novo'; return; }
+  if (kind === 'loading') { el.textContent = state.loaded ? 'Atualizando…' : 'Conectando…'; return; }
+  if (!state.lastSync) return;
+  const s = Math.max(0, Math.round((Date.now() - state.lastSync) / 1000));
+  el.textContent = s < 5 ? 'Sincronizado agora' : `Sincronizado há ${s < 60 ? s + ' s' : Math.floor(s / 60) + ' min'}`;
 }
+setInterval(renderSyncText, 1000);
 
-// ==============================================================================
-// FILTROS & ORDENAÇÃO
-// ==============================================================================
-const filtroBusca = document.getElementById('filtroBusca');
-const filtroLiberacao = document.getElementById('filtroLiberacao');
-const filtroVeiculo = document.getElementById('filtroVeiculo');
-const filtroPeriodo = document.getElementById('filtroPeriodo');
-const btnClearFilters = document.getElementById('btnClearFilters');
-const btnRefresh = document.getElementById('btnRefresh');
+async function load({ silent = false } = {}) {
+  if (loading || !authed) return;
+  loading = true;
+  if (!silent) { setSync('loading'); $('btnRefresh').classList.add('is-loading'); }
+  const d = await fetchList();
+  loading = false;
+  $('btnRefresh').classList.remove('is-loading');
 
-[filtroBusca, filtroLiberacao, filtroVeiculo, filtroPeriodo].forEach(el => {
-  el.addEventListener('input', () => {
-    currentPage = 1;
-    aplicarFiltros();
-  });
-});
-
-btnClearFilters.addEventListener('click', () => {
-  filtroBusca.value = '';
-  filtroLiberacao.value = '';
-  filtroVeiculo.value = '';
-  filtroPeriodo.value = '';
-  currentPage = 1;
-  aplicarFiltros();
-});
-
-btnRefresh.addEventListener('click', carregarVistoriasSupabase);
-
-function aplicarFiltros() {
-  const busca = (filtroBusca.value || '').toLowerCase().trim();
-  const lib = filtroLiberacao.value;
-  const veic = filtroVeiculo.value;
-  const per = filtroPeriodo.value;
-
-  const todayStr = new Date().toISOString().split('T')[0];
-  const d7 = new Date(); d7.setDate(d7.getDate() - 7);
-  const d30 = new Date(); d30.setDate(d30.getDate() - 30);
-
-  filteredChecklists = currentChecklists.filter(item => {
-    // 1. Busca textual
-    if (busca) {
-      const matchPlaca = (item.placa || '').toLowerCase().includes(busca);
-      const matchMotorista = (item.motorista || '').toLowerCase().includes(busca);
-      const matchNumero = (item.numero || '').toLowerCase().includes(busca);
-      if (!matchPlaca && !matchMotorista && !matchNumero) return false;
-    }
-
-    // 2. Liberação
-    if (lib && item.liberacao !== lib) return false;
-
-    // 3. Veículo
-    if (veic) {
-      if (veic === 'Outro' && ['Kombi', 'Transit', 'Master'].includes(item.veiculo)) return false;
-      if (veic !== 'Outro' && item.veiculo !== veic) return false;
-    }
-
-    // 4. Período
-    if (per === 'hoje' && item.data !== todayStr) return false;
-    if (per === '7dias') {
-      const itemDate = new Date(item.data);
-      if (itemDate < d7) return false;
-    }
-    if (per === '30dias') {
-      const itemDate = new Date(item.data);
-      if (itemDate < d30) return false;
-    }
-
-    return true;
-  });
-
-  // Ordenação
-  filteredChecklists.sort((a, b) => {
-    let vA = a[currentSortCol];
-    let vB = b[currentSortCol];
-
-    if (currentSortCol === 'data') {
-      vA = `${a.data || ''} ${a.hora || ''}`;
-      vB = `${b.data || ''} ${b.hora || ''}`;
-    }
-
-    if (vA < vB) return currentSortAsc ? -1 : 1;
-    if (vA > vB) return currentSortAsc ? 1 : -1;
-    return 0;
-  });
-
-  renderTabela();
-}
-
-// Clique nos cabeçalhos para ordenar
-document.querySelectorAll('th.sortable').forEach(th => {
-  th.addEventListener('click', () => {
-    const col = th.dataset.col;
-    if (currentSortCol === col) {
-      currentSortAsc = !currentSortAsc;
-    } else {
-      currentSortCol = col;
-      currentSortAsc = false;
-    }
-    aplicarFiltros();
-  });
-});
-
-// ==============================================================================
-// RENDERIZAÇÃO DA TABELA & PAGINAÇÃO
-// ==============================================================================
-const tableBody = document.getElementById('tableBody');
-const tableInfo = document.getElementById('tableInfo');
-const pageIndicator = document.getElementById('pageIndicator');
-const btnPrevPage = document.getElementById('btnPrevPage');
-const btnNextPage = document.getElementById('btnNextPage');
-
-function renderTabela() {
-  const total = filteredChecklists.length;
-  const maxPages = Math.ceil(total / pageSize) || 1;
-  if (currentPage > maxPages) currentPage = maxPages;
-
-  const start = (currentPage - 1) * pageSize;
-  const pageItems = filteredChecklists.slice(start, start + pageSize);
-
-  tableInfo.textContent = `Exibindo ${pageItems.length} de ${total} vistorias`;
-  pageIndicator.textContent = `Pág. ${currentPage} de ${maxPages}`;
-  btnPrevPage.disabled = currentPage <= 1;
-  btnNextPage.disabled = currentPage >= maxPages;
-
-  if (pageItems.length === 0) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="10">
-          <div class="empty-state">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <h3>Nenhuma vistoria encontrada</h3>
-            <p>Tente ajustar os termos de pesquisa ou remover os filtros aplicados.</p>
-          </div>
-        </td>
-      </tr>
-    `;
+  if (!d) {
+    state.error = true;
+    setSync('error');
+    if (!state.loaded) renderTable();
     return;
   }
 
-  tableBody.innerHTML = pageItems.map(item => {
-    const dataFmt = formatarData(item.data);
-    const horaFmt = item.hora || '--:--';
-    const avariasCount = Array.isArray(item.avarias) ? item.avarias.length : 0;
-    
-    // Status Liberação
-    let libClass = 'liberado';
-    if (item.liberacao === 'Ressalva') libClass = 'ressalva';
-    if (item.liberacao === 'Não liberado') libClass = 'bloqueado';
+  state.error = false;
+  state.lastSync = Date.now();
+  setSync('ok');
 
-    return `
-      <tr>
-        <td><span class="badge-num">${item.numero || '------'}</span></td>
-        <td>
-          <div style="font-weight:700">${dataFmt}</div>
-          <div style="font-size:11px;color:var(--text-dim)">${horaFmt}</div>
-        </td>
-        <td>
-          <div style="font-weight:700;margin-bottom:2px">${item.veiculo}</div>
-          <span class="plate-tag">${(item.placa || '').toUpperCase()}</span>
-        </td>
-        <td>
-          <div style="font-weight:700;color:#fff">${item.motorista || 'Não informado'}</div>
-        </td>
-        <td><span style="font-size:12px;color:var(--text-muted)">${item.tipo || 'Saída'}</span></td>
-        <td><span style="font-size:12px;font-weight:700;color:#38bdf8">${item.combustivel || '1/2'}</span></td>
-        <td>
-          ${avariasCount === 0 
-            ? `<span class="chip-avarias clean">Íntegro</span>`
-            : `<span class="chip-avarias warn">${avariasCount} marca(s)</span>`}
-        </td>
-        <td>
-          <span style="font-size:12px;color:${item.pneu_dano === 'Sim' ? '#f87171' : 'var(--text-muted)'}">
-            ${item.pneu_dano === 'Sim' ? '⚠ Desgaste/Bolha' : 'Normal'}
-          </span>
-        </td>
-        <td>
-          <span class="status-tag ${libClass}">${item.liberacao || 'Liberado'}</span>
-        </td>
-        <td style="text-align:right">
-          <div class="row-actions" style="justify-content:flex-end">
-            <button type="button" class="btn-row-action" onclick="abrirModalDetalhes('${item.id}')">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              <span>Ver</span>
-            </button>
-            <button type="button" class="btn-row-action btn-row-pdf" onclick="baixarPdfVistoria('${item.id}')" title="Baixar PDF Oficial">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>PDF</span>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
+  const sig = d.map(x => `${x.id}:${x.liberacao}`).join('|');
+  if (state.loaded && sig === state.sig) return;
+
+  const fresh = state.loaded ? d.filter(x => !state.known.has(x.id)) : [];
+  d.forEach(x => state.known.add(x.id));
+  state.all = d;
+  state.sig = sig;
+  state.loaded = true;
+  state.fresh = new Set(fresh.map(x => x.id));
+  renderAll();
+  if (fresh.length) toast(fresh.length === 1 ? `Nova vistoria ${fresh[0].numero} recebida` : `${fresh.length} novas vistorias recebidas`);
+  setTimeout(() => state.fresh.clear(), 2600);
+}
+
+$('btnRefresh').addEventListener('click', () => load());
+document.addEventListener('visibilitychange', () => { if (!document.hidden && authed) load({ silent: true }); });
+
+// ==============================================================================
+// RESUMO
+// ==============================================================================
+function renderSummary() {
+  const a = state.all, total = a.length;
+  const today = isoLocal(new Date()), month = today.slice(0, 7);
+  const lib = a.filter(x => x.liberacao === 'Liberado').length;
+  const res = a.filter(x => x.liberacao === 'Ressalva').length;
+  const blk = a.filter(x => x.liberacao === 'Não liberado').length;
+
+  $('stTotal').textContent = total;
+  $('stHoje').textContent = a.filter(x => x.data === today).length;
+  $('stMes').textContent = a.filter(x => (x.data || '').slice(0, 7) === month).length;
+  $('stConf').textContent = total ? Math.round(lib / total * 100) + '%' : '—';
+  $('stAv').textContent = a.filter(x => avariasOf(x).length > 0).length;
+
+  $('cntAll').textContent = total;
+  $('cntLib').textContent = lib;
+  $('cntRes').textContent = res;
+  $('cntBlk').textContent = blk;
+
+  $('splitOk').style.flexGrow = lib;
+  $('splitWarn').style.flexGrow = res;
+  $('splitBad').style.flexGrow = blk;
+  $('split').setAttribute('aria-label', total
+    ? `Situação das vistorias: ${lib} liberadas, ${res} com ressalva, ${blk} bloqueadas`
+    : 'Sem vistorias ainda');
+}
+
+// ==============================================================================
+// FILTROS E ORDENAÇÃO
+// ==============================================================================
+const norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+function applyFilters() {
+  const q = state.q.toLowerCase().trim(), qn = norm(q);
+  const today = isoLocal(new Date());
+  const d7 = isoLocal(new Date(Date.now() - 7 * 864e5));
+  const d30 = isoLocal(new Date(Date.now() - 30 * 864e5));
+  const known = ['Kombi', 'Transit', 'Master'];
+
+  state.filtered = state.all.filter(it => {
+    if (state.status && it.liberacao !== state.status) return false;
+    if (q) {
+      const hay = `${it.placa || ''} ${it.motorista || ''} ${it.numero || ''}`.toLowerCase();
+      if (!hay.includes(q) && !(qn && norm(hay).includes(qn))) return false;
+    }
+    if (state.veic === 'Outro') { if (known.includes(it.veiculo)) return false; }
+    else if (state.veic && it.veiculo !== state.veic) return false;
+    const dt = it.data || '';
+    if (state.per === 'hoje' && dt !== today) return false;
+    if (state.per === '7dias' && dt < d7) return false;
+    if (state.per === '30dias' && dt < d30) return false;
+    return true;
+  });
+
+  const key = it => state.sortCol === 'data' ? `${it.data || ''} ${it.hora || ''}` : String(it[state.sortCol] ?? '');
+  const dir = state.sortAsc ? 1 : -1;
+  state.filtered.sort((a, b) => {
+    const A = key(a), B = key(b);
+    if (A < B) return -dir;
+    if (A > B) return dir;
+    return (b.id - a.id) * -dir * -1;
+  });
+}
+
+function onFilterChange() { state.page = 1; renderAll(); }
+
+$('filtroBusca').addEventListener('input', e => { state.q = e.target.value; onFilterChange(); });
+$('filtroVeiculo').addEventListener('change', e => { state.veic = e.target.value; onFilterChange(); });
+$('filtroPeriodo').addEventListener('change', e => { state.per = e.target.value; onFilterChange(); });
+$('btnClearFilters').addEventListener('click', clearFilters);
+
+function clearFilters() {
+  state.status = state.q = state.veic = state.per = '';
+  $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = '';
+  onFilterChange();
+}
+
+$('tabs').addEventListener('click', e => {
+  const t = e.target.closest('.tab');
+  if (!t) return;
+  state.status = t.dataset.status;
+  onFilterChange();
+});
+
+document.querySelectorAll('.th-sort').forEach(b => b.addEventListener('click', () => {
+  const col = b.dataset.sort;
+  if (state.sortCol === col) state.sortAsc = !state.sortAsc;
+  else { state.sortCol = col; state.sortAsc = false; }
+  renderAll();
+}));
+
+// ==============================================================================
+// TABELA
+// ==============================================================================
+function skeletonRows() {
+  return Array.from({ length: 6 }, () => `
+    <tr>
+      <td class="c-num"><span class="sk w55"></span></td>
+      <td class="c-date"><span class="sk"></span></td>
+      <td class="c-veic"><span class="sk w90"></span></td>
+      <td class="c-driver"><span class="sk w90"></span></td>
+      <td class="c-av"><span class="sk w55"></span></td>
+      <td class="c-pneu"><span class="sk w55"></span></td>
+      <td class="c-nok"><span class="sk w40"></span></td>
+      <td class="c-status"><span class="sk w90"></span></td>
+      <td class="c-act"></td>
+    </tr>`).join('');
+}
+
+function emptyRow(kind) {
+  const map = {
+    none: ['inbox', 'Nenhuma vistoria recebida ainda', 'Quando um motorista concluir um check-list no aplicativo, ele aparece aqui sozinho, sem precisar atualizar.', ''],
+    filtered: ['search', 'Nada encontrado com esses filtros', 'Tente outra placa, outro período ou volte para todas as situações.', '<button type="button" class="btn" data-act="clear">Limpar filtros</button>'],
+    error: ['alert', 'Não foi possível carregar as vistorias', 'Confira a conexão com a internet. O painel tenta de novo automaticamente.', '<button type="button" class="btn" data-act="retry">Tentar agora</button>']
+  };
+  const [ic, title, text, action] = map[kind];
+  return `<tr><td class="empty" colspan="9">${icon(ic)}<h2>${title}</h2><p>${text}</p>${action}</td></tr>`;
+}
+
+function rowHtml(it) {
+  const av = avariasOf(it).length;
+  const nok = nokOf(it).length;
+  const alert = pneuAlert(it);
+  const id = esc(it.id);
+  const num = esc(it.numero || '—');
+  const placa = esc((it.placa || '').toUpperCase());
+  return `
+    <tr data-id="${id}" class="${state.fresh.has(it.id) ? 'row-new' : ''}">
+      <td class="c-num"><button type="button" class="num" data-act="open" data-id="${id}" aria-label="Abrir vistoria ${num}">${num}</button></td>
+      <td class="c-date"><span class="t1">${formatarData(it.data)}</span><span class="t2">${esc(it.hora || '--:--')}</span></td>
+      <td class="c-veic"><div class="stack"><span class="plate">${placa}</span><span class="t2">${esc(it.veiculo || '—')}</span></div></td>
+      <td class="c-driver"><span class="t1">${esc(it.motorista || 'Não informado')}</span><span class="t2">${esc(it.tipo || 'Saída')} · combustível ${esc(it.combustivel || '—')}</span></td>
+      <td class="c-av">${av ? `<span class="txt-warn">${av} ${av === 1 ? 'marca' : 'marcas'}</span>` : '<span class="muted">Íntegro</span>'}</td>
+      <td class="c-pneu">${alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>'}</td>
+      <td class="c-nok">${nok ? `<span class="txt-bad">${nok}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="c-status">${statusTag(it.liberacao)}</td>
+      <td class="c-act"><button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="${id}" aria-label="Baixar PDF da vistoria ${num}" title="Baixar PDF">${icon('download')}</button></td>
+    </tr>`;
+}
+
+function renderTable() {
+  applyFilters();
+  const body = $('tableBody');
+  const total = state.filtered.length;
+  const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (state.page > pages) state.page = pages;
+  const start = (state.page - 1) * PAGE_SIZE;
+  const items = state.filtered.slice(start, start + PAGE_SIZE);
+
+  const hasFilters = !!(state.status || state.q || state.veic || state.per);
+  $('btnClearFilters').hidden = !hasFilters;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status)));
+  document.querySelectorAll('.grid th[data-col]').forEach(th => {
+    th.setAttribute('aria-sort', th.dataset.col === state.sortCol ? (state.sortAsc ? 'ascending' : 'descending') : 'none');
+  });
+
+  if (!state.loaded) {
+    body.innerHTML = state.error ? emptyRow('error') : skeletonRows();
+    $('tableInfo').textContent = state.error ? 'Sem dados' : 'Carregando…';
+  } else if (!state.all.length) {
+    body.innerHTML = emptyRow('none');
+    $('tableInfo').textContent = '0 vistorias';
+  } else if (!total) {
+    body.innerHTML = emptyRow('filtered');
+    $('tableInfo').textContent = `0 de ${state.all.length} vistorias`;
+  } else {
+    body.innerHTML = items.map(rowHtml).join('');
+    $('tableInfo').textContent = `${start + 1}–${start + items.length} de ${total} ${total === 1 ? 'vistoria' : 'vistorias'}`;
+  }
+
+  $('pageIndicator').textContent = `Página ${state.page} de ${pages}`;
+  $('btnPrevPage').disabled = state.page <= 1;
+  $('btnNextPage').disabled = state.page >= pages;
+}
+
+function renderAll() { renderSummary(); renderTable(); }
+
+$('btnPrevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; renderTable(); } });
+$('btnNextPage').addEventListener('click', () => { state.page++; renderTable(); });
+
+$('tableBody').addEventListener('click', e => {
+  const btn = e.target.closest('[data-act]');
+  if (btn) {
+    const act = btn.dataset.act;
+    if (act === 'open') openDrawer(btn.dataset.id, btn);
+    else if (act === 'pdf') baixarPdfVistoria(btn.dataset.id, btn);
+    else if (act === 'clear') clearFilters();
+    else if (act === 'retry') load();
+    return;
+  }
+  const row = e.target.closest('tr[data-id]');
+  if (row) openDrawer(row.dataset.id, row.querySelector('.num'));
+});
+
+// ==============================================================================
+// GAVETA DE DETALHES
+// ==============================================================================
+const SIG_ROLES = [['ass_motorista', 'Motorista / vendedor'], ['ass_vistoriador', 'Vistoriador'], ['ass_responsavel', 'Responsável da frota']];
+const revText = (km, dt) => [km ? fmtKm(km) : null, dt ? formatarData(dt) : null].filter(Boolean).join(' · ') || '—';
+
+function renderSigs(row) {
+  $('drSigs').innerHTML = SIG_ROLES.map(([k, label]) => {
+    let body;
+    if (row === null) body = '<span class="sk"></span>';
+    else if (row[k] && /^data:image\//.test(row[k])) body = `<img src="${esc(row[k])}" alt="Assinatura de ${esc(label)}"><span class="sig-st ok">Assinado</span>`;
+    else body = '<span class="sig-st">Pendente</span>';
+    return `<div class="sig"><span class="sig-role">${label}</span>${body}</div>`;
   }).join('');
 }
 
-btnPrevPage.addEventListener('click', () => {
-  if (currentPage > 1) {
-    currentPage--;
-    renderTabela();
-  }
-});
-btnNextPage.addEventListener('click', () => {
-  const maxPages = Math.ceil(filteredChecklists.length / pageSize);
-  if (currentPage < maxPages) {
-    currentPage++;
-    renderTabela();
-  }
-});
+function fillDrawer(it) {
+  $('drTitle').textContent = `Vistoria ${it.numero || '—'}`;
+  $('drPlate').textContent = (it.placa || '').toUpperCase();
+  $('drStatus').innerHTML = statusTag(it.liberacao);
 
-function formatarData(iso) {
-  if (!iso) return '--/--/----';
-  const p = iso.split('-');
-  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+  const kv = [
+    ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ` (${esc(it.veiculo_outro)})` : '')],
+    ['Motorista', esc(it.motorista || '—')],
+    ['Data e hora', `${formatarData(it.data)} às ${esc(it.hora || '--:--')}`],
+    ['Quilometragem', fmtKm(it.km)],
+    ['Tipo de vistoria', esc(it.tipo || '—')],
+    ['Combustível', esc(it.combustivel || '—')],
+    ['Condição do motorista', esc(it.condicao_motorista || '—')],
+    ['Última revisão', esc(revText(it.rev_ult_km, it.rev_ult_data))],
+    ['Próxima revisão', esc(revText(it.rev_prox_km, it.rev_prox_data))]
+  ];
+  $('drKv').innerHTML = kv.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+
+  const marks = avariasOf(it);
+  $('drAvCount').textContent = it.sem_avarias ? 'Sem avarias novas' : (marks.length ? `${marks.length} ${marks.length === 1 ? 'marca' : 'marcas'}` : 'Nenhuma marca');
+  $('modalVanMarksLayer').innerHTML = marks.map(([x, y, k]) => `
+    <g>
+      <circle cx="${Number(x)}" cy="${Number(y)}" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>
+      <text x="${Number(x)}" y="${Number(y)}" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">${esc(k)}</text>
+    </g>`).join('');
+
+  const tires = pneusOf(it);
+  const tireColor = s => s === 'Gasto' ? 'var(--bad)' : s === 'Meia vida' ? 'var(--warn)' : 'var(--ok)';
+  $('drTires').innerHTML = tires.length ? tires.map(p => `
+    <tr>
+      <td>${esc(p.pos)}</td>
+      <td style="color:${tireColor(p.estado)};font-weight:600">${esc(p.estado || '—')}</td>
+      <td>${p.psi ? esc(p.psi) : '—'}</td>
+      <td class="muted">${esc(p.obs || '—')}</td>
+    </tr>`).join('') : '<tr><td colspan="4" class="muted">Sem registro de pneus nesta vistoria.</td></tr>';
+
+  const nok = nokOf(it);
+  $('drNokCount').textContent = itensOf(it).length ? `${nok.length} de ${itensOf(it).length} itens` : '';
+  $('drNok').innerHTML = !itensOf(it).length
+    ? '<p class="muted">Esta vistoria não trouxe itens de verificação.</p>'
+    : nok.length
+      ? `<ul class="nok">${nok.map(i => `<li>${icon('alert')}<span><span class="grp">${esc(i.grupo || '')}</span>${esc(i.nome || '')}</span></li>`).join('')}</ul>`
+      : `<p class="all-ok">${icon('check')}Nenhum item reprovado.</p>`;
+
+  $('drNotesSec').hidden = !it.obs;
+  $('drNotes').textContent = it.obs || '';
 }
 
-// ==============================================================================
-// MODAL DE DETALHES COMPLETOS
-// ==============================================================================
-const detailModal = document.getElementById('detailModal');
-const btnCloseModal = document.getElementById('btnCloseModal');
-const btnModalCloseAction = document.getElementById('btnModalCloseAction');
-const btnModalDownloadPdf = document.getElementById('btnModalDownloadPdf');
+async function openDrawer(id, trigger) {
+  const it = state.all.find(c => String(c.id) === String(id));
+  if (!it) return;
+  state.sel = it;
+  lastFocus = trigger || document.activeElement;
+  fillDrawer(it);
+  renderSigs(state.sigCache[it.id] ?? null);
+  $('drBody').scrollTop = 0;
 
-[btnCloseModal, btnModalCloseAction].forEach(b => {
-  b.addEventListener('click', () => detailModal.classList.remove('open'));
-});
+  $('scrim').classList.add('open');
+  $('drawer').classList.add('open');
+  $('drawer').setAttribute('aria-hidden', 'false');
+  document.body.classList.add('lock');
+  $('app').inert = true;
+  $('drClose').focus();
 
-window.abrirModalDetalhes = function(id) {
-  const item = currentChecklists.find(c => String(c.id) === String(id));
-  if (!item) return;
-
-  currentSelectedChecklist = item;
-
-  document.getElementById('modalNumero').textContent = item.numero || '000000';
-  document.getElementById('modalPlaca').textContent = (item.placa || '').toUpperCase();
-  
-  const badge = document.getElementById('modalStatusBadge');
-  badge.textContent = item.liberacao || 'Liberado';
-  badge.className = 'status-tag ' + (item.liberacao === 'Ressalva' ? 'ressalva' : item.liberacao === 'Não liberado' ? 'bloqueado' : 'liberado');
-
-  // Identificação
-  document.getElementById('dVeiculo').textContent = item.veiculo + (item.veiculo_outro ? ` (${item.veiculo_outro})` : '');
-  document.getElementById('dPlaca').textContent = (item.placa || '').toUpperCase();
-  document.getElementById('dMotorista').textContent = item.motorista || '-';
-  document.getElementById('dKm').textContent = item.km ? `${Number(item.km).toLocaleString('pt-BR')} km` : '-';
-  document.getElementById('dDataHora').textContent = `${formatarData(item.data)} às ${item.hora || '--:--'}`;
-  document.getElementById('dTipo').textContent = item.tipo || 'Saída';
-  document.getElementById('dComb').textContent = item.combustivel || '1/2';
-  document.getElementById('dCondicao').textContent = item.condicao_motorista || 'Apto';
-
-  // Avarias na Van
-  const avarias = Array.isArray(item.avarias) ? item.avarias : [];
-  document.getElementById('dAvariasCount').textContent = `${avarias.length} marca(s)`;
-  const marksLayer = document.getElementById('modalVanMarksLayer');
-  marksLayer.innerHTML = avarias.map(([x, y, k]) => `
-    <g class="mk">
-      <circle cx="${x}" cy="${y}" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>
-      <text x="${x}" y="${y}" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">${k}</text>
-    </g>
-  `).join('');
-
-  // Pneus
-  const tiresBody = document.getElementById('modalTiresBody');
-  const pneus = Array.isArray(item.pneus) ? item.pneus : [];
-  if (pneus.length > 0) {
-    tiresBody.innerHTML = pneus.map(p => `
-      <tr>
-        <td style="font-weight:700">${p.pos}</td>
-        <td><span style="font-weight:700;color:${p.estado === 'Gasto' ? '#f87171' : p.estado === 'Meia vida' ? '#fbbf24' : '#34d399'}">${p.estado || 'Bom'}</span></td>
-        <td>${p.psi || '—'} PSI</td>
-        <td style="color:var(--text-dim)">${p.obs || '—'}</td>
-      </tr>
-    `).join('');
-  } else {
-    tiresBody.innerHTML = `<tr><td colspan="4" style="color:var(--text-dim)">Nenhum pneu registrado</td></tr>`;
-  }
-
-  // Assinaturas
-  configurarPreviewAssinatura('modalSigMotorista', 'modalSigMotoristaStatus', item.ass_motorista);
-  configurarPreviewAssinatura('modalSigVistoriador', 'modalSigVistoriadorStatus', item.ass_vistoriador);
-  configurarPreviewAssinatura('modalSigResponsavel', 'modalSigResponsavelStatus', item.ass_responsavel);
-
-  detailModal.classList.add('open');
-};
-
-function configurarPreviewAssinatura(imgId, statusId, base64) {
-  const img = document.getElementById(imgId);
-  const st = document.getElementById(statusId);
-  if (base64) {
-    img.src = base64;
-    img.style.display = 'block';
-    st.textContent = 'Assinado Digitalmente';
-    st.style.color = '#34d399';
-  } else {
-    img.src = '';
-    img.style.display = 'none';
-    st.textContent = 'Pendente';
-    st.style.color = 'var(--text-dim)';
+  if (!state.sigCache[it.id]) {
+    const rows = await fetchSigs(it.id);
+    const row = rows && rows[0] ? rows[0] : {};
+    state.sigCache[it.id] = row;
+    if (state.sel && state.sel.id === it.id) renderSigs(row);
   }
 }
 
-btnModalDownloadPdf.addEventListener('click', () => {
-  if (currentSelectedChecklist) {
-    baixarPdfVistoria(currentSelectedChecklist.id);
+function closeDrawer() {
+  if (!$('drawer').classList.contains('open')) return;
+  $('scrim').classList.remove('open');
+  $('drawer').classList.remove('open');
+  $('drawer').setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('lock');
+  $('app').inert = false;
+  state.sel = null;
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+}
+
+$('drClose').addEventListener('click', closeDrawer);
+$('drCloseFoot').addEventListener('click', closeDrawer);
+$('scrim').addEventListener('click', closeDrawer);
+$('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfVistoria(state.sel.id, e.currentTarget); });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDrawer(); return; }
+  if (e.key === 'Tab' && $('drawer').classList.contains('open')) {
+    const f = [...$('drawer').querySelectorAll('button, [href], input, select, [tabindex]:not([tabindex="-1"])')].filter(x => !x.disabled && x.offsetParent !== null);
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    return;
+  }
+  if (e.key === '/' && authed && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+    e.preventDefault();
+    $('filtroBusca').focus();
   }
 });
 
-// ==============================================================================
-// GERAÇÃO E DOWNLOAD DE PDF OFICIAL EM 1 CLIQUE
-// ==============================================================================
-window.baixarPdfVistoria = async function(id) {
-  const item = currentChecklists.find(c => String(c.id) === String(id));
+async function baixarPdfVistoria(id, btn) {
+  const item = state.all.find(c => String(c.id) === String(id));
   if (!item) return;
 
-  const btn = event?.currentTarget;
   if (btn) btn.disabled = true;
 
   try {
@@ -1582,52 +1383,45 @@ window.baixarPdfVistoria = async function(id) {
 
     // Salvar arquivo
     doc.save(`Vistoria_${item.numero || '000000'}_${(item.placa || '').toUpperCase()}.pdf`);
+      toast('PDF baixado');
   } catch (err) {
-    alert('Erro ao gerar PDF: ' + err.message);
+    toast('Não foi possível gerar o PDF: ' + err.message, 'error');
   } finally {
     if (btn) btn.disabled = false;
   }
+}
+
+// ==============================================================================
+// EXPORTAÇÃO CSV (abre direto no Excel)
+// ==============================================================================
+const csvCell = v => {
+  let s = String(v ?? '');
+  if (/^[=+\-@]/.test(s)) s = "'" + s;
+  return `"${s.replace(/"/g, '""')}"`;
 };
 
-// ==============================================================================
-// EXPORTAÇÃO CSV / EXCEL
-// ==============================================================================
-document.getElementById('btnExport').addEventListener('click', () => {
-  if (filteredChecklists.length === 0) {
-    alert('Nenhum dado para exportar.');
-    return;
-  }
-
-  const headers = ['Nº Vistoria', 'Data', 'Hora', 'Veículo', 'Placa', 'Km', 'Motorista', 'Tipo', 'Combustível', 'Liberação', 'Avarias', 'Pneu Dano', 'Obs'];
-  const rows = filteredChecklists.map(c => [
-    c.numero || '',
-    formatarData(c.data),
-    c.hora || '',
-    c.veiculo || '',
-    (c.placa || '').toUpperCase(),
-    c.km || '',
-    `"${(c.motorista || '').replace(/"/g, '""')}"`,
-    c.tipo || '',
-    c.combustivel || '',
-    c.liberacao || '',
-    c.avarias?.length || 0,
-    c.pneu_dano || 'Não',
-    `"${(c.obs || '').replace(/"/g, '""')}"`
-  ]);
-
-  const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\r\n');
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
+$('btnExport').addEventListener('click', () => {
+  if (!state.filtered.length) { toast('Não há vistorias para exportar com esses filtros.', 'error'); return; }
+  const headers = ['Nº vistoria', 'Data', 'Hora', 'Veículo', 'Placa', 'Km', 'Motorista', 'Tipo', 'Combustível', 'Situação', 'Avarias', 'Itens reprovados', 'Dano em pneu', 'Observações'];
+  const rows = state.filtered.map(c => [
+    c.numero, formatarData(c.data), c.hora, c.veiculo, (c.placa || '').toUpperCase(), c.km, c.motorista,
+    c.tipo, c.combustivel, (STATUS[c.liberacao] || {}).label || c.liberacao, avariasOf(c).length, nokOf(c).length, c.pneu_dano || 'Não', c.obs
+  ].map(csvCell).join(';'));
+  const csv = '\uFEFF' + [headers.map(csvCell).join(';'), ...rows].join('\r\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Gomex_Vistorias_${new Date().toISOString().split('T')[0]}.csv`;
+  a.download = `Gomex_Vistorias_${isoLocal(new Date())}.csv`;
   a.click();
   URL.revokeObjectURL(url);
+  toast(`${state.filtered.length} ${state.filtered.length === 1 ? 'vistoria exportada' : 'vistorias exportadas'}`);
 });
 
-// Inicialização
-checkExistingAuth();
-carregarVistoriasSupabase();
+// ==============================================================================
+// INICIALIZAÇÃO
+// ==============================================================================
+if (!checkExistingAuth()) $('loginUser').focus();
+})();
 </script>
 </body>
 </html>
