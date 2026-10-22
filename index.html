@@ -1033,40 +1033,56 @@ function unlockDashboard(user) {
 }
 
 // ==============================================================================
-// CARREGAMENTO DE DADOS DO SUPABASE
+// CARREGAMENTO DE DADOS DO SUPABASE (COM FALLBACK AUTOMÁTICO E SINC. CONTÍNUA)
 // ==============================================================================
 async function carregarVistoriasSupabase() {
   const statusSync = document.getElementById('statusSyncText');
   const refreshIcon = document.getElementById('refreshIcon');
-  refreshIcon.classList.add('spin');
-  statusSync.textContent = 'Carregando...';
+  if (refreshIcon) refreshIcon.classList.add('spin');
+  if (statusSync) statusSync.textContent = 'Sincronizando...';
 
+  let data = null;
+
+  // 1. Tenta carregar via proxy local/Cloudflare (Mais rápido e sem bloqueios de CORS/Firewall)
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500`, {
-      headers: {
-        'apikey': getApiKey(),
-        'Authorization': `Bearer ${getApiKey()}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      currentChecklists = Array.isArray(data) ? data : [];
-      statusSync.textContent = 'Atualizado em tempo real';
-      aplicarFiltros();
-      atualizarKpis();
-    } else {
-      console.warn('Erro ao consultar Supabase:', res.status);
-      statusSync.textContent = 'Erro de sincronização';
+    const resLocal = await fetch('/api/checklists');
+    if (resLocal.ok) {
+      data = await resLocal.json();
     }
-  } catch (err) {
-    console.error('Falha de conexão com o Supabase:', err);
-    statusSync.textContent = 'Conexão offline';
-  } finally {
-    refreshIcon.classList.remove('spin');
+  } catch (e) {}
+
+  // 2. Se falhar ou estiver direto via file://, chama o Supabase diretamente
+  if (!data || !Array.isArray(data)) {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500`, {
+        headers: {
+          'apikey': getApiKey(),
+          'Authorization': `Bearer ${getApiKey()}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (err) {
+      console.warn('Falha na chamada direta ao Supabase:', err);
+    }
   }
+
+  if (Array.isArray(data)) {
+    currentChecklists = data;
+    if (statusSync) statusSync.textContent = `Ao Vivo · ${currentChecklists.length} vistoria(s)`;
+    aplicarFiltros();
+    atualizarKpis();
+  } else {
+    if (statusSync) statusSync.textContent = 'Erro de sincronização';
+  }
+
+  if (refreshIcon) refreshIcon.classList.remove('spin');
 }
+
+// Sincronização automática contínua a cada 6 segundos
+setInterval(carregarVistoriasSupabase, 6000);
 
 // ==============================================================================
 // CÁLCULO DE KPIS
@@ -1611,6 +1627,7 @@ document.getElementById('btnExport').addEventListener('click', () => {
 
 // Inicialização
 checkExistingAuth();
+carregarVistoriasSupabase();
 </script>
 </body>
 </html>
