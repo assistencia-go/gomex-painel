@@ -1,0 +1,1616 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0f19">
+<title>Painel Executivo de Frota · Gomex Distribuidora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- jsPDF para emissão de 2ª via oficial de PDFs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg-base: #0b0f19;
+    --bg-card: #111827;
+    --bg-card-hover: #172033;
+    --bg-elevated: #1e293b;
+    --border: #1f293d;
+    --border-subtle: #1e293b;
+    --border-focus: #3b82f6;
+    
+    --brand: #2563eb;
+    --brand-light: #38bdf8;
+    --brand-dark: #1e2a78;
+    
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    
+    --ok: #10b981;
+    --ok-bg: rgba(16, 185, 129, 0.12);
+    --ok-border: rgba(16, 185, 129, 0.3);
+    
+    --warn: #f59e0b;
+    --warn-bg: rgba(245, 158, 11, 0.12);
+    --warn-border: rgba(245, 158, 11, 0.3);
+    
+    --bad: #ef4444;
+    --bad-bg: rgba(239, 68, 68, 0.12);
+    --bad-border: rgba(239, 68, 68, 0.3);
+    
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============================================================================== */
+  /* TELA DE LOGIN PRIVADA & SEGURA */
+  /* ============================================================================== */
+  #loginOverlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: radial-gradient(circle at 50% 20%, #172554 0%, #0b0f19 80%);
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+  #loginOverlay.hidden {
+    opacity: 0; visibility: hidden; pointer-events: none;
+  }
+
+  .login-card {
+    background: rgba(17, 24, 39, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 410px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(37, 99, 235, 0.15);
+    text-align: center;
+  }
+
+  .login-icon-box {
+    width: 64px; height: 64px; margin: 0 auto 16px;
+    background: linear-gradient(135deg, #1e2a78 0%, #2563eb 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    display: grid; place-items: center;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+  }
+
+  .login-title {
+    font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.3px; margin-bottom: 4px;
+  }
+  .login-sub {
+    font-size: 13px; color: var(--text-muted); margin-bottom: 24px;
+  }
+
+  .login-form {
+    display: flex; flex-direction: column; gap: 14px; text-align: left;
+  }
+
+  .login-fld {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .login-fld label {
+    font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .input-wrap {
+    position: relative; display: flex; align-items: center;
+  }
+  .input-icon {
+    position: absolute; left: 14px; color: var(--text-dim); pointer-events: none; display: flex;
+  }
+  .input-wrap input {
+    width: 100%; height: 46px; padding: 0 14px 0 42px;
+    background: #0b0f19; border: 1.5px solid var(--border);
+    border-radius: 10px; color: #fff; font-size: 14px; font-family: inherit;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  }
+
+  .btn-toggle-pwd {
+    position: absolute; right: 12px; background: transparent; border: none;
+    color: var(--text-dim); cursor: pointer; display: flex; padding: 4px;
+  }
+  .btn-toggle-pwd:hover { color: var(--text-muted); }
+
+  .login-remember {
+    display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-muted); cursor: pointer;
+    user-select: none; margin-top: 2px;
+  }
+  .login-remember input {
+    accent-color: var(--brand); width: 16px; height: 16px; cursor: pointer;
+  }
+
+  .btn-login {
+    height: 48px; margin-top: 8px; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #fff; font-size: 15px; font-weight: 700; font-family: inherit;
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35); transition: all 0.2s;
+  }
+  .btn-login:hover {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    transform: translateY(-1px);
+  }
+  .btn-login:active { transform: translateY(0); }
+
+  .login-error {
+    background: var(--bad-bg); border: 1px solid var(--bad-border);
+    color: #fca5a5; font-size: 12.5px; padding: 10px 12px; border-radius: 8px;
+    display: none; align-items: center; gap: 8px; margin-top: 6px;
+  }
+  .login-error.show { display: flex; animation: shake 0.3s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .login-badge-hint {
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text-dim);
+  }
+  .login-badge-hint code {
+    background: #1e293b; color: #38bdf8; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 11px;
+  }
+
+  /* ============================================================================== */
+  /* LAYOUT PRINCIPAL DO PAINEL */
+  /* ============================================================================== */
+  .app-layout {
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+
+  /* Header Topo */
+  header.admin-header {
+    background: #0d1322; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px);
+  }
+  .header-container {
+    max-width: 1400px; margin: 0 auto; padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+
+  .brand-group {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, #1e2a78, #2563eb);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: grid; place-items: center;
+  }
+  .brand-text h1 {
+    font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.2px; line-height: 1.2;
+  }
+  .brand-text span {
+    font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .header-actions {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .live-status {
+    background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25);
+    color: #6ee7b7; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 20px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+  }
+
+  .user-badge {
+    background: #172033; border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
+  }
+  .user-avatar {
+    width: 24px; height: 24px; border-radius: 6px; background: #2563eb;
+    color: #fff; font-weight: 800; font-size: 11px; display: grid; place-items: center;
+  }
+  .user-name {
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+
+  .btn-logout {
+    background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+    font-size: 12.5px; font-weight: 600; padding: 7px 12px; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+    font-family: inherit;
+  }
+  .btn-logout:hover {
+    background: #1e293b; color: #f87171; border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  /* Conteúdo Principal */
+  main.admin-content {
+    max-width: 1400px; margin: 0 auto; padding: 24px; width: 100%; flex: 1;
+  }
+
+  /* ============================================================================== */
+  /* KPI CARDS (MÉTRICAS DO PAINEL) */
+  /* ============================================================================== */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: var(--shadow); position: relative; overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px); border-color: rgba(59, 130, 246, 0.4);
+  }
+  .kpi-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .kpi-card.blue::before { background: #3b82f6; }
+  .kpi-card.green::before { background: #10b981; }
+  .kpi-card.yellow::before { background: #f59e0b; }
+  .kpi-card.red::before { background: #ef4444; }
+
+  .kpi-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .kpi-title {
+    font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .kpi-icon {
+    width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center;
+  }
+  .kpi-card.blue .kpi-icon { background: rgba(59, 130, 246, 0.15); color: #38bdf8; }
+  .kpi-card.green .kpi-icon { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .kpi-card.yellow .kpi-icon { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+  .kpi-card.red .kpi-icon { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+  .kpi-val {
+    font-size: 30px; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-sub {
+    font-size: 12px; color: var(--text-dim); display: flex; align-items: center; gap: 6px;
+  }
+  .kpi-sub b { color: var(--text-muted); font-weight: 600; }
+
+  /* ============================================================================== */
+  /* BARRA DE FILTROS & AÇÕES */
+  /* ============================================================================== */
+  .toolbar-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .toolbar-row {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  }
+
+  .search-wrap {
+    flex: 1 1 300px; max-width: 420px; position: relative; display: flex; align-items: center;
+  }
+  .search-wrap svg {
+    position: absolute; left: 14px; color: var(--text-dim); pointer-events: none;
+  }
+  .search-wrap input {
+    width: 100%; height: 40px; padding: 0 14px 0 40px;
+    background: #0b0f19; border: 1.5px solid var(--border);
+    border-radius: 8px; color: #fff; font-size: 13.5px; font-family: inherit;
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--brand); }
+
+  .filter-controls {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+
+  select.filter-select {
+    height: 40px; padding: 0 12px; background: #0b0f19; border: 1.5px solid var(--border);
+    border-radius: 8px; color: var(--text-main); font-size: 13px; font-family: inherit;
+    outline: none; cursor: pointer; transition: border-color 0.2s;
+  }
+  select.filter-select:focus { border-color: var(--brand); }
+
+  .btn-filter-action {
+    height: 40px; padding: 0 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    font-family: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    transition: all 0.2s; border: none;
+  }
+  .btn-refresh {
+    background: #172033; color: var(--text-main); border: 1px solid var(--border);
+  }
+  .btn-refresh:hover { background: #1e293b; color: #38bdf8; }
+  .btn-refresh svg.spin { animation: spin 0.8s linear infinite; }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  .btn-export {
+    background: #064e3b; color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4);
+  }
+  .btn-export:hover { background: #065f46; color: #a7f3d0; }
+
+  .btn-clear {
+    background: transparent; color: var(--text-dim); border: 1px solid transparent;
+  }
+  .btn-clear:hover { color: var(--text-muted); border-color: var(--border); }
+
+  /* ============================================================================== */
+  /* TABELA DE VISTORIAS */
+  /* ============================================================================== */
+  .table-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+
+  .table-responsive {
+    overflow-x: auto; width: 100%;
+  }
+
+  table.admin-table {
+    width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;
+  }
+  table.admin-table th {
+    background: #0d1322; color: var(--text-muted); font-size: 11.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; padding: 14px 16px;
+    border-bottom: 1.5px solid var(--border); white-space: nowrap; user-select: none;
+  }
+  table.admin-table th.sortable { cursor: pointer; }
+  table.admin-table th.sortable:hover { color: #fff; }
+
+  table.admin-table td {
+    padding: 14px 16px; border-bottom: 1px solid var(--border-subtle);
+    vertical-align: middle; white-space: nowrap;
+  }
+  table.admin-table tr:hover td {
+    background: var(--bg-card-hover);
+  }
+
+  /* Badges & Tags */
+  .badge-num {
+    background: #1e293b; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);
+    font-family: monospace; font-size: 12.5px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
+  }
+
+  .plate-tag {
+    background: #ffffff; color: #000; font-weight: 800; font-size: 12px;
+    padding: 2px 7px; border-radius: 4px; border: 1.5px solid #000;
+    display: inline-flex; align-items: center; letter-spacing: 0.5px;
+  }
+
+  .status-tag {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  }
+  .status-tag.liberado {
+    background: var(--ok-bg); color: #34d399; border: 1px solid var(--ok-border);
+  }
+  .status-tag.ressalva {
+    background: var(--warn-bg); color: #fbbf24; border: 1px solid var(--warn-border);
+  }
+  .status-tag.bloqueado {
+    background: var(--bad-bg); color: #f87171; border: 1px solid var(--bad-border);
+  }
+
+  .chip-avarias {
+    font-size: 11.5px; font-weight: 700; padding: 3px 8px; border-radius: 12px; display: inline-flex;
+  }
+  .chip-avarias.clean { background: rgba(16, 185, 129, 0.1); color: #34d399; }
+  .chip-avarias.warn { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+  /* Botões de Ação na Linha */
+  .row-actions {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-row-action {
+    background: #1e293b; border: 1px solid var(--border); color: var(--text-main);
+    font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 6px;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-row-action:hover {
+    background: #2563eb; color: #fff; border-color: #2563eb;
+  }
+  .btn-row-pdf:hover {
+    background: #059669; color: #fff; border-color: #059669;
+  }
+
+  /* Paginação da Tabela */
+  .table-footer {
+    display: flex; align-items: center; justify-content: space-between; padding: 12px 20px;
+    background: #0d1322; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--text-muted);
+  }
+  .pagination-btns {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-page {
+    background: #172033; border: 1px solid var(--border); color: var(--text-main);
+    padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700;
+  }
+  .btn-page:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn-page:not(:disabled):hover { background: #1e293b; color: #38bdf8; }
+
+  /* Estado Vazio */
+  .empty-state {
+    text-align: center; padding: 60px 20px; color: var(--text-muted);
+  }
+  .empty-state svg { color: var(--text-dim); margin-bottom: 12px; }
+  .empty-state h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .empty-state p { font-size: 13px; max-width: 320px; margin: 0 auto; color: var(--text-dim); }
+
+  /* ============================================================================== */
+  /* MODAL DE DETALHES DA VISTORIA (INSPECTOR) */
+  /* ============================================================================== */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .detail-modal {
+    background: #111827; border: 1px solid var(--border); border-radius: 18px;
+    width: min(850px, 100%); max-height: 90vh; display: flex; flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7); overflow: hidden;
+  }
+
+  .detail-header {
+    background: #0d1322; padding: 16px 22px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .detail-header-left { display: flex; align-items: center; gap: 12px; }
+  .btn-close-modal {
+    background: transparent; border: none; color: var(--text-muted); cursor: pointer;
+    font-size: 20px; display: grid; place-items: center; padding: 4px; border-radius: 6px;
+  }
+  .btn-close-modal:hover { color: #fff; background: #1f293d; }
+
+  .detail-body {
+    padding: 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+  }
+
+  .detail-section {
+    background: #0b0f19; border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+  }
+  .detail-section-title {
+    font-size: 12.5px; font-weight: 800; color: #38bdf8; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+  }
+
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;
+  }
+  .info-item { display: flex; flex-direction: column; gap: 2px; }
+  .info-lbl { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+  .info-val { font-size: 13.5px; font-weight: 700; color: #fff; }
+
+  /* Visualização da Van no Modal */
+  .modal-van-box {
+    background: #fff; border-radius: 10px; padding: 12px; margin-top: 6px;
+  }
+  .modal-van-box svg { width: 100%; height: auto; display: block; }
+
+  /* Tabela de Pneus no Modal */
+  .tires-table {
+    width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px;
+  }
+  .tires-table th, .tires-table td {
+    padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left;
+  }
+  .tires-table th { background: #172033; color: var(--text-muted); font-size: 11px; }
+
+  /* Assinaturas no Modal */
+  .signatures-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 6px;
+  }
+  .sig-card-preview {
+    background: #172033; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center;
+  }
+  .sig-card-preview img {
+    max-height: 80px; width: auto; max-width: 100%; background: #fff; border-radius: 6px; padding: 4px; margin: 8px 0;
+  }
+  .sig-card-preview .sig-role { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+  .sig-card-preview .sig-status { font-size: 12px; font-weight: 700; }
+
+  .detail-footer {
+    background: #0d1322; padding: 14px 22px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  }
+  .btn-modal-action {
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 700; font-family: inherit;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 6px; border: none;
+  }
+  .btn-modal-download { background: #10b981; color: #fff; }
+  .btn-modal-download:hover { background: #059669; }
+  .btn-modal-close { background: #1f293d; color: var(--text-main); }
+  .btn-modal-close:hover { background: #334155; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================================== -->
+<!-- 1. TELA DE LOGIN PRIVADA (ACESSO EXECUTIVO) -->
+<!-- ============================================================================== -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-icon-box">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+        <path d="M15 18H9"/>
+        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+        <circle cx="17" cy="18.5" r="2.5" fill="#38bdf8"/>
+        <circle cx="7" cy="18.5" r="2.5" fill="#38bdf8"/>
+      </svg>
+    </div>
+    <h2 class="login-title">Gomex Frota</h2>
+    <p class="login-sub">Painel Executivo de Vistorias & Gestão de Frota</p>
+
+    <form class="login-form" id="frmLogin" autocomplete="off" onsubmit="return false">
+      <div class="login-fld">
+        <label>Usuário</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <input type="text" id="loginUser" placeholder="Digite seu usuário" value="gomex" required autofocus>
+        </div>
+      </div>
+
+      <div class="login-fld">
+        <label>Senha</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+          <input type="password" id="loginPass" placeholder="Digite sua senha" required>
+          <button type="button" class="btn-toggle-pwd" id="btnTogglePwd" title="Mostrar/Ocultar Senha">
+            <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <label class="login-remember">
+        <input type="checkbox" id="chkRemember" checked>
+        <span>Lembrar acesso neste computador</span>
+      </label>
+
+      <div class="login-error" id="loginError">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="loginErrorMsg">Usuário ou senha incorretos.</span>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">
+        <span>Acessar Painel Executivo</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </form>
+
+    <div class="login-badge-hint">
+      Acesso restrito · Gomex Distribuidora S/A
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 2. SHELL DO PAINEL EXECUTIVO -->
+<!-- ============================================================================== -->
+<div class="app-layout">
+  <header class="admin-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/>
+            <path d="M15 18H9"/>
+            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/>
+            <circle cx="17" cy="18.5" r="2.5" fill="#38bdf8"/>
+            <circle cx="7" cy="18.5" r="2.5" fill="#38bdf8"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Gomex Frota</h1>
+          <span>Painel de Gestão & Vistorias</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="live-status">
+          <span class="live-dot"></span>
+          <span id="statusSyncText">Ao Vivo com Supabase</span>
+        </div>
+
+        <div class="user-badge">
+          <div class="user-avatar">G</div>
+          <span class="user-name" id="userNameLabel">gomex</span>
+        </div>
+
+        <button type="button" class="btn-logout" id="btnLogout" title="Encerrar Sessão">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <!-- Grade de KPIs -->
+    <section class="kpi-grid">
+      <div class="kpi-card blue">
+        <div class="kpi-header">
+          <span class="kpi-title">Total de Vistorias</span>
+          <div class="kpi-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+        </div>
+        <div class="kpi-val" id="kpiTotal">0</div>
+        <div class="kpi-sub">
+          <span id="kpiHoje">0 hoje</span> • <span id="kpiMes">0 este mês</span>
+        </div>
+      </div>
+
+      <div class="kpi-card green">
+        <div class="kpi-header">
+          <span class="kpi-title">Veículos Liberados</span>
+          <div class="kpi-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+        </div>
+        <div class="kpi-val" id="kpiLiberados">0</div>
+        <div class="kpi-sub">
+          <b id="kpiTaxaConformidade">100%</b> de conformidade
+        </div>
+      </div>
+
+      <div class="kpi-card yellow">
+        <div class="kpi-header">
+          <span class="kpi-title">Com Ressalva</span>
+          <div class="kpi-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        </div>
+        <div class="kpi-val" id="kpiRessalva">0</div>
+        <div class="kpi-sub">
+          Requer atenção da equipe de manutenção
+        </div>
+      </div>
+
+      <div class="kpi-card red">
+        <div class="kpi-header">
+          <span class="kpi-title">Bloqueados / Avarias</span>
+          <div class="kpi-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+        </div>
+        <div class="kpi-val" id="kpiBloqueados">0</div>
+        <div class="kpi-sub">
+          <b id="kpiComAvarias">0</b> veículos com avarias marcadas
+        </div>
+      </div>
+    </section>
+
+    <!-- Toolbar com Filtros e Ações Rápidas -->
+    <div class="toolbar-card">
+      <div class="toolbar-row">
+        <div class="search-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="filtroBusca" placeholder="Buscar por placa, motorista ou nº vistoria...">
+        </div>
+
+        <div class="filter-controls">
+          <select class="filter-select" id="filtroLiberacao">
+            <option value="">Todas as Situações</option>
+            <option value="Liberado">Liberados</option>
+            <option value="Ressalva">Com Ressalva</option>
+            <option value="Não liberado">Bloqueados</option>
+          </select>
+
+          <select class="filter-select" id="filtroVeiculo">
+            <option value="">Todos os Veículos</option>
+            <option value="Kombi">Kombi</option>
+            <option value="Transit">Transit</option>
+            <option value="Master">Master</option>
+            <option value="Outro">Outros</option>
+          </select>
+
+          <select class="filter-select" id="filtroPeriodo">
+            <option value="">Qualquer Período</option>
+            <option value="hoje">Hoje</option>
+            <option value="7dias">Últimos 7 dias</option>
+            <option value="30dias">Últimos 30 dias</option>
+          </select>
+
+          <button type="button" class="btn-filter-action btn-refresh" id="btnRefresh" title="Atualizar dados do Supabase">
+            <svg id="refreshIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>Atualizar</span>
+          </button>
+
+          <button type="button" class="btn-filter-action btn-export" id="btnExport" title="Exportar dados para Excel">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Exportar Excel</span>
+          </button>
+
+          <button type="button" class="btn-filter-action btn-clear" id="btnClearFilters">
+            Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela Principal de Vistorias -->
+    <div class="table-card">
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-col="numero">Nº Vistoria</th>
+              <th class="sortable" data-col="data">Data & Hora</th>
+              <th class="sortable" data-col="veiculo">Veículo & Placa</th>
+              <th class="sortable" data-col="motorista">Motorista</th>
+              <th>Tipo</th>
+              <th>Combustível</th>
+              <th>Avarias</th>
+              <th>Pneus</th>
+              <th class="sortable" data-col="liberacao">Situação</th>
+              <th style="text-align:right">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <!-- Linhas geradas via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div id="tableInfo">Exibindo 0 vistorias</div>
+        <div class="pagination-btns">
+          <button type="button" class="btn-page" id="btnPrevPage" disabled>Anterior</button>
+          <span id="pageIndicator" style="font-weight:700">Pág. 1 de 1</span>
+          <button type="button" class="btn-page" id="btnNextPage" disabled>Próxima</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ============================================================================== -->
+<!-- 3. MODAL DE DETALHES COMPLETOS DA VISTORIA -->
+<!-- ============================================================================== -->
+<div class="modal-overlay" id="detailModal">
+  <div class="detail-modal">
+    <div class="detail-header">
+      <div class="detail-header-left">
+        <span class="badge-num" id="modalNumero">000000</span>
+        <span class="plate-tag" id="modalPlaca">PLACA</span>
+        <span class="status-tag" id="modalStatusBadge">Liberado</span>
+      </div>
+      <button type="button" class="btn-close-modal" id="btnCloseModal">✕</button>
+    </div>
+
+    <div class="detail-body" id="modalContent">
+      <!-- Seção 1: Identificação Geral -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Identificação da Operação
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><span class="info-lbl">Veículo</span><span class="info-val" id="dVeiculo">-</span></div>
+          <div class="info-item"><span class="info-lbl">Placa</span><span class="info-val" id="dPlaca">-</span></div>
+          <div class="info-item"><span class="info-lbl">Motorista</span><span class="info-val" id="dMotorista">-</span></div>
+          <div class="info-item"><span class="info-lbl">Km Atual</span><span class="info-val" id="dKm">-</span></div>
+          <div class="info-item"><span class="info-lbl">Data / Hora</span><span class="info-val" id="dDataHora">-</span></div>
+          <div class="info-item"><span class="info-lbl">Tipo de Vistoria</span><span class="info-val" id="dTipo">-</span></div>
+          <div class="info-item"><span class="info-lbl">Nível Combustível</span><span class="info-val" id="dComb">-</span></div>
+          <div class="info-item"><span class="info-lbl">Condição Motorista</span><span class="info-val" id="dCondicao">-</span></div>
+        </div>
+      </div>
+
+      <!-- Seção 2: Mapa de Avarias -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          Mapa da Carroceria & Avarias (<span id="dAvariasCount">0 marcas</span>)
+        </div>
+        <div class="modal-van-box">
+          <svg id="modalVanSvg" viewBox="0 0 300 182">
+            <defs>
+              <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z" fill="#fafafa"/>
+                <path d="M64,20 L46,42 L92,42 L92,20 Z" fill="#e8eef4"/>
+                <line x1="96" y1="16" x2="96" y2="82"/>
+                <line x1="134" y1="16" x2="134" y2="82"/>
+                <line x1="192" y1="14" x2="192" y2="82" stroke-width="1"/>
+                <rect x="84" y="48" width="8" height="2.5" rx="1"/>
+                <rect x="124" y="48" width="8" height="2.5" rx="1"/>
+                <circle cx="46" cy="83" r="14" fill="#444"/><circle cx="46" cy="83" r="6" fill="#bbb"/>
+                <circle cx="162" cy="83" r="14" fill="#444"/><circle cx="162" cy="83" r="6" fill="#bbb"/>
+              </g>
+              <g id="mvfront" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
+                <path d="M8,70 L8,30 Q10,6 30,4 L60,4 Q80,6 82,30 L82,70 Z" fill="#fafafa"/>
+                <path d="M16,30 L22,10 L68,10 L74,30 Z" fill="#e8eef4"/>
+                <rect x="10" y="38" width="17" height="8" rx="2" fill="#fff3c4"/><rect x="63" y="38" width="17" height="8" rx="2" fill="#fff3c4"/>
+                <rect x="30" y="37" width="30" height="13" rx="2"/>
+                <rect x="6" y="56" width="78" height="10" rx="3"/>
+              </g>
+              <g id="mvrear" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
+                <path d="M8,70 L8,14 Q8,4 18,4 L72,4 Q82,4 82,14 L82,70 Z" fill="#fafafa"/>
+                <line x1="45" y1="8" x2="45" y2="56"/>
+                <rect x="15" y="12" width="26" height="14" rx="2" fill="#e8eef4"/><rect x="49" y="12" width="26" height="14" rx="2" fill="#e8eef4"/>
+                <rect x="6" y="56" width="78" height="10" rx="3"/>
+              </g>
+              <g id="mvtop" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M4,12 Q4,5 14,5 L152,5 Q158,5 158,12 L158,58 Q158,65 152,65 L14,65 Q4,65 4,58 Z" fill="#fafafa"/>
+                <path d="M18,10 L36,14 L36,56 L18,60 Z" fill="#e8eef4"/>
+                <rect x="40" y="10" width="114" height="50" rx="4"/>
+              </g>
+            </defs>
+            <rect width="300" height="182" fill="#ffffff"/>
+            <use href="#mvside" transform="translate(4,6) scale(.68)"/>
+            <use href="#mvside" transform="translate(296,6) scale(-.68,.68)"/>
+            <use href="#mvfront" transform="translate(6,104) scale(.78)"/>
+            <use href="#mvtop" transform="translate(88,110) scale(.78)"/>
+            <use href="#mvrear" transform="translate(222,104) scale(.78)"/>
+            <g font-size="7.5" fill="#64748b" text-anchor="middle" font-weight="700">
+              <text x="74" y="86">ESQ. (MOTORISTA)</text>
+              <text x="226" y="86">DIR. (PASSAGEIRO)</text>
+              <text x="41" y="174">FRENTE</text>
+              <text x="151" y="174">TETO</text>
+              <text x="257" y="174">TRASEIRA</text>
+            </g>
+            <g id="modalVanMarksLayer"></g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Seção 3: Pneus & Calibragem -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>
+          Pneus e Calibragem
+        </div>
+        <table class="tires-table">
+          <thead>
+            <tr>
+              <th>Posição</th>
+              <th>Estado</th>
+              <th>PSI</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody id="modalTiresBody">
+            <!-- Pneus inseridos via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Seção 4: Assinaturas Digitais -->
+      <div class="detail-section">
+        <div class="detail-section-title">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          Assinaturas Digitais Coletadas
+        </div>
+        <div class="signatures-grid">
+          <div class="sig-card-preview">
+            <span class="sig-role">Motorista / Vendedor</span>
+            <img id="modalSigMotorista" src="" alt="Assinatura" style="display:none">
+            <div class="sig-status" id="modalSigMotoristaStatus">Pendente</div>
+          </div>
+          <div class="sig-card-preview">
+            <span class="sig-role">Vistoriador</span>
+            <img id="modalSigVistoriador" src="" alt="Assinatura" style="display:none">
+            <div class="sig-status" id="modalSigVistoriadorStatus">Pendente</div>
+          </div>
+          <div class="sig-card-preview">
+            <span class="sig-role">Responsável / Frota</span>
+            <img id="modalSigResponsavel" src="" alt="Assinatura" style="display:none">
+            <div class="sig-status" id="modalSigResponsavelStatus">Pendente</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-footer">
+      <button type="button" class="btn-modal-action btn-modal-close" id="btnModalCloseAction">Fechar</button>
+      <button type="button" class="btn-modal-action btn-modal-download" id="btnModalDownloadPdf">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Baixar PDF Oficial</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==============================================================================
+// CONFIGURAÇÃO SUPABASE & CREDENCIAIS
+// ==============================================================================
+const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
+// Chave publica de leitura segura para painel
+const KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
+function getApiKey() {
+  try {
+    return atob(KEY_B64);
+  } catch (e) {
+    return '';
+  }
+}
+
+const AUTH_STORAGE_KEY = 'gomex_painel_auth_v1';
+let currentChecklists = [];
+let filteredChecklists = [];
+let currentSelectedChecklist = null;
+let currentPage = 1;
+const pageSize = 15;
+let currentSortCol = 'data';
+let currentSortAsc = false;
+
+// ==============================================================================
+// CONTROLE DE AUTENTICAÇÃO (User: gomex | Senha: Gomex@2026)
+// ==============================================================================
+const loginOverlay = document.getElementById('loginOverlay');
+const frmLogin = document.getElementById('frmLogin');
+const loginUser = document.getElementById('loginUser');
+const loginPass = document.getElementById('loginPass');
+const btnTogglePwd = document.getElementById('btnTogglePwd');
+const loginError = document.getElementById('loginError');
+const loginErrorMsg = document.getElementById('loginErrorMsg');
+const chkRemember = document.getElementById('chkRemember');
+const btnLogout = document.getElementById('btnLogout');
+
+// Mostrar / Ocultar Senha
+btnTogglePwd.addEventListener('click', () => {
+  const isPwd = loginPass.type === 'password';
+  loginPass.type = isPwd ? 'text' : 'password';
+});
+
+// Checar sessão existente
+function checkExistingAuth() {
+  const saved = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
+  if (saved) {
+    try {
+      const auth = JSON.parse(saved);
+      if (auth.user === 'gomex' && auth.token) {
+        unlockDashboard(auth.user);
+        return;
+      }
+    } catch (e) {}
+  }
+}
+
+frmLogin.addEventListener('submit', async () => {
+  loginError.classList.remove('show');
+  const u = loginUser.value.trim();
+  const p = loginPass.value;
+
+  if (u === 'gomex' && p === 'Gomex@2026') {
+    const authData = { user: 'gomex', token: 'auth_' + Date.now() };
+    if (chkRemember.checked) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+    } else {
+      sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authData));
+    }
+    unlockDashboard('gomex');
+  } else {
+    loginErrorMsg.textContent = 'Usuário ou senha incorretos.';
+    loginError.classList.add('show');
+  }
+});
+
+btnLogout.addEventListener('click', () => {
+  if (confirm('Deseja realmente sair do painel executivo?')) {
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    location.reload();
+  }
+});
+
+function unlockDashboard(user) {
+  document.getElementById('userNameLabel').textContent = user;
+  loginOverlay.classList.add('hidden');
+  carregarVistoriasSupabase();
+}
+
+// ==============================================================================
+// CARREGAMENTO DE DADOS DO SUPABASE
+// ==============================================================================
+async function carregarVistoriasSupabase() {
+  const statusSync = document.getElementById('statusSyncText');
+  const refreshIcon = document.getElementById('refreshIcon');
+  refreshIcon.classList.add('spin');
+  statusSync.textContent = 'Carregando...';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500`, {
+      headers: {
+        'apikey': getApiKey(),
+        'Authorization': `Bearer ${getApiKey()}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      currentChecklists = Array.isArray(data) ? data : [];
+      statusSync.textContent = 'Atualizado em tempo real';
+      aplicarFiltros();
+      atualizarKpis();
+    } else {
+      console.warn('Erro ao consultar Supabase:', res.status);
+      statusSync.textContent = 'Erro de sincronização';
+    }
+  } catch (err) {
+    console.error('Falha de conexão com o Supabase:', err);
+    statusSync.textContent = 'Conexão offline';
+  } finally {
+    refreshIcon.classList.remove('spin');
+  }
+}
+
+// ==============================================================================
+// CÁLCULO DE KPIS
+// ==============================================================================
+function atualizarKpis() {
+  const total = currentChecklists.length;
+  document.getElementById('kpiTotal').textContent = total;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const hoje = currentChecklists.filter(c => c.data === todayStr).length;
+  document.getElementById('kpiHoje').textContent = `${hoje} hoje`;
+
+  const now = new Date();
+  const mesAtual = currentChecklists.filter(c => {
+    if (!c.data) return false;
+    const d = new Date(c.data);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  document.getElementById('kpiMes').textContent = `${mesAtual} este mês`;
+
+  const liberados = currentChecklists.filter(c => c.liberacao === 'Liberado').length;
+  document.getElementById('kpiLiberados').textContent = liberados;
+
+  const taxa = total > 0 ? Math.round((liberados / total) * 100) : 100;
+  document.getElementById('kpiTaxaConformidade').textContent = `${taxa}%`;
+
+  const ressalvas = currentChecklists.filter(c => c.liberacao === 'Ressalva').length;
+  document.getElementById('kpiRessalva').textContent = ressalvas;
+
+  const bloqueados = currentChecklists.filter(c => c.liberacao === 'Não liberado').length;
+  document.getElementById('kpiBloqueados').textContent = bloqueados;
+
+  const comAvarias = currentChecklists.filter(c => Array.isArray(c.avarias) && c.avarias.length > 0).length;
+  document.getElementById('kpiComAvarias').textContent = comAvarias;
+}
+
+// ==============================================================================
+// FILTROS & ORDENAÇÃO
+// ==============================================================================
+const filtroBusca = document.getElementById('filtroBusca');
+const filtroLiberacao = document.getElementById('filtroLiberacao');
+const filtroVeiculo = document.getElementById('filtroVeiculo');
+const filtroPeriodo = document.getElementById('filtroPeriodo');
+const btnClearFilters = document.getElementById('btnClearFilters');
+const btnRefresh = document.getElementById('btnRefresh');
+
+[filtroBusca, filtroLiberacao, filtroVeiculo, filtroPeriodo].forEach(el => {
+  el.addEventListener('input', () => {
+    currentPage = 1;
+    aplicarFiltros();
+  });
+});
+
+btnClearFilters.addEventListener('click', () => {
+  filtroBusca.value = '';
+  filtroLiberacao.value = '';
+  filtroVeiculo.value = '';
+  filtroPeriodo.value = '';
+  currentPage = 1;
+  aplicarFiltros();
+});
+
+btnRefresh.addEventListener('click', carregarVistoriasSupabase);
+
+function aplicarFiltros() {
+  const busca = (filtroBusca.value || '').toLowerCase().trim();
+  const lib = filtroLiberacao.value;
+  const veic = filtroVeiculo.value;
+  const per = filtroPeriodo.value;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const d7 = new Date(); d7.setDate(d7.getDate() - 7);
+  const d30 = new Date(); d30.setDate(d30.getDate() - 30);
+
+  filteredChecklists = currentChecklists.filter(item => {
+    // 1. Busca textual
+    if (busca) {
+      const matchPlaca = (item.placa || '').toLowerCase().includes(busca);
+      const matchMotorista = (item.motorista || '').toLowerCase().includes(busca);
+      const matchNumero = (item.numero || '').toLowerCase().includes(busca);
+      if (!matchPlaca && !matchMotorista && !matchNumero) return false;
+    }
+
+    // 2. Liberação
+    if (lib && item.liberacao !== lib) return false;
+
+    // 3. Veículo
+    if (veic) {
+      if (veic === 'Outro' && ['Kombi', 'Transit', 'Master'].includes(item.veiculo)) return false;
+      if (veic !== 'Outro' && item.veiculo !== veic) return false;
+    }
+
+    // 4. Período
+    if (per === 'hoje' && item.data !== todayStr) return false;
+    if (per === '7dias') {
+      const itemDate = new Date(item.data);
+      if (itemDate < d7) return false;
+    }
+    if (per === '30dias') {
+      const itemDate = new Date(item.data);
+      if (itemDate < d30) return false;
+    }
+
+    return true;
+  });
+
+  // Ordenação
+  filteredChecklists.sort((a, b) => {
+    let vA = a[currentSortCol];
+    let vB = b[currentSortCol];
+
+    if (currentSortCol === 'data') {
+      vA = `${a.data || ''} ${a.hora || ''}`;
+      vB = `${b.data || ''} ${b.hora || ''}`;
+    }
+
+    if (vA < vB) return currentSortAsc ? -1 : 1;
+    if (vA > vB) return currentSortAsc ? 1 : -1;
+    return 0;
+  });
+
+  renderTabela();
+}
+
+// Clique nos cabeçalhos para ordenar
+document.querySelectorAll('th.sortable').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (currentSortCol === col) {
+      currentSortAsc = !currentSortAsc;
+    } else {
+      currentSortCol = col;
+      currentSortAsc = false;
+    }
+    aplicarFiltros();
+  });
+});
+
+// ==============================================================================
+// RENDERIZAÇÃO DA TABELA & PAGINAÇÃO
+// ==============================================================================
+const tableBody = document.getElementById('tableBody');
+const tableInfo = document.getElementById('tableInfo');
+const pageIndicator = document.getElementById('pageIndicator');
+const btnPrevPage = document.getElementById('btnPrevPage');
+const btnNextPage = document.getElementById('btnNextPage');
+
+function renderTabela() {
+  const total = filteredChecklists.length;
+  const maxPages = Math.ceil(total / pageSize) || 1;
+  if (currentPage > maxPages) currentPage = maxPages;
+
+  const start = (currentPage - 1) * pageSize;
+  const pageItems = filteredChecklists.slice(start, start + pageSize);
+
+  tableInfo.textContent = `Exibindo ${pageItems.length} de ${total} vistorias`;
+  pageIndicator.textContent = `Pág. ${currentPage} de ${maxPages}`;
+  btnPrevPage.disabled = currentPage <= 1;
+  btnNextPage.disabled = currentPage >= maxPages;
+
+  if (pageItems.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="10">
+          <div class="empty-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <h3>Nenhuma vistoria encontrada</h3>
+            <p>Tente ajustar os termos de pesquisa ou remover os filtros aplicados.</p>
+          </div>
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tableBody.innerHTML = pageItems.map(item => {
+    const dataFmt = formatarData(item.data);
+    const horaFmt = item.hora || '--:--';
+    const avariasCount = Array.isArray(item.avarias) ? item.avarias.length : 0;
+    
+    // Status Liberação
+    let libClass = 'liberado';
+    if (item.liberacao === 'Ressalva') libClass = 'ressalva';
+    if (item.liberacao === 'Não liberado') libClass = 'bloqueado';
+
+    return `
+      <tr>
+        <td><span class="badge-num">${item.numero || '------'}</span></td>
+        <td>
+          <div style="font-weight:700">${dataFmt}</div>
+          <div style="font-size:11px;color:var(--text-dim)">${horaFmt}</div>
+        </td>
+        <td>
+          <div style="font-weight:700;margin-bottom:2px">${item.veiculo}</div>
+          <span class="plate-tag">${(item.placa || '').toUpperCase()}</span>
+        </td>
+        <td>
+          <div style="font-weight:700;color:#fff">${item.motorista || 'Não informado'}</div>
+        </td>
+        <td><span style="font-size:12px;color:var(--text-muted)">${item.tipo || 'Saída'}</span></td>
+        <td><span style="font-size:12px;font-weight:700;color:#38bdf8">${item.combustivel || '1/2'}</span></td>
+        <td>
+          ${avariasCount === 0 
+            ? `<span class="chip-avarias clean">Íntegro</span>`
+            : `<span class="chip-avarias warn">${avariasCount} marca(s)</span>`}
+        </td>
+        <td>
+          <span style="font-size:12px;color:${item.pneu_dano === 'Sim' ? '#f87171' : 'var(--text-muted)'}">
+            ${item.pneu_dano === 'Sim' ? '⚠ Desgaste/Bolha' : 'Normal'}
+          </span>
+        </td>
+        <td>
+          <span class="status-tag ${libClass}">${item.liberacao || 'Liberado'}</span>
+        </td>
+        <td style="text-align:right">
+          <div class="row-actions" style="justify-content:flex-end">
+            <button type="button" class="btn-row-action" onclick="abrirModalDetalhes('${item.id}')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span>Ver</span>
+            </button>
+            <button type="button" class="btn-row-action btn-row-pdf" onclick="baixarPdfVistoria('${item.id}')" title="Baixar PDF Oficial">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>PDF</span>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+btnPrevPage.addEventListener('click', () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderTabela();
+  }
+});
+btnNextPage.addEventListener('click', () => {
+  const maxPages = Math.ceil(filteredChecklists.length / pageSize);
+  if (currentPage < maxPages) {
+    currentPage++;
+    renderTabela();
+  }
+});
+
+function formatarData(iso) {
+  if (!iso) return '--/--/----';
+  const p = iso.split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+}
+
+// ==============================================================================
+// MODAL DE DETALHES COMPLETOS
+// ==============================================================================
+const detailModal = document.getElementById('detailModal');
+const btnCloseModal = document.getElementById('btnCloseModal');
+const btnModalCloseAction = document.getElementById('btnModalCloseAction');
+const btnModalDownloadPdf = document.getElementById('btnModalDownloadPdf');
+
+[btnCloseModal, btnModalCloseAction].forEach(b => {
+  b.addEventListener('click', () => detailModal.classList.remove('open'));
+});
+
+window.abrirModalDetalhes = function(id) {
+  const item = currentChecklists.find(c => String(c.id) === String(id));
+  if (!item) return;
+
+  currentSelectedChecklist = item;
+
+  document.getElementById('modalNumero').textContent = item.numero || '000000';
+  document.getElementById('modalPlaca').textContent = (item.placa || '').toUpperCase();
+  
+  const badge = document.getElementById('modalStatusBadge');
+  badge.textContent = item.liberacao || 'Liberado';
+  badge.className = 'status-tag ' + (item.liberacao === 'Ressalva' ? 'ressalva' : item.liberacao === 'Não liberado' ? 'bloqueado' : 'liberado');
+
+  // Identificação
+  document.getElementById('dVeiculo').textContent = item.veiculo + (item.veiculo_outro ? ` (${item.veiculo_outro})` : '');
+  document.getElementById('dPlaca').textContent = (item.placa || '').toUpperCase();
+  document.getElementById('dMotorista').textContent = item.motorista || '-';
+  document.getElementById('dKm').textContent = item.km ? `${Number(item.km).toLocaleString('pt-BR')} km` : '-';
+  document.getElementById('dDataHora').textContent = `${formatarData(item.data)} às ${item.hora || '--:--'}`;
+  document.getElementById('dTipo').textContent = item.tipo || 'Saída';
+  document.getElementById('dComb').textContent = item.combustivel || '1/2';
+  document.getElementById('dCondicao').textContent = item.condicao_motorista || 'Apto';
+
+  // Avarias na Van
+  const avarias = Array.isArray(item.avarias) ? item.avarias : [];
+  document.getElementById('dAvariasCount').textContent = `${avarias.length} marca(s)`;
+  const marksLayer = document.getElementById('modalVanMarksLayer');
+  marksLayer.innerHTML = avarias.map(([x, y, k]) => `
+    <g class="mk">
+      <circle cx="${x}" cy="${y}" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>
+      <text x="${x}" y="${y}" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">${k}</text>
+    </g>
+  `).join('');
+
+  // Pneus
+  const tiresBody = document.getElementById('modalTiresBody');
+  const pneus = Array.isArray(item.pneus) ? item.pneus : [];
+  if (pneus.length > 0) {
+    tiresBody.innerHTML = pneus.map(p => `
+      <tr>
+        <td style="font-weight:700">${p.pos}</td>
+        <td><span style="font-weight:700;color:${p.estado === 'Gasto' ? '#f87171' : p.estado === 'Meia vida' ? '#fbbf24' : '#34d399'}">${p.estado || 'Bom'}</span></td>
+        <td>${p.psi || '—'} PSI</td>
+        <td style="color:var(--text-dim)">${p.obs || '—'}</td>
+      </tr>
+    `).join('');
+  } else {
+    tiresBody.innerHTML = `<tr><td colspan="4" style="color:var(--text-dim)">Nenhum pneu registrado</td></tr>`;
+  }
+
+  // Assinaturas
+  configurarPreviewAssinatura('modalSigMotorista', 'modalSigMotoristaStatus', item.ass_motorista);
+  configurarPreviewAssinatura('modalSigVistoriador', 'modalSigVistoriadorStatus', item.ass_vistoriador);
+  configurarPreviewAssinatura('modalSigResponsavel', 'modalSigResponsavelStatus', item.ass_responsavel);
+
+  detailModal.classList.add('open');
+};
+
+function configurarPreviewAssinatura(imgId, statusId, base64) {
+  const img = document.getElementById(imgId);
+  const st = document.getElementById(statusId);
+  if (base64) {
+    img.src = base64;
+    img.style.display = 'block';
+    st.textContent = 'Assinado Digitalmente';
+    st.style.color = '#34d399';
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+    st.textContent = 'Pendente';
+    st.style.color = 'var(--text-dim)';
+  }
+}
+
+btnModalDownloadPdf.addEventListener('click', () => {
+  if (currentSelectedChecklist) {
+    baixarPdfVistoria(currentSelectedChecklist.id);
+  }
+});
+
+// ==============================================================================
+// GERAÇÃO E DOWNLOAD DE PDF OFICIAL EM 1 CLIQUE
+// ==============================================================================
+window.baixarPdfVistoria = async function(id) {
+  const item = currentChecklists.find(c => String(c.id) === String(id));
+  if (!item) return;
+
+  const btn = event?.currentTarget;
+  if (btn) btn.disabled = true;
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    const M = 8;
+    const W = 194;
+    const ROXO = [48, 42, 110];
+    const CINZA = [100, 100, 115];
+    const LINHA = [185, 185, 198];
+
+    const fonte = (tam, estilo = 'normal', cor = [20, 20, 30]) => {
+      doc.setFont('helvetica', estilo);
+      doc.setFontSize(tam);
+      doc.setTextColor(...cor);
+    };
+
+    const barraTitulo = (x, y, w, txt) => {
+      doc.setFillColor(...ROXO);
+      doc.rect(x, y, w, 5.0, 'F');
+      fonte(7.5, 'bold', [255, 255, 255]);
+      doc.text(txt, x + 2.5, y + 3.6);
+    };
+
+    const caixa = (x, y, w, h) => {
+      doc.setDrawColor(...LINHA);
+      doc.setLineWidth(0.22);
+      doc.rect(x, y, w, h);
+    };
+
+    let y = M;
+
+    // Cabeçalho
+    doc.setFillColor(...ROXO);
+    doc.roundedRect(M, y, 26, 11.5, 2, 2, 'F');
+    fonte(8.5, 'bold', [255, 255, 255]);
+    doc.text('GOMEX', M + 13, y + 5.2, { align: 'center' });
+    fonte(5.8, 'bold', [196, 210, 255]);
+    doc.text('DISTRIBUIDORA', M + 13, y + 8.8, { align: 'center' });
+
+    fonte(12.5, 'bold', ROXO);
+    doc.text('CHECK-LIST DE VISTORIA VEICULAR', M + 30, y + 5.5);
+    fonte(7.0, 'normal', CINZA);
+    doc.text('Gomex Frota · Sistema Oficial de Inspeção e Segurança', M + 30, y + 9.5);
+
+    doc.setFillColor(245, 247, 252);
+    doc.roundedRect(M + W - 32, y, 32, 11.5, 1.5, 1.5, 'FD');
+    fonte(6.5, 'bold', CINZA);
+    doc.text('Nº VISTORIA', M + W - 16, y + 4.2, { align: 'center' });
+    fonte(10.5, 'bold', ROXO);
+    doc.text(String(item.numero || '000000'), M + W - 16, y + 9.5, { align: 'center' });
+
+    y += 14.0;
+
+    // 1. Identificação
+    barraTitulo(M, y, W, '1. IDENTIFICAÇÃO DO VEÍCULO E OPERAÇÃO');
+    y += 5.0;
+
+    caixa(M, y, W, 17.5);
+    const camposId = [
+      ['VEÍCULO', item.veiculo || '—'],
+      ['PLACA', (item.placa || '—').toUpperCase()],
+      ['KM ATUAL', item.km ? `${Number(item.km).toLocaleString('pt-BR')} km` : '—'],
+      ['MOTORISTA / VENDEDOR', item.motorista || '—'],
+      ['DATA', formatarData(item.data)],
+      ['HORA', item.hora || '—'],
+      ['TIPO VISTORIA', item.tipo || '—'],
+      ['COMBUSTÍVEL', item.combustivel || '—'],
+      ['ÚLT. REVISÃO', item.rev_ult_km ? `${item.rev_ult_km} km` : '—'],
+      ['PRÓX. REVISÃO', item.rev_prox_km ? `${item.rev_prox_km} km` : '—']
+    ];
+
+    const colW = W / 5;
+    camposId.forEach(([lbl, val], idx) => {
+      const col = idx % 5;
+      const row = Math.floor(idx / 5);
+      const cX = M + col * colW;
+      const cY = y + row * 8.5;
+
+      fonte(5.2, 'bold', CINZA);
+      doc.text(lbl, cX + 2, cY + 3.0);
+      fonte(7.0, 'bold', [20, 20, 30]);
+      doc.text(String(val).substring(0, 24), cX + 2, cY + 6.8);
+    });
+
+    y += 19.5;
+
+    // 2. Avarias e Pneus
+    const wAv = 100;
+    const wPn = 91;
+    const xPn = M + wAv + 3;
+    const hAvPn = 62;
+
+    barraTitulo(M, y, wAv, '2. AVARIAS NA CARROCERIA');
+    barraTitulo(xPn, y, wPn, '3. PNEUS E REQUISITOS');
+    y += 5.0;
+
+    caixa(M, y, wAv, hAvPn);
+    caixa(xPn, y, wPn, hAvPn);
+
+    fonte(6.5, 'bold', [20, 20, 30]);
+    doc.text(`Total de avarias marcadas: ${item.avarias?.length || 0}`, M + 4, y + 10);
+    fonte(6.0, 'normal', CINZA);
+    doc.text('Consulte o mapa digital no painel para inspeção interativa dos pontos.', M + 4, y + 15);
+
+    // Pneus
+    let pY = y + 2;
+    (item.pneus || []).forEach(p => {
+      fonte(6.5, 'bold');
+      doc.text(`${p.pos}:`, xPn + 4, pY + 4);
+      fonte(6.5, 'normal');
+      doc.text(`Estado: ${p.estado || 'Bom'} | PSI: ${p.psi || '—'}`, xPn + 36, pY + 4);
+      pY += 6;
+    });
+
+    y += hAvPn + 4;
+
+    // Situação e Liberação
+    barraTitulo(M, y, W, '4. PARECER FINAL E LIBERAÇÃO DO VEÍCULO');
+    y += 5.0;
+
+    caixa(M, y, W, 14);
+    fonte(8.0, 'bold', item.liberacao === 'Liberado' ? [21, 128, 61] : [185, 28, 28]);
+    doc.text(`SITUAÇÃO DO VEÍCULO: ${(item.liberacao || 'LIBERADO').toUpperCase()}`, M + 4, y + 6);
+    fonte(6.5, 'normal', CINZA);
+    doc.text(`Observações registradas: ${item.obs || 'Nenhuma ressalva apontada nesta vistoria.'}`, M + 4, y + 10);
+
+    y += 18;
+
+    // Assinaturas
+    caixa(M, y, W, 22);
+    fonte(6.0, 'bold', CINZA);
+    doc.text('MOTORISTA / VENDEDOR', M + 20, y + 4, { align: 'center' });
+    doc.text('VISTORIADOR', M + W / 2, y + 4, { align: 'center' });
+    doc.text('RESPONSÁVEL / FROTA', M + W - 20, y + 4, { align: 'center' });
+
+    doc.line(M + 5, y + 16, M + 45, y + 16);
+    doc.line(M + (W / 2) - 25, y + 16, M + (W / 2) + 25, y + 16);
+    doc.line(M + W - 45, y + 16, M + W - 5, y + 16);
+
+    fonte(5.5, 'normal', [40, 40, 50]);
+    doc.text(item.motorista || 'Assinatura', M + 25, y + 19, { align: 'center' });
+    doc.text('Conferido', M + W / 2, y + 19, { align: 'center' });
+    doc.text('Liberado Frota', M + W - 25, y + 19, { align: 'center' });
+
+    // Salvar arquivo
+    doc.save(`Vistoria_${item.numero || '000000'}_${(item.placa || '').toUpperCase()}.pdf`);
+  } catch (err) {
+    alert('Erro ao gerar PDF: ' + err.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+};
+
+// ==============================================================================
+// EXPORTAÇÃO CSV / EXCEL
+// ==============================================================================
+document.getElementById('btnExport').addEventListener('click', () => {
+  if (filteredChecklists.length === 0) {
+    alert('Nenhum dado para exportar.');
+    return;
+  }
+
+  const headers = ['Nº Vistoria', 'Data', 'Hora', 'Veículo', 'Placa', 'Km', 'Motorista', 'Tipo', 'Combustível', 'Liberação', 'Avarias', 'Pneu Dano', 'Obs'];
+  const rows = filteredChecklists.map(c => [
+    c.numero || '',
+    formatarData(c.data),
+    c.hora || '',
+    c.veiculo || '',
+    (c.placa || '').toUpperCase(),
+    c.km || '',
+    `"${(c.motorista || '').replace(/"/g, '""')}"`,
+    c.tipo || '',
+    c.combustivel || '',
+    c.liberacao || '',
+    c.avarias?.length || 0,
+    c.pneu_dano || 'Não',
+    `"${(c.obs || '').replace(/"/g, '""')}"`
+  ]);
+
+  const csvContent = '\uFEFF' + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Gomex_Vistorias_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Inicialização
+checkExistingAuth();
+</script>
+</body>
+</html>
