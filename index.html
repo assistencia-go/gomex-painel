@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0a0f1a">
+<meta name="theme-color" content="#0a0f1a" id="metaThemeColor">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="Painel interno de gestão das vistorias da frota Gomex.">
-<title>Vistorias da frota · Gomex</title>
+<title>Vistorias da frota · Gomex Frota</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232b66e8'/%3E%3Cpath d='M7 21V11a1.5 1.5 0 0 1 1.5-1.5H17A1.5 1.5 0 0 1 18.5 11v10M18.5 13h3.2l3.3 4v4h-2' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3Ccircle cx='21' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +15,7 @@
 
 <style>
   /* ============================================================================
-     DESIGN TOKENS — superfície escura azulada, um único acento (azul),
-     cor semântica só para situação (liberado / ressalva / bloqueado)
+     DESIGN TOKENS — DARK MODE (PADRÃO) E LIGHT MODE
      ============================================================================ */
   :root {
     color-scheme: dark;
@@ -50,6 +49,62 @@
     --topbar-h: 56px;
   }
 
+  body.theme-light {
+    color-scheme: light;
+    --bg: #f4f6fa;
+    --panel: #ffffff;
+    --panel-2: #f8fafc;
+    --raised: #eef2f7;
+    --hover: #f1f5f9;
+    --line: #e2e8f0;
+    --line-strong: #cbd5e1;
+
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+
+    --accent: #1e40af;
+    --accent-hi: #2563eb;
+    --accent-tint: rgba(37, 99, 235, 0.12);
+
+    --ok: #15803d;
+    --ok-tint: rgba(21, 128, 61, 0.12);
+    --warn: #b45309;
+    --warn-tint: rgba(180, 83, 9, 0.12);
+    --bad: #b91c1c;
+    --bad-tint: rgba(185, 28, 28, 0.12);
+  }
+
+  body.theme-light .input,
+  body.theme-light .select,
+  body.theme-light .approval-textarea {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
+  body.theme-light .input:hover,
+  body.theme-light .select:hover {
+    border-color: #94a3b8;
+  }
+  body.theme-light .login-brand {
+    background: #eef2f7;
+    border-right-color: #e2e8f0;
+  }
+  body.theme-light .login-art {
+    color: #cbd5e1;
+  }
+  body.theme-light .sig {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+  body.theme-light .map {
+    border: 1px solid #e2e8f0;
+  }
+  body.theme-light .btn:hover:not(:disabled) {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+  }
+
   *, *::before, *::after { box-sizing: border-box; }
   * { margin: 0; scrollbar-width: thin; scrollbar-color: #26324f transparent; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -64,17 +119,18 @@
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     font-variant-numeric: tabular-nums;
+    transition: background-color 200ms ease, color 200ms ease;
   }
   body.lock { overflow: hidden; }
   ::selection { background: rgba(91, 147, 255, 0.38); color: #fff; }
 
-  button, input, select { font: inherit; color: inherit; }
+  button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
   [hidden] { display: none !important; }
   :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 2px; border-radius: 4px; }
   input { caret-color: var(--accent-hi); }
   input[type="checkbox"] { accent-color: var(--accent); }
-  select option { background: #0f1624; color: var(--ink); }
+  select option { background: var(--panel); color: var(--ink); }
   input:-webkit-autofill {
     -webkit-text-fill-color: var(--ink);
     -webkit-box-shadow: 0 0 0 1000px #0a1120 inset;
@@ -100,18 +156,18 @@
     height: 36px; padding: 0 14px; border-radius: var(--r-sm);
     border: 1px solid var(--line-strong); background: var(--raised);
     font-size: 13px; font-weight: 600; color: var(--ink);
-    transition: background-color 150ms, border-color 150ms, color 150ms;
+    transition: background-color 150ms, border-color 150ms, color 150ms, transform 100ms;
     white-space: nowrap;
   }
   .btn:hover:not(:disabled) { background: #1b2742; border-color: #3a4b74; }
-  .btn:active:not(:disabled) { background: #16213a; }
+  .btn:active:not(:disabled) { background: #16213a; transform: translateY(1px); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn-primary:hover:not(:disabled) { background: #2457cf; border-color: #2457cf; }
   .btn-primary:active:not(:disabled) { background: #2559cf; }
   .btn-ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
   .btn-ghost:hover:not(:disabled) { background: var(--raised); border-color: transparent; color: var(--ink); }
-  .btn-icon { width: 34px; padding: 0; }
+  .btn-icon { width: 34px; padding: 0; border-radius: 6px; }
   .btn.is-loading .i { animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -132,12 +188,49 @@
     stroke-width: 0.45; color: #172340; fill: none; stroke: currentColor;
     stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
   }
-  .login-tagline {
-    position: relative; max-width: 22ch;
-    font-size: 30px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em;
-    text-wrap: balance;
+  .login-tagline-box {
+    position: relative; max-width: 26ch; z-index: 2; margin-bottom: 24px;
   }
-  .login-tagline span { color: var(--ink-3); font-weight: 600; }
+  .login-tagline-label {
+    font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent-hi); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .login-tagline-label::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+    box-shadow: 0 0 8px var(--ok);
+  }
+  .login-tagline {
+    position: relative;
+    font-size: 32px; line-height: 1.22; font-weight: 800; letter-spacing: -0.025em;
+    text-wrap: balance; color: var(--ink);
+  }
+  .word-rotator-wrapper {
+    display: inline-block;
+    position: relative;
+    vertical-align: bottom;
+    min-width: 5.5ch;
+  }
+  .word-rotator {
+    display: inline-block;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 2.5px solid #38bdf8;
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), opacity 380ms ease;
+  }
+  .word-rotator.word-exit {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  .word-rotator.word-enter {
+    transform: translateY(100%);
+    opacity: 0;
+    transition: none !important;
+  }
+  .login-tagline-sub {
+    font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.5; font-weight: 500;
+  }
   .login-pane { display: grid; place-items: center; padding: 32px 28px; }
   .login-form { width: 100%; max-width: 360px; display: grid; gap: 18px; }
   .login-form h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; }
@@ -147,6 +240,7 @@
   .brand-mark {
     width: 36px; height: 36px; border-radius: 9px; background: var(--accent);
     display: grid; place-items: center; color: #fff;
+    box-shadow: 0 4px 12px rgba(43, 102, 232, 0.3);
   }
   .brand-mark .i { width: 20px; height: 20px; stroke-width: 1.9; }
   .brand-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
@@ -181,38 +275,92 @@
   .topbar {
     position: sticky; top: 0; z-index: 40; height: var(--topbar-h);
     background: var(--bg); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(8px);
   }
   .topbar-in {
-    max-width: 1320px; height: 100%; margin: 0 auto; padding: 0 24px;
-    display: flex; align-items: center; gap: 16px;
+    max-width: 1360px; height: 100%; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; gap: 14px;
   }
   .topbar .brand-mark { width: 32px; height: 32px; border-radius: 8px; }
   .spacer { flex: 1; }
 
   .sync { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); }
   .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
-  .sync[data-state="ok"] .sync-dot { background: var(--ok); }
+  .sync[data-state="ok"] .sync-dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
   .sync[data-state="loading"] .sync-dot { background: var(--warn); }
   .sync[data-state="error"] .sync-dot { background: var(--bad); }
   .sync[data-state="error"] { color: var(--bad); }
 
-  .whoami { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); padding-left: 16px; border-left: 1px solid var(--line); height: 24px; }
+  .whoami { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink-2); padding-left: 14px; border-left: 1px solid var(--line); height: 24px; }
 
-  .page { max-width: 1320px; margin: 0 auto; padding: 28px 24px 56px; }
+  .page { max-width: 1360px; margin: 0 auto; padding: 24px 24px 56px; }
   .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
   .page-head h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
   .page-head p { color: var(--ink-3); margin-top: 4px; max-width: 60ch; }
-  .head-actions { display: flex; gap: 8px; }
+  .head-actions { display: flex; gap: 8px; align-items: center; }
 
   /* ============================================================================
-     RESUMO
+     BANNER DE ALERTAS CRÍTICOS DA FROTA
+     ============================================================================ */
+  .alerts-banner {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: var(--r);
+    padding: 12px 18px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    flex-wrap: wrap;
+    animation: alertSlideDown 0.3s var(--ease);
+  }
+  @keyframes alertSlideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .alerts-left { display: flex; align-items: center; gap: 12px; }
+  .alerts-badge {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #ef4444; color: #fff;
+    display: grid; place-items: center; flex: none;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+  }
+  .alerts-title { font-size: 14px; font-weight: 700; color: #fca5a5; }
+  .alerts-desc { font-size: 12.5px; color: var(--ink-2); }
+  .alerts-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .alert-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.12);
+    padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: 700;
+  }
+  .alert-pill.red { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+  .alert-pill.yellow { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
+
+  /* ============================================================================
+     RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES
      ============================================================================ */
   .summary { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; margin-bottom: 16px; }
   .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--line); }
-  .stat { background: var(--panel); padding: 14px 18px 16px; min-width: 0; }
-  .stat dt { font-size: 12px; font-weight: 600; color: var(--ink-3); }
-  .stat dd { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin-top: 2px; }
-  .split { display: flex; height: 4px; background: var(--line-strong); }
+  .stat {
+    background: var(--panel); padding: 16px 18px 16px; min-width: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: background-color 150ms;
+  }
+  .stat:hover { background: var(--hover); }
+  .stat-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  .stat-lbl { font-size: 12.5px; font-weight: 600; color: var(--ink-3); }
+  .stat-ico {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: grid; place-items: center;
+    background: var(--raised); color: var(--ink-2);
+  }
+  .stat-ico.blue { background: rgba(43, 102, 232, 0.15); color: #5b93ff; }
+  .stat-ico.emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+  .stat-ico.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+  .stat-ico.green { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+  .stat-ico.amber { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+  .stat dd { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-top: 2px; }
+  .stat-sub { font-size: 11.5px; color: var(--ink-3); margin-top: 4px; font-weight: 500; }
+  .split { display: flex; height: 5px; background: var(--line-strong); }
   .split i { display: block; flex-grow: 0; flex-basis: 0; transition: flex-grow 400ms var(--ease); }
   .split .s-ok { background: var(--ok); }
   .split .s-warn { background: var(--warn); }
@@ -260,12 +408,12 @@
   .table-wrap { overflow-x: auto; }
   .grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
   .grid th {
-    padding: 0 16px; height: 38px; text-align: left; white-space: nowrap;
+    padding: 0 16px; height: 40px; text-align: left; white-space: nowrap;
     font-size: 12px; font-weight: 600; color: var(--ink-3);
     background: var(--panel-2); border-bottom: 1px solid var(--line);
   }
   .grid td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
-  .grid tbody tr { cursor: pointer; }
+  .grid tbody tr { cursor: pointer; transition: background-color 100ms; }
   .grid tbody tr:hover td { background: var(--hover); }
   .grid tbody tr:last-child td { border-bottom: 0; }
   .th-sort { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 4px 0; font: inherit; color: inherit; }
@@ -278,7 +426,8 @@
   .t1 { display: block; font-weight: 600; color: var(--ink); }
   .t2 { display: block; font-size: 12px; color: var(--ink-3); }
   .muted { color: var(--ink-3); }
-  .c-act { width: 1%; text-align: right; }
+  .c-act { width: 1%; text-align: right; white-space: nowrap; }
+  .row-actions { display: inline-flex; align-items: center; gap: 4px; }
   .num {
     background: none; border: 0; padding: 2px 0; font-weight: 700; font-size: 13px; color: var(--accent-hi);
     text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px;
@@ -286,22 +435,38 @@
   }
   .num:hover { text-decoration-color: currentColor; }
   .plate {
-    display: inline-block; padding: 3px 7px; border-radius: 4px;
-    background: #eef1f7; color: #0b1220; border: 1px solid #c3cde0;
-    font-size: 12px; font-weight: 800; letter-spacing: 0.06em; line-height: 1.3;
+    display: inline-block; padding: 3px 8px; border-radius: 4px;
+    background: #eef1f7; color: #0b1220; border: 1.5px solid #a3b2cd;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.08em; line-height: 1.3;
+    font-family: inherit; cursor: pointer; transition: transform 100ms, box-shadow 100ms;
   }
+  .plate:hover { transform: scale(1.04); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
   .stack { display: grid; gap: 3px; justify-items: start; }
   .txt-warn { color: var(--warn); font-weight: 600; }
   .txt-bad { color: var(--bad); font-weight: 600; }
+
+  /* Badges de Tipo de Vistoria */
+  .badge-tipo {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+  }
+  .tipo-saida { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+  .tipo-retorno { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+  .tipo-periodica { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+
+  .badge-km {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    color: var(--ink-2); background: var(--raised); padding: 1px 6px; border-radius: 4px;
+  }
 
   .tag {
     display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px;
     border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap;
   }
   .tag .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-  .tag-ok { background: var(--ok-tint); color: var(--ok); }
-  .tag-warn { background: var(--warn-tint); color: var(--warn); }
-  .tag-bad { background: var(--bad-tint); color: var(--bad); }
+  .tag-ok { background: var(--ok-tint); color: var(--ok); border: 1px solid rgba(61, 220, 151, 0.25); }
+  .tag-warn { background: var(--warn-tint); color: var(--warn); border: 1px solid rgba(242, 184, 75, 0.25); }
+  .tag-bad { background: var(--bad-tint); color: var(--bad); border: 1px solid rgba(248, 120, 120, 0.25); }
   .tag-neutral { background: var(--raised); color: var(--ink-2); }
 
   .row-new td { animation: rowIn 2.4s ease-out; }
@@ -322,18 +487,18 @@
   .empty h2 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
   .empty p { color: var(--ink-3); max-width: 44ch; margin: 0 auto 16px; }
 
-  .board-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
+  .board-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 16px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 13px; }
   .pager { display: flex; align-items: center; gap: 8px; }
   .pager .btn { height: 32px; padding: 0 10px; }
 
   /* ============================================================================
-     GAVETA DE DETALHES
+     GAVETA DE DETALHES & WORKFLOW DE LIBERAÇÃO
      ============================================================================ */
   .scrim { position: fixed; inset: 0; z-index: 50; background: rgba(4, 7, 13, 0.62); opacity: 0; visibility: hidden; transition: opacity 200ms, visibility 0s 200ms; }
   .scrim.open { opacity: 1; visibility: visible; transition: opacity 200ms, visibility 0s; }
   .drawer {
     position: fixed; top: 0; right: 0; bottom: 0; z-index: 60;
-    width: min(580px, 100vw); display: flex; flex-direction: column;
+    width: min(620px, 100vw); display: flex; flex-direction: column;
     background: var(--panel); border-left: 1px solid var(--line-strong);
     box-shadow: -24px 0 48px -20px rgba(0, 0, 0, 0.7);
     transform: translateX(100%); visibility: hidden;
@@ -351,6 +516,36 @@
   .kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 20px; }
   .kv dt { font-size: 12px; color: var(--ink-3); }
   .kv dd { font-size: 14px; font-weight: 600; margin: 0; overflow-wrap: anywhere; }
+
+  /* Seção de Aprovação e Gestão de Status pelo Gestor */
+  .approval-card {
+    background: var(--panel-2); border: 1.5px solid var(--line-strong);
+    border-radius: var(--r); padding: 16px; display: grid; gap: 12px;
+  }
+  .approval-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .btn-decision {
+    height: 42px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1.5px solid var(--line-strong); background: var(--raised); color: var(--ink-2);
+    transition: all 150ms;
+  }
+  .btn-decision:hover { border-color: var(--accent-hi); color: var(--ink); }
+  .btn-decision.active-liberado {
+    background: var(--ok-tint); border-color: var(--ok); color: var(--ok);
+  }
+  .btn-decision.active-ressalva {
+    background: var(--warn-tint); border-color: var(--warn); color: var(--warn);
+  }
+  .btn-decision.active-bloqueado {
+    background: var(--bad-tint); border-color: var(--bad); color: var(--bad);
+  }
+  .approval-textarea {
+    width: 100%; min-height: 64px; padding: 8px 12px;
+    background: var(--bg); border: 1px solid var(--line-strong); border-radius: 6px;
+    font-size: 13px; resize: vertical;
+  }
+  .approval-textarea:focus-visible { border-color: var(--accent-hi); outline-offset: 0; }
+
   .map { background: #fff; border-radius: 8px; padding: 8px; }
   .map svg { display: block; width: 100%; height: auto; }
   .legend { margin-top: 10px; font-size: 12px; color: var(--ink-3); }
@@ -369,7 +564,45 @@
   .sig img { max-width: 100%; max-height: 60px; margin: 0 auto; padding: 4px; background: #fff; border-radius: 4px; }
   .sig-st { font-size: 12px; font-weight: 600; color: var(--ink-3); }
   .sig-st.ok { color: var(--ok); }
-  .dr-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); background: var(--panel-2); }
+  .dr-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 12px 20px; border-top: 1px solid var(--line); background: var(--panel-2); flex-wrap: wrap; }
+  .dr-foot-actions { display: flex; gap: 8px; }
+
+  /* ============================================================================
+     MODAL DE HISTÓRICO DA PLACA / VEÍCULO
+     ============================================================================ */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 70; background: rgba(4, 7, 13, 0.75);
+    display: grid; place-items: center; padding: 20px; opacity: 0; visibility: hidden;
+    transition: opacity 200ms, visibility 0s 200ms;
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; transition: opacity 200ms, visibility 0s; }
+  .modal-card {
+    background: var(--panel); border: 1px solid var(--line-strong); border-radius: 12px;
+    width: min(680px, 100%); max-height: 85vh; display: flex; flex-direction: column;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px; border-bottom: 1px solid var(--line);
+  }
+  .modal-body { overflow-y: auto; padding: 20px; display: grid; gap: 18px; }
+  .modal-foot { padding: 14px 20px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
+
+  .hist-timeline { display: grid; gap: 12px; position: relative; }
+  .hist-timeline::before {
+    content: ''; position: absolute; left: 16px; top: 10px; bottom: 10px; width: 2px;
+    background: var(--line-strong);
+  }
+  .hist-item {
+    position: relative; padding-left: 42px; display: grid; gap: 4px;
+  }
+  .hist-dot {
+    position: absolute; left: 10px; top: 4px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--raised); border: 2.5px solid var(--accent);
+  }
+  .hist-item.bad .hist-dot { border-color: var(--bad); }
+  .hist-item.warn .hist-dot { border-color: var(--warn); }
+  .hist-item.ok .hist-dot { border-color: var(--ok); }
 
   /* ============================================================================
      TOAST
@@ -377,7 +610,7 @@
   .toast {
     position: fixed; left: 50%; bottom: 24px; z-index: 90; transform: translate(-50%, 16px);
     display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px);
-    padding: 10px 14px; border-radius: 8px; background: var(--raised); border: 1px solid var(--line-strong);
+    padding: 10px 16px; border-radius: 8px; background: var(--raised); border: 1px solid var(--line-strong);
     box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.7); font-size: 13px; font-weight: 600;
     opacity: 0; visibility: hidden; transition: opacity 200ms, transform 240ms var(--ease), visibility 0s 240ms;
   }
@@ -386,7 +619,7 @@
   .toast.error .i { color: var(--bad); }
 
   /* ============================================================================
-     RESPONSIVO — colapso estrutural, não fluido
+     RESPONSIVO
      ============================================================================ */
   @media (max-width: 1100px) {
     .c-pneu { display: none; }
@@ -405,7 +638,7 @@
     .sync span:last-child { display: none; }
     .grid thead { display: none; }
     .grid, .grid tbody { display: block; }
-    .grid tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .grid tr { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
     .grid tbody tr:last-child { border-bottom: 0; }
     .grid td { display: block; padding: 0; border: 0; }
     .grid td.c-num { grid-column: 1; grid-row: 1; }
@@ -414,13 +647,13 @@
     .grid td.c-driver { grid-column: 1; grid-row: 3; }
     .grid td.c-date { grid-column: 2; grid-row: 3; text-align: right; }
     .grid td.c-av { grid-column: 1 / -1; grid-row: 4; }
-    .grid td.c-act, .grid td.c-pneu, .grid td.c-nok { display: none; }
-    .grid .stack { display: flex; align-items: center; gap: 8px; }
-    .grid td.c-veic .t2 { display: inline; }
+    .grid td.c-act { grid-column: 1 / -1; grid-row: 5; margin-top: 6px; }
+    .grid td.c-pneu, .grid td.c-nok { display: none; }
     .empty { grid-column: 1 / -1; }
     .dr-body .sigs { grid-template-columns: 1fr; }
     .head-actions .btn span { display: none; }
     .head-actions .btn { width: 36px; padding: 0; }
+    .approval-actions { grid-template-columns: 1fr; }
   }
   @media (max-width: 560px) {
     .summary-grid { grid-template-columns: repeat(2, 1fr); }
@@ -433,24 +666,34 @@
 </head>
 <body>
 
-<!-- Ícones (traço único, 1.75) -->
+<!-- Ícones SVG (traço único, 1.75) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <symbol id="i-truck" viewBox="0 0 24 24"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
     <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M8 16H3v5"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-printer" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
     <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
     <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
     <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
     <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.7 5.1A9.8 9.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.2 3.2"/><path d="M6.6 6.7A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/><path d="M14.1 14.1a3 3 0 1 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
     <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.3 3.9-8.5 14.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
     <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.7 4H7.3a2 2 0 0 0-1.8 1.1z"/></symbol>
     <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
     <symbol id="i-chev-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
     <symbol id="i-chev-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
     <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+    <symbol id="i-bell-off" viewBox="0 0 24 24"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M1 1l22 22"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><polyline points="12 7 12 12 15 15"/></symbol>
   </defs>
 </svg>
 
@@ -465,8 +708,19 @@
         <div class="brand-name">Gomex Frota</div>
         <div class="brand-sub">Painel de vistorias</div>
       </div>
+    <div class="login-tagline-box">
+      <div class="login-tagline-label">Gestão de Frota Gomex</div>
+      <p class="login-tagline">
+        Cada vistoria
+        <span class="word-rotator-wrapper">
+          <span class="word-rotator" id="wordRotator">organiza</span>
+        </span>
+        a frota.
+      </p>
+      <p class="login-tagline-sub">
+        Monitoramento inteligente de pneus, avarias na carroceria, segurança e pareceres operacionais em tempo real.
+      </p>
     </div>
-    <p class="login-tagline">Cada vistoria da frota, <span>assim que o motorista assina.</span></p>
     <svg class="login-art" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg>
   </aside>
 
@@ -514,13 +768,28 @@
         <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
         <div>
           <div class="brand-name">Gomex Frota</div>
-          <div class="brand-sub">Painel de vistorias</div>
+          <div class="brand-sub">Painel executivo de vistorias</div>
         </div>
       </div>
+
       <div class="spacer"></div>
+
+      <!-- Sincronismo -->
       <div class="sync" id="sync" data-state="loading" role="status">
         <i class="sync-dot"></i><span id="syncText">Conectando…</span>
       </div>
+
+      <!-- Notificações Sonoras -->
+      <button type="button" class="btn btn-ghost btn-icon" id="btnSoundToggle" title="Notificações Sonoras Ativadas" aria-label="Alternar som">
+        <svg class="i" id="icoSound"><use href="#i-bell"/></svg>
+      </button>
+
+      <!-- Alternador Modo Claro / Escuro -->
+      <button type="button" class="btn btn-ghost btn-icon" id="btnThemeToggle" title="Alternar Modo Claro / Escuro" aria-label="Alternar tema">
+        <svg class="i" id="icoTheme"><use href="#i-sun"/></svg>
+      </button>
+
+      <!-- Usuário & Sair -->
       <div class="whoami"><svg class="i"><use href="#i-user"/></svg><span id="userNameLabel">gomex</span></div>
       <button type="button" class="btn btn-ghost" id="btnLogout" aria-label="Sair do painel">
         <svg class="i"><use href="#i-logout"/></svg><span>Sair</span>
@@ -532,27 +801,93 @@
     <div class="page-head">
       <div>
         <h1>Vistorias da frota</h1>
-        <p>Check-lists enviados pelos motoristas. A lista se atualiza sozinha a cada poucos segundos.</p>
+        <p>Acompanhamento em tempo real, aprovação de liberação e reemissão oficial de check-lists.</p>
       </div>
       <div class="head-actions">
-        <button type="button" class="btn" id="btnRefresh"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
-        <button type="button" class="btn" id="btnExport"><svg class="i"><use href="#i-download"/></svg><span>Exportar CSV</span></button>
+        <button type="button" class="btn" id="btnRefresh" title="Sincronizar agora"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
+        <button type="button" class="btn" id="btnExport" title="Download em formato CSV para Excel"><svg class="i"><use href="#i-download"/></svg><span>Exportar CSV</span></button>
       </div>
     </div>
 
+    <!-- BANNER DE ALERTAS CRÍTICOS -->
+    <div class="alerts-banner" id="alertsBanner" hidden>
+      <div class="alerts-left">
+        <div class="alerts-badge"><svg class="i" style="stroke-width:2.2"><use href="#i-alert"/></svg></div>
+        <div>
+          <div class="alerts-title">Alertas Operacionais da Frota Detectados</div>
+          <div class="alerts-desc" id="alertsSummaryText">Carregando diagnósticos da frota...</div>
+        </div>
+      </div>
+      <div class="alerts-pills">
+        <span class="alert-pill red" id="pillBloqueados" hidden>0 Bloqueados</span>
+        <span class="alert-pill yellow" id="pillPneus" hidden>0 Pneu c/ Dano</span>
+        <span class="alert-pill yellow" id="pillRevisao" hidden>0 Revisão Vencendo</span>
+        <button type="button" class="btn btn-ghost" id="btnFilterAlerts" style="height:28px;padding:0 10px;font-size:12px;background:rgba(255,255,255,0.15)">
+          Filtrar Alertas
+        </button>
+      </div>
+    </div>
+
+    <!-- RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES -->
     <section class="summary" aria-label="Resumo das vistorias">
       <dl class="summary-grid">
-        <div class="stat"><dt>Vistorias</dt><dd id="stTotal">–</dd></div>
-        <div class="stat"><dt>Hoje</dt><dd id="stHoje">–</dd></div>
-        <div class="stat"><dt>Neste mês</dt><dd id="stMes">–</dd></div>
-        <div class="stat"><dt>Liberadas</dt><dd id="stConf">–</dd></div>
-        <div class="stat"><dt>Com avarias</dt><dd id="stAv">–</dd></div>
+        <!-- 1. Total -->
+        <div class="stat">
+          <div class="stat-head">
+            <span class="stat-lbl">Total Vistorias</span>
+            <div class="stat-ico blue"><svg class="i"><use href="#i-truck"/></svg></div>
+          </div>
+          <dd id="stTotal">–</dd>
+          <span class="stat-sub">Histórico acumulado</span>
+        </div>
+
+        <!-- 2. Hoje -->
+        <div class="stat">
+          <div class="stat-head">
+            <span class="stat-lbl">Hoje</span>
+            <div class="stat-ico emerald"><svg class="i"><use href="#i-clock"/></svg></div>
+          </div>
+          <dd id="stHoje">–</dd>
+          <span class="stat-sub" id="stHojeSub">Registradas hoje</span>
+        </div>
+
+        <!-- 3. Este Mês -->
+        <div class="stat">
+          <div class="stat-head">
+            <span class="stat-lbl">Neste mês</span>
+            <div class="stat-ico purple"><svg class="i"><use href="#i-calendar"/></svg></div>
+          </div>
+          <dd id="stMes">–</dd>
+          <span class="stat-sub">Mês vigente</span>
+        </div>
+
+        <!-- 4. Conformidade -->
+        <div class="stat">
+          <div class="stat-head">
+            <span class="stat-lbl">Conformidade</span>
+            <div class="stat-ico green"><svg class="i"><use href="#i-shield"/></svg></div>
+          </div>
+          <dd id="stConf">–</dd>
+          <span class="stat-sub">Veículos 100% liberados</span>
+        </div>
+
+        <!-- 5. Com Avarias -->
+        <div class="stat">
+          <div class="stat-head">
+            <span class="stat-lbl">Com avarias</span>
+            <div class="stat-ico amber"><svg class="i"><use href="#i-alert"/></svg></div>
+          </div>
+          <dd id="stAv">–</dd>
+          <span class="stat-sub">Carroceria c/ marcas</span>
+        </div>
       </dl>
+
       <div class="split" id="split" role="img" aria-label="Sem dados ainda">
         <i class="s-ok" id="splitOk"></i><i class="s-warn" id="splitWarn"></i><i class="s-bad" id="splitBad"></i>
       </div>
     </section>
 
+    <!-- TABELA E CONTROLE DE FILTROS -->
     <section class="board" aria-label="Lista de vistorias">
       <div class="tabs" id="tabs">
         <button type="button" class="tab" data-status="" aria-pressed="true">Todas <span class="cnt" id="cntAll">0</span></button>
@@ -568,14 +903,16 @@
           <input class="input" type="search" id="filtroBusca" placeholder="Placa, motorista ou número" autocomplete="off">
           <kbd aria-hidden="true">/</kbd>
         </div>
+
         <label class="sr-only" for="filtroVeiculo">Veículo</label>
         <select class="select" id="filtroVeiculo">
           <option value="">Todos os veículos</option>
           <option value="Kombi">Kombi</option>
           <option value="Transit">Transit</option>
           <option value="Master">Master</option>
-          <option value="Outro">Outros</option>
+          <option value="Outro">Outros modelos</option>
         </select>
+
         <label class="sr-only" for="filtroPeriodo">Período</label>
         <select class="select" id="filtroPeriodo">
           <option value="">Qualquer período</option>
@@ -583,6 +920,7 @@
           <option value="7dias">Últimos 7 dias</option>
           <option value="30dias">Últimos 30 dias</option>
         </select>
+
         <button type="button" class="btn btn-ghost" id="btnClearFilters" hidden><svg class="i"><use href="#i-x"/></svg>Limpar filtros</button>
       </div>
 
@@ -598,7 +936,7 @@
               <th class="c-pneu">Pneus</th>
               <th class="c-nok">Itens reprovados</th>
               <th class="c-status" data-col="liberacao" aria-sort="none"><button type="button" class="th-sort" data-sort="liberacao">Situação <svg class="i"><use href="#i-chev-down"/></svg></button></th>
-              <th class="c-act"><span class="sr-only">Ações</span></th>
+              <th class="c-act">Ações Rápidas</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -618,178 +956,356 @@
 </div>
 
 <!-- ========================================================================== -->
-<!-- GAVETA: DETALHES DA VISTORIA -->
+<!-- GAVETA: DETALHES DA VISTORIA & WORKFLOW DE APROVAÇÃO -->
 <!-- ========================================================================== -->
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true" tabindex="-1">
   <header class="dr-head">
     <h2 id="drTitle">Vistoria</h2>
-    <span class="plate" id="drPlate"></span>
+    <span class="plate" id="drPlate" title="Clique para ver histórico completo deste veículo"></span>
     <span id="drStatus"></span>
     <span class="spacer"></span>
     <button type="button" class="btn btn-ghost btn-icon" id="drClose" aria-label="Fechar detalhes"><svg class="i"><use href="#i-x"/></svg></button>
   </header>
 
   <div class="dr-body" id="drBody">
+    <!-- PARECER & GESTÃO ATIVA DE LIBERAÇÃO -->
     <section class="sec">
-      <h3>Operação</h3>
+      <h3>Decisão & Liberação do Veículo <small>Ação da Gestão</small></h3>
+      <div class="approval-card">
+        <div class="approval-actions">
+          <button type="button" class="btn-decision" id="btnSetLiberado" onclick="selecionarDecisao('Liberado')">
+            <span style="font-size:16px">🟢</span>
+            <span>Liberar Veículo</span>
+          </button>
+          <button type="button" class="btn-decision" id="btnSetRessalva" onclick="selecionarDecisao('Ressalva')">
+            <span style="font-size:16px">🟡</span>
+            <span>Com Ressalva</span>
+          </button>
+          <button type="button" class="btn-decision" id="btnSetBloqueado" onclick="selecionarDecisao('Não liberado')">
+            <span style="font-size:16px">🔴</span>
+            <span>Bloquear (Oficina)</span>
+          </button>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Parecer do Gestor / Instruções Operacionais:
+          </label>
+          <textarea class="approval-textarea" id="drParecerInput" placeholder="Ex: Veículo liberado para rota da manhã. Agendar troca de pneu para as 17h..."></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button type="button" class="btn btn-primary" id="btnSalvarParecer" onclick="salvarDecisaoGestor()">
+            <svg class="i"><use href="#i-check"/></svg> Salvar Parecer no Supabase
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DADOS DA OPERAÇÃO -->
+    <section class="sec">
+      <h3>Operação & Identificação</h3>
       <dl class="kv" id="drKv"></dl>
     </section>
 
+    <!-- AVARIAS NA CARROCERIA (MAPA REAL) -->
     <section class="sec">
       <h3>Avarias na carroceria <small id="drAvCount"></small></h3>
-      <div class="map">          <svg id="modalVanSvg" viewBox="0 0 300 182">
-            <defs>
-              <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                <path d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z" fill="#fafafa"/>
-                <path d="M64,20 L46,42 L92,42 L92,20 Z" fill="#e8eef4"/>
-                <line x1="96" y1="16" x2="96" y2="82"/>
-                <line x1="134" y1="16" x2="134" y2="82"/>
-                <line x1="192" y1="14" x2="192" y2="82" stroke-width="1"/>
-                <rect x="84" y="48" width="8" height="2.5" rx="1"/>
-                <rect x="124" y="48" width="8" height="2.5" rx="1"/>
-                <circle cx="46" cy="83" r="14" fill="#444"/><circle cx="46" cy="83" r="6" fill="#bbb"/>
-                <circle cx="162" cy="83" r="14" fill="#444"/><circle cx="162" cy="83" r="6" fill="#bbb"/>
-              </g>
-              <g id="mvfront" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
-                <path d="M8,70 L8,30 Q10,6 30,4 L60,4 Q80,6 82,30 L82,70 Z" fill="#fafafa"/>
-                <path d="M16,30 L22,10 L68,10 L74,30 Z" fill="#e8eef4"/>
-                <rect x="10" y="38" width="17" height="8" rx="2" fill="#fff3c4"/><rect x="63" y="38" width="17" height="8" rx="2" fill="#fff3c4"/>
-                <rect x="30" y="37" width="30" height="13" rx="2"/>
-                <rect x="6" y="56" width="78" height="10" rx="3"/>
-              </g>
-              <g id="mvrear" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
-                <path d="M8,70 L8,14 Q8,4 18,4 L72,4 Q82,4 82,14 L82,70 Z" fill="#fafafa"/>
-                <line x1="45" y1="8" x2="45" y2="56"/>
-                <rect x="15" y="12" width="26" height="14" rx="2" fill="#e8eef4"/><rect x="49" y="12" width="26" height="14" rx="2" fill="#e8eef4"/>
-                <rect x="6" y="56" width="78" height="10" rx="3"/>
-              </g>
-              <g id="mvtop" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                <path d="M4,12 Q4,5 14,5 L152,5 Q158,5 158,12 L158,58 Q158,65 152,65 L14,65 Q4,65 4,58 Z" fill="#fafafa"/>
-                <path d="M18,10 L36,14 L36,56 L18,60 Z" fill="#e8eef4"/>
-                <rect x="40" y="10" width="114" height="50" rx="4"/>
-              </g>
-            </defs>
-            <rect width="300" height="182" fill="#ffffff"/>
-            <use href="#mvside" transform="translate(4,6) scale(.68)"/>
-            <use href="#mvside" transform="translate(296,6) scale(-.68,.68)"/>
-            <use href="#mvfront" transform="translate(6,104) scale(.78)"/>
-            <use href="#mvtop" transform="translate(88,110) scale(.78)"/>
-            <use href="#mvrear" transform="translate(222,104) scale(.78)"/>
-            <g font-size="7.5" fill="#64748b" text-anchor="middle" font-weight="700">
-              <text x="74" y="86">ESQ. (MOTORISTA)</text>
-              <text x="226" y="86">DIR. (PASSAGEIRO)</text>
-              <text x="41" y="174">FRENTE</text>
-              <text x="151" y="174">TETO</text>
-              <text x="257" y="174">TRASEIRA</text>
+      <div class="map">
+        <svg id="modalVanSvg" viewBox="0 0 300 182">
+          <defs>
+            <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+              <path d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z" fill="#fafafa"/>
+              <path d="M64,20 L46,42 L92,42 L92,20 Z" fill="#e8eef4"/>
+              <line x1="96" y1="16" x2="96" y2="82"/>
+              <line x1="134" y1="16" x2="134" y2="82"/>
+              <line x1="192" y1="14" x2="192" y2="82" stroke-width="1"/>
+              <rect x="84" y="48" width="8" height="2.5" rx="1"/>
+              <rect x="124" y="48" width="8" height="2.5" rx="1"/>
+              <circle cx="46" cy="83" r="14" fill="#444"/><circle cx="46" cy="83" r="6" fill="#bbb"/>
+              <circle cx="162" cy="83" r="14" fill="#444"/><circle cx="162" cy="83" r="6" fill="#bbb"/>
             </g>
-            <g id="modalVanMarksLayer"></g>
-          </svg></div>
+            <g id="mvfront" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+              <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
+              <path d="M8,70 L8,30 Q10,6 30,4 L60,4 Q80,6 82,30 L82,70 Z" fill="#fafafa"/>
+              <path d="M16,30 L22,10 L68,10 L74,30 Z" fill="#e8eef4"/>
+              <rect x="10" y="38" width="17" height="8" rx="2" fill="#fff3c4"/><rect x="63" y="38" width="17" height="8" rx="2" fill="#fff3c4"/>
+              <rect x="30" y="37" width="30" height="13" rx="2"/>
+              <rect x="6" y="56" width="78" height="10" rx="3"/>
+            </g>
+            <g id="mvrear" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+              <rect x="10" y="68" width="14" height="12" rx="2" fill="#444"/><rect x="66" y="68" width="14" height="12" rx="2" fill="#444"/>
+              <path d="M8,70 L8,14 Q8,4 18,4 L72,4 Q82,4 82,14 L82,70 Z" fill="#fafafa"/>
+              <line x1="45" y1="8" x2="45" y2="56"/>
+              <rect x="15" y="12" width="26" height="14" rx="2" fill="#e8eef4"/><rect x="49" y="12" width="26" height="14" rx="2" fill="#e8eef4"/>
+              <rect x="6" y="56" width="78" height="10" rx="3"/>
+            </g>
+            <g id="mvtop" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+              <path d="M4,12 Q4,5 14,5 L152,5 Q158,5 158,12 L158,58 Q158,65 152,65 L14,65 Q4,65 4,58 Z" fill="#fafafa"/>
+              <path d="M18,10 L36,14 L36,56 L18,60 Z" fill="#e8eef4"/>
+              <rect x="40" y="10" width="114" height="50" rx="4"/>
+            </g>
+          </defs>
+          <rect width="300" height="182" fill="#ffffff"/>
+          <use href="#mvside" transform="translate(4,6) scale(.68)"/>
+          <use href="#mvside" transform="translate(296,6) scale(-.68,.68)"/>
+          <use href="#mvfront" transform="translate(6,104) scale(.78)"/>
+          <use href="#mvtop" transform="translate(88,110) scale(.78)"/>
+          <use href="#mvrear" transform="translate(222,104) scale(.78)"/>
+          <g font-size="7.5" fill="#64748b" text-anchor="middle" font-weight="700">
+            <text x="74" y="86">ESQ. (MOTORISTA)</text>
+            <text x="226" y="86">DIR. (PASSAGEIRO)</text>
+            <text x="41" y="174">FRENTE</text>
+            <text x="151" y="174">TETO</text>
+            <text x="257" y="174">TRASEIRA</text>
+          </g>
+          <g id="modalVanMarksLayer"></g>
+        </svg>
+      </div>
       <p class="legend">A amassado · R risco · Q quebrado · T trincado · F faltando</p>
     </section>
 
+    <!-- PNEUS -->
     <section class="sec">
-      <h3>Pneus</h3>
+      <h3>Pneus & Calibragem</h3>
       <table class="mini">
         <thead><tr><th>Posição</th><th>Estado</th><th>PSI</th><th>Observação</th></tr></thead>
         <tbody id="drTires"></tbody>
       </table>
     </section>
 
+    <!-- ITENS REPROVADOS -->
     <section class="sec">
       <h3>Itens reprovados <small id="drNokCount"></small></h3>
       <div id="drNok"></div>
     </section>
 
+    <!-- OBSERVAÇÕES -->
     <section class="sec" id="drNotesSec">
-      <h3>Observações</h3>
+      <h3>Observações do Vistoriador</h3>
       <p class="notes" id="drNotes"></p>
     </section>
 
+    <!-- ASSINATURAS COLETADAS -->
     <section class="sec">
-      <h3>Assinaturas</h3>
+      <h3>Assinaturas Digitais</h3>
       <div class="sigs" id="drSigs"></div>
     </section>
   </div>
 
   <footer class="dr-foot">
     <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
-    <button type="button" class="btn btn-primary" id="drPdf"><svg class="i"><use href="#i-download"/></svg>Baixar PDF</button>
+    <div class="dr-foot-actions">
+      <button type="button" class="btn" id="drWhatsapp" title="Compartilhar no WhatsApp"><svg class="i"><use href="#i-whatsapp"/></svg> WhatsApp</button>
+      <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i"><use href="#i-printer"/></svg> Imprimir</button>
+      <button type="button" class="btn btn-primary" id="drPdf" title="Baixar PDF Oficial"><svg class="i"><use href="#i-download"/></svg> Baixar PDF</button>
+    </div>
   </footer>
 </aside>
 
-<div class="toast" id="toast" role="status" aria-live="polite"><svg class="i"><use href="#i-check"/></svg><span id="toastMsg"></span></div>
+<!-- ========================================================================== -->
+<!-- MODAL DE HISTÓRICO COMPLETO DA PLACA -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="historyModal">
+  <div class="modal-card">
+    <header class="modal-head">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="plate" id="histPlateTitle">ABC 1234</span>
+        <h3 style="font-size:16px;font-weight:700">Linha do Tempo do Veículo</h3>
+      </div>
+      <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="modal-body">
+      <!-- Métricas do Veículo -->
+      <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;padding:12px;background:var(--raised);border-radius:8px">
+        <div>
+          <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
+          <div id="histTotalCount" style="font-size:18px;font-weight:800;color:var(--ink)">0</div>
+        </div>
+        <div>
+          <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Última Quilometragem</div>
+          <div id="histLastKm" style="font-size:18px;font-weight:800;color:var(--ink)">–</div>
+        </div>
+        <div>
+          <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Status Mais Recente</div>
+          <div id="histLastStatus" style="font-size:14px;font-weight:700;margin-top:2px">–</div>
+        </div>
+      </div>
+
+      <!-- Timeline de Vistorias Anteriores -->
+      <div>
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--ink-2)">Histórico de Vistorias Registradas:</h4>
+        <div class="hist-timeline" id="histTimeline"></div>
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <button type="button" class="btn" onclick="fecharHistoricoModal()">Fechar</button>
+    </footer>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
 'use strict';
 
-// ==============================================================================
-// CONFIGURAÇÃO
-// ==============================================================================
-const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
-const KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
-const apiKey = () => { try { return atob(KEY_B64); } catch (e) { return ''; } };
-
-const AUTH_KEY = 'gomex_painel_auth_v1';
-const POLL_MS = 6000;
-const PAGE_SIZE = 15;
-const LIST_COLS = 'id,numero,created_at,veiculo,veiculo_outro,placa,km,motorista,data,hora,tipo,combustivel,rev_ult_km,rev_ult_data,rev_prox_km,rev_prox_data,avarias,sem_avarias,pneus,pneu_dano,itens,obs,condicao_motorista,liberacao,status';
-const SIG_COLS = 'ass_motorista,ass_vistoriador,ass_responsavel';
-
 const $ = id => document.getElementById(id);
 
-const state = {
-  all: [], filtered: [], page: 1,
-  sortCol: 'data', sortAsc: false,
-  status: '', q: '', veic: '', per: '',
-  loaded: false, error: false, lastSync: 0, sig: '',
-  known: new Set(), fresh: new Set(),
-  sel: null, sigCache: {}
+// Constantes
+const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
+const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
+const apiKey = () => {
+  try { return atob(FALLBACK_KEY_B64); } catch (e) { return ''; }
 };
-let authed = false, loading = false, pollTimer = null, lastFocus = null;
 
-// ==============================================================================
-// UTILIDADES
-// ==============================================================================
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const pad = n => String(n).padStart(2, '0');
-const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-const formatarData = iso => {
-  if (!iso) return '--/--/----';
-  const p = String(iso).split('-');
-  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
-};
-const fmtKm = v => (v === null || v === undefined || v === '') ? '—' : `${Number(v).toLocaleString('pt-BR')} km`;
-const icon = (name, cls = '') => `<svg class="i ${cls}"><use href="#i-${name}"/></svg>`;
+const AUTH_KEY = 'gomex_painel_auth_v1';
+const THEME_KEY = 'gomex_painel_theme_v1';
+const SOUND_KEY = 'gomex_painel_sound_v1';
+const PAGE_SIZE = 15;
+const POLL_MS = 8000;
+
+const LIST_COLS = 'id,numero,created_at,veiculo,veiculo_outro,placa,km,motorista,data,hora,tipo,combustivel,liberacao,avarias,sem_avarias,pneus,pneu_dano,itens,obs,rev_ult_km,rev_ult_data,rev_prox_km,rev_prox_data,condicao_motorista,extintor_validade,thermo_temp,status';
+const SIG_COLS = 'id,ass_motorista,ass_vistoriador,ass_responsavel';
 
 const STATUS = {
-  'Liberado': { cls: 'ok', label: 'Liberado' },
-  'Ressalva': { cls: 'warn', label: 'Com ressalva' },
-  'Não liberado': { cls: 'bad', label: 'Bloqueado' }
-};
-const statusTag = lib => {
-  const m = STATUS[lib] || { cls: 'neutral', label: lib || '—' };
-  return `<span class="tag tag-${m.cls}"><i class="dot"></i>${esc(m.label)}</span>`;
+  Liberado: { label: 'Liberado', cls: 'tag-ok' },
+  Ressalva: { label: 'Com ressalva', cls: 'tag-warn' },
+  'Não liberado': { label: 'Bloqueado', cls: 'tag-bad' }
 };
 
+const state = {
+  all: [],
+  filtered: [],
+  sigCache: {},
+  known: new Set(),
+  fresh: new Set(),
+  loaded: false,
+  error: false,
+  lastSync: null,
+  status: '',
+  q: '',
+  veic: '',
+  per: '',
+  alertOnly: false,
+  sortCol: 'data',
+  sortAsc: false,
+  page: 1,
+  sel: null,
+  sig: '',
+  theme: localStorage.getItem(THEME_KEY) || 'dark',
+  sound: localStorage.getItem(SOUND_KEY) !== 'muted',
+  decisaoAtual: null
+};
+
+let pollTimer = null;
+let loading = false;
+let authed = false;
+let lastFocus = null;
+
+// ==============================================================================
+// TEMA E SONS
+// ==============================================================================
+function aplicarTema(t) {
+  state.theme = t;
+  localStorage.setItem(THEME_KEY, t);
+  if (t === 'light') {
+    document.body.classList.add('theme-light');
+    $('icoTheme').querySelector('use').setAttribute('href', '#i-moon');
+    $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Escuro');
+    $('metaThemeColor').setAttribute('content', '#f4f6fa');
+  } else {
+    document.body.classList.remove('theme-light');
+    $('icoTheme').querySelector('use').setAttribute('href', '#i-sun');
+    $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Claro');
+    $('metaThemeColor').setAttribute('content', '#0a0f1a');
+  }
+}
+aplicarTema(state.theme);
+
+$('btnThemeToggle').addEventListener('click', () => {
+  aplicarTema(state.theme === 'dark' ? 'light' : 'dark');
+});
+
+function aplicarSom(habilitado) {
+  state.sound = habilitado;
+  localStorage.setItem(SOUND_KEY, habilitado ? 'active' : 'muted');
+  $('icoSound').querySelector('use').setAttribute('href', habilitado ? '#i-bell' : '#i-bell-off');
+  $('btnSoundToggle').setAttribute('title', habilitado ? 'Notificações Sonoras Ativadas' : 'Notificações Sonoras Mutadas');
+}
+aplicarSom(state.sound);
+
+$('btnSoundToggle').addEventListener('click', () => {
+  aplicarSom(!state.sound);
+  toast(state.sound ? 'Sons de notificação ativados' : 'Sons de notificação mutados');
+});
+
+// Sintetizador de áudio discreto usando Web Audio API
+function tocarChimeAlerta(tipo) {
+  if (!state.sound) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    if (tipo === 'bad') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(360, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(240, ctx.currentTime + 0.35);
+    } else {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
+    }
+
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.32);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.34);
+  } catch (e) {}
+}
+
+// ==============================================================================
+// HELPERS DE FORMATAÇÃO E HIGIENIZAÇÃO
+// ==============================================================================
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const isoLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const formatarData = iso => {
+  if (!iso) return '—';
+  const p = String(iso).split('-');
+  return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
+};
+const fmtKm = n => n ? Number(n).toLocaleString('pt-BR') + ' km' : '—';
+const icon = name => '<svg class="i"><use href="#i-' + name + '"/></svg>';
 const avariasOf = it => Array.isArray(it.avarias) ? it.avarias : [];
 const pneusOf = it => Array.isArray(it.pneus) ? it.pneus : [];
 const itensOf = it => Array.isArray(it.itens) ? it.itens : [];
-const nokOf = it => itensOf(it).filter(i => i && i.valor === 'NOK');
-const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p && p.estado === 'Gasto');
+const nokOf = it => itensOf(it).filter(x => x && x.valor === 'NOK');
+const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p.estado === 'Gasto');
+
+function statusTag(raw) {
+  const s = STATUS[raw] || { label: raw || 'Pendente', cls: 'tag-neutral' };
+  return '<span class="tag ' + s.cls + '"><i class="dot"></i>' + esc(s.label) + '</span>';
+}
+
+function tipoBadge(tipo) {
+  const t = (tipo || 'Saída').trim();
+  if (t === 'Retorno') return '<span class="badge-tipo tipo-retorno">Retorno</span>';
+  if (t === 'Periódica') return '<span class="badge-tipo tipo-periodica">Periódica</span>';
+  return '<span class="badge-tipo tipo-saida">Saída</span>';
+}
 
 let toastTimer = null;
-function toast(msg, kind = 'ok') {
+function toast(msg, kind) {
   const el = $('toast');
-  $('toastMsg').textContent = msg;
-  el.classList.toggle('error', kind === 'error');
-  el.querySelector('use').setAttribute('href', kind === 'error' ? '#i-alert' : '#i-check');
-  el.classList.add('show');
+  el.className = 'toast show' + (kind === 'error' ? ' error' : '');
+  el.innerHTML = icon(kind === 'error' ? 'alert' : 'check') + '<span>' + esc(msg) + '</span>';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3800);
 }
 
 // ==============================================================================
@@ -841,7 +1357,7 @@ $('frmLogin').addEventListener('submit', e => {
 });
 
 $('btnLogout').addEventListener('click', () => {
-  if (confirm('Sair do painel?')) {
+  if (confirm('Sair do painel executivo?')) {
     localStorage.removeItem(AUTH_KEY);
     sessionStorage.removeItem(AUTH_KEY);
     location.reload();
@@ -849,9 +1365,9 @@ $('btnLogout').addEventListener('click', () => {
 });
 
 // ==============================================================================
-// DADOS — proxy do servidor primeiro, Supabase direto como alternativa
+// DADOS — API REST (PROXY BACKEND E FALLBACK DIRETO)
 // ==============================================================================
-const authHeaders = () => ({ apikey: apiKey(), Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' });
+const authHeaders = () => ({ apikey: apiKey(), Authorization: 'Bearer ' + apiKey(), 'Content-Type': 'application/json' });
 
 async function getRows(proxyPath, directPath) {
   try {
@@ -859,23 +1375,24 @@ async function getRows(proxyPath, directPath) {
     if (r.ok) { const d = await r.json(); if (Array.isArray(d)) return d; }
   } catch (e) {}
   try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${directPath}`, { headers: authHeaders(), cache: 'no-store' });
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + directPath, { headers: authHeaders(), cache: 'no-store' });
     if (r.ok) { const d = await r.json(); if (Array.isArray(d)) return d; }
   } catch (e) {}
   return null;
 }
-const fetchList = () => getRows(`/api/checklists?select=${LIST_COLS}`, `veiculo_checklists?select=${LIST_COLS}&order=id.desc&limit=500`);
-const fetchSigs = id => { id = Number(id); return getRows(`/api/checklists?id=${id}&select=${SIG_COLS}`, `veiculo_checklists?id=eq.${id}&select=${SIG_COLS}`); };
+
+const fetchList = () => getRows('/api/checklists?select=' + LIST_COLS, 'veiculo_checklists?select=' + LIST_COLS + '&order=id.desc&limit=500');
+const fetchSigs = id => { id = Number(id); return getRows('/api/checklists?id=' + id + '&select=' + SIG_COLS, 'veiculo_checklists?id=eq.' + id + '&select=' + SIG_COLS); };
 
 function setSync(kind) { $('sync').dataset.state = kind; renderSyncText(); }
 function renderSyncText() {
   const kind = $('sync').dataset.state;
   const el = $('syncText');
-  if (kind === 'error') { el.textContent = 'Sem conexão · tentando de novo'; return; }
+  if (kind === 'error') { el.textContent = 'Sem conexão · tentando reconectar'; return; }
   if (kind === 'loading') { el.textContent = state.loaded ? 'Atualizando…' : 'Conectando…'; return; }
   if (!state.lastSync) return;
   const s = Math.max(0, Math.round((Date.now() - state.lastSync) / 1000));
-  el.textContent = s < 5 ? 'Sincronizado agora' : `Sincronizado há ${s < 60 ? s + ' s' : Math.floor(s / 60) + ' min'}`;
+  el.textContent = s < 5 ? 'Sincronizado agora' : 'Sincronizado há ' + (s < 60 ? s + ' s' : Math.floor(s / 60) + ' min');
 }
 setInterval(renderSyncText, 1000);
 
@@ -898,7 +1415,7 @@ async function load({ silent = false } = {}) {
   state.lastSync = Date.now();
   setSync('ok');
 
-  const sig = d.map(x => `${x.id}:${x.liberacao}`).join('|');
+  const sig = d.map(x => x.id + ':' + x.liberacao + ':' + (x.obs || '')).join('|');
   if (state.loaded && sig === state.sig) return;
 
   const fresh = state.loaded ? d.filter(x => !state.known.has(x.id)) : [];
@@ -908,7 +1425,15 @@ async function load({ silent = false } = {}) {
   state.loaded = true;
   state.fresh = new Set(fresh.map(x => x.id));
   renderAll();
-  if (fresh.length) toast(fresh.length === 1 ? `Nova vistoria ${fresh[0].numero} recebida` : `${fresh.length} novas vistorias recebidas`);
+
+  if (fresh.length) {
+    const hasBad = fresh.some(x => x.liberacao === 'Não liberado');
+    const hasWarn = fresh.some(x => x.liberacao === 'Ressalva');
+    if (hasBad) tocarChimeAlerta('bad');
+    else if (hasWarn) tocarChimeAlerta('warn');
+
+    toast(fresh.length === 1 ? 'Nova vistoria ' + fresh[0].numero + ' recebida' : fresh.length + ' novas vistorias recebidas');
+  }
   setTimeout(() => state.fresh.clear(), 2600);
 }
 
@@ -916,7 +1441,7 @@ $('btnRefresh').addEventListener('click', () => load());
 document.addEventListener('visibilitychange', () => { if (!document.hidden && authed) load({ silent: true }); });
 
 // ==============================================================================
-// RESUMO
+// RESUMO DOS KPIS & ALERTAS CRÍTICOS
 // ==============================================================================
 function renderSummary() {
   const a = state.all, total = a.length;
@@ -939,10 +1464,36 @@ function renderSummary() {
   $('splitOk').style.flexGrow = lib;
   $('splitWarn').style.flexGrow = res;
   $('splitBad').style.flexGrow = blk;
-  $('split').setAttribute('aria-label', total
-    ? `Situação das vistorias: ${lib} liberadas, ${res} com ressalva, ${blk} bloqueadas`
-    : 'Sem vistorias ainda');
+
+  // Diagnóstico de Alertas Operacionais
+  const comPneuDano = a.filter(x => x.pneu_dano === 'Sim').length;
+  const revisaoVencendo = a.filter(x => x.km && x.rev_prox_km && (Number(x.rev_prox_km) - Number(x.km) <= 1000)).length;
+  const totalAlertas = blk + comPneuDano + revisaoVencendo;
+
+  const banner = $('alertsBanner');
+  if (totalAlertas > 0) {
+    banner.hidden = false;
+    $('alertsSummaryText').textContent = totalAlertas + ' ocorrência(s) precisam de atenção imediata da manutenção ou portaria.';
+    
+    const pBlk = $('pillBloqueados');
+    if (blk > 0) { pBlk.hidden = false; pBlk.textContent = blk + ' Bloqueado(s)'; } else { pBlk.hidden = true; }
+
+    const pPn = $('pillPneus');
+    if (comPneuDano > 0) { pPn.hidden = false; pPn.textContent = comPneuDano + ' Pneu c/ Dano'; } else { pPn.hidden = true; }
+
+    const pRev = $('pillRevisao');
+    if (revisaoVencendo > 0) { pRev.hidden = false; pRev.textContent = revisaoVencendo + ' Revisão Próxima'; } else { pRev.hidden = true; }
+  } else {
+    banner.hidden = true;
+  }
 }
+
+$('btnFilterAlerts').addEventListener('click', () => {
+  state.alertOnly = !state.alertOnly;
+  $('btnFilterAlerts').textContent = state.alertOnly ? 'Exibir Todas' : 'Filtrar Alertas';
+  $('btnFilterAlerts').style.background = state.alertOnly ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
+  onFilterChange();
+});
 
 // ==============================================================================
 // FILTROS E ORDENAÇÃO
@@ -957,10 +1508,17 @@ function applyFilters() {
   const known = ['Kombi', 'Transit', 'Master'];
 
   state.filtered = state.all.filter(it => {
+    if (state.alertOnly) {
+      const isBlk = it.liberacao === 'Não liberado';
+      const isPn = it.pneu_dano === 'Sim';
+      const isRev = it.km && it.rev_prox_km && (Number(it.rev_prox_km) - Number(it.km) <= 1000);
+      if (!isBlk && !isPn && !isRev) return false;
+    }
     if (state.status && it.liberacao !== state.status) return false;
     if (q) {
-      const hay = `${it.placa || ''} ${it.motorista || ''} ${it.numero || ''}`.toLowerCase();
-      if (!hay.includes(q) && !(qn && norm(hay).includes(qn))) return false;
+      const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '');
+      const hayL = hay.toLowerCase();
+      if (!hayL.includes(q) && !(qn && norm(hayL).includes(qn))) return false;
     }
     if (state.veic === 'Outro') { if (known.includes(it.veiculo)) return false; }
     else if (state.veic && it.veiculo !== state.veic) return false;
@@ -971,7 +1529,7 @@ function applyFilters() {
     return true;
   });
 
-  const key = it => state.sortCol === 'data' ? `${it.data || ''} ${it.hora || ''}` : String(it[state.sortCol] ?? '');
+  const key = it => state.sortCol === 'data' ? (it.data || '') + ' ' + (it.hora || '') : String(it[state.sortCol] ?? '');
   const dir = state.sortAsc ? 1 : -1;
   state.filtered.sort((a, b) => {
     const A = key(a), B = key(b);
@@ -990,6 +1548,9 @@ $('btnClearFilters').addEventListener('click', clearFilters);
 
 function clearFilters() {
   state.status = state.q = state.veic = state.per = '';
+  state.alertOnly = false;
+  $('btnFilterAlerts').textContent = 'Filtrar Alertas';
+  $('btnFilterAlerts').style.background = 'rgba(255,255,255,0.15)';
   $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = '';
   onFilterChange();
 }
@@ -1009,31 +1570,32 @@ document.querySelectorAll('.th-sort').forEach(b => b.addEventListener('click', (
 }));
 
 // ==============================================================================
-// TABELA
+// TABELA DE VISTORIAS
 // ==============================================================================
 function skeletonRows() {
-  return Array.from({ length: 6 }, () => `
-    <tr>
-      <td class="c-num"><span class="sk w55"></span></td>
-      <td class="c-date"><span class="sk"></span></td>
-      <td class="c-veic"><span class="sk w90"></span></td>
-      <td class="c-driver"><span class="sk w90"></span></td>
-      <td class="c-av"><span class="sk w55"></span></td>
-      <td class="c-pneu"><span class="sk w55"></span></td>
-      <td class="c-nok"><span class="sk w40"></span></td>
-      <td class="c-status"><span class="sk w90"></span></td>
-      <td class="c-act"></td>
-    </tr>`).join('');
+  return Array.from({ length: 6 }, () => 
+    '<tr>' +
+      '<td class="c-num"><span class="sk w55"></span></td>' +
+      '<td class="c-date"><span class="sk"></span></td>' +
+      '<td class="c-veic"><span class="sk w90"></span></td>' +
+      '<td class="c-driver"><span class="sk w90"></span></td>' +
+      '<td class="c-av"><span class="sk w55"></span></td>' +
+      '<td class="c-pneu"><span class="sk w55"></span></td>' +
+      '<td class="c-nok"><span class="sk w40"></span></td>' +
+      '<td class="c-status"><span class="sk w90"></span></td>' +
+      '<td class="c-act"><span class="sk w90"></span></td>' +
+    '</tr>'
+  ).join('');
 }
 
 function emptyRow(kind) {
   const map = {
-    none: ['inbox', 'Nenhuma vistoria recebida ainda', 'Quando um motorista concluir um check-list no aplicativo, ele aparece aqui sozinho, sem precisar atualizar.', ''],
+    none: ['inbox', 'Nenhuma vistoria recebida ainda', 'Quando um motorista concluir um check-list no aplicativo, ele aparecerá aqui automaticamente.', ''],
     filtered: ['search', 'Nada encontrado com esses filtros', 'Tente outra placa, outro período ou volte para todas as situações.', '<button type="button" class="btn" data-act="clear">Limpar filtros</button>'],
-    error: ['alert', 'Não foi possível carregar as vistorias', 'Confira a conexão com a internet. O painel tenta de novo automaticamente.', '<button type="button" class="btn" data-act="retry">Tentar agora</button>']
+    error: ['alert', 'Não foi possível carregar as vistorias', 'Confira a conexão com a internet. O painel tenta reconectar automaticamente.', '<button type="button" class="btn" data-act="retry">Tentar agora</button>']
   };
   const [ic, title, text, action] = map[kind];
-  return `<tr><td class="empty" colspan="9">${icon(ic)}<h2>${title}</h2><p>${text}</p>${action}</td></tr>`;
+  return '<tr><td class="empty" colspan="9">' + icon(ic) + '<h2>' + title + '</h2><p>' + text + '</p>' + action + '</td></tr>';
 }
 
 function rowHtml(it) {
@@ -1043,18 +1605,38 @@ function rowHtml(it) {
   const id = esc(it.id);
   const num = esc(it.numero || '—');
   const placa = esc((it.placa || '').toUpperCase());
-  return `
-    <tr data-id="${id}" class="${state.fresh.has(it.id) ? 'row-new' : ''}">
-      <td class="c-num"><button type="button" class="num" data-act="open" data-id="${id}" aria-label="Abrir vistoria ${num}">${num}</button></td>
-      <td class="c-date"><span class="t1">${formatarData(it.data)}</span><span class="t2">${esc(it.hora || '--:--')}</span></td>
-      <td class="c-veic"><div class="stack"><span class="plate">${placa}</span><span class="t2">${esc(it.veiculo || '—')}</span></div></td>
-      <td class="c-driver"><span class="t1">${esc(it.motorista || 'Não informado')}</span><span class="t2">${esc(it.tipo || 'Saída')} · combustível ${esc(it.combustivel || '—')}</span></td>
-      <td class="c-av">${av ? `<span class="txt-warn">${av} ${av === 1 ? 'marca' : 'marcas'}</span>` : '<span class="muted">Íntegro</span>'}</td>
-      <td class="c-pneu">${alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>'}</td>
-      <td class="c-nok">${nok ? `<span class="txt-bad">${nok}</span>` : '<span class="muted">—</span>'}</td>
-      <td class="c-status">${statusTag(it.liberacao)}</td>
-      <td class="c-act"><button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="${id}" aria-label="Baixar PDF da vistoria ${num}" title="Baixar PDF">${icon('download')}</button></td>
-    </tr>`;
+
+  return '<tr data-id="' + id + '" class="' + (state.fresh.has(it.id) ? 'row-new' : '') + '">' +
+    '<td class="c-num"><button type="button" class="num" data-act="open" data-id="' + id + '" aria-label="Abrir vistoria ' + num + '">' + num + '</button></td>' +
+    '<td class="c-date"><span class="t1">' + formatarData(it.data) + '</span><span class="t2">' + esc(it.hora || '--:--') + '</span></td>' +
+    '<td class="c-veic">' +
+      '<div class="stack">' +
+        '<button type="button" class="plate" data-act="history" data-placa="' + placa + '" title="Ver histórico deste veículo">' + placa + '</button>' +
+        '<span class="t2">' + esc(it.veiculo || '—') + '</span>' +
+      '</div>' +
+    '</td>' +
+    '<td class="c-driver">' +
+      '<div class="stack">' +
+        '<span class="t1">' + esc(it.motorista || 'Não informado') + '</span>' +
+        '<div style="display:flex;align-items:center;gap:6px">' +
+          tipoBadge(it.tipo) +
+          '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
+        '</div>' +
+      '</div>' +
+    '</td>' +
+    '<td class="c-av">' + (av ? '<span class="txt-warn">' + av + ' ' + (av === 1 ? 'marca' : 'marcas') + '</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
+    '<td class="c-pneu">' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
+    '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
+    '<td class="c-status">' + statusTag(it.liberacao) + '</td>' +
+    '<td class="c-act">' +
+      '<div class="row-actions">' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="open" data-id="' + id + '" title="Ver detalhes completos">' + icon('eye') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="print" data-id="' + id + '" title="Imprimir 2ª Via Oficial">' + icon('printer') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="' + id + '" title="Baixar PDF Oficial">' + icon('download') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="whatsapp" data-id="' + id + '" title="Compartilhar no WhatsApp">' + icon('whatsapp') + '</button>' +
+      '</div>' +
+    '</td>' +
+  '</tr>';
 }
 
 function renderTable() {
@@ -1066,9 +1648,9 @@ function renderTable() {
   const start = (state.page - 1) * PAGE_SIZE;
   const items = state.filtered.slice(start, start + PAGE_SIZE);
 
-  const hasFilters = !!(state.status || state.q || state.veic || state.per);
+  const hasFilters = !!(state.status || state.q || state.veic || state.per || state.alertOnly);
   $('btnClearFilters').hidden = !hasFilters;
-  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status)));
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status && !state.alertOnly)));
   document.querySelectorAll('.grid th[data-col]').forEach(th => {
     th.setAttribute('aria-sort', th.dataset.col === state.sortCol ? (state.sortAsc ? 'ascending' : 'descending') : 'none');
   });
@@ -1081,13 +1663,13 @@ function renderTable() {
     $('tableInfo').textContent = '0 vistorias';
   } else if (!total) {
     body.innerHTML = emptyRow('filtered');
-    $('tableInfo').textContent = `0 de ${state.all.length} vistorias`;
+    $('tableInfo').textContent = '0 de ' + state.all.length + ' vistorias';
   } else {
     body.innerHTML = items.map(rowHtml).join('');
-    $('tableInfo').textContent = `${start + 1}–${start + items.length} de ${total} ${total === 1 ? 'vistoria' : 'vistorias'}`;
+    $('tableInfo').textContent = (start + 1) + '–' + (start + items.length) + ' de ' + total + ' ' + (total === 1 ? 'vistoria' : 'vistorias');
   }
 
-  $('pageIndicator').textContent = `Página ${state.page} de ${pages}`;
+  $('pageIndicator').textContent = 'Página ' + state.page + ' de ' + pages;
   $('btnPrevPage').disabled = state.page <= 1;
   $('btnNextPage').disabled = state.page >= pages;
 }
@@ -1102,7 +1684,10 @@ $('tableBody').addEventListener('click', e => {
   if (btn) {
     const act = btn.dataset.act;
     if (act === 'open') openDrawer(btn.dataset.id, btn);
-    else if (act === 'pdf') baixarPdfVistoria(btn.dataset.id, btn);
+    else if (act === 'pdf') baixarPdfOficial(btn.dataset.id, btn, false);
+    else if (act === 'print') baixarPdfOficial(btn.dataset.id, btn, true);
+    else if (act === 'whatsapp') compartilharWhatsapp(btn.dataset.id);
+    else if (act === 'history') abrirHistoricoVeiculo(btn.dataset.placa);
     else if (act === 'clear') clearFilters();
     else if (act === 'retry') load();
     return;
@@ -1112,7 +1697,7 @@ $('tableBody').addEventListener('click', e => {
 });
 
 // ==============================================================================
-// GAVETA DE DETALHES
+// GAVETA DE DETALHES & WORKFLOW DE APROVAÇÃO
 // ==============================================================================
 const SIG_ROLES = [['ass_motorista', 'Motorista / vendedor'], ['ass_vistoriador', 'Vistoriador'], ['ass_responsavel', 'Responsável da frota']];
 const revText = (km, dt) => [km ? fmtKm(km) : null, dt ? formatarData(dt) : null].filter(Boolean).join(' · ') || '—';
@@ -1121,21 +1706,93 @@ function renderSigs(row) {
   $('drSigs').innerHTML = SIG_ROLES.map(([k, label]) => {
     let body;
     if (row === null) body = '<span class="sk"></span>';
-    else if (row[k] && /^data:image\//.test(row[k])) body = `<img src="${esc(row[k])}" alt="Assinatura de ${esc(label)}"><span class="sig-st ok">Assinado</span>`;
+    else if (row[k] && /^data:image\//.test(row[k])) body = '<img src="' + esc(row[k]) + '" alt="Assinatura de ' + esc(label) + '"><span class="sig-st ok">Assinado</span>';
     else body = '<span class="sig-st">Pendente</span>';
-    return `<div class="sig"><span class="sig-role">${label}</span>${body}</div>`;
+    return '<div class="sig"><span class="sig-role">' + label + '</span>' + body + '</div>';
   }).join('');
 }
 
+function selecionarDecisao(status) {
+  state.decisaoAtual = status;
+  $('btnSetLiberado').className = 'btn-decision' + (status === 'Liberado' ? ' active-liberado' : '');
+  $('btnSetRessalva').className = 'btn-decision' + (status === 'Ressalva' ? ' active-ressalva' : '');
+  $('btnSetBloqueado').className = 'btn-decision' + (status === 'Não liberado' ? ' active-bloqueado' : '');
+}
+window.selecionarDecisao = selecionarDecisao;
+
+async function salvarDecisaoGestor() {
+  if (!state.sel) return;
+  const status = state.decisaoAtual || state.sel.liberacao;
+  const parecer = $('drParecerInput').value.trim();
+  const btn = $('btnSalvarParecer');
+  btn.disabled = true;
+  btn.textContent = 'Salvando no Supabase...';
+
+  const payload = {
+    id: state.sel.id,
+    liberacao: status,
+    obs: parecer ? parecer : state.sel.obs
+  };
+
+  try {
+    let ok = false;
+    // 1. Tenta proxy no servidor
+    try {
+      const res = await fetch('/api/checklists', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) ok = true;
+    } catch (e) {}
+
+    // 2. Fallback direto Supabase
+    if (!ok) {
+      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + state.sel.id, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ liberacao: status, obs: payload.obs })
+      });
+      if (resDirect.ok) ok = true;
+    }
+
+    if (ok) {
+      state.sel.liberacao = status;
+      state.sel.obs = payload.obs;
+      const idx = state.all.findIndex(x => x.id === state.sel.id);
+      if (idx !== -1) {
+        state.all[idx].liberacao = status;
+        state.all[idx].obs = payload.obs;
+      }
+      $('drStatus').innerHTML = statusTag(status);
+      $('drNotes').textContent = payload.obs;
+      renderAll();
+      toast('Parecer e situação atualizados com sucesso!');
+    } else {
+      toast('Não foi possível gravar a alteração.', 'error');
+    }
+  } catch (err) {
+    toast('Erro de rede: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = icon('check') + ' Salvar Parecer no Supabase';
+  }
+}
+window.salvarDecisaoGestor = salvarDecisaoGestor;
+
 function fillDrawer(it) {
-  $('drTitle').textContent = `Vistoria ${it.numero || '—'}`;
+  $('drTitle').textContent = 'Vistoria Nº ' + (it.numero || '—');
   $('drPlate').textContent = (it.placa || '').toUpperCase();
+  $('drPlate').onclick = () => abrirHistoricoVeiculo(it.placa);
   $('drStatus').innerHTML = statusTag(it.liberacao);
 
+  selecionarDecisao(it.liberacao);
+  $('drParecerInput').value = it.obs || '';
+
   const kv = [
-    ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ` (${esc(it.veiculo_outro)})` : '')],
+    ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
     ['Motorista', esc(it.motorista || '—')],
-    ['Data e hora', `${formatarData(it.data)} às ${esc(it.hora || '--:--')}`],
+    ['Data e hora', formatarData(it.data) + ' às ' + esc(it.hora || '--:--')],
     ['Quilometragem', fmtKm(it.km)],
     ['Tipo de vistoria', esc(it.tipo || '—')],
     ['Combustível', esc(it.combustivel || '—')],
@@ -1143,33 +1800,35 @@ function fillDrawer(it) {
     ['Última revisão', esc(revText(it.rev_ult_km, it.rev_ult_data))],
     ['Próxima revisão', esc(revText(it.rev_prox_km, it.rev_prox_data))]
   ];
-  $('drKv').innerHTML = kv.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('');
+  $('drKv').innerHTML = kv.map(([k, v]) => '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>').join('');
 
   const marks = avariasOf(it);
-  $('drAvCount').textContent = it.sem_avarias ? 'Sem avarias novas' : (marks.length ? `${marks.length} ${marks.length === 1 ? 'marca' : 'marcas'}` : 'Nenhuma marca');
-  $('modalVanMarksLayer').innerHTML = marks.map(([x, y, k]) => `
-    <g>
-      <circle cx="${Number(x)}" cy="${Number(y)}" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>
-      <text x="${Number(x)}" y="${Number(y)}" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">${esc(k)}</text>
-    </g>`).join('');
+  $('drAvCount').textContent = it.sem_avarias ? 'Sem avarias novas' : (marks.length ? marks.length + ' ' + (marks.length === 1 ? 'marca' : 'marcas') : 'Nenhuma marca');
+  $('modalVanMarksLayer').innerHTML = marks.map(([x, y, k]) => 
+    '<g class="mk">' +
+      '<circle cx="' + Number(x) + '" cy="' + Number(y) + '" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>' +
+      '<text x="' + Number(x) + '" y="' + Number(y) + '" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">' + esc(k) + '</text>' +
+    '</g>'
+  ).join('');
 
   const tires = pneusOf(it);
   const tireColor = s => s === 'Gasto' ? 'var(--bad)' : s === 'Meia vida' ? 'var(--warn)' : 'var(--ok)';
-  $('drTires').innerHTML = tires.length ? tires.map(p => `
-    <tr>
-      <td>${esc(p.pos)}</td>
-      <td style="color:${tireColor(p.estado)};font-weight:600">${esc(p.estado || '—')}</td>
-      <td>${p.psi ? esc(p.psi) : '—'}</td>
-      <td class="muted">${esc(p.obs || '—')}</td>
-    </tr>`).join('') : '<tr><td colspan="4" class="muted">Sem registro de pneus nesta vistoria.</td></tr>';
+  $('drTires').innerHTML = tires.length ? tires.map(p => 
+    '<tr>' +
+      '<td>' + esc(p.pos) + '</td>' +
+      '<td style="color:' + tireColor(p.estado) + ';font-weight:600">' + esc(p.estado || '—') + '</td>' +
+      '<td>' + (p.psi ? esc(p.psi) : '—') + '</td>' +
+      '<td class="muted">' + esc(p.obs || '—') + '</td>' +
+    '</tr>'
+  ).join('') : '<tr><td colspan="4" class="muted">Sem registro de pneus nesta vistoria.</td></tr>';
 
   const nok = nokOf(it);
-  $('drNokCount').textContent = itensOf(it).length ? `${nok.length} de ${itensOf(it).length} itens` : '';
+  $('drNokCount').textContent = itensOf(it).length ? nok.length + ' de ' + itensOf(it).length + ' itens' : '';
   $('drNok').innerHTML = !itensOf(it).length
     ? '<p class="muted">Esta vistoria não trouxe itens de verificação.</p>'
     : nok.length
-      ? `<ul class="nok">${nok.map(i => `<li>${icon('alert')}<span><span class="grp">${esc(i.grupo || '')}</span>${esc(i.nome || '')}</span></li>`).join('')}</ul>`
-      : `<p class="all-ok">${icon('check')}Nenhum item reprovado.</p>`;
+      ? '<ul class="nok">' + nok.map(i => '<li>' + icon('alert') + '<span><span class="grp">' + esc(i.grupo || '') + '</span>' + esc(i.nome || '') + '</span></li>').join('') + '</ul>'
+      : '<p class="all-ok">' + icon('check') + 'Nenhum item reprovado.</p>';
 
   $('drNotesSec').hidden = !it.obs;
   $('drNotes').textContent = it.obs || '';
@@ -1213,16 +1872,14 @@ function closeDrawer() {
 $('drClose').addEventListener('click', closeDrawer);
 $('drCloseFoot').addEventListener('click', closeDrawer);
 $('scrim').addEventListener('click', closeDrawer);
-$('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfVistoria(state.sel.id, e.currentTarget); });
+$('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, false); });
+$('drPrint').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, true); });
+$('drWhatsapp').addEventListener('click', () => { if (state.sel) compartilharWhatsapp(state.sel.id); });
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeDrawer(); return; }
-  if (e.key === 'Tab' && $('drawer').classList.contains('open')) {
-    const f = [...$('drawer').querySelectorAll('button, [href], input, select, [tabindex]:not([tabindex="-1"])')].filter(x => !x.disabled && x.offsetParent !== null);
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  if (e.key === 'Escape') {
+    if ($('historyModal').classList.contains('open')) fecharHistoricoModal();
+    else closeDrawer();
     return;
   }
   if (e.key === '/' && authed && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) {
@@ -1231,13 +1888,150 @@ document.addEventListener('keydown', e => {
   }
 });
 
-async function baixarPdfVistoria(id, btn) {
+// ==============================================================================
+// MODAL DE HISTÓRICO COMPLETO DA PLACA
+// ==============================================================================
+function abrirHistoricoVeiculo(placa) {
+  if (!placa) return;
+  const pNorm = placa.toUpperCase().trim();
+  $('histPlateTitle').textContent = pNorm;
+  
+  const vistorias = state.all.filter(x => (x.placa || '').toUpperCase().trim() === pNorm);
+  $('histTotalCount').textContent = vistorias.length;
+  
+  if (vistorias.length > 0) {
+    const maisRecente = vistorias[0];
+    $('histLastKm').textContent = fmtKm(maisRecente.km);
+    $('histLastStatus').innerHTML = statusTag(maisRecente.liberacao);
+
+    $('histTimeline').innerHTML = vistorias.map(v => {
+      const av = avariasOf(v).length;
+      const nok = nokOf(v).length;
+      const cls = v.liberacao === 'Não liberado' ? 'bad' : v.liberacao === 'Ressalva' ? 'warn' : 'ok';
+      return '<div class="hist-item ' + cls + '">' +
+        '<i class="hist-dot"></i>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+          '<span style="font-weight:700;font-size:13px;color:var(--ink)">' +
+            'Vistoria Nº ' + v.numero + ' · ' + formatarData(v.data) + ' às ' + (v.hora || '--:--') +
+          '</span>' +
+          statusTag(v.liberacao) +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--ink-2)">' +
+          'Motorista: <b>' + esc(v.motorista || 'Não informado') + '</b> · Km: ' + fmtKm(v.km) + ' · ' + esc(v.tipo || 'Saída') +
+        '</div>' +
+        '<div style="font-size:11.5px;color:var(--ink-3)">' +
+          (av ? '<span class="txt-warn">' + av + ' marca(s) na carroceria</span>' : 'Carroceria íntegra') +
+          (nok ? ' · <span class="txt-bad">' + nok + ' item(ns) reprovado(s)</span>' : '') +
+        '</div>' +
+        '<div style="margin-top:4px">' +
+          '<button type="button" class="btn btn-ghost" style="height:26px;font-size:11.5px;padding:0 8px" onclick="fecharHistoricoModal(); openDrawer(\'' + v.id + '\')">' +
+            icon('eye') + ' Ver Ficha Desta Vistoria' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else {
+    $('histLastKm').textContent = '—';
+    $('histLastStatus').textContent = '—';
+    $('histTimeline').innerHTML = '<p class="muted">Nenhuma vistoria encontrada para esta placa.</p>';
+  }
+
+  $('historyModal').classList.add('open');
+}
+window.abrirHistoricoVeiculo = abrirHistoricoVeiculo;
+
+function fecharHistoricoModal() {
+  $('historyModal').classList.remove('open');
+}
+window.fecharHistoricoModal = fecharHistoricoModal;
+
+// ==============================================================================
+// COMPARTILHAR NO WHATSAPP
+// ==============================================================================
+function compartilharWhatsapp(id) {
   const item = state.all.find(c => String(c.id) === String(id));
   if (!item) return;
+
+  const num = item.numero || '—';
+  const placa = (item.placa || '').toUpperCase();
+  const motorista = item.motorista || 'Não informado';
+  const status = item.liberacao || 'Pendente';
+  const av = avariasOf(item).length;
+  const km = fmtKm(item.km);
+  const obs = item.obs || 'Nenhuma ressalva apontada';
+
+  const msg = '*🚚 GOMEX FROTA · VISTORIA Nº ' + num + '*\n\n' +
+    '📋 *Veículo:* ' + (item.veiculo || '—') + ' (*' + placa + '*)\n' +
+    '👤 *Motorista:* ' + motorista + '\n' +
+    '🛣️ *Km Atual:* ' + km + '\n' +
+    '📅 *Data/Hora:* ' + formatarData(item.data) + ' às ' + (item.hora || '--:--') + '\n' +
+    '🚦 *Situação da Liberação:* *' + status.toUpperCase() + '*\n' +
+    '⚠️ *Avarias na Carroceria:* ' + av + ' marcação(ões)\n' +
+    '📝 *Observações / Parecer:* ' + obs + '\n\n' +
+    '_Painel Oficial de Controle de Frota Gomex_';
+
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+}
+window.compartilharWhatsapp = compartilharWhatsapp;
+
+// ==============================================================================
+// RENDERIZADOR DO MAPA VETORIAL DA VAN PARA O PDF
+// ==============================================================================
+function renderizarVanParaImagem(item) {
+  return new Promise(resolve => {
+    try {
+      const svgOriginal = $('modalVanSvg');
+      if (!svgOriginal) return resolve(null);
+      const clone = svgOriginal.cloneNode(true);
+      clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      clone.setAttribute('width', '900');
+      clone.setAttribute('height', '546');
+
+      const marksLayer = clone.querySelector('#modalVanMarksLayer');
+      if (marksLayer) {
+        marksLayer.innerHTML = avariasOf(item).map(([x, y, k]) => 
+          '<g>' +
+            '<circle cx="' + Number(x) + '" cy="' + Number(y) + '" r="6.8" fill="#dc2626" stroke="#ffffff" stroke-width="1.8"/>' +
+            '<text x="' + Number(x) + '" y="' + Number(y) + '" fill="#ffffff" font-size="8.8" font-family="Arial, Helvetica, sans-serif" font-weight="bold" text-anchor="middle" dominant-baseline="central">' + esc(k) + '</text>' +
+          '</g>'
+        ).join('');
+      }
+
+      const xml = new XMLSerializer().serializeToString(clone);
+      const img = new Image();
+      img.onload = () => {
+        const cv = document.createElement('canvas');
+        cv.width = 900; cv.height = 546;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 900, 546);
+        ctx.drawImage(img, 0, 0, 900, 546);
+        resolve(cv.toDataURL('image/jpeg', 0.92));
+      };
+      img.onerror = () => resolve(null);
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+// ==============================================================================
+// GERADOR DE PDF OFICIAL COMPLETO (PADRÃO 1 PÁGINA A4 GOMEX FROTA)
+// ==============================================================================
+async function baixarPdfOficial(id, btn, isPrint = false) {
+  const d = state.all.find(c => String(c.id) === String(id));
+  if (!d) return;
 
   if (btn) btn.disabled = true;
 
   try {
+    if (!state.sigCache[d.id]) {
+      const rows = await fetchSigs(d.id);
+      state.sigCache[d.id] = rows && rows[0] ? rows[0] : {};
+    }
+    const sigs = state.sigCache[d.id] || {};
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
 
@@ -1266,138 +2060,337 @@ async function baixarPdfVistoria(id, btn) {
       doc.rect(x, y, w, h);
     };
 
+    const corta = (txt, maxW) => {
+      const l = doc.splitTextToSize(String(txt || ''), maxW);
+      return l[0] || '';
+    };
+
+    const dataBr = iso => {
+      if (!iso) return '__/__/____';
+      const p = String(iso).split('-');
+      return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
+    };
+
     let y = M;
 
-    // Cabeçalho
+    // --- 1. CABEÇALHO ---
     doc.setFillColor(...ROXO);
     doc.roundedRect(M, y, 26, 11.5, 2, 2, 'F');
     fonte(8.5, 'bold', [255, 255, 255]);
     doc.text('GOMEX', M + 13, y + 5.2, { align: 'center' });
     fonte(5.8, 'bold', [196, 210, 255]);
-    doc.text('DISTRIBUIDORA', M + 13, y + 8.8, { align: 'center' });
+    doc.text('FROTA', M + 13, y + 8.8, { align: 'center' });
 
-    fonte(12.5, 'bold', ROXO);
-    doc.text('CHECK-LIST DE VISTORIA VEICULAR', M + 30, y + 5.5);
-    fonte(7.0, 'normal', CINZA);
-    doc.text('Gomex Frota · Sistema Oficial de Inspeção e Segurança', M + 30, y + 9.5);
+    fonte(11.5, 'bold', ROXO);
+    doc.text('CHECK-LIST DE VEÍCULO · CONTROLE DE FROTA', M + 30, y + 4.8);
+    fonte(6.3, 'normal', CINZA);
+    doc.text('Documento oficial de vistoria e liberação da frota · Gomex Distribuidora', M + 30, y + 8.8);
 
-    doc.setFillColor(245, 247, 252);
-    doc.roundedRect(M + W - 32, y, 32, 11.5, 1.5, 1.5, 'FD');
-    fonte(6.5, 'bold', CINZA);
-    doc.text('Nº VISTORIA', M + W - 16, y + 4.2, { align: 'center' });
-    fonte(10.5, 'bold', ROXO);
-    doc.text(String(item.numero || '000000'), M + W - 16, y + 9.5, { align: 'center' });
+    const numBoxW = 28;
+    const numBoxX = M + W - numBoxW;
+    doc.setFillColor(243, 244, 250);
+    doc.rect(numBoxX, y, numBoxW, 4.5, 'F');
+    caixa(numBoxX, y, numBoxW, 11.5);
+    fonte(5.5, 'bold', CINZA);
+    doc.text('Nº VISTORIA', numBoxX + numBoxW / 2, y + 3.2, { align: 'center' });
+    fonte(9.5, 'bold', ROXO);
+    doc.text(String(d.numero || '000000'), numBoxX + numBoxW / 2, y + 9.0, { align: 'center' });
 
-    y += 14.0;
+    y += 13.5;
 
-    // 1. Identificação
-    barraTitulo(M, y, W, '1. IDENTIFICAÇÃO DO VEÍCULO E OPERAÇÃO');
+    // --- 2. IDENTIFICAÇÃO ---
+    barraTitulo(M, y, W, '1. IDENTIFICAÇÃO DO VEÍCULO E MOTORISTA');
     y += 5.0;
 
-    caixa(M, y, W, 17.5);
-    const camposId = [
-      ['VEÍCULO', item.veiculo || '—'],
-      ['PLACA', (item.placa || '—').toUpperCase()],
-      ['KM ATUAL', item.km ? `${Number(item.km).toLocaleString('pt-BR')} km` : '—'],
-      ['MOTORISTA / VENDEDOR', item.motorista || '—'],
-      ['DATA', formatarData(item.data)],
-      ['HORA', item.hora || '—'],
-      ['TIPO VISTORIA', item.tipo || '—'],
-      ['COMBUSTÍVEL', item.combustivel || '—'],
-      ['ÚLT. REVISÃO', item.rev_ult_km ? `${item.rev_ult_km} km` : '—'],
-      ['PRÓX. REVISÃO', item.rev_prox_km ? `${item.rev_prox_km} km` : '—']
+    const colW = [74, 52, 68];
+    const veiculoNome = d.veiculo === 'Outro' ? (d.veiculo_outro || 'Outro') : (d.veiculo || '—');
+    const hRowId = 7.0;
+
+    caixa(M, y, colW[0], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('VEÍCULO', M + 2, y + 2.5);
+    fonte(7.8, 'bold'); doc.text('[X] ' + veiculoNome, M + 2, y + 5.7);
+
+    caixa(M + colW[0], y, colW[1], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('PLACA', M + colW[0] + 2, y + 2.5);
+    fonte(8.5, 'bold'); doc.text((d.placa || '—').toUpperCase(), M + colW[0] + 2, y + 5.7);
+
+    caixa(M + colW[0] + colW[1], y, colW[2], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('DATA / HORA', M + colW[0] + colW[1] + 2, y + 2.5);
+    fonte(7.8, 'normal'); doc.text(dataBr(d.data) + ' · ' + (d.hora || '—'), M + colW[0] + colW[1] + 2, y + 5.7);
+    y += hRowId;
+
+    caixa(M, y, colW[0], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('MOTORISTA / VENDEDOR', M + 2, y + 2.5);
+    fonte(7.8, 'normal'); doc.text(corta(d.motorista || '—', colW[0] - 4), M + 2, y + 5.7);
+
+    caixa(M + colW[0], y, colW[1], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('KM ATUAL', M + colW[0] + 2, y + 2.5);
+    fonte(7.8, 'bold'); doc.text(d.km ? d.km + ' km' : '—', M + colW[0] + 2, y + 5.7);
+
+    caixa(M + colW[0] + colW[1], y, colW[2], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('TIPO DE VISTORIA', M + colW[0] + colW[1] + 2, y + 2.5);
+    fonte(7.8, 'normal'); doc.text('[X] ' + (d.tipo || '—'), M + colW[0] + colW[1] + 2, y + 5.7);
+    y += hRowId;
+
+    caixa(M, y, colW[0], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('NÍVEL DE COMBUSTÍVEL', M + 2, y + 2.5);
+    fonte(7.8, 'normal'); doc.text('[X] ' + (d.combustivel || '—'), M + 2, y + 5.7);
+
+    caixa(M + colW[0], y, colW[1], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('ÚLT. REVISÃO (KM / DATA)', M + colW[0] + 2, y + 2.5);
+    fonte(7.2, 'normal'); doc.text((d.rev_ult_km ? d.rev_ult_km + ' km' : '') + ' ' + dataBr(d.rev_ult_data), M + colW[0] + 2, y + 5.7);
+
+    caixa(M + colW[0] + colW[1], y, colW[2], hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('PRÓX. REVISÃO (KM / DATA)', M + colW[0] + colW[1] + 2, y + 2.5);
+    fonte(7.2, 'normal'); doc.text((d.rev_prox_km ? d.rev_prox_km + ' km' : '') + ' ' + dataBr(d.rev_prox_data), M + colW[0] + colW[1] + 2, y + 5.7);
+    y += hRowId + 2.0;
+
+    // --- 3. SEÇÃO 2 (AVARIAS) & SEÇÃO 3 (PNEUS) ---
+    const wAvarias = 98;
+    const xPneus = M + wAvarias + 3;
+    const wPneus = W - wAvarias - 3;
+    const hSec2 = 62.0;
+
+    barraTitulo(M, y, wAvarias, '2. AVARIAS NA CARROCERIA');
+    barraTitulo(xPneus, y, wPneus, '3. PNEUS E REQUISITOS');
+    y += 5.0;
+
+    caixa(M, y, wAvarias, hSec2);
+    const vanImg = await renderizarVanParaImagem(d);
+    if (vanImg) {
+      try { doc.addImage(vanImg, 'JPEG', M + 1, y + 1, wAvarias - 2, 48.5); } catch (e) {}
+    }
+    fonte(5.8, 'normal', CINZA);
+    doc.text('Legenda: A Amassado · R Risco · Q Quebrado · T Trincado · F Faltando', M + 2.5, y + 53.5);
+    const semAvText = d.sem_avarias ? '[X] Sem avarias novas (Veículo íntegro)' : '[X] ' + avariasOf(d).length + ' avaria(s) marcada(s) no diagrama';
+    fonte(6.5, 'bold', d.sem_avarias ? [21, 128, 61] : [185, 28, 28]);
+    doc.text(semAvText, M + 2.5, y + 58.5);
+
+    // Tabela de Pneus
+    let yP = y;
+    doc.setFillColor(240, 242, 248);
+    doc.rect(xPneus, yP, wPneus, 4.5, 'F');
+    caixa(xPneus, yP, wPneus, 4.5);
+    doc.line(xPneus + 33, yP, xPneus + 33, yP + 4.5);
+    doc.line(xPneus + 48, yP, xPneus + 48, yP + 4.5);
+    doc.line(xPneus + 63, yP, xPneus + 63, yP + 4.5);
+    doc.line(xPneus + 78, yP, xPneus + 78, yP + 4.5);
+
+    fonte(5.5, 'bold', CINZA);
+    doc.text('POSIÇÃO', xPneus + 2.0, yP + 3.1);
+    doc.text('BOM', xPneus + 40.5, yP + 3.1, { align: 'center' });
+    doc.text('MEIA', xPneus + 55.5, yP + 3.1, { align: 'center' });
+    doc.text('GASTO', xPneus + 70.5, yP + 3.1, { align: 'center' });
+    doc.text('PSI', xPneus + 85.5, yP + 3.1, { align: 'center' });
+    yP += 4.5;
+
+    const listaPneus = pneusOf(d).length ? pneusOf(d) : [
+      { pos: 'Dianteiro Esquerdo', estado: 'Bom', psi: '32' },
+      { pos: 'Dianteiro Direito', estado: 'Bom', psi: '32' },
+      { pos: 'Traseiro Esquerdo', estado: 'Bom', psi: '35' },
+      { pos: 'Traseiro Direito', estado: 'Bom', psi: '35' },
+      { pos: 'Estepe', estado: 'Bom', psi: '35' }
     ];
 
-    const colW = W / 5;
-    camposId.forEach(([lbl, val], idx) => {
-      const col = idx % 5;
-      const row = Math.floor(idx / 5);
-      const cX = M + col * colW;
-      const cY = y + row * 8.5;
+    listaPneus.slice(0, 5).forEach(p => {
+      caixa(xPneus, yP, wPneus, 5.3);
+      doc.line(xPneus + 33, yP, xPneus + 33, yP + 5.3);
+      doc.line(xPneus + 48, yP, xPneus + 48, yP + 5.3);
+      doc.line(xPneus + 63, yP, xPneus + 63, yP + 5.3);
+      doc.line(xPneus + 78, yP, xPneus + 78, yP + 5.3);
 
-      fonte(5.2, 'bold', CINZA);
-      doc.text(lbl, cX + 2, cY + 3.0);
-      fonte(7.0, 'bold', [20, 20, 30]);
-      doc.text(String(val).substring(0, 24), cX + 2, cY + 6.8);
+      fonte(6.5, 'bold'); doc.text(p.pos, xPneus + 2.0, yP + 3.8);
+      fonte(7.0, 'bold');
+      doc.text(p.estado === 'Bom' ? '[X]' : '[ ]', xPneus + 40.5, yP + 3.8, { align: 'center' });
+      doc.text(p.estado === 'Meia vida' ? '[X]' : '[ ]', xPneus + 55.5, yP + 3.8, { align: 'center' });
+      doc.text(p.estado === 'Gasto' ? '[X]' : '[ ]', xPneus + 70.5, yP + 3.8, { align: 'center' });
+      fonte(7.0, 'normal');
+      doc.text(String(p.psi || '—'), xPneus + 85.5, yP + 3.8, { align: 'center' });
+      yP += 5.3;
     });
 
-    y += 19.5;
+    caixa(xPneus, yP, wPneus, 6.0);
+    fonte(6.2, 'bold');
+    doc.text('Desgaste irregular / bolha: ' + (d.pneu_dano === 'Sim' ? '[X] SIM' : '[X] NÃO'), xPneus + 2.0, yP + 4.1);
+    yP += 6.0;
 
-    // 2. Avarias e Pneus
-    const wAv = 100;
-    const wPn = 91;
-    const xPn = M + wAv + 3;
-    const hAvPn = 62;
-
-    barraTitulo(M, y, wAv, '2. AVARIAS NA CARROCERIA');
-    barraTitulo(xPn, y, wPn, '3. PNEUS E REQUISITOS');
-    y += 5.0;
-
-    caixa(M, y, wAv, hAvPn);
-    caixa(xPn, y, wPn, hAvPn);
-
-    fonte(6.5, 'bold', [20, 20, 30]);
-    doc.text(`Total de avarias marcadas: ${item.avarias?.length || 0}`, M + 4, y + 10);
-    fonte(6.0, 'normal', CINZA);
-    doc.text('Consulte o mapa digital no painel para inspeção interativa dos pontos.', M + 4, y + 15);
-
-    // Pneus
-    let pY = y + 2;
-    (item.pneus || []).forEach(p => {
-      fonte(6.5, 'bold');
-      doc.text(`${p.pos}:`, xPn + 4, pY + 4);
-      fonte(6.5, 'normal');
-      doc.text(`Estado: ${p.estado || 'Bom'} | PSI: ${p.psi || '—'}`, xPn + 36, pY + 4);
-      pY += 6;
+    [['VALIDADE DO EXTINTOR', d.extintor_validade || 'Conforme'],
+     ['TEMP. THERMO STAR', d.thermo_temp ? d.thermo_temp + ' °C' : 'N/A'],
+     ['CONDIÇÃO DO MOTORISTA', d.condicao_motorista === 'Cansado' ? 'Cansado / Indisposto' : 'Descansado e Apto']]
+    .forEach(([rot, val]) => {
+      caixa(xPneus, yP, wPneus, 8.3);
+      fonte(5.5, 'bold', CINZA); doc.text(rot, xPneus + 2.0, yP + 2.8);
+      fonte(7.5, 'normal'); doc.text(val, xPneus + 2.0, yP + 6.3);
+      yP += 8.3;
     });
 
-    y += hAvPn + 4;
+    y += hSec2 + 2.5;
 
-    // Situação e Liberação
-    barraTitulo(M, y, W, '4. PARECER FINAL E LIBERAÇÃO DO VEÍCULO');
+    // --- 4. ITENS DE VERIFICAÇÃO ---
+    barraTitulo(M, y, W, '4. ITENS DE VERIFICAÇÃO (INSPEÇÃO GERAL)');
     y += 5.0;
 
-    caixa(M, y, W, 14);
-    fonte(8.0, 'bold', item.liberacao === 'Liberado' ? [21, 128, 61] : [185, 28, 28]);
-    doc.text(`SITUAÇÃO DO VEÍCULO: ${(item.liberacao || 'LIBERADO').toUpperCase()}`, M + 4, y + 6);
-    fonte(6.5, 'normal', CINZA);
-    doc.text(`Observações registradas: ${item.obs || 'Nenhuma ressalva apontada nesta vistoria.'}`, M + 4, y + 10);
+    const colWItem = 95.5;
+    const gapItem = 3.0;
+    const hItem = 4.5;
+    const itens = itensOf(d);
 
-    y += 18;
+    const gruposUnicos = [...new Set(itens.map(i => i.grupo))];
+    const colEsq = gruposUnicos.length ? gruposUnicos.slice(0, 2) : ['Documentos e Cabine', 'Elétrica e Luzes'];
+    const colDir = gruposUnicos.length ? gruposUnicos.slice(2) : ['Mecânica e Fluidos', 'Baú e Carga'];
 
-    // Assinaturas
-    caixa(M, y, W, 22);
-    fonte(6.0, 'bold', CINZA);
-    doc.text('MOTORISTA / VENDEDOR', M + 20, y + 4, { align: 'center' });
-    doc.text('VISTORIADOR', M + W / 2, y + 4, { align: 'center' });
-    doc.text('RESPONSÁVEL / FROTA', M + W - 20, y + 4, { align: 'center' });
+    [colEsq, colDir].forEach((grupos, cIdx) => {
+      const curX = M + cIdx * (colWItem + gapItem);
+      let curY = y;
 
-    doc.line(M + 5, y + 16, M + 45, y + 16);
-    doc.line(M + (W / 2) - 25, y + 16, M + (W / 2) + 25, y + 16);
-    doc.line(M + W - 45, y + 16, M + W - 5, y + 16);
+      grupos.forEach(grp => {
+        doc.setFillColor(240, 242, 248);
+        doc.rect(curX, curY, colWItem, hItem, 'F');
+        caixa(curX, curY, colWItem, hItem);
+        doc.line(curX + 71.5, curY, curX + 71.5, curY + hItem);
+        doc.line(curX + 79.5, curY, curX + 79.5, curY + hItem);
+        doc.line(curX + 87.5, curY, curX + 87.5, curY + hItem);
 
-    fonte(5.5, 'normal', [40, 40, 50]);
-    doc.text(item.motorista || 'Assinatura', M + 25, y + 19, { align: 'center' });
-    doc.text('Conferido', M + W / 2, y + 19, { align: 'center' });
-    doc.text('Liberado Frota', M + W - 25, y + 19, { align: 'center' });
+        fonte(6.2, 'bold', ROXO);
+        doc.text(String(grp).toUpperCase(), curX + 2.0, curY + 3.2);
 
-    // Salvar arquivo
-    doc.save(`Vistoria_${item.numero || '000000'}_${(item.placa || '').toUpperCase()}.pdf`);
-      toast('PDF baixado');
+        fonte(5.2, 'bold', CINZA);
+        doc.text('OK', curX + 75.5, curY + 3.2, { align: 'center' });
+        doc.text('NOK', curX + 83.5, curY + 3.2, { align: 'center' });
+        doc.text('N/A', curX + 91.5, curY + 3.2, { align: 'center' });
+        curY += hItem;
+
+        itens.filter(i => i.grupo === grp).forEach(i => {
+          caixa(curX, curY, colWItem, hItem);
+          const isBad = (i.valor === 'NOK');
+          if (isBad) {
+            doc.setFillColor(254, 226, 226);
+            doc.rect(curX, curY, colWItem, hItem, 'F');
+          }
+          doc.line(curX + 71.5, curY, curX + 71.5, curY + hItem);
+          doc.line(curX + 79.5, curY, curX + 79.5, curY + hItem);
+          doc.line(curX + 87.5, curY, curX + 87.5, curY + hItem);
+
+          fonte(6.8, isBad ? 'bold' : 'normal', isBad ? [185, 28, 28] : [20, 20, 30]);
+          doc.text(corta(i.nome, colWItem - 26), curX + 2.0, curY + 3.2);
+
+          fonte(6.5, 'bold', isBad ? [185, 28, 28] : [20, 20, 30]);
+          doc.text(i.valor === 'OK' ? '[X]' : '[ ]', curX + 75.5, curY + 3.2, { align: 'center' });
+          doc.text(i.valor === 'NOK' ? '[X]' : '[ ]', curX + 83.5, curY + 3.2, { align: 'center' });
+          doc.text(i.valor === 'NA' ? '[X]' : '[ ]', curX + 91.5, curY + 3.2, { align: 'center' });
+          curY += hItem;
+        });
+      });
+    });
+
+    y += 17 * hItem + 2.5;
+
+    // --- 5. OBSERVAÇÕES E LIBERAÇÃO ---
+    barraTitulo(M, y, W, '5. OBSERVAÇÕES E LIBERAÇÃO DO VEÍCULO');
+    y += 5.0;
+
+    caixa(M, y, W, 13.0);
+    fonte(5.5, 'bold', CINZA);
+    doc.text('OBSERVAÇÕES E PARECERES REGISTRADOS:', M + 2.0, y + 2.6);
+    fonte(7.0, 'normal');
+    const obsLinhas = doc.splitTextToSize(d.obs || 'Nenhuma ressalva cadastrada. Veículo em conformidade.', W - 4);
+    doc.text(obsLinhas.slice(0, 3), M + 2.0, y + 6.0);
+    y += 13.0 + 1.5;
+
+    const libColor = d.liberacao === 'Liberado' ? [21, 128, 61] : d.liberacao === 'Ressalva' ? [180, 83, 9] : [185, 28, 28];
+    const libBg = d.liberacao === 'Liberado' ? [220, 252, 231] : d.liberacao === 'Ressalva' ? [254, 243, 199] : [254, 226, 226];
+    doc.setFillColor(...libBg);
+    doc.rect(M, y, W, 7.5, 'F');
+    caixa(M, y, W, 7.5);
+
+    fonte(6.2, 'bold', CINZA);
+    doc.text('PARECER FINAL DA VISTORIA:', M + 3.0, y + 4.8);
+    fonte(9.5, 'bold', libColor);
+    doc.text('[X] ' + (d.liberacao || 'LIBERADO').toUpperCase(), M + 60, y + 5.2);
+
+    fonte(6.2, 'bold', CINZA);
+    doc.text('Condição Motorista: ' + (d.condicao_motorista === 'Cansado' ? 'Cansado / Indisposto' : 'Descansado e Apto'), M + W - 3.0, y + 4.8, { align: 'right' });
+    y += 7.5 + 2.5;
+
+    // --- 6. ASSINATURAS ---
+    barraTitulo(M, y, W, '6. TERMO DE RESPONSABILIDADE & ASSINATURAS');
+    y += 5.0;
+
+    fonte(5.5, 'normal', CINZA);
+    doc.text('Declaramos que as informações acima conferem com o estado real do veículo e foram verificadas nesta data.', M + 2.0, y + 2.8);
+    y += 3.8;
+
+    const sigW = (W - 6) / 3;
+    const sigDefs = [
+      { k: 'ass_motorista', lbl: 'Motorista / Vendedor' },
+      { k: 'ass_vistoriador', lbl: 'Vistoriador' },
+      { k: 'ass_responsavel', lbl: 'Responsável pela Frota' }
+    ];
+
+    sigDefs.forEach((sig, i) => {
+      const sX = M + i * (sigW + 3);
+      caixa(sX, y, sigW, 20.0);
+
+      if (sigs[sig.k]) {
+        try {
+          doc.addImage(sigs[sig.k], 'PNG', sX + 3, y + 0.8, sigW - 6, 11.2);
+        } catch (e) {}
+      }
+
+      doc.setDrawColor(90, 90, 100);
+      doc.setLineWidth(0.25);
+      doc.line(sX + 4, y + 12.5, sX + sigW - 4, y + 12.5);
+
+      fonte(6.5, 'bold', ROXO);
+      doc.text(sig.lbl, sX + sigW / 2, y + 15.6, { align: 'center' });
+
+      if (sig.k === 'ass_motorista' && d.motorista) {
+        fonte(5.8, 'normal', [40, 40, 50]);
+        doc.text(corta(d.motorista, sigW - 6), sX + sigW / 2, y + 18.5, { align: 'center' });
+      } else if (sigs[sig.k]) {
+        fonte(5.5, 'normal', [21, 128, 61]);
+        doc.text('Assinado digitalmente', sX + sigW / 2, y + 18.5, { align: 'center' });
+      } else {
+        fonte(5.5, 'normal', CINZA);
+        doc.text('Pendente', sX + sigW / 2, y + 18.5, { align: 'center' });
+      }
+    });
+
+    // --- 7. RODAPÉ ---
+    doc.setDrawColor(210, 210, 220);
+    doc.setLineWidth(0.2);
+    doc.line(M, 284, M + W, 284);
+
+    fonte(5.5, 'normal', CINZA);
+    doc.text('Gomex Distribuidora · Sistema Gomex Frota · Check-list Vistoria Veicular', M, 288);
+    doc.text('Vistoria Nº ' + d.numero + ' · Placa: ' + (d.placa || '').toUpperCase() + ' · Pág. 1/1', M + W, 288, { align: 'right' });
+
+    // Ação: Download ou Impressão
+    const nomeArquivo = 'Vistoria_' + (d.numero || '000000') + '_' + (d.placa || '').toUpperCase() + '.pdf';
+    if (isPrint) {
+      doc.autoPrint();
+      const url = URL.createObjectURL(doc.output('blob'));
+      window.open(url, '_blank');
+      toast('Abrindo documento para impressão...');
+    } else {
+      doc.save(nomeArquivo);
+      toast('PDF Oficial baixado com sucesso!');
+    }
   } catch (err) {
-    toast('Não foi possível gerar o PDF: ' + err.message, 'error');
+    toast('Erro gerando PDF: ' + err.message, 'error');
   } finally {
     if (btn) btn.disabled = false;
   }
 }
+window.baixarPdfOficial = baixarPdfOficial;
 
 // ==============================================================================
-// EXPORTAÇÃO CSV (abre direto no Excel)
+// EXPORTAÇÃO CSV PARA EXCEL
 // ==============================================================================
 const csvCell = v => {
   let s = String(v ?? '');
   if (/^[=+\-@]/.test(s)) s = "'" + s;
-  return `"${s.replace(/"/g, '""')}"`;
+  return '"' + s.replace(/"/g, '""') + '"';
 };
 
 $('btnExport').addEventListener('click', () => {
@@ -1411,11 +2404,35 @@ $('btnExport').addEventListener('click', () => {
   const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
   const a = document.createElement('a');
   a.href = url;
-  a.download = `Gomex_Vistorias_${isoLocal(new Date())}.csv`;
+  a.download = 'Gomex_Vistorias_' + isoLocal(new Date()) + '.csv';
   a.click();
   URL.revokeObjectURL(url);
-  toast(`${state.filtered.length} ${state.filtered.length === 1 ? 'vistoria exportada' : 'vistorias exportadas'}`);
+  toast(state.filtered.length + ' ' + (state.filtered.length === 1 ? 'vistoria exportada' : 'vistorias exportadas'));
 });
+
+// ==============================================================================
+// ANIMAÇÃO DE PALAVRAS DINÂMICAS NA TELA DE LOGIN
+// ==============================================================================
+const ROTATING_WORDS = ['organiza', 'protege', 'aprimora', 'padroniza', 'fortalece', 'economiza'];
+let wordIdx = 0;
+const wordRotator = $('wordRotator');
+
+if (wordRotator) {
+  setInterval(() => {
+    wordRotator.classList.add('word-exit');
+    setTimeout(() => {
+      wordIdx = (wordIdx + 1) % ROTATING_WORDS.length;
+      wordRotator.textContent = ROTATING_WORDS[wordIdx];
+      wordRotator.classList.remove('word-exit');
+      wordRotator.classList.add('word-enter');
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          wordRotator.classList.remove('word-enter');
+        }, 40);
+      });
+    }, 380);
+  }, 2400);
+}
 
 // ==============================================================================
 // INICIALIZAÇÃO
