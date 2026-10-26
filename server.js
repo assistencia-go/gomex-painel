@@ -24,7 +24,7 @@ const MIME_TYPES = {
 
 const server = http.createServer((req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey');
 
   if (req.method === 'OPTIONS') {
@@ -38,6 +38,61 @@ const server = http.createServer((req, res) => {
 
   // Proxy seguro para /api/checklists
   if (pathname === '/api/checklists') {
+    // 1. Atualizações de Status (PATCH ou POST com id)
+    if (req.method === 'PATCH' || req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const id = payload.id;
+          if (!id) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'ID da vistoria é obrigatório' }));
+            return;
+          }
+          delete payload.id;
+
+          const targetUrl = new URL(`/rest/v1/veiculo_checklists?id=eq.${id}`, SUPABASE_URL);
+          const postData = JSON.stringify(payload);
+          const options = {
+            method: 'PATCH',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation',
+              'Content-Length': Buffer.byteLength(postData)
+            }
+          };
+
+          const sReq = https.request(targetUrl, options, sRes => {
+            let data = '';
+            sRes.on('data', chunk => data += chunk);
+            sRes.on('end', () => {
+              res.writeHead(sRes.statusCode, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+              });
+              res.end(data);
+            });
+          });
+
+          sReq.on('error', err => {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+          });
+          sReq.write(postData);
+          sReq.end();
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: 'Corpo da requisição inválido' }));
+        }
+      });
+      return;
+    }
+
+    // 2. Consulta de Checklists (GET)
     const select = parsedUrl.searchParams.get('select') || '*';
     const idParam = parsedUrl.searchParams.get('id');
     if (!/^[a-z_,*]+$/i.test(select) || (idParam !== null && !/^\d+$/.test(idParam))) {
