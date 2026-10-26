@@ -912,6 +912,8 @@
   .tag-warn { background: var(--warn-tint); color: var(--warn); border: 1px solid rgba(242, 184, 75, 0.25); }
   .tag-bad { background: var(--bad-tint); color: var(--bad); border: 1px solid rgba(248, 120, 120, 0.25); }
   .tag-neutral { background: var(--raised); color: var(--ink-2); }
+  .tag-inativo { background: rgba(100, 116, 139, 0.16); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
+  .txt-motivo-inat { font-size: 11px; color: var(--bad); margin-top: 3px; font-weight: 500; }
 
   .row-new td { animation: rowIn 2.4s ease-out; }
   @keyframes rowIn { from { background: rgba(91, 147, 255, 0.2); } to { background: transparent; } }
@@ -1139,6 +1141,8 @@
     <symbol id="i-bell-off" viewBox="0 0 24 24"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M1 1l22 22"/></symbol>
     <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><polyline points="12 7 12 12 15 15"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></symbol>
   </defs>
 </svg>
 
@@ -1399,6 +1403,7 @@
         <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
         <button type="button" class="tab" data-status="Ressalva" aria-pressed="false"><i class="dot dot-warn"></i>Com ressalva <span class="cnt" id="cntRes">0</span></button>
         <button type="button" class="tab" data-status="Não liberado" aria-pressed="false"><i class="dot dot-bad"></i>Bloqueadas <span class="cnt" id="cntBlk">0</span></button>
+        <button type="button" class="tab" data-status="Inativo" aria-pressed="false"><i class="dot" style="background:#94a3b8"></i>Inativas <span class="cnt" id="cntInat">0</span></button>
       </div>
 
       <div class="toolbar">
@@ -1474,6 +1479,20 @@
   </header>
 
   <div class="dr-body" id="drBody">
+    <!-- BANNER DE VISTORIA INATIVADA -->
+    <div id="drInatBanner" hidden style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-weight:700;color:var(--bad);font-size:13px;display:flex;align-items:center;gap:6px">
+          <svg class="i" style="width:15px;height:15px;stroke-width:2.2"><use href="#i-archive"/></svg>
+          <span>Vistoria Inativada</span>
+        </div>
+        <div style="font-size:12px;color:var(--ink-2);margin-top:3px" id="drInatMotivo">Motivo: —</div>
+      </div>
+      <button type="button" class="btn btn-ghost" onclick="reativarVistoria(state.sel)" style="font-size:12px;height:30px;color:var(--ok);border-color:rgba(61,220,151,0.4)">
+        <svg class="i"><use href="#i-refresh"/></svg> Reativar
+      </button>
+    </div>
+
     <!-- PARECER & GESTÃO ATIVA DE LIBERAÇÃO -->
     <section class="sec">
       <h3>Decisão & Liberação do Veículo <small>Ação da Gestão</small></h3>
@@ -1592,13 +1611,25 @@
 
     <!-- ASSINATURAS COLETADAS -->
     <section class="sec">
-      <h3>Assinaturas Digitais</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <h3>Assinaturas Digitais</h3>
+        <button type="button" class="btn btn-ghost" id="drDownloadAllSigs" onclick="baixarTodasAssinaturas(state.sel)" style="font-size:12px;height:28px;padding:0 10px" title="Baixar todas as assinaturas desta vistoria">
+          <svg class="i" style="width:13px;height:13px"><use href="#i-download"/></svg>
+          <span>Baixar Assinaturas</span>
+        </button>
+      </div>
       <div class="sigs" id="drSigs"></div>
     </section>
   </div>
 
   <footer class="dr-foot">
-    <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
+      <button type="button" class="btn btn-ghost" id="drBtnInativar" style="color:var(--bad);border-color:rgba(250,138,138,0.35)" onclick="abrirModalInativar(state.sel)" title="Inativar vistoria com justificativa">
+        <svg class="i"><use href="#i-archive"/></svg>
+        <span id="drBtnInativarLabel">Inativar Vistoria</span>
+      </button>
+    </div>
     <div class="dr-foot-actions">
       <button type="button" class="btn" id="drWhatsapp" title="Compartilhar no WhatsApp"><svg class="i"><use href="#i-whatsapp"/></svg> WhatsApp</button>
       <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i"><use href="#i-printer"/></svg> Imprimir</button>
@@ -1648,6 +1679,54 @@
   </div>
 </div>
 
+<!-- ========================================================================== -->
+<!-- MODAL DE INATIVAÇÃO DE VISTORIA -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="modalInativar" hidden>
+  <div class="modal-card" style="max-width:480px">
+    <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
+          <svg class="i" style="stroke-width:2.2"><use href="#i-archive"/></svg>
+        </div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700" id="inativarModalTitle">Inativar Vistoria</h3>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Organização do painel operacional</p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalInativar()"><svg class="i"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="modal-body" style="padding:20px;display:grid;gap:16px">
+      <div style="padding:12px 14px;background:rgba(250,138,138,0.08);border:1px solid rgba(250,138,138,0.25);border-radius:8px;font-size:13px;line-height:1.5;color:#fecaca">
+        <strong>Atenção:</strong> A vistoria deixará de aparecer na lista de vistorias ativas, mantendo seu painel organizado. Os dados permanecerão salvos na aba <em>"Inativas"</em>.
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px;background:var(--raised);border-radius:8px;font-size:12.5px">
+        <div><span style="color:var(--ink-3)">Veículo:</span> <strong id="inatVeicLabel">–</strong></div>
+        <div><span style="color:var(--ink-3)">Placa:</span> <strong id="inatPlacaLabel">–</strong></div>
+        <div><span style="color:var(--ink-3)">Motorista:</span> <strong id="inatMotoristaLabel">–</strong></div>
+        <div><span style="color:var(--ink-3)">Data:</span> <strong id="inatDataLabel">–</strong></div>
+      </div>
+
+      <div>
+        <label for="motivoInativacaoInput" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+          Motivo da inativação <span style="color:var(--bad)">*</span>
+        </label>
+        <textarea id="motivoInativacaoInput" class="input" style="height:86px;padding:10px;resize:vertical;font-size:13px" placeholder="Informe obrigatoriamente a justificativa (Ex: Vistoria lançada em duplicidade, teste de motorista, placa digitada errada...)"></textarea>
+        <div id="motivoInativacaoErro" style="color:var(--bad);font-size:12px;margin-top:4px;display:none">
+          Por favor, preencha o motivo da inativação antes de continuar.
+        </div>
+      </div>
+    </div>
+    <footer style="padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:var(--panel-2)">
+      <button type="button" class="btn btn-ghost" onclick="fecharModalInativar()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnConfirmarInativacao" style="background:#dc2626;border-color:#b91c1c" onclick="confirmarInativacao()">
+        <svg class="i"><use href="#i-check"/></svg> Confirmar Inativação
+      </button>
+    </footer>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -1675,7 +1754,8 @@ const SIG_COLS = 'id,ass_motorista,ass_vistoriador,ass_responsavel';
 const STATUS = {
   Liberado: { label: 'Liberado', cls: 'tag-ok' },
   Ressalva: { label: 'Com ressalva', cls: 'tag-warn' },
-  'Não liberado': { label: 'Bloqueado', cls: 'tag-bad' }
+  'Não liberado': { label: 'Bloqueado', cls: 'tag-bad' },
+  Inativo: { label: 'Inativa', cls: 'tag-inativo' }
 };
 
 const state = {
@@ -1792,7 +1872,10 @@ const itensOf = it => Array.isArray(it.itens) ? it.itens : [];
 const nokOf = it => itensOf(it).filter(x => x && x.valor === 'NOK');
 const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p.estado === 'Gasto');
 
-function statusTag(raw) {
+function statusTag(raw, statusItem) {
+  if (statusItem === 'inativo') {
+    return '<span class="tag tag-inativo"><i class="dot" style="background:#94a3b8"></i>Inativa</span>';
+  }
   const s = STATUS[raw] || { label: raw || 'Pendente', cls: 'tag-neutral' };
   return '<span class="tag ' + s.cls + '"><i class="dot"></i>' + esc(s.label) + '</span>';
 }
@@ -1949,30 +2032,34 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden && au
 // RESUMO DOS KPIS & ALERTAS CRÍTICOS
 // ==============================================================================
 function renderSummary() {
-  const a = state.all, total = a.length;
+  const a = state.all;
+  const ativos = a.filter(x => x.status !== 'inativo');
+  const inativos = a.filter(x => x.status === 'inativo');
+  const total = ativos.length;
   const today = isoLocal(new Date()), month = today.slice(0, 7);
-  const lib = a.filter(x => x.liberacao === 'Liberado').length;
-  const res = a.filter(x => x.liberacao === 'Ressalva').length;
-  const blk = a.filter(x => x.liberacao === 'Não liberado').length;
+  const lib = ativos.filter(x => x.liberacao === 'Liberado').length;
+  const res = ativos.filter(x => x.liberacao === 'Ressalva').length;
+  const blk = ativos.filter(x => x.liberacao === 'Não liberado').length;
 
   $('stTotal').textContent = total;
-  $('stHoje').textContent = a.filter(x => x.data === today).length;
-  $('stMes').textContent = a.filter(x => (x.data || '').slice(0, 7) === month).length;
+  $('stHoje').textContent = ativos.filter(x => x.data === today).length;
+  $('stMes').textContent = ativos.filter(x => (x.data || '').slice(0, 7) === month).length;
   $('stConf').textContent = total ? Math.round(lib / total * 100) + '%' : '—';
-  $('stAv').textContent = a.filter(x => avariasOf(x).length > 0).length;
+  $('stAv').textContent = ativos.filter(x => avariasOf(x).length > 0).length;
 
   $('cntAll').textContent = total;
   $('cntLib').textContent = lib;
   $('cntRes').textContent = res;
   $('cntBlk').textContent = blk;
+  if ($('cntInat')) $('cntInat').textContent = inativos.length;
 
   $('splitOk').style.flexGrow = lib;
   $('splitWarn').style.flexGrow = res;
   $('splitBad').style.flexGrow = blk;
 
-  // Diagnóstico de Alertas Operacionais
-  const comPneuDano = a.filter(x => x.pneu_dano === 'Sim').length;
-  const revisaoVencendo = a.filter(x => x.km && x.rev_prox_km && (Number(x.rev_prox_km) - Number(x.km) <= 1000)).length;
+  // Diagnóstico de Alertas Operacionais (apenas vistorias ativas)
+  const comPneuDano = ativos.filter(x => x.pneu_dano === 'Sim').length;
+  const revisaoVencendo = ativos.filter(x => x.km && x.rev_prox_km && (Number(x.rev_prox_km) - Number(x.km) <= 1000)).length;
   const totalAlertas = blk + comPneuDano + revisaoVencendo;
 
   const banner = $('alertsBanner');
@@ -2013,15 +2100,22 @@ function applyFilters() {
   const known = ['Kombi', 'Transit', 'Master'];
 
   state.filtered = state.all.filter(it => {
+    const isInativo = it.status === 'inativo';
+    if (state.status === 'Inativo') {
+      if (!isInativo) return false;
+    } else {
+      if (isInativo) return false;
+      if (state.status && it.liberacao !== state.status) return false;
+    }
+
     if (state.alertOnly) {
       const isBlk = it.liberacao === 'Não liberado';
       const isPn = it.pneu_dano === 'Sim';
       const isRev = it.km && it.rev_prox_km && (Number(it.rev_prox_km) - Number(it.km) <= 1000);
       if (!isBlk && !isPn && !isRev) return false;
     }
-    if (state.status && it.liberacao !== state.status) return false;
     if (q) {
-      const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '');
+      const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '') + ' ' + (it.obs || '');
       const hayL = hay.toLowerCase();
       if (!hayL.includes(q) && !(qn && norm(hayL).includes(qn))) return false;
     }
@@ -2093,7 +2187,18 @@ function skeletonRows() {
   ).join('');
 }
 
+function extrairMotivoInativacao(it) {
+  if (!it) return '';
+  if (it.motivo_inativacao) return it.motivo_inativacao;
+  if (!it.obs) return 'Inativada pela gestão';
+  const match = it.obs.match(/Motivo:\s*([^\]\n]+)/i);
+  return match ? match[1].trim() : 'Inativada pela gestão';
+}
+
 function emptyRow(kind) {
+  if (state.status === 'Inativo') {
+    return '<tr><td class="empty" colspan="9">' + icon('archive') + '<h2>Nenhuma vistoria inativada</h2><p>Vistorias inativadas/arquivadas aparecerão aqui quando forem retiradas da listagem ativa.</p></td></tr>';
+  }
   const map = {
     none: ['inbox', 'Nenhuma vistoria recebida ainda', 'Quando um motorista concluir um check-list no aplicativo, ele aparecerá aqui automaticamente.', ''],
     filtered: ['search', 'Nada encontrado com esses filtros', 'Tente outra placa, outro período ou volte para todas as situações.', '<button type="button" class="btn" data-act="clear">Limpar filtros</button>'],
@@ -2110,8 +2215,9 @@ function rowHtml(it) {
   const id = esc(it.id);
   const num = esc(it.numero || '—');
   const placa = esc((it.placa || '').toUpperCase());
+  const isInat = it.status === 'inativo';
 
-  return '<tr data-id="' + id + '" class="' + (state.fresh.has(it.id) ? 'row-new' : '') + '">' +
+  return '<tr data-id="' + id + '" class="' + (state.fresh.has(it.id) ? 'row-new' : '') + (isInat ? ' row-inat' : '') + '">' +
     '<td class="c-num"><button type="button" class="num" data-act="open" data-id="' + id + '" aria-label="Abrir vistoria ' + num + '">' + num + '</button></td>' +
     '<td class="c-date"><span class="t1">' + formatarData(it.data) + '</span><span class="t2">' + esc(it.hora || '--:--') + '</span></td>' +
     '<td class="c-veic">' +
@@ -2127,18 +2233,24 @@ function rowHtml(it) {
           tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
         '</div>' +
+        (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">⚠️ Motivo: ' + esc(extrairMotivoInativacao(it)) + '</div>' : '') +
       '</div>' +
     '</td>' +
     '<td class="c-av">' + (av ? '<span class="txt-warn">' + av + ' ' + (av === 1 ? 'marca' : 'marcas') + '</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
     '<td class="c-pneu">' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
     '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
-    '<td class="c-status">' + statusTag(it.liberacao) + '</td>' +
+    '<td class="c-status">' + statusTag(it.liberacao, it.status) + '</td>' +
     '<td class="c-act">' +
       '<div class="row-actions">' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="open" data-id="' + id + '" title="Ver detalhes completos">' + icon('eye') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="print" data-id="' + id + '" title="Imprimir 2ª Via Oficial">' + icon('printer') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="' + id + '" title="Baixar PDF Oficial">' + icon('download') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="sigs" data-id="' + id + '" title="Baixar Assinaturas Digitais">' + icon('pen') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="whatsapp" data-id="' + id + '" title="Compartilhar no WhatsApp">' + icon('whatsapp') + '</button>' +
+        (isInat
+          ? '<button type="button" class="btn btn-ghost btn-icon" data-act="reativar" data-id="' + id + '" title="Reativar Vistoria para o Painel" style="color:var(--ok)">' + icon('refresh') + '</button>'
+          : '<button type="button" class="btn btn-ghost btn-icon" data-act="inativar" data-id="' + id + '" title="Inativar Vistoria (Arquivar com motivo)" style="color:var(--bad)">' + icon('archive') + '</button>'
+        ) +
       '</div>' +
     '</td>' +
   '</tr>';
@@ -2191,8 +2303,20 @@ $('tableBody').addEventListener('click', e => {
     if (act === 'open') openDrawer(btn.dataset.id, btn);
     else if (act === 'pdf') baixarPdfOficial(btn.dataset.id, btn, false);
     else if (act === 'print') baixarPdfOficial(btn.dataset.id, btn, true);
+    else if (act === 'sigs') {
+      const item = state.all.find(x => String(x.id) === String(btn.dataset.id));
+      if (item) baixarTodasAssinaturas(item);
+    }
     else if (act === 'whatsapp') compartilharWhatsapp(btn.dataset.id);
     else if (act === 'history') abrirHistoricoVeiculo(btn.dataset.placa);
+    else if (act === 'inativar') {
+      const item = state.all.find(x => String(x.id) === String(btn.dataset.id));
+      if (item) abrirModalInativar(item);
+    }
+    else if (act === 'reativar') {
+      const item = state.all.find(x => String(x.id) === String(btn.dataset.id));
+      if (item) reativarVistoria(item);
+    }
     else if (act === 'clear') clearFilters();
     else if (act === 'retry') load();
     return;
@@ -2211,8 +2335,17 @@ function renderSigs(row) {
   $('drSigs').innerHTML = SIG_ROLES.map(([k, label]) => {
     let body;
     if (row === null) body = '<span class="sk"></span>';
-    else if (row[k] && /^data:image\//.test(row[k])) body = '<img src="' + esc(row[k]) + '" alt="Assinatura de ' + esc(label) + '"><span class="sig-st ok">Assinado</span>';
-    else body = '<span class="sig-st">Pendente</span>';
+    else if (row[k] && /^data:image\//.test(row[k])) {
+      body = '<img src="' + esc(row[k]) + '" alt="Assinatura de ' + esc(label) + '">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:6px">' +
+          '<span class="sig-st ok">Assinado</span>' +
+          '<button type="button" class="btn btn-ghost" onclick="baixarAssinaturaUnica(\'' + k + '\')" style="height:24px;padding:0 8px;font-size:11px" title="Baixar esta assinatura em PNG">' +
+            icon('download') + ' <span>Baixar PNG</span>' +
+          '</button>' +
+        '</div>';
+    } else {
+      body = '<span class="sig-st">Pendente</span>';
+    }
     return '<div class="sig"><span class="sig-role">' + label + '</span>' + body + '</div>';
   }).join('');
 }
@@ -2269,7 +2402,7 @@ async function salvarDecisaoGestor() {
         state.all[idx].liberacao = status;
         state.all[idx].obs = payload.obs;
       }
-      $('drStatus').innerHTML = statusTag(status);
+      $('drStatus').innerHTML = statusTag(status, state.sel.status);
       $('drNotes').textContent = payload.obs;
       renderAll();
       toast('Parecer e situação atualizados com sucesso!');
@@ -2289,7 +2422,25 @@ function fillDrawer(it) {
   $('drTitle').textContent = 'Vistoria Nº ' + (it.numero || '—');
   $('drPlate').textContent = (it.placa || '').toUpperCase();
   $('drPlate').onclick = () => abrirHistoricoVeiculo(it.placa);
-  $('drStatus').innerHTML = statusTag(it.liberacao);
+  
+  const isInat = it.status === 'inativo';
+  $('drStatus').innerHTML = statusTag(it.liberacao, it.status);
+
+  const inatBanner = $('drInatBanner');
+  if (inatBanner) {
+    inatBanner.hidden = !isInat;
+    if (isInat) {
+      $('drInatMotivo').textContent = 'Motivo: ' + extrairMotivoInativacao(it);
+    }
+  }
+
+  const btnInatLabel = $('drBtnInativarLabel');
+  if (btnInatLabel) {
+    btnInatLabel.textContent = isInat ? 'Reativar Vistoria' : 'Inativar Vistoria';
+    $('drBtnInativar').style.color = isInat ? 'var(--ok)' : 'var(--bad)';
+    $('drBtnInativar').style.borderColor = isInat ? 'rgba(61,220,151,0.35)' : 'rgba(250,138,138,0.35)';
+    $('drBtnInativar').onclick = () => isInat ? reativarVistoria(it) : abrirModalInativar(it);
+  }
 
   selecionarDecisao(it.liberacao);
   $('drParecerInput').value = it.obs || '';
@@ -2381,9 +2532,232 @@ $('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfOficial(stat
 $('drPrint').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, true); });
 $('drWhatsapp').addEventListener('click', () => { if (state.sel) compartilharWhatsapp(state.sel.id); });
 
+// ==============================================================================
+// DOWNLOAD INDIVIDUAL E EM LOTE DE ASSINATURAS DIGITAIS
+// ==============================================================================
+function baixarAssinatura(dataUrl, nomeArquivo) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = nomeArquivo;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+async function baixarTodasAssinaturas(c) {
+  if (!c) return;
+  let sigRow = state.sigCache[c.id];
+  if (!sigRow) {
+    toast('Carregando assinaturas...', 'loading');
+    const rows = await fetchSigs(c.id);
+    sigRow = rows && rows[0] ? rows[0] : {};
+    state.sigCache[c.id] = sigRow;
+  }
+
+  const sigs = [
+    { key: 'ass_motorista', papel: 'Motorista' },
+    { key: 'ass_vistoriador', papel: 'Vistoriador' },
+    { key: 'ass_responsavel', papel: 'Responsavel_Frota' }
+  ].filter(s => sigRow[s.key] && /^data:image\//.test(sigRow[s.key]));
+
+  if (!sigs.length) {
+    toast('Nenhuma assinatura digital anexada a esta vistoria.', 'error');
+    return;
+  }
+
+  const num = c.numero || '000000';
+  const placa = (c.placa || 'FROTA').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  sigs.forEach((s, idx) => {
+    setTimeout(() => {
+      const fileName = `Assinatura_${s.papel}_Vistoria_${num}_${placa}.png`;
+      baixarAssinatura(sigRow[s.key], fileName);
+    }, idx * 250);
+  });
+
+  toast(`${sigs.length} assinatura(s) baixada(s) em PNG!`);
+}
+window.baixarTodasAssinaturas = baixarTodasAssinaturas;
+
+function baixarAssinaturaUnica(chave) {
+  if (!state.sel) return;
+  const sigRow = state.sigCache[state.sel.id] || {};
+  const dataUrl = sigRow[chave];
+  if (!dataUrl) {
+    toast('Assinatura não encontrada.', 'error');
+    return;
+  }
+  const num = state.sel.numero || '000000';
+  const placa = (state.sel.placa || 'FROTA').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const papel = chave === 'ass_motorista' ? 'Motorista' : chave === 'ass_vistoriador' ? 'Vistoriador' : 'Responsavel_Frota';
+  baixarAssinatura(dataUrl, `Assinatura_${papel}_Vistoria_${num}_${placa}.png`);
+  toast(`Assinatura de ${papel} baixada com sucesso!`);
+}
+window.baixarAssinaturaUnica = baixarAssinaturaUnica;
+
+// ==============================================================================
+// GESTÃO DE INATIVAÇÃO DE VISTORIAS (ARQUIVAMENTO COM MOTIVO OBRIGATÓRIO)
+// ==============================================================================
+let vistoriaParaInativar = null;
+
+function abrirModalInativar(it) {
+  if (!it) return;
+  vistoriaParaInativar = it;
+  $('inativarModalTitle').textContent = 'Inativar Vistoria Nº ' + (it.numero || '—');
+  $('inatVeicLabel').textContent = it.veiculo || '—';
+  $('inatPlacaLabel').textContent = (it.placa || '—').toUpperCase();
+  $('inatMotoristaLabel').textContent = it.motorista || '—';
+  $('inatDataLabel').textContent = formatarData(it.data);
+  $('motivoInativacaoInput').value = '';
+  $('motivoInativacaoErro').style.display = 'none';
+  $('modalInativar').hidden = false;
+  setTimeout(() => $('motivoInativacaoInput').focus(), 80);
+}
+window.abrirModalInativar = abrirModalInativar;
+
+function fecharModalInativar() {
+  vistoriaParaInativar = null;
+  $('modalInativar').hidden = true;
+}
+window.fecharModalInativar = fecharModalInativar;
+
+async function confirmarInativacao() {
+  if (!vistoriaParaInativar) return;
+  const motivo = $('motivoInativacaoInput').value.trim();
+  if (!motivo) {
+    $('motivoInativacaoErro').style.display = 'block';
+    $('motivoInativacaoInput').focus();
+    return;
+  }
+  $('motivoInativacaoErro').style.display = 'none';
+
+  const btn = $('btnConfirmarInativacao');
+  btn.disabled = true;
+  btn.textContent = 'Inativando...';
+
+  const d = new Date();
+  const carimbo = `[INATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por gomex - Motivo: ${motivo}]`;
+  const novaObs = (vistoriaParaInativar.obs ? vistoriaParaInativar.obs + '\n' : '') + carimbo;
+
+  const payload = {
+    id: vistoriaParaInativar.id,
+    status: 'inativo',
+    obs: novaObs
+  };
+
+  try {
+    let ok = false;
+    try {
+      const res = await fetch('/api/checklists', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) ok = true;
+    } catch (e) {}
+
+    if (!ok) {
+      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + vistoriaParaInativar.id, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: 'inativo', obs: novaObs })
+      });
+      if (resDirect.ok) ok = true;
+    }
+
+    if (ok) {
+      vistoriaParaInativar.status = 'inativo';
+      vistoriaParaInativar.obs = novaObs;
+      vistoriaParaInativar.motivo_inativacao = motivo;
+
+      const idx = state.all.findIndex(x => x.id === vistoriaParaInativar.id);
+      if (idx !== -1) {
+        state.all[idx].status = 'inativo';
+        state.all[idx].obs = novaObs;
+        state.all[idx].motivo_inativacao = motivo;
+      }
+
+      fecharModalInativar();
+      if (state.sel && state.sel.id === vistoriaParaInativar.id) {
+        closeDrawer();
+      }
+      renderAll();
+      toast(`Vistoria Nº ${vistoriaParaInativar.numero || ''} inativada com sucesso!`);
+    } else {
+      toast('Não foi possível inativar a vistoria no servidor.', 'error');
+    }
+  } catch (err) {
+    toast('Erro: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = icon('check') + ' Confirmar Inativação';
+  }
+}
+window.confirmarInativacao = confirmarInativacao;
+
+async function reativarVistoria(it) {
+  if (!it) return;
+  if (!confirm(`Deseja reativar a Vistoria Nº ${it.numero || ''} (${(it.placa||'').toUpperCase()}) para a lista operacional ativa?`)) return;
+
+  const d = new Date();
+  const carimbo = `[REATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por gomex]`;
+  const novaObs = (it.obs ? it.obs + '\n' : '') + carimbo;
+
+  const payload = {
+    id: it.id,
+    status: 'concluido',
+    obs: novaObs
+  };
+
+  try {
+    let ok = false;
+    try {
+      const res = await fetch('/api/checklists', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) ok = true;
+    } catch (e) {}
+
+    if (!ok) {
+      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + it.id, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ status: 'concluido', obs: novaObs })
+      });
+      if (resDirect.ok) ok = true;
+    }
+
+    if (ok) {
+      it.status = 'concluido';
+      it.obs = novaObs;
+      delete it.motivo_inativacao;
+
+      const idx = state.all.findIndex(x => x.id === it.id);
+      if (idx !== -1) {
+        state.all[idx].status = 'concluido';
+        state.all[idx].obs = novaObs;
+      }
+
+      if (state.sel && state.sel.id === it.id) {
+        fillDrawer(it);
+      }
+      renderAll();
+      toast(`Vistoria Nº ${it.numero || ''} reativada com sucesso!`);
+    } else {
+      toast('Não foi possível reativar no servidor.', 'error');
+    }
+  } catch (err) {
+    toast('Erro: ' + err.message, 'error');
+  }
+}
+window.reativarVistoria = reativarVistoria;
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if ($('historyModal').classList.contains('open')) fecharHistoricoModal();
+    if (!$('modalInativar').hidden) fecharModalInativar();
+    else if ($('historyModal').classList.contains('open')) fecharHistoricoModal();
     else closeDrawer();
     return;
   }
