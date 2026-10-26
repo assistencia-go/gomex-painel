@@ -86,13 +86,6 @@
   body.theme-light .select:hover {
     border-color: #94a3b8;
   }
-  body.theme-light .login-brand {
-    background: #eef2f7;
-    border-right-color: #e2e8f0;
-  }
-  body.theme-light .login-art {
-    color: #cbd5e1;
-  }
   body.theme-light .sig {
     background: #f8fafc;
     border-color: #e2e8f0;
@@ -172,69 +165,361 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ============================================================================
-     LOGIN
+     LOGIN — ENTERPRISE FLEET SUITE (Padrão Samsara / Motive / Fleetio)
      ============================================================================ */
   .login {
-    min-height: 100vh; display: grid;
-    grid-template-columns: minmax(320px, 1fr) minmax(380px, 540px);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    background: #070b14;
+    position: relative;
   }
+
+  /* Painel Esquerdo Hero & Branding */
   .login-brand {
-    position: relative; overflow: hidden;
-    background: var(--panel-2); border-right: 1px solid var(--line);
-    padding: 40px 48px; display: flex; flex-direction: column; justify-content: space-between;
-  }
-  .login-art {
-    position: absolute; right: -60px; bottom: -40px; width: 460px; height: 460px;
-    stroke-width: 0.45; color: #172340; fill: none; stroke: currentColor;
-    stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
-  }
-  .login-tagline-box {
-    position: relative; max-width: 26ch; z-index: 2; margin-bottom: 24px;
-  }
-  .login-tagline-label {
-    font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em;
-    color: var(--accent-hi); margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;
-  }
-  .login-tagline-label::before {
-    content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
-    box-shadow: 0 0 8px var(--ok);
-  }
-  .login-tagline {
     position: relative;
-    font-size: 32px; line-height: 1.22; font-weight: 800; letter-spacing: -0.025em;
-    text-wrap: balance; color: var(--ink);
+    overflow: hidden;
+    background: radial-gradient(circle at 18% 18%, #101c38 0%, #091124 55%, #050812 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
   }
-  .word-rotator-wrapper {
-    display: inline-block;
+
+  /* Grid de telemetria e brilhos dinâmicos */
+  .login-brand::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 32px 32px, 96px 96px, 96px 96px;
+    pointer-events: none;
+    opacity: 0.65;
+    z-index: 0;
+  }
+
+  .login-brand-glow-1 {
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+    top: -120px;
+    left: -100px;
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  .login-brand-glow-2 {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, transparent 70%);
+    bottom: -60px;
+    right: -40px;
+    filter: blur(50px);
+    pointer-events: none;
+  }
+
+  .login-brand-head {
     position: relative;
-    vertical-align: bottom;
-    min-width: 5.5ch;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
   }
+
+  .login-brand-head .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .login-brand-head .brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+
+  .login-brand-head .brand-mark .i {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
+  }
+
+  .login-brand-head .brand-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    color: #ffffff;
+  }
+
+  .login-brand-head .brand-sub {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #38bdf8;
+  }
+
+  .live-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.28);
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #34d399;
+    letter-spacing: 0.03em;
+  }
+
+  .live-status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    animation: livePulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  /* Centro do Hero */
+  .login-hero-center {
+    position: relative;
+    z-index: 2;
+    margin: 40px 0;
+    max-width: 580px;
+  }
+
+  .hero-category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #60a5fa;
+    margin-bottom: 18px;
+    background: rgba(37, 99, 235, 0.1);
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(37, 99, 235, 0.2);
+  }
+
+  .hero-headline {
+    font-size: 38px;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #f8fafc;
+    margin-bottom: 18px;
+  }
+
+  /* Badge iluminada para a palavra dinâmica */
+  .rotator-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    margin: 0 4px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.12));
+    border: 1.5px solid rgba(56, 189, 248, 0.45);
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(14, 165, 233, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    vertical-align: middle;
+    min-width: 140px;
+    height: 48px;
+    overflow: hidden;
+  }
+
   .word-rotator {
     display: inline-block;
     font-weight: 800;
-    background: linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #34d399 100%);
+    background: linear-gradient(135deg, #67e8f9 0%, #38bdf8 50%, #60a5fa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    border-bottom: 2.5px solid #38bdf8;
     transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), opacity 380ms ease;
   }
   .word-rotator.word-exit {
-    transform: translateY(-100%);
+    transform: translateY(-80%);
     opacity: 0;
   }
   .word-rotator.word-enter {
-    transform: translateY(100%);
+    transform: translateY(80%);
     opacity: 0;
     transition: none !important;
   }
-  .login-tagline-sub {
-    font-size: 13.5px; color: var(--ink-3); margin-top: 14px; line-height: 1.5; font-weight: 500;
+
+  .hero-desc {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: #94a3b8;
+    margin-bottom: 30px;
   }
-  .login-pane { display: grid; place-items: center; padding: 32px 28px; }
-  .login-form { width: 100%; max-width: 360px; display: grid; gap: 18px; }
-  .login-form h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.015em; }
-  .login-form .lead { color: var(--ink-3); font-size: 14px; margin-top: 4px; }
+
+  /* Grid de recursos chave estilo Samsara */
+  .hero-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .hero-feature-item {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 14px 14px;
+    transition: all 200ms ease;
+  }
+  .hero-feature-item:hover {
+    background: rgba(26, 38, 66, 0.65);
+    border-color: rgba(56, 189, 248, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .hero-feature-ico {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    display: grid;
+    place-items: center;
+    color: #38bdf8;
+    margin-bottom: 10px;
+  }
+  .hero-feature-ico .i {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2.2;
+  }
+
+  .hero-feature-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .hero-feature-desc {
+    font-size: 11px;
+    color: #64748b;
+    line-height: 1.4;
+  }
+
+  /* Rodapé do painel institucional */
+  .login-brand-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: #475569;
+  }
+  .login-brand-foot .i {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2;
+    color: #38bdf8;
+  }
+
+  /* Painel Direito & Card Elevado */
+  .login-pane {
+    background: #090e1a;
+    display: grid;
+    place-items: center;
+    padding: 40px 32px;
+    position: relative;
+  }
+
+  .login-pane::before {
+    content: '';
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(55px);
+    pointer-events: none;
+  }
+
+  .login-card {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 420px;
+    background: rgba(15, 23, 42, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 
+      0 24px 50px -12px rgba(0, 0, 0, 0.6),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 38px 34px;
+  }
+
+  .login-card-head {
+    margin-bottom: 24px;
+  }
+
+  .login-card-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    margin-bottom: 8px;
+  }
+
+  .login-card-head h1 {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    line-height: 1.25;
+  }
+
+  .login-card-head .lead {
+    font-size: 13.5px;
+    color: #8392ab;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* Form Fields com ícones elegantes */
+  .login-form {
+    display: grid;
+    gap: 18px;
+  }
 
   .brand { display: flex; align-items: center; gap: 12px; }
   .brand-mark {
@@ -251,23 +536,210 @@
   .input {
     width: 100%; height: 44px; padding: 0 12px;
     background: #0a1120; border: 1px solid var(--line-strong); border-radius: 8px;
-    transition: border-color 150ms;
+    transition: border-color 150ms, box-shadow 150ms;
+    color: var(--ink);
   }
   .input::placeholder { color: var(--ink-3); }
   .input:hover { border-color: #3a4b74; }
-  .input:focus-visible { border-color: var(--accent-hi); outline-offset: 0; }
+  .input:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(91, 147, 255, 0.15); }
+  
+  .input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-with-icon .input-icon-left {
+    position: absolute;
+    left: 13px;
+    width: 17px;
+    height: 17px;
+    stroke-width: 2;
+    color: #64748b;
+    pointer-events: none;
+    transition: color 150ms ease;
+  }
+
+  .input-with-icon:focus-within .input-icon-left {
+    color: #38bdf8;
+  }
+
+  .input-with-icon .input {
+    padding-left: 40px;
+  }
+
   .pwd { position: relative; }
   .pwd .input { padding-right: 46px; }
   .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; }
   .check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); cursor: pointer; user-select: none; }
-  .check input { width: 16px; height: 16px; }
+  .check input { width: 16px; height: 16px; accent-color: var(--accent); }
+  
   .form-error {
     display: none; align-items: center; gap: 8px;
     padding: 10px 12px; border-radius: 8px;
     background: var(--bad-tint); color: #fecaca; font-size: 13px;
+    border: 1px solid rgba(250, 138, 138, 0.25);
   }
   .form-error.show { display: flex; }
-  .login-form .btn-primary { height: 44px; font-size: 14px; }
+
+  .login-btn-submit {
+    height: 46px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    transition: all 180ms ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .login-btn-submit:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+    transform: translateY(-1px);
+  }
+  .login-btn-submit:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 4px 0 0;
+    color: #475569;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .login-divider::before, .login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .driver-companion-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 12.5px;
+    transition: all 180ms ease;
+  }
+  .driver-companion-link:hover {
+    background: rgba(37, 99, 235, 0.1);
+    border-color: rgba(37, 99, 235, 0.3);
+    color: #e2e8f0;
+  }
+  .driver-companion-link .d-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .driver-companion-link .d-left .i {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2;
+    color: #38bdf8;
+  }
+  .driver-companion-link .d-right {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Responsividade Login */
+  @media (max-width: 1024px) {
+    .login {
+      grid-template-columns: 1fr;
+    }
+    .login-brand {
+      padding: 36px 28px;
+    }
+    .hero-headline {
+      font-size: 30px;
+    }
+    .rotator-pill {
+      min-width: 120px;
+      height: 42px;
+    }
+    .hero-feature-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Tema Claro para o Login */
+  body.theme-light .login {
+    background: #f1f5f9;
+  }
+  body.theme-light .login-brand {
+    background: radial-gradient(circle at 18% 18%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%);
+    border-right-color: #cbd5e1;
+  }
+  body.theme-light .login-brand::before {
+    background-image: 
+      radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+      linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+    opacity: 0.8;
+  }
+  body.theme-light .login-brand-head .brand-name,
+  body.theme-light .hero-headline {
+    color: #0f172a;
+  }
+  body.theme-light .hero-desc {
+    color: #475569;
+  }
+  body.theme-light .hero-feature-item {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+  body.theme-light .hero-feature-title {
+    color: #0f172a;
+  }
+  body.theme-light .hero-feature-desc {
+    color: #64748b;
+  }
+  body.theme-light .login-pane {
+    background: #f8fafc;
+  }
+  body.theme-light .login-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+  }
+  body.theme-light .login-card-head h1 {
+    color: #0f172a;
+  }
+  body.theme-light .login-card-head .lead {
+    color: #64748b;
+  }
+  body.theme-light .driver-companion-link {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+    color: #475569;
+  }
+  body.theme-light .input {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+  }
 
   /* ============================================================================
      TOPBAR + PÁGINA
@@ -694,6 +1166,7 @@
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
     <symbol id="i-bell-off" viewBox="0 0 24 24"><path d="M13.73 21a2 2 0 0 1-3.46 0"/><path d="M18.63 13A17.89 17.89 0 0 1 18 8"/><path d="M6.26 6.26A5.86 5.86 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M1 1l22 22"/></symbol>
     <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><polyline points="12 7 12 12 15 15"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
   </defs>
 </svg>
 
@@ -701,60 +1174,124 @@
 <!-- LOGIN -->
 <!-- ========================================================================== -->
 <div class="login" id="login">
+  <!-- Painel Esquerdo com Telemetria e Apresentação Executiva -->
   <aside class="login-brand">
-    <div class="brand">
-      <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
-      <div>
-        <div class="brand-name">Gomex Frota</div>
-        <div class="brand-sub">Painel de vistorias</div>
-      </div>
-    <div class="login-tagline-box">
-      <div class="login-tagline-label">Gestão de Frota Gomex</div>
-      <p class="login-tagline">
-        Cada vistoria
-        <span class="word-rotator-wrapper">
-          <span class="word-rotator" id="wordRotator">organiza</span>
-        </span>
-        a frota.
-      </p>
-      <p class="login-tagline-sub">
-        Monitoramento inteligente de pneus, avarias na carroceria, segurança e pareceres operacionais em tempo real.
-      </p>
-    </div>
-    <svg class="login-art" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-truck"/></svg>
-  </aside>
+    <div class="login-brand-glow-1"></div>
+    <div class="login-brand-glow-2"></div>
 
-  <main class="login-pane">
-    <form class="login-form" id="frmLogin" novalidate>
-      <div>
-        <h1>Entrar no painel</h1>
-        <p class="lead">Acesso restrito à gestão da frota.</p>
-      </div>
-
-      <div class="field">
-        <label for="loginUser">Usuário</label>
-        <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="gomex" required>
-      </div>
-
-      <div class="field">
-        <label for="loginPass">Senha</label>
-        <div class="pwd">
-          <input class="input" type="password" id="loginPass" name="password" autocomplete="current-password" required>
-          <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha" aria-pressed="false">
-            <svg class="i" id="eyeIcon"><use href="#i-eye"/></svg>
-          </button>
+    <div class="login-brand-head">
+      <div class="brand">
+        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+        <div>
+          <div class="brand-name">Gomex Frota</div>
+          <div class="brand-sub">Painel Executivo</div>
         </div>
       </div>
+      <div class="live-status-pill">
+        <span class="live-status-dot"></span>
+        <span>Sistemas Operacionais 100%</span>
+      </div>
+    </div>
 
-      <label class="check"><input type="checkbox" id="chkRemember" checked> Manter conectado neste computador</label>
+    <div class="login-hero-center">
+      <div class="hero-category-tag">
+        <svg class="i" style="width:13px;height:13px;stroke-width:2.2"><use href="#i-shield"/></svg>
+        <span>Plataforma Integrada de Auditoria</span>
+      </div>
+      <h1 class="hero-headline">
+        Cada vistoria
+        <span class="rotator-pill">
+          <span class="word-rotator" id="wordRotator">organiza</span>
+        </span><br>
+        toda a frota.
+      </h1>
+      <p class="hero-desc">
+        Monitoramento inteligente de pneus com mapa térmico de danos, auditoria de carroceria, conformidade de segurança e aprovações gerenciais em tempo real.
+      </p>
 
-      <div class="form-error" id="loginError" role="alert">
-        <svg class="i"><use href="#i-alert"/></svg>
-        <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
+      <div class="hero-feature-grid">
+        <div class="hero-feature-item">
+          <div class="hero-feature-ico"><svg class="i"><use href="#i-shield"/></svg></div>
+          <div class="hero-feature-title">Conformidade Total</div>
+          <div class="hero-feature-desc">Laudos A4 oficiais com assinaturas e mapa de avarias</div>
+        </div>
+        <div class="hero-feature-item">
+          <div class="hero-feature-ico"><svg class="i"><use href="#i-clock"/></svg></div>
+          <div class="hero-feature-title">Decisão em Tempo Real</div>
+          <div class="hero-feature-desc">Liberação, ressalva ou bloqueio gerencial imediato</div>
+        </div>
+        <div class="hero-feature-item">
+          <div class="hero-feature-ico"><svg class="i"><use href="#i-truck"/></svg></div>
+          <div class="hero-feature-title">Inspeção de Pneus</div>
+          <div class="hero-feature-desc">Rastreio de sulcos, calibração, danos e estepes</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-brand-foot">
+      <svg class="i"><use href="#i-lock"/></svg>
+      <span>Acesso Corporativo Seguro · Criptografia TLS 1.3 · Gomex Distribuidora</span>
+    </div>
+  </aside>
+
+  <!-- Painel Direito com Card Glassmórfico Elevado -->
+  <main class="login-pane">
+    <div class="login-card">
+      <div class="login-card-head">
+        <span class="login-card-badge">Acesso Corporativo</span>
+        <h1>Entrar no Painel</h1>
+        <p class="lead">Informe suas credenciais para gerenciar vistorias e aprovar a frota.</p>
       </div>
 
-      <button type="submit" class="btn btn-primary" id="btnLogin">Entrar</button>
-    </form>
+      <form class="login-form" id="frmLogin" novalidate>
+        <div class="field">
+          <label for="loginUser">Usuário Corporativo</label>
+          <div class="input-with-icon">
+            <svg class="input-icon-left"><use href="#i-user"/></svg>
+            <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="gomex" required placeholder="Usuário cadastrado">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="loginPass">Senha de Acesso</label>
+          <div class="input-with-icon pwd">
+            <svg class="input-icon-left"><use href="#i-lock"/></svg>
+            <input class="input" type="password" id="loginPass" name="password" autocomplete="current-password" required placeholder="••••••••">
+            <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha" aria-pressed="false" title="Mostrar/ocultar senha">
+              <svg class="i" id="eyeIcon"><use href="#i-eye"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="chkRemember" checked>
+          <span>Manter conectado neste computador</span>
+        </label>
+
+        <div class="form-error" id="loginError" role="alert">
+          <svg class="i"><use href="#i-alert"/></svg>
+          <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
+        </div>
+
+        <button type="submit" class="login-btn-submit" id="btnLogin">
+          <span>Entrar no Painel</span>
+          <svg class="i" style="width:16px;height:16px;stroke-width:2.2"><use href="#i-chev-right"/></svg>
+        </button>
+
+        <div class="login-divider">Ou</div>
+
+        <a class="driver-companion-link" href="../gomex-checklist/index.html" target="_blank" rel="noopener" title="Abrir checklist de motorista">
+          <div class="d-left">
+            <svg class="i"><use href="#i-truck"/></svg>
+            <span>É motorista? Abrir Vistoria</span>
+          </div>
+          <div class="d-right">
+            <span>Acessar</span>
+            <svg class="i" style="width:12px;height:12px;stroke-width:2"><use href="#i-chev-right"/></svg>
+          </div>
+        </a>
+      </form>
+    </div>
   </main>
 </div>
 
