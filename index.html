@@ -1017,7 +1017,7 @@
      MODAL DE HISTÓRICO DA PLACA / VEÍCULO
      ============================================================================ */
   .modal-overlay {
-    position: fixed; inset: 0; z-index: 70; background: rgba(4, 7, 13, 0.75);
+    position: fixed; inset: 0; z-index: 85; background: rgba(4, 7, 13, 0.75);
     display: grid; place-items: center; padding: 20px; opacity: 0; visibility: hidden;
     transition: opacity 200ms, visibility 0s 200ms;
   }
@@ -1631,7 +1631,6 @@
       </button>
     </div>
     <div class="dr-foot-actions">
-      <button type="button" class="btn" id="drWhatsapp" title="Compartilhar no WhatsApp"><svg class="i"><use href="#i-whatsapp"/></svg> WhatsApp</button>
       <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i"><use href="#i-printer"/></svg> Imprimir</button>
       <button type="button" class="btn btn-primary" id="drPdf" title="Baixar PDF Oficial"><svg class="i"><use href="#i-download"/></svg> Baixar PDF</button>
     </div>
@@ -1682,7 +1681,7 @@
 <!-- ========================================================================== -->
 <!-- MODAL DE INATIVAÇÃO DE VISTORIA -->
 <!-- ========================================================================== -->
-<div class="modal-overlay" id="modalInativar" hidden>
+<div class="modal-overlay" id="modalInativar">
   <div class="modal-card" style="max-width:480px">
     <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
       <div style="display:flex;align-items:center;gap:10px">
@@ -2246,7 +2245,6 @@ function rowHtml(it) {
         '<button type="button" class="btn btn-ghost btn-icon" data-act="print" data-id="' + id + '" title="Imprimir 2ª Via Oficial">' + icon('printer') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="' + id + '" title="Baixar PDF Oficial">' + icon('download') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="sigs" data-id="' + id + '" title="Baixar Assinaturas Digitais">' + icon('pen') + '</button>' +
-        '<button type="button" class="btn btn-ghost btn-icon" data-act="whatsapp" data-id="' + id + '" title="Compartilhar no WhatsApp">' + icon('whatsapp') + '</button>' +
         (isInat
           ? '<button type="button" class="btn btn-ghost btn-icon" data-act="reativar" data-id="' + id + '" title="Reativar Vistoria para o Painel" style="color:var(--ok)">' + icon('refresh') + '</button>'
           : '<button type="button" class="btn btn-ghost btn-icon" data-act="inativar" data-id="' + id + '" title="Inativar Vistoria (Arquivar com motivo)" style="color:var(--bad)">' + icon('archive') + '</button>'
@@ -2307,7 +2305,6 @@ $('tableBody').addEventListener('click', e => {
       const item = state.all.find(x => String(x.id) === String(btn.dataset.id));
       if (item) baixarTodasAssinaturas(item);
     }
-    else if (act === 'whatsapp') compartilharWhatsapp(btn.dataset.id);
     else if (act === 'history') abrirHistoricoVeiculo(btn.dataset.placa);
     else if (act === 'inativar') {
       const item = state.all.find(x => String(x.id) === String(btn.dataset.id));
@@ -2530,7 +2527,6 @@ $('drCloseFoot').addEventListener('click', closeDrawer);
 $('scrim').addEventListener('click', closeDrawer);
 $('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, false); });
 $('drPrint').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, true); });
-$('drWhatsapp').addEventListener('click', () => { if (state.sel) compartilharWhatsapp(state.sel.id); });
 
 // ==============================================================================
 // DOWNLOAD INDIVIDUAL E EM LOTE DE ASSINATURAS DIGITAIS
@@ -2610,16 +2606,23 @@ function abrirModalInativar(it) {
   $('inatDataLabel').textContent = formatarData(it.data);
   $('motivoInativacaoInput').value = '';
   $('motivoInativacaoErro').style.display = 'none';
-  $('modalInativar').hidden = false;
+  $('modalInativar').classList.add('open');
   setTimeout(() => $('motivoInativacaoInput').focus(), 80);
 }
 window.abrirModalInativar = abrirModalInativar;
 
 function fecharModalInativar() {
   vistoriaParaInativar = null;
-  $('modalInativar').hidden = true;
+  $('modalInativar').classList.remove('open');
 }
 window.fecharModalInativar = fecharModalInativar;
+
+$('modalInativar').addEventListener('click', e => {
+  if (e.target === $('modalInativar')) fecharModalInativar();
+});
+$('historyModal').addEventListener('click', e => {
+  if (e.target === $('historyModal')) fecharHistoricoModal();
+});
 
 async function confirmarInativacao() {
   if (!vistoriaParaInativar) return;
@@ -2756,7 +2759,7 @@ window.reativarVistoria = reativarVistoria;
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if (!$('modalInativar').hidden) fecharModalInativar();
+    if ($('modalInativar').classList.contains('open')) fecharModalInativar();
     else if ($('historyModal').classList.contains('open')) fecharHistoricoModal();
     else closeDrawer();
     return;
@@ -2823,35 +2826,6 @@ function fecharHistoricoModal() {
   $('historyModal').classList.remove('open');
 }
 window.fecharHistoricoModal = fecharHistoricoModal;
-
-// ==============================================================================
-// COMPARTILHAR NO WHATSAPP
-// ==============================================================================
-function compartilharWhatsapp(id) {
-  const item = state.all.find(c => String(c.id) === String(id));
-  if (!item) return;
-
-  const num = item.numero || '—';
-  const placa = (item.placa || '').toUpperCase();
-  const motorista = item.motorista || 'Não informado';
-  const status = item.liberacao || 'Pendente';
-  const av = avariasOf(item).length;
-  const km = fmtKm(item.km);
-  const obs = item.obs || 'Nenhuma ressalva apontada';
-
-  const msg = '*🚚 GOMEX FROTA · VISTORIA Nº ' + num + '*\n\n' +
-    '📋 *Veículo:* ' + (item.veiculo || '—') + ' (*' + placa + '*)\n' +
-    '👤 *Motorista:* ' + motorista + '\n' +
-    '🛣️ *Km Atual:* ' + km + '\n' +
-    '📅 *Data/Hora:* ' + formatarData(item.data) + ' às ' + (item.hora || '--:--') + '\n' +
-    '🚦 *Situação da Liberação:* *' + status.toUpperCase() + '*\n' +
-    '⚠️ *Avarias na Carroceria:* ' + av + ' marcação(ões)\n' +
-    '📝 *Observações / Parecer:* ' + obs + '\n\n' +
-    '_Painel Oficial de Controle de Frota Gomex_';
-
-  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
-}
-window.compartilharWhatsapp = compartilharWhatsapp;
 
 // ==============================================================================
 // RENDERIZADOR DO MAPA VETORIAL DA VAN PARA O PDF
