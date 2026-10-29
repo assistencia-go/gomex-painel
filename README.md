@@ -6,7 +6,7 @@ Sistema administrativo e operacional para acompanhamento em tempo real de vistor
 
 ## 🔒 Acesso Restrito & Autenticação
 O acesso a este painel é 100% isolado dos motoristas e restrito aos gestores:
-- **Usuário**: `gomex`
+- **Usuários**: `hendreo` ou `gomex`
 - **Senha**: `Gomex@2026`
 
 ---
