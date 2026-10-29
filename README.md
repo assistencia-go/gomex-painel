@@ -19,6 +19,10 @@ O acesso a este painel é 100% isolado dos motoristas e restrito aos gestores:
   - Mapa gráfico da carroceria com os pontos exatos de avaria marcados.
   - Tabela de calibragem e estado dos pneus.
   - Assinaturas digitais coletadas.
+- **Módulo & Aba de Manutenção da Frota**:
+  - Aba dedicada no detalhe do veículo para registrar se está **Em Manutenção** ou **Já foi para Manutenção**.
+  - Registro de oficina, tipo de serviço, data de entrada/retorno, custo e observações detalhadas.
+  - Histórico de manutenções por veículo/placa e visualização consolidada em painel geral.
 - **Reemissão de 2ª Via do PDF Oficial**: Geração instantânea do PDF oficial em 1 página A4 padronizado.
 - **Exportação de Dados**: Download em CSV compatível com Microsoft Excel.
 - **Conexão Direta com Supabase**: Sincronização ao vivo com o banco de dados oficial.
