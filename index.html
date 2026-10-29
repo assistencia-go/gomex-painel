@@ -478,14 +478,19 @@
     left: 13px;
     width: 17px;
     height: 17px;
+    fill: none;
+    stroke: #ffffff;
     stroke-width: 2;
-    color: #64748b;
+    color: #ffffff;
     pointer-events: none;
-    transition: color 150ms ease;
+    transition: all 150ms ease;
+    opacity: 0.9;
   }
 
   .input-with-icon:focus-within .input-icon-left {
+    stroke: #38bdf8;
     color: #38bdf8;
+    opacity: 1;
   }
 
   .input-with-icon .input {
@@ -494,7 +499,7 @@
 
   .pwd { position: relative; }
   .pwd .input { padding-right: 46px; }
-  .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; }
+  .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; color: #ffffff; }
   .check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); cursor: pointer; user-select: none; }
   .check input { width: 16px; height: 16px; accent-color: var(--accent); }
   
@@ -1277,17 +1282,17 @@
 
       <form class="login-form" id="frmLogin" novalidate>
         <div class="field">
-          <label for="loginUser">Usuário Corporativo</label>
+          <label for="loginUser">Usuário</label>
           <div class="input-with-icon">
-            <svg class="input-icon-left"><use href="#i-user"/></svg>
-            <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="" required placeholder="Usuário (ex: hendreo ou gomex)">
+            <svg class="i input-icon-left"><use href="#i-user"/></svg>
+            <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="" required placeholder="Usuário">
           </div>
         </div>
 
         <div class="field">
           <label for="loginPass">Senha de Acesso</label>
           <div class="input-with-icon pwd">
-            <svg class="input-icon-left"><use href="#i-lock"/></svg>
+            <svg class="i input-icon-left"><use href="#i-lock"/></svg>
             <input class="input" type="password" id="loginPass" name="password" autocomplete="current-password" required placeholder="••••••••">
             <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha" aria-pressed="false" title="Mostrar/ocultar senha">
               <svg class="i" id="eyeIcon"><use href="#i-eye"/></svg>
