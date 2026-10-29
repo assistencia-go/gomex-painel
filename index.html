@@ -909,6 +909,26 @@
   .select:hover { border-color: #3a4b74; }
   .toolbar .spacer { flex: 1; }
 
+  /* Polimento: abas rolaveis, foco de teclado, numerais e controles consistentes */
+  .tabs {
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+            mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent 100%);
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { font-variant-numeric: tabular-nums; }
+  .tab[aria-pressed="true"] { font-weight: 700; }
+  .tab:focus-visible, .sb-item:focus-visible { outline: 2px solid var(--accent-hi); outline-offset: -2px; border-radius: 8px; }
+  .tab .cnt { font-variant-numeric: tabular-nums; }
+  .search:focus-within kbd { opacity: 0; }
+  .search kbd { transition: opacity 150ms; }
+  .select { max-width: 220px; text-overflow: ellipsis; cursor: pointer; }
+  .select:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(91, 147, 255, 0.15); }
+  .grid td, .grid th { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
   .table-wrap { overflow-x: auto; }
   .grid { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
   .grid th {
@@ -1745,7 +1765,7 @@
         <div class="search">
           <svg class="i"><use href="#i-search"/></svg>
           <label for="filtroBusca" class="sr-only">Buscar vistoria</label>
-          <input class="input" type="search" id="filtroBusca" placeholder="Placa, motorista ou número" autocomplete="off">
+          <input class="input" type="search" id="filtroBusca" placeholder="Placa, motorista, rota ou número" autocomplete="off">
           <kbd aria-hidden="true">/</kbd>
         </div>
 
@@ -1756,6 +1776,11 @@
           <option value="Transit">Transit</option>
           <option value="Master">Master</option>
           <option value="Outro">Outros modelos</option>
+        </select>
+
+        <label class="sr-only" for="filtroRota">Rota</label>
+        <select class="select" id="filtroRota">
+          <option value="">Todas as rotas</option>
         </select>
 
         <label class="sr-only" for="filtroPeriodo">Período</label>
@@ -2822,6 +2847,7 @@ const state = {
   q: '',
   veic: '',
   per: '',
+  rota: '',
   alertOnly: false,
   alertType: '',
   sortCol: 'data',
@@ -2961,7 +2987,9 @@ function toast(msg, kind) {
 // ==============================================================================
 const VALID_USERS = {
   'gomex': { name: 'Gomex Admin', pass: 'Gomex@2026' },
-  'hendreo': { name: 'Hendreo', pass: 'Gomex@2026' }
+  'hendreo': { name: 'Hendreo', pass: 'Gomex@2026' },
+  'ricardo': { name: 'Ricardo', pass: 'Gomex@2026' },
+  'maycon': { name: 'Maycon', pass: 'Gomex@2026' }
 };
 
 function checkExistingAuth() {
@@ -3266,10 +3294,12 @@ function applyFilters() {
       }
     }
     if (q) {
-      const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '') + ' ' + (it.obs || '');
+      const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '') + ' ' + (it.rota || '') + ' ' + (it.obs || '');
       const hayL = hay.toLowerCase();
       if (!hayL.includes(q) && !(qn && norm(hayL).includes(qn))) return false;
     }
+    if (state.rota === '__sem_rota__') { if (it.rota && String(it.rota).trim()) return false; }
+    else if (state.rota && String(it.rota || '').trim() !== state.rota) return false;
     if (state.veic === 'Outro') { if (known.includes(it.veiculo)) return false; }
     else if (state.veic && it.veiculo !== state.veic) return false;
     const dt = it.data || '';
@@ -3293,16 +3323,33 @@ function onFilterChange() { state.page = 1; renderAll(); }
 
 $('filtroBusca').addEventListener('input', e => { state.q = e.target.value; onFilterChange(); });
 $('filtroVeiculo').addEventListener('change', e => { state.veic = e.target.value; onFilterChange(); });
+$('filtroRota').addEventListener('change', e => { state.rota = e.target.value; onFilterChange(); });
 $('filtroPeriodo').addEventListener('change', e => { state.per = e.target.value; onFilterChange(); });
 $('btnClearFilters').addEventListener('click', clearFilters);
 
+function popularFiltroRotas() {
+  const sel = $('filtroRota');
+  if (!sel) return;
+  const rotas = [...new Set(state.all.map(it => String(it.rota || '').trim()).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+  const temSemRota = state.all.some(it => !String(it.rota || '').trim());
+  const assinatura = rotas.join('|') + '#' + temSemRota;
+  if (sel.dataset.sig !== assinatura) {
+    sel.dataset.sig = assinatura;
+    sel.innerHTML = '<option value="">Todas as rotas</option>' +
+      rotas.map(r => '<option value="' + esc(r) + '">' + esc(r) + '</option>').join('') +
+      (temSemRota ? '<option value="__sem_rota__">Sem rota</option>' : '');
+  }
+  sel.value = state.rota;
+}
+
 function clearFilters() {
-  state.status = state.q = state.veic = state.per = '';
+  state.status = state.q = state.veic = state.per = state.rota = '';
   state.alertOnly = false;
   state.alertType = '';
   $('btnFilterAlerts').textContent = 'Filtrar Alertas';
   $('btnFilterAlerts').style.background = 'rgba(255,255,255,0.15)';
-  $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = '';
+  $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = ''; $('filtroRota').value = '';
   onFilterChange();
 }
 
@@ -3478,7 +3525,7 @@ function renderTable() {
   const start = (state.page - 1) * PAGE_SIZE;
   const items = state.filtered.slice(start, start + PAGE_SIZE);
 
-  const hasFilters = !!(state.status || state.q || state.veic || state.per || state.alertOnly || state.alertType);
+  const hasFilters = !!(state.status || state.q || state.veic || state.per || state.rota || state.alertOnly || state.alertType);
   $('btnClearFilters').hidden = !hasFilters;
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status && !state.alertOnly && !state.alertType)));
   document.querySelectorAll('.grid th[data-col]').forEach(th => {
@@ -3505,6 +3552,7 @@ function renderTable() {
 }
 
 function renderAll() {
+  popularFiltroRotas();
   renderSummary();
   renderTable();
   renderManutencaoViewGeral();
