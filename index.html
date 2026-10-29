@@ -151,7 +151,9 @@
     font-size: 13px; font-weight: 600; color: var(--ink);
     transition: background-color 150ms, border-color 150ms, color 150ms, transform 100ms;
     white-space: nowrap;
+    cursor: pointer;
   }
+  .btn * { pointer-events: none; }
   .btn:hover:not(:disabled) { background: #1b2742; border-color: #3a4b74; }
   .btn:active:not(:disabled) { background: #16213a; transform: translateY(1px); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -165,31 +167,21 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ============================================================================
-     LOGIN — ENTERPRISE FLEET SUITE (Padrão Samsara / Motive / Fleetio)
+     LOGIN — ENTERPRISE CENTERED SUITE
      ============================================================================ */
   .login {
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
     background: #070b14;
     position: relative;
-  }
-
-  /* Painel Esquerdo Hero & Branding */
-  .login-brand {
-    position: relative;
     overflow: hidden;
-    background: radial-gradient(circle at 18% 18%, #101c38 0%, #091124 55%, #050812 100%);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 48px 56px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 1;
   }
 
-  /* Grid de telemetria e brilhos dinâmicos */
-  .login-brand::before {
+  /* Grid sutil de fundo e iluminação ambiente */
+  .login::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -203,243 +195,128 @@
     z-index: 0;
   }
 
-  .login-brand-glow-1 {
+  .login-bg-glow {
     position: absolute;
-    width: 450px;
-    height: 450px;
     border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .login-bg-glow-1 {
+    width: 520px;
+    height: 520px;
     background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
     top: -120px;
-    left: -100px;
-    filter: blur(60px);
-    pointer-events: none;
+    left: 50%;
+    transform: translateX(-50%);
+    filter: blur(70px);
   }
 
-  .login-brand-glow-2 {
-    position: absolute;
+  .login-bg-glow-2 {
+    width: 440px;
+    height: 440px;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, transparent 70%);
+    bottom: -80px;
+    left: 20%;
+    filter: blur(60px);
+  }
+
+  .login-bg-glow-3 {
     width: 380px;
     height: 380px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
     bottom: -60px;
-    right: -40px;
-    filter: blur(50px);
-    pointer-events: none;
+    right: 20%;
+    filter: blur(60px);
   }
 
-  .login-brand-head {
+  .login-wrapper {
     position: relative;
     z-index: 2;
+    width: 100%;
+    max-width: 420px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .login-brand-head .brand {
+  /* Logo e Cabeçalho Centralizado com o Caminhãozinho */
+  .login-brand-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
-  }
-
-  .login-brand-head .brand-mark {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    display: grid;
-    place-items: center;
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  }
-
-  .login-brand-head .brand-mark .i {
-    width: 24px;
-    height: 24px;
-    stroke-width: 2;
-  }
-
-  .login-brand-head .brand-name {
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.015em;
-    color: #ffffff;
-  }
-
-  .login-brand-head .brand-sub {
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #38bdf8;
-  }
-
-  /* Centro do Hero */
-  .login-hero-center {
-    position: relative;
-    z-index: 2;
-    margin: 40px 0;
-    max-width: 580px;
-  }
-
-  .hero-category-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #60a5fa;
-    margin-bottom: 18px;
-    background: rgba(37, 99, 235, 0.1);
-    padding: 5px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(37, 99, 235, 0.2);
-  }
-
-  .hero-headline {
-    font-size: 38px;
-    line-height: 1.25;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    color: #f8fafc;
-    margin-bottom: 18px;
-  }
-
-  /* Badge iluminada para a palavra dinâmica */
-  .rotator-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 16px;
-    margin: 0 4px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.12));
-    border: 1.5px solid rgba(56, 189, 248, 0.45);
-    border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(14, 165, 233, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    vertical-align: middle;
-    min-width: 140px;
-    height: 48px;
-    overflow: hidden;
-  }
-
-  .word-rotator {
-    display: inline-block;
-    font-weight: 800;
-    background: linear-gradient(135deg, #67e8f9 0%, #38bdf8 50%, #60a5fa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), opacity 380ms ease;
-  }
-  .word-rotator.word-exit {
-    transform: translateY(-80%);
-    opacity: 0;
-  }
-  .word-rotator.word-enter {
-    transform: translateY(80%);
-    opacity: 0;
-    transition: none !important;
-  }
-
-  .hero-desc {
-    font-size: 14.5px;
-    line-height: 1.6;
-    color: #94a3b8;
-    margin-bottom: 30px;
-  }
-
-  /* Grid de recursos chave estilo Samsara */
-  .hero-feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    text-align: center;
     gap: 12px;
   }
 
-  .hero-feature-item {
-    background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 12px;
-    padding: 14px 14px;
-    transition: all 200ms ease;
-  }
-  .hero-feature-item:hover {
-    background: rgba(26, 38, 66, 0.65);
-    border-color: rgba(56, 189, 248, 0.3);
-    transform: translateY(-2px);
-  }
-
-  .hero-feature-ico {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: rgba(37, 99, 235, 0.15);
-    border: 1px solid rgba(37, 99, 235, 0.25);
+  .brand-mark-lg {
+    width: 54px;
+    height: 54px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     display: grid;
     place-items: center;
-    color: #38bdf8;
-    margin-bottom: 10px;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 200ms ease, box-shadow 200ms ease;
   }
-  .hero-feature-ico .i {
-    width: 15px;
-    height: 15px;
-    stroke-width: 2.2;
-  }
-
-  .hero-feature-title {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: #f1f5f9;
-    margin-bottom: 4px;
-    line-height: 1.3;
+  .brand-mark-lg:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   }
 
-  .hero-feature-desc {
+  .brand-mark-lg .i {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.1;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .brand-title {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .brand-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 11px;
-    color: #64748b;
-    line-height: 1.4;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #38bdf8;
+    background: rgba(37, 99, 235, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
   }
 
-  /* Rodapé do painel institucional */
-  .login-brand-foot {
-    position: relative;
-    z-index: 2;
+  .login-secure-footer {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     font-size: 11.5px;
     color: #475569;
+    text-align: center;
   }
-  .login-brand-foot .i {
-    width: 14px;
-    height: 14px;
+  .login-secure-footer .i {
+    width: 13px;
+    height: 13px;
     stroke-width: 2;
     color: #38bdf8;
-  }
-
-  /* Painel Direito & Card Elevado */
-  .login-pane {
-    background: #090e1a;
-    display: grid;
-    place-items: center;
-    padding: 40px 32px;
-    position: relative;
-  }
-
-  .login-pane::before {
-    content: '';
-    position: absolute;
-    width: 340px;
-    height: 340px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    filter: blur(55px);
-    pointer-events: none;
   }
 
   .login-card {
@@ -636,70 +513,42 @@
   }
 
   /* Responsividade Login */
-  @media (max-width: 1024px) {
-    .login {
-      grid-template-columns: 1fr;
+  @media (max-width: 480px) {
+    .login-wrapper {
+      max-width: 100%;
     }
-    .login-brand {
-      padding: 36px 28px;
-    }
-    .hero-headline {
-      font-size: 30px;
-    }
-    .rotator-pill {
-      min-width: 120px;
-      height: 42px;
-    }
-    .hero-feature-grid {
-      grid-template-columns: 1fr;
+    .login-card {
+      padding: 28px 20px;
+      border-radius: 16px;
     }
   }
 
-  /* Tema Claro para o Login */
+  /* Tema Claro para o Login Centralizado */
   body.theme-light .login {
     background: #f1f5f9;
   }
-  body.theme-light .login-brand {
-    background: radial-gradient(circle at 18% 18%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%);
-    border-right-color: #cbd5e1;
-  }
-  body.theme-light .login-brand::before {
+  body.theme-light .login::before {
     background-image: 
       radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
       linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
     opacity: 0.8;
   }
-  body.theme-light .login-brand-head .brand-name,
-  body.theme-light .hero-headline {
+  body.theme-light .brand-title {
     color: #0f172a;
-  }
-  body.theme-light .hero-desc {
-    color: #475569;
-  }
-  body.theme-light .hero-feature-item {
-    background: #ffffff;
-    border-color: #e2e8f0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  }
-  body.theme-light .hero-feature-title {
-    color: #0f172a;
-  }
-  body.theme-light .hero-feature-desc {
-    color: #64748b;
-  }
-  body.theme-light .login-pane {
-    background: #f8fafc;
   }
   body.theme-light .login-card {
     background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.09);
   }
   body.theme-light .login-card-head h1 {
     color: #0f172a;
   }
   body.theme-light .login-card-head .lead {
+    color: #64748b;
+  }
+  body.theme-light .login-secure-footer {
     color: #64748b;
   }
   body.theme-light .driver-companion-link {
@@ -912,8 +761,8 @@
   .tag-warn { background: var(--warn-tint); color: var(--warn); border: 1px solid rgba(242, 184, 75, 0.25); }
   .tag-bad { background: var(--bad-tint); color: var(--bad); border: 1px solid rgba(248, 120, 120, 0.25); }
   .tag-neutral { background: var(--raised); color: var(--ink-2); }
-  .tag-inativo { background: rgba(100, 116, 139, 0.16); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); }
-  .txt-motivo-inat { font-size: 11px; color: var(--bad); margin-top: 3px; font-weight: 500; }
+  .txt-motivo-inat { font-size: 11px; color: var(--bad); margin-top: 3px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+  .txt-motivo-inat .i { width: 12px; height: 12px; flex-shrink: 0; }
 
   .row-new td { animation: rowIn 2.4s ease-out; }
   @keyframes rowIn { from { background: rgba(91, 147, 255, 0.2); } to { background: transparent; } }
@@ -1051,6 +900,138 @@
   .hist-item.ok .hist-dot { border-color: var(--ok); }
 
   /* ============================================================================
+     ABAS DA GAVETA (VISTORIA vs MANUTENÇÃO) E WORKFLOW DE OFICINA
+     ============================================================================ */
+  .dr-tabs {
+    display: flex; gap: 4px; padding: 0 20px;
+    background: var(--panel-2); border-bottom: 1px solid var(--line);
+  }
+  .dr-tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 16px; border: none; background: transparent;
+    color: var(--ink-3); font-size: 13px; font-weight: 700;
+    border-bottom: 2px solid transparent; cursor: pointer;
+    transition: all 160ms ease;
+  }
+  .dr-tab:hover { color: var(--ink); }
+  .dr-tab.active {
+    color: var(--accent-hi); border-bottom-color: var(--accent-hi);
+  }
+  .dr-tab-badge {
+    padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700;
+    background: #f59e0b; color: #000;
+  }
+  .dr-tab-badge.done {
+    background: #10b981; color: #fff;
+  }
+
+  /* Painel de Manutenção da Gaveta */
+  .maint-card {
+    background: var(--panel-2); border: 1.5px solid var(--line-strong);
+    border-radius: var(--r); padding: 18px; display: grid; gap: 14px;
+    margin-bottom: 18px;
+  }
+  .maint-status-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  @media (max-width: 520px) {
+    .maint-status-grid { grid-template-columns: 1fr; }
+  }
+  .summary-grid-maint {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  @media (max-width: 900px) {
+    .summary-grid-maint { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+  @media (max-width: 520px) {
+    .summary-grid-maint { grid-template-columns: 1fr !important; }
+  }
+
+  .btn-maint-status {
+    height: 48px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    border: 1.5px solid var(--line-strong); background: var(--raised); color: var(--ink-2);
+    transition: all 150ms; cursor: pointer; text-align: center; padding: 4px 8px;
+    user-select: none;
+  }
+  .btn-maint-status * { pointer-events: none; }
+  .btn-maint-status:hover { border-color: var(--accent-hi); color: var(--ink); transform: translateY(-1px); }
+  .btn-maint-status.active-em {
+    background: rgba(245, 158, 11, 0.22); border-color: #f59e0b; color: #fbbf24;
+    box-shadow: 0 0 0 1.5px #f59e0b;
+  }
+  .btn-maint-status.active-ja {
+    background: rgba(16, 185, 129, 0.22); border-color: #10b981; color: #34d399;
+    box-shadow: 0 0 0 1.5px #10b981;
+  }
+  .btn-maint-status.active-nenhuma {
+    background: rgba(148, 163, 184, 0.22); border-color: #94a3b8; color: #f8fafc;
+    box-shadow: 0 0 0 1.5px #94a3b8;
+  }
+
+  .maint-fields-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  @media (max-width: 520px) {
+    .maint-fields-grid { grid-template-columns: 1fr; }
+  }
+
+  .maint-history-list {
+    display: grid; gap: 10px; max-height: 280px; overflow-y: auto;
+  }
+  .maint-history-item {
+    padding: 12px; border-radius: 8px; background: var(--raised);
+    border-left: 3px solid #f59e0b; font-size: 12.5px;
+  }
+  .maint-history-item.concluida {
+    border-left-color: #10b981;
+  }
+  .maint-history-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 700; margin-bottom: 4px;
+  }
+
+  /* Tags de manutenção */
+  .tag-manut-em {
+    background: rgba(245, 158, 11, 0.16); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);
+  }
+  .tag-manut-em .dot { background: #f59e0b; }
+  .tag-manut-done {
+    background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);
+  }
+  .tag-manut-done .dot { background: #10b981; }
+
+  .badge-maint-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    margin-top: 4px; width: fit-content;
+  }
+  .badge-maint-pill.em {
+    background: rgba(245, 158, 11, 0.18); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);
+  }
+  .badge-maint-pill.ja {
+    background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);
+  }
+
+  /* Alternador de Visão no Topo da Página */
+  .view-switch {
+    display: inline-flex; background: var(--raised); padding: 3px; border-radius: 10px;
+    border: 1px solid var(--line-strong); gap: 2px;
+  }
+  .view-switch-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    height: 32px; padding: 0 14px; border-radius: 8px;
+    border: none; background: transparent; color: var(--ink-2);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: all 160ms ease;
+  }
+  .view-switch-btn:hover { color: var(--ink); }
+  .view-switch-btn.active {
+    background: var(--accent); color: #fff;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  }
+
+  /* ============================================================================
      TOAST
      ============================================================================ */
   .toast {
@@ -1143,6 +1124,14 @@
     <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
     <symbol id="i-archive" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></symbol>
     <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></symbol>
+    <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+    <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></symbol>
+    <symbol id="i-circle-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-badge-check" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><line x1="8" y1="6" x2="8.01" y2="6"/><line x1="16" y1="6" x2="16.01" y2="6"/><line x1="8" y1="10" x2="8.01" y2="10"/><line x1="16" y1="10" x2="16.01" y2="10"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></symbol>
   </defs>
 </svg>
 
@@ -1150,64 +1139,23 @@
 <!-- LOGIN -->
 <!-- ========================================================================== -->
 <div class="login" id="login">
-  <!-- Painel Esquerdo com Telemetria e Apresentação Executiva -->
-  <aside class="login-brand">
-    <div class="login-brand-glow-1"></div>
-    <div class="login-brand-glow-2"></div>
+  <div class="login-bg-glow login-bg-glow-1"></div>
+  <div class="login-bg-glow login-bg-glow-2"></div>
+  <div class="login-bg-glow login-bg-glow-3"></div>
 
-    <div class="login-brand-head">
-      <div class="brand">
-        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
-        <div>
-          <div class="brand-name">Gomex Frota</div>
-          <div class="brand-sub">Painel Executivo</div>
-        </div>
+  <div class="login-wrapper">
+    <!-- Logo e Marca Centralizados no Topo -->
+    <div class="login-brand-header">
+      <div class="brand-mark-lg">
+        <svg class="i"><use href="#i-truck"/></svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Gomex Frota</div>
+        <div class="brand-tag">Painel Executivo</div>
       </div>
     </div>
 
-    <div class="login-hero-center">
-      <div class="hero-category-tag">
-        <svg class="i" style="width:13px;height:13px;stroke-width:2.2"><use href="#i-shield"/></svg>
-        <span>Plataforma Integrada de Auditoria</span>
-      </div>
-      <h1 class="hero-headline">
-        Cada vistoria
-        <span class="rotator-pill">
-          <span class="word-rotator" id="wordRotator">organiza</span>
-        </span><br>
-        toda a frota.
-      </h1>
-      <p class="hero-desc">
-        Monitoramento inteligente de pneus com mapa térmico de danos, auditoria de carroceria, conformidade de segurança e aprovações gerenciais em tempo real.
-      </p>
-
-      <div class="hero-feature-grid">
-        <div class="hero-feature-item">
-          <div class="hero-feature-ico"><svg class="i"><use href="#i-shield"/></svg></div>
-          <div class="hero-feature-title">Conformidade Total</div>
-          <div class="hero-feature-desc">Laudos A4 oficiais com assinaturas e mapa de avarias</div>
-        </div>
-        <div class="hero-feature-item">
-          <div class="hero-feature-ico"><svg class="i"><use href="#i-clock"/></svg></div>
-          <div class="hero-feature-title">Decisão em Tempo Real</div>
-          <div class="hero-feature-desc">Liberação, ressalva ou bloqueio gerencial imediato</div>
-        </div>
-        <div class="hero-feature-item">
-          <div class="hero-feature-ico"><svg class="i"><use href="#i-truck"/></svg></div>
-          <div class="hero-feature-title">Inspeção de Pneus</div>
-          <div class="hero-feature-desc">Rastreio de sulcos, calibração, danos e estepes</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="login-brand-foot">
-      <svg class="i"><use href="#i-lock"/></svg>
-      <span>Acesso Corporativo Seguro · Criptografia TLS 1.3 · Gomex Distribuidora</span>
-    </div>
-  </aside>
-
-  <!-- Painel Direito com Card Glassmórfico Elevado -->
-  <main class="login-pane">
+    <!-- Card de Acesso Corporativo -->
     <div class="login-card">
       <div class="login-card-head">
         <span class="login-card-badge">Acesso Corporativo</span>
@@ -1264,7 +1212,13 @@
         </a>
       </form>
     </div>
-  </main>
+
+    <!-- Rodapé Seguro Corporativo -->
+    <div class="login-secure-footer">
+      <svg class="i"><use href="#i-lock"/></svg>
+      <span>Acesso Corporativo Seguro • Gomex Distribuidora</span>
+    </div>
+  </div>
 </div>
 
 <!-- ========================================================================== -->
@@ -1313,98 +1267,113 @@
         <p>Acompanhamento em tempo real, aprovação de liberação e reemissão oficial de check-lists.</p>
       </div>
       <div class="head-actions">
+        <!-- Alternador de Visão: Vistorias vs Painel Geral de Manutenções -->
+        <div class="view-switch">
+          <button type="button" class="view-switch-btn active" id="btnViewVistorias" onclick="alternarVisaoPrincipal('vistorias')">
+            <svg class="i"><use href="#i-truck"/></svg> <span>Vistorias</span>
+          </button>
+          <button type="button" class="view-switch-btn" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')">
+            <svg class="i"><use href="#i-tool"/></svg> <span>Painel Manutenção</span>
+          </button>
+        </div>
         <button type="button" class="btn" id="btnRefresh" title="Sincronizar agora"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
         <button type="button" class="btn" id="btnExport" title="Download em formato CSV para Excel"><svg class="i"><use href="#i-download"/></svg><span>Exportar CSV</span></button>
       </div>
     </div>
 
-    <!-- BANNER DE ALERTAS CRÍTICOS -->
-    <div class="alerts-banner" id="alertsBanner" hidden>
-      <div class="alerts-left">
-        <div class="alerts-badge"><svg class="i" style="stroke-width:2.2"><use href="#i-alert"/></svg></div>
-        <div>
-          <div class="alerts-title">Alertas Operacionais da Frota Detectados</div>
-          <div class="alerts-desc" id="alertsSummaryText">Carregando diagnósticos da frota...</div>
+    <!-- ====================================================================== -->
+    <!-- VISÃO 1: VISTORIAS E CHECK-LISTS DA FROTA -->
+    <!-- ====================================================================== -->
+    <div id="sectionVistoriasView">
+      <!-- BANNER DE ALERTAS CRÍTICOS -->
+      <div class="alerts-banner" id="alertsBanner" hidden>
+        <div class="alerts-left">
+          <div class="alerts-badge"><svg class="i" style="stroke-width:2.2"><use href="#i-alert"/></svg></div>
+          <div>
+            <div class="alerts-title">Alertas Operacionais da Frota Detectados</div>
+            <div class="alerts-desc" id="alertsSummaryText">Carregando diagnósticos da frota...</div>
+          </div>
+        </div>
+        <div class="alerts-pills">
+          <span class="alert-pill red" id="pillBloqueados" hidden>0 Bloqueados</span>
+          <span class="alert-pill yellow" id="pillPneus" hidden>0 Pneu c/ Dano</span>
+          <span class="alert-pill yellow" id="pillRevisao" hidden>0 Revisão Vencendo</span>
+          <button type="button" class="btn btn-ghost" id="btnFilterAlerts" style="height:28px;padding:0 10px;font-size:12px;background:rgba(255,255,255,0.15)">
+            Filtrar Alertas
+          </button>
         </div>
       </div>
-      <div class="alerts-pills">
-        <span class="alert-pill red" id="pillBloqueados" hidden>0 Bloqueados</span>
-        <span class="alert-pill yellow" id="pillPneus" hidden>0 Pneu c/ Dano</span>
-        <span class="alert-pill yellow" id="pillRevisao" hidden>0 Revisão Vencendo</span>
-        <button type="button" class="btn btn-ghost" id="btnFilterAlerts" style="height:28px;padding:0 10px;font-size:12px;background:rgba(255,255,255,0.15)">
-          Filtrar Alertas
-        </button>
-      </div>
-    </div>
 
-    <!-- RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES -->
-    <section class="summary" aria-label="Resumo das vistorias">
-      <dl class="summary-grid">
-        <!-- 1. Total -->
-        <div class="stat">
-          <div class="stat-head">
-            <span class="stat-lbl">Total Vistorias</span>
-            <div class="stat-ico blue"><svg class="i"><use href="#i-truck"/></svg></div>
+      <!-- RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES -->
+      <section class="summary" aria-label="Resumo das vistorias">
+        <dl class="summary-grid">
+          <!-- 1. Total -->
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Total Vistorias</span>
+              <div class="stat-ico blue"><svg class="i"><use href="#i-truck"/></svg></div>
+            </div>
+            <dd id="stTotal">–</dd>
+            <span class="stat-sub">Histórico acumulado</span>
           </div>
-          <dd id="stTotal">–</dd>
-          <span class="stat-sub">Histórico acumulado</span>
-        </div>
 
-        <!-- 2. Hoje -->
-        <div class="stat">
-          <div class="stat-head">
-            <span class="stat-lbl">Hoje</span>
-            <div class="stat-ico emerald"><svg class="i"><use href="#i-clock"/></svg></div>
+          <!-- 2. Hoje -->
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Hoje</span>
+              <div class="stat-ico emerald"><svg class="i"><use href="#i-clock"/></svg></div>
+            </div>
+            <dd id="stHoje">–</dd>
+            <span class="stat-sub" id="stHojeSub">Registradas hoje</span>
           </div>
-          <dd id="stHoje">–</dd>
-          <span class="stat-sub" id="stHojeSub">Registradas hoje</span>
-        </div>
 
-        <!-- 3. Este Mês -->
-        <div class="stat">
-          <div class="stat-head">
-            <span class="stat-lbl">Neste mês</span>
-            <div class="stat-ico purple"><svg class="i"><use href="#i-calendar"/></svg></div>
+          <!-- 3. Este Mês -->
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Neste mês</span>
+              <div class="stat-ico purple"><svg class="i"><use href="#i-calendar"/></svg></div>
+            </div>
+            <dd id="stMes">–</dd>
+            <span class="stat-sub">Mês vigente</span>
           </div>
-          <dd id="stMes">–</dd>
-          <span class="stat-sub">Mês vigente</span>
-        </div>
 
-        <!-- 4. Conformidade -->
-        <div class="stat">
-          <div class="stat-head">
-            <span class="stat-lbl">Conformidade</span>
-            <div class="stat-ico green"><svg class="i"><use href="#i-shield"/></svg></div>
+          <!-- 4. Conformidade -->
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Conformidade</span>
+              <div class="stat-ico green"><svg class="i"><use href="#i-shield"/></svg></div>
+            </div>
+            <dd id="stConf">–</dd>
+            <span class="stat-sub">Veículos 100% liberados</span>
           </div>
-          <dd id="stConf">–</dd>
-          <span class="stat-sub">Veículos 100% liberados</span>
-        </div>
 
-        <!-- 5. Com Avarias -->
-        <div class="stat">
-          <div class="stat-head">
-            <span class="stat-lbl">Com avarias</span>
-            <div class="stat-ico amber"><svg class="i"><use href="#i-alert"/></svg></div>
+          <!-- 5. Com Avarias -->
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Com avarias</span>
+              <div class="stat-ico amber"><svg class="i"><use href="#i-alert"/></svg></div>
+            </div>
+            <dd id="stAv">–</dd>
+            <span class="stat-sub">Carroceria c/ marcas</span>
           </div>
-          <dd id="stAv">–</dd>
-          <span class="stat-sub">Carroceria c/ marcas</span>
+        </dl>
+
+        <div class="split" id="split" role="img" aria-label="Sem dados ainda">
+          <i class="s-ok" id="splitOk"></i><i class="s-warn" id="splitWarn"></i><i class="s-bad" id="splitBad"></i>
         </div>
-      </dl>
+      </section>
 
-      <div class="split" id="split" role="img" aria-label="Sem dados ainda">
-        <i class="s-ok" id="splitOk"></i><i class="s-warn" id="splitWarn"></i><i class="s-bad" id="splitBad"></i>
-      </div>
-    </section>
-
-    <!-- TABELA E CONTROLE DE FILTROS -->
-    <section class="board" aria-label="Lista de vistorias">
-      <div class="tabs" id="tabs">
-        <button type="button" class="tab" data-status="" aria-pressed="true">Todas <span class="cnt" id="cntAll">0</span></button>
-        <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
-        <button type="button" class="tab" data-status="Ressalva" aria-pressed="false"><i class="dot dot-warn"></i>Com ressalva <span class="cnt" id="cntRes">0</span></button>
-        <button type="button" class="tab" data-status="Não liberado" aria-pressed="false"><i class="dot dot-bad"></i>Bloqueadas <span class="cnt" id="cntBlk">0</span></button>
-        <button type="button" class="tab" data-status="Inativo" aria-pressed="false"><i class="dot" style="background:#94a3b8"></i>Inativas <span class="cnt" id="cntInat">0</span></button>
-      </div>
+      <!-- TABELA E CONTROLE DE FILTROS -->
+      <section class="board" aria-label="Lista de vistorias">
+        <div class="tabs" id="tabs">
+          <button type="button" class="tab" data-status="" aria-pressed="true">Todas <span class="cnt" id="cntAll">0</span></button>
+          <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
+          <button type="button" class="tab" data-status="Ressalva" aria-pressed="false"><i class="dot dot-warn"></i>Com ressalva <span class="cnt" id="cntRes">0</span></button>
+          <button type="button" class="tab" data-status="Não liberado" aria-pressed="false"><i class="dot dot-bad"></i>Bloqueadas <span class="cnt" id="cntBlk">0</span></button>
+          <button type="button" class="tab" data-status="Em Manutenção" aria-pressed="false"><i class="dot" style="background:#f59e0b"></i>Em Manutenção <span class="cnt" id="cntManutEm">0</span></button>
+          <button type="button" class="tab" data-status="Manutenção Concluída" aria-pressed="false"><i class="dot" style="background:#10b981"></i>Já foi p/ Manutenção <span class="cnt" id="cntManutJaFoi">0</span></button>
+          <button type="button" class="tab" data-status="Inativo" aria-pressed="false"><i class="dot" style="background:#94a3b8"></i>Inativas <span class="cnt" id="cntInat">0</span></button>
+        </div>
 
       <div class="toolbar">
         <div class="search">
@@ -1462,6 +1431,98 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- VISÃO 2: PAINEL GERAL DE MANUTENÇÃO DA FROTA -->
+    <!-- ====================================================================== -->
+    <div id="sectionManutView" hidden>
+      <!-- Resumo Rápido de Manutenção -->
+      <section class="summary" aria-label="Resumo da manutenção">
+        <dl class="summary-grid summary-grid-maint">
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Em Manutenção Agora</span>
+              <div class="stat-ico amber"><svg class="i"><use href="#i-tool"/></svg></div>
+            </div>
+            <dd id="maintStatEm" style="color:#fbbf24">0</dd>
+            <span class="stat-sub">Veículos na oficina / reparo</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Manutenções Concluídas</span>
+              <div class="stat-ico green"><svg class="i"><use href="#i-badge-check"/></svg></div>
+            </div>
+            <dd id="maintStatJa" style="color:#34d399">0</dd>
+            <span class="stat-sub">Veículos liberados pós-reparo</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Investimento em Reparos</span>
+              <div class="stat-ico blue"><svg class="i"><use href="#i-wallet"/></svg></div>
+            </div>
+            <dd id="maintStatCusto" style="color:#60a5fa">R$ 0,00</dd>
+            <span class="stat-sub">Custo acumulado informado</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Total de Registros</span>
+              <div class="stat-ico blue"><svg class="i"><use href="#i-history"/></svg></div>
+            </div>
+            <dd id="maintStatTotal">0</dd>
+            <span class="stat-sub">Histórico acumulado da frota</span>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Tabela do Painel Geral de Manutenções -->
+      <section class="board" aria-label="Controle de manutenções">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px">
+          <div>
+            <h2 style="font-size:15px;font-weight:700">Acompanhamento de Manutenções & Reparos</h2>
+            <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Controle de oficinas, datas de retorno, custos e observações de reparo de cada veículo da frota.</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('todos')" id="btnFilterMaintAll" style="font-weight:700">Todas</button>
+            <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('em')" id="btnFilterMaintEm" style="color:#fbbf24;display:inline-flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-tool"/></svg> <span>Na Oficina</span>
+            </button>
+            <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('concluidas')" id="btnFilterMaintJa" style="color:#34d399;display:inline-flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-badge-check"/></svg> <span>Concluídas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="grid">
+            <thead>
+              <tr>
+                <th style="width:110px">Placa</th>
+                <th style="width:120px">Veículo</th>
+                <th style="width:160px">Situação Manutenção</th>
+                <th style="width:170px">Oficina / Prestador</th>
+                <th style="width:110px">Data Entrada</th>
+                <th style="width:110px">Previsão / Retorno</th>
+                <th>Observações de Manutenção</th>
+                <th style="width:130px;text-align:right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="maintTableBody">
+              <tr>
+                <td colspan="8" class="empty">
+                  <svg class="i"><use href="#i-tool"/></svg>
+                  <h2>Nenhum registro de manutenção</h2>
+                  <p>Abra qualquer vistoria na tabela e use a aba "Manutenção & Observações" para registrar a ida do veículo à oficina.</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
@@ -1478,9 +1539,22 @@
     <button type="button" class="btn btn-ghost btn-icon" id="drClose" aria-label="Fechar detalhes"><svg class="i"><use href="#i-x"/></svg></button>
   </header>
 
+  <!-- Abas de Navegação da Gaveta -->
+  <div class="dr-tabs">
+    <button type="button" class="dr-tab active" id="drTabBtnVistoria" onclick="switchDrTab('vistoria')">
+      <svg class="i"><use href="#i-truck"/></svg> <span>Vistoria & Check-list</span>
+    </button>
+    <button type="button" class="dr-tab" id="drTabBtnManut" onclick="switchDrTab('manut')">
+      <svg class="i"><use href="#i-tool"/></svg> <span>Manutenção & Observações</span>
+      <span class="dr-tab-badge" id="drTabBadgeManut" hidden>Em manutenção</span>
+    </button>
+  </div>
+
   <div class="dr-body" id="drBody">
-    <!-- BANNER DE VISTORIA INATIVADA -->
-    <div id="drInatBanner" hidden style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+    <!-- ABA 1: CONTEÚDO DA VISTORIA -->
+    <div id="drPaneVistoria">
+      <!-- BANNER DE VISTORIA INATIVADA -->
+      <div id="drInatBanner" hidden style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-weight:700;color:var(--bad);font-size:13px;display:flex;align-items:center;gap:6px">
           <svg class="i" style="width:15px;height:15px;stroke-width:2.2"><use href="#i-archive"/></svg>
@@ -1499,15 +1573,15 @@
       <div class="approval-card">
         <div class="approval-actions">
           <button type="button" class="btn-decision" id="btnSetLiberado" onclick="selecionarDecisao('Liberado')">
-            <span style="font-size:16px">🟢</span>
+            <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--ok)"><use href="#i-shield-check"/></svg>
             <span>Liberar Veículo</span>
           </button>
           <button type="button" class="btn-decision" id="btnSetRessalva" onclick="selecionarDecisao('Ressalva')">
-            <span style="font-size:16px">🟡</span>
+            <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--warn)"><use href="#i-alert-triangle"/></svg>
             <span>Com Ressalva</span>
           </button>
           <button type="button" class="btn-decision" id="btnSetBloqueado" onclick="selecionarDecisao('Não liberado')">
-            <span style="font-size:16px">🔴</span>
+            <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--bad)"><use href="#i-ban"/></svg>
             <span>Bloquear (Oficina)</span>
           </button>
         </div>
@@ -1620,6 +1694,113 @@
       </div>
       <div class="sigs" id="drSigs"></div>
     </section>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- ABA 2: CONTROLE DE MANUTENÇÃO & OBSERVAÇÕES DA OFICINA -->
+    <!-- ====================================================================== -->
+    <div id="drPaneManut" hidden>
+      <div class="maint-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h3 style="margin:0;font-size:14px;color:var(--ink);font-weight:700">Controle de Manutenção do Veículo</h3>
+          <span id="maintVeicBadge" class="plate" style="font-size:12px"></span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:-6px">
+          Indique se o veículo está na oficina ou já retornou de reparo, e registre observações detalhadas.
+        </p>
+
+        <!-- Seletor de Estado de Manutenção -->
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:6px;display:block">
+            Situação de Manutenção do Veículo:
+          </label>
+          <div class="maint-status-grid">
+            <button type="button" class="btn-maint-status" id="btnMaintStatusNenhuma" onclick="setMaintStatus('Nenhuma')">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2"><use href="#i-circle-dot"/></svg>
+              <span>Sem Manutenção</span>
+            </button>
+            <button type="button" class="btn-maint-status" id="btnMaintStatusEm" onclick="setMaintStatus('Em manutenção')">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#f59e0b"><use href="#i-tool"/></svg>
+              <span>Está em Manutenção</span>
+            </button>
+            <button type="button" class="btn-maint-status" id="btnMaintStatusJa" onclick="setMaintStatus('Já foi para manutenção')">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#10b981"><use href="#i-badge-check"/></svg>
+              <span>Já foi p/ Manutenção</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Campos de Manutenção -->
+        <div class="maint-fields-grid">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Oficina / Mecânica / Prestador:
+            </label>
+            <input type="text" class="input" id="maintOficina" placeholder="Ex: Auto Mecânica São Paulo, Borracharia..." style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Tipo de Serviço / Reparo:
+            </label>
+            <input type="text" class="input" id="maintTipo" placeholder="Ex: Freios, Suspensão, Pneus, Revisão..." style="height:38px">
+          </div>
+        </div>
+
+        <div class="maint-fields-grid">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Data de Ida / Entrada:
+            </label>
+            <input type="date" class="input" id="maintDataEntrada" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Data de Retorno / Previsão:
+            </label>
+            <input type="date" class="input" id="maintDataRetorno" style="height:38px">
+          </div>
+        </div>
+
+        <div class="maint-fields-grid">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Custo Estimado / Real (R$):
+            </label>
+            <input type="text" class="input" id="maintCusto" placeholder="Ex: 650,00" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Nº O.S. / Nota Fiscal:
+            </label>
+            <input type="text" class="input" id="maintOS" placeholder="Ex: OS 1042 / NF 5892" style="height:38px">
+          </div>
+        </div>
+
+        <!-- Campo Principal de Observações -->
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:flex;justify-content:space-between">
+            <span>Observações de Manutenção do Veículo:</span>
+            <span style="font-weight:400;color:var(--ink-3)">Detalhes, peças e parecer</span>
+          </label>
+          <textarea class="approval-textarea" id="maintObsTexto" style="min-height:95px" placeholder="Insira as observações sobre a manutenção: peças trocadas, garantia, motivo do envio à oficina, reparos pendentes ou parecer de liberação..."></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;flex-wrap:wrap;gap:8px">
+          <span style="font-size:12px;color:var(--ink-3)" id="maintLastSavedInfo"></span>
+          <button type="button" class="btn btn-primary" id="btnSalvarManutencao" onclick="salvarObservacoesManutencao()">
+            <svg class="i"><use href="#i-check"/></svg> Salvar Observações de Manutenção
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico de Manutenções Registradas para o Veículo -->
+      <section class="sec" style="border-top:none;padding-top:0">
+        <h3 style="margin-bottom:10px">Histórico de Observações deste Veículo <small id="maintHistCount">0 registros</small></h3>
+        <div class="maint-history-list" id="maintHistoryList">
+          <p class="muted">Nenhuma observação de manutenção registrada para este veículo ainda.</p>
+        </div>
+      </section>
+    </div>
   </div>
 
   <footer class="dr-foot">
@@ -2039,6 +2220,8 @@ function renderSummary() {
   const lib = ativos.filter(x => x.liberacao === 'Liberado').length;
   const res = ativos.filter(x => x.liberacao === 'Ressalva').length;
   const blk = ativos.filter(x => x.liberacao === 'Não liberado').length;
+  const emManut = ativos.filter(x => getManutencaoData(x)?.status === 'Em manutenção').length;
+  const jaFoiManut = ativos.filter(x => getManutencaoData(x)?.status === 'Já foi para manutenção').length;
 
   $('stTotal').textContent = total;
   $('stHoje').textContent = ativos.filter(x => x.data === today).length;
@@ -2051,6 +2234,24 @@ function renderSummary() {
   $('cntRes').textContent = res;
   $('cntBlk').textContent = blk;
   if ($('cntInat')) $('cntInat').textContent = inativos.length;
+  if ($('cntManutEm')) $('cntManutEm').textContent = emManut;
+  let custoTotalManut = 0;
+  ativos.forEach(x => {
+    const m = getManutencaoData(x);
+    if (m && m.custo) {
+      const c = parseFloat(String(m.custo).replace(/\./g, '').replace(',', '.'));
+      if (!isNaN(c)) custoTotalManut += c;
+    }
+  });
+
+  if ($('maintStatEm')) $('maintStatEm').textContent = emManut;
+  if ($('maintStatJa')) $('maintStatJa').textContent = jaFoiManut;
+  if ($('maintStatCusto')) {
+    $('maintStatCusto').textContent = custoTotalManut > 0
+      ? 'R$ ' + custoTotalManut.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : 'R$ 0,00';
+  }
+  if ($('maintStatTotal')) $('maintStatTotal').textContent = emManut + jaFoiManut;
 
   $('splitOk').style.flexGrow = lib;
   $('splitWarn').style.flexGrow = res;
@@ -2102,6 +2303,14 @@ function applyFilters() {
     const isInativo = it.status === 'inativo';
     if (state.status === 'Inativo') {
       if (!isInativo) return false;
+    } else if (state.status === 'Em Manutenção') {
+      if (isInativo) return false;
+      const m = getManutencaoData(it);
+      if (!m || m.status !== 'Em manutenção') return false;
+    } else if (state.status === 'Manutenção Concluída') {
+      if (isInativo) return false;
+      const m = getManutencaoData(it);
+      if (!m || m.status !== 'Já foi para manutenção') return false;
     } else {
       if (isInativo) return false;
       if (state.status && it.liberacao !== state.status) return false;
@@ -2232,16 +2441,31 @@ function rowHtml(it) {
           tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
         '</div>' +
-        (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">⚠️ Motivo: ' + esc(extrairMotivoInativacao(it)) + '</div>' : '') +
+        (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">' + icon('alert') + ' <span>Motivo: ' + esc(extrairMotivoInativacao(it)) + '</span></div>' : '') +
       '</div>' +
     '</td>' +
     '<td class="c-av">' + (av ? '<span class="txt-warn">' + av + ' ' + (av === 1 ? 'marca' : 'marcas') + '</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
     '<td class="c-pneu">' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
     '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
-    '<td class="c-status">' + statusTag(it.liberacao, it.status) + '</td>' +
+    '<td class="c-status">' +
+      statusTag(it.liberacao, it.status) +
+      (() => {
+        const m = getManutencaoData(it);
+        if (m && m.status === 'Em manutenção') {
+          return '<div><span class="badge-maint-pill em" title="' + esc(m.obs || 'Veículo na oficina') + '">' + icon('tool') + ' Em Manutenção</span></div>';
+        } else if (m && m.status === 'Já foi para manutenção') {
+          return '<div><span class="badge-maint-pill ja" title="' + esc(m.obs || 'Manutenção realizada') + '">' + icon('check') + ' Manutenção Feita</span></div>';
+        }
+        return '';
+      })() +
+    '</td>' +
     '<td class="c-act">' +
       '<div class="row-actions">' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="open" data-id="' + id + '" title="Ver detalhes completos">' + icon('eye') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="manutencao" data-id="' + id + '" title="Observações de Manutenção" style="' + (() => {
+          const m = getManutencaoData(it);
+          return m && m.status !== 'Nenhuma' ? 'color:#f59e0b' : '';
+        })() + '">' + icon('tool') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="print" data-id="' + id + '" title="Imprimir 2ª Via Oficial">' + icon('printer') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="pdf" data-id="' + id + '" title="Baixar PDF Oficial">' + icon('download') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="sigs" data-id="' + id + '" title="Baixar Assinaturas Digitais">' + icon('pen') + '</button>' +
@@ -2289,7 +2513,11 @@ function renderTable() {
   $('btnNextPage').disabled = state.page >= pages;
 }
 
-function renderAll() { renderSummary(); renderTable(); }
+function renderAll() {
+  renderSummary();
+  renderTable();
+  renderManutencaoViewGeral();
+}
 
 $('btnPrevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; renderTable(); } });
 $('btnNextPage').addEventListener('click', () => { state.page++; renderTable(); });
@@ -2298,7 +2526,8 @@ $('tableBody').addEventListener('click', e => {
   const btn = e.target.closest('[data-act]');
   if (btn) {
     const act = btn.dataset.act;
-    if (act === 'open') openDrawer(btn.dataset.id, btn);
+    if (act === 'open') openDrawer(btn.dataset.id, btn, 'vistoria');
+    else if (act === 'manutencao') openDrawer(btn.dataset.id, btn, 'manut');
     else if (act === 'pdf') baixarPdfOficial(btn.dataset.id, btn, false);
     else if (act === 'print') baixarPdfOficial(btn.dataset.id, btn, true);
     else if (act === 'sigs') {
@@ -2363,10 +2592,14 @@ async function salvarDecisaoGestor() {
   btn.disabled = true;
   btn.textContent = 'Salvando no Supabase...';
 
+  // Preservar tags de auditoria e manutenção existentes no registro
+  const tagsExtras = (state.sel.obs || '').match(/\[(INATIVADO|REATIVADO|MANUTENCAO)[^\]]+\]/gi) || [];
+  const obsFinal = (parecer + (tagsExtras.length ? (parecer ? '\n' : '') + tagsExtras.join('\n') : '')).trim();
+
   const payload = {
     id: state.sel.id,
     liberacao: status,
-    obs: parecer ? parecer : state.sel.obs
+    obs: obsFinal
   };
 
   try {
@@ -2400,7 +2633,9 @@ async function salvarDecisaoGestor() {
         state.all[idx].obs = payload.obs;
       }
       $('drStatus').innerHTML = statusTag(status, state.sel.status);
-      $('drNotes').textContent = payload.obs;
+      const obsLinhas = formatarObservacoesParaPdf(payload.obs, state.sel);
+      $('drNotesSec').hidden = !payload.obs;
+      $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
       renderAll();
       toast('Parecer e situação atualizados com sucesso!');
     } else {
@@ -2414,6 +2649,404 @@ async function salvarDecisaoGestor() {
   }
 }
 window.salvarDecisaoGestor = salvarDecisaoGestor;
+
+// ==============================================================================
+// GESTÃO & CONTROLE DE MANUTENÇÃO DE VEÍCULOS
+// ==============================================================================
+const MAINT_KEY_PREFIX = 'gomex_maint_data_';
+
+function extrairPartesObservacao(rawObs) {
+  if (!rawObs) return { textoLivre: '', manutencao: null, auditoria: [] };
+  let texto = String(rawObs);
+  const auditoria = [];
+  let manutencao = null;
+
+  // Extrair tags de inativação e reativação
+  const auditRegex = /\[(INATIVADO|REATIVADO)\s+em\s+([^\]]+)\]/gi;
+  let aMatch;
+  while ((aMatch = auditRegex.exec(texto)) !== null) {
+    auditoria.push({ tipo: aMatch[1].toUpperCase(), detalhe: aMatch[2].trim() });
+  }
+  texto = texto.replace(auditRegex, '').trim();
+
+  // Extrair tag de manutenção (suporta com ou sem colchete final se truncado)
+  const maintRegex = /\[MANUTENCAO:\s*status=([^\|\]]+)(?:\|\s*oficina=([^\|\]]*))?(?:\|\s*tipo=([^\|\]]*))?(?:\|\s*entrada=([^\|\]]*))?(?:\|\s*retorno=([^\|\]]*))?(?:\|\s*custo=([^\|\]]*))?(?:\|\s*os=([^\|\]]*))?(?:\|\s*obs=([^\]]*))?\]?/i;
+  const mMatch = texto.match(maintRegex);
+  if (mMatch) {
+    manutencao = {
+      status: (mMatch[1] || '').trim(),
+      oficina: (mMatch[2] || '').trim(),
+      tipo: (mMatch[3] || '').trim(),
+      entrada: (mMatch[4] || '').trim(),
+      retorno: (mMatch[5] || '').trim(),
+      custo: (mMatch[6] || '').trim(),
+      os: (mMatch[7] || '').trim(),
+      obs: (mMatch[8] || '').trim()
+    };
+    texto = texto.replace(maintRegex, '').trim();
+  }
+  return { textoLivre: texto, manutencao, auditoria };
+}
+
+function formatarObservacoesParaPdf(rawObs, item) {
+  const { textoLivre, manutencao, auditoria } = extrairPartesObservacao(rawObs);
+  const m = manutencao || (item ? getManutencaoData(item) : null);
+  const linhas = [];
+
+  if (m && m.status && m.status !== 'Nenhuma') {
+    const isDone = m.status === 'Já foi para manutenção';
+    let info = isDone ? 'Manutenção Concluída' : 'Em Manutenção';
+    if (m.oficina) info += ' · Oficina: ' + m.oficina;
+    if (m.tipo) info += ' (' + m.tipo + ')';
+    if (m.entrada) info += ' · Entrada: ' + formatarData(m.entrada);
+    if (m.retorno) info += ' · ' + (isDone ? 'Retorno: ' : 'Previsão: ') + formatarData(m.retorno);
+    if (m.os) info += ' · OS: ' + m.os;
+    if (m.custo) {
+      const numC = parseFloat(String(m.custo).replace(/\./g, '').replace(',', '.'));
+      info += ' · Custo: ' + (isNaN(numC) ? 'R$ ' + m.custo : 'R$ ' + numC.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    }
+    if (m.obs) info += ' · Obs: ' + m.obs;
+    linhas.push(info);
+  }
+
+  if (textoLivre) {
+    linhas.push('Parecer: ' + textoLivre);
+  }
+
+  if (auditoria.length) {
+    auditoria.forEach(a => {
+      const rotulo = a.tipo === 'INATIVADO' ? 'Inativação' : 'Reativação';
+      linhas.push('Auditoria (' + rotulo + '): ' + a.detalhe);
+    });
+  }
+
+  if (!linhas.length) {
+    linhas.push('Nenhuma ressalva cadastrada. Veículo em conformidade operacional.');
+  }
+  return linhas;
+}
+
+function getManutencaoData(it) {
+  if (!it) return null;
+  const placa = (it.placa || '').toUpperCase().trim();
+  
+  // 1. Tentar ler do localStorage por ID da vistoria
+  const localById = localStorage.getItem(MAINT_KEY_PREFIX + 'id_' + it.id);
+  if (localById) {
+    try { return JSON.parse(localById); } catch(e){}
+  }
+
+  // 2. Tentar extrair do campo it.obs gravado no Supabase
+  if (it.obs) {
+    const m = extrairPartesObservacao(it.obs).manutencao;
+    if (m) {
+      return {
+        ...m,
+        updated_at: it.data || ''
+      };
+    }
+  }
+
+  // 3. Fallback: procurar por placa
+  if (placa) {
+    const localByPlaca = localStorage.getItem(MAINT_KEY_PREFIX + 'placa_' + placa);
+    if (localByPlaca) {
+      try { return JSON.parse(localByPlaca); } catch(e){}
+    }
+  }
+
+  return null;
+}
+
+function switchDrTab(tab) {
+  state.activeDrTab = tab;
+  const isVistoria = tab === 'vistoria';
+  const tabVistoria = $('drTabBtnVistoria');
+  const tabManut = $('drTabBtnManut');
+  const paneVistoria = $('drPaneVistoria');
+  const paneManut = $('drPaneManut');
+  if (tabVistoria) tabVistoria.classList.toggle('active', isVistoria);
+  if (tabManut) tabManut.classList.toggle('active', !isVistoria);
+  if (paneVistoria) paneVistoria.hidden = !isVistoria;
+  if (paneManut) paneManut.hidden = isVistoria;
+}
+window.switchDrTab = switchDrTab;
+
+function setMaintStatus(status) {
+  state.maintStatus = status;
+  setMaintStatusUI(status);
+}
+window.setMaintStatus = setMaintStatus;
+
+function setMaintStatusUI(status) {
+  const bNenhuma = $('btnMaintStatusNenhuma');
+  const bEm = $('btnMaintStatusEm');
+  const bJa = $('btnMaintStatusJa');
+  if (bNenhuma) bNenhuma.className = 'btn-maint-status' + (status === 'Nenhuma' || !status ? ' active-nenhuma' : '');
+  if (bEm) bEm.className = 'btn-maint-status' + (status === 'Em manutenção' ? ' active-em' : '');
+  if (bJa) bJa.className = 'btn-maint-status' + (status === 'Já foi para manutenção' ? ' active-ja' : '');
+}
+
+function atualizarBadgeAbaManut(m) {
+  const b = $('drTabBadgeManut');
+  if (!b) return;
+  if (!m || m.status === 'Nenhuma' || !m.status) {
+    b.hidden = true;
+  } else if (m.status === 'Em manutenção') {
+    b.hidden = false;
+    b.className = 'dr-tab-badge';
+    b.textContent = 'Em manutenção';
+  } else if (m.status === 'Já foi para manutenção') {
+    b.hidden = false;
+    b.className = 'dr-tab-badge done';
+    b.textContent = 'Manutenção concluída';
+  }
+}
+
+function getHistoricoManutencaoPlaca(placa) {
+  if (!placa) return [];
+  const raw = localStorage.getItem('gomex_hist_manut_' + placa.toUpperCase().trim());
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch(e) { return []; }
+}
+
+function adicionarAoHistoricoManutencao(placa, maintObj) {
+  if (!placa) return;
+  const list = getHistoricoManutencaoPlaca(placa);
+  list.unshift({
+    ...maintObj,
+    id: Date.now(),
+    data_formatada: new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  });
+  localStorage.setItem('gomex_hist_manut_' + placa.toUpperCase().trim(), JSON.stringify(list.slice(0, 30)));
+}
+
+function carregarHistoricoManutencaoUI(placa) {
+  const list = getHistoricoManutencaoPlaca(placa);
+  const el = $('maintHistoryList');
+  const cntEl = $('maintHistCount');
+  if (cntEl) cntEl.textContent = list.length + (list.length === 1 ? ' registro' : ' registros');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<p class="muted" style="font-size:12.5px;padding:8px 0">Nenhum histórico anterior registrado para este veículo.</p>';
+    return;
+  }
+  el.innerHTML = list.map(item => {
+    const isDone = item.status === 'Já foi para manutenção';
+    const statusLabel = isDone
+      ? '<span style="display:inline-flex;align-items:center;gap:5px;color:#34d399">' + icon('badge-check') + ' Manutenção Concluída</span>'
+      : '<span style="display:inline-flex;align-items:center;gap:5px;color:#fbbf24">' + icon('tool') + ' Em Manutenção</span>';
+    return '<div class="maint-history-item' + (isDone ? ' concluida' : '') + '">' +
+      '<div class="maint-history-head">' +
+        '<span>' + statusLabel + '</span>' +
+        '<span style="font-size:11px;color:var(--ink-3);font-weight:400">' + esc(item.data_formatada || '') + '</span>' +
+      '</div>' +
+      (item.oficina ? '<div style="font-size:12px;color:var(--ink-2);margin-bottom:2px;display:flex;align-items:center;gap:6px">' + icon('building') + ' <span>Oficina: <strong>' + esc(item.oficina) + '</strong>' + (item.custo ? ' · Valor: R$ ' + esc(item.custo) : '') + '</span></div>' : '') +
+      (item.entrada || item.retorno ? '<div style="font-size:11.5px;color:var(--ink-3);margin-bottom:4px;display:flex;align-items:center;gap:6px">' + icon('calendar') + ' <span>Entrada: ' + (item.entrada ? formatarData(item.entrada) : '—') + ' | Retorno: ' + (item.retorno ? formatarData(item.retorno) : '—') + '</span></div>' : '') +
+      '<div style="font-size:12.5px;color:var(--ink);white-space:pre-wrap;margin-top:4px">' + esc(item.obs || 'Sem observação textual') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function carregarDadosManutencaoNoDrawer(it) {
+  const m = getManutencaoData(it) || { status: 'Nenhuma', oficina: '', tipo: '', entrada: '', retorno: '', custo: '', os: '', obs: '' };
+  state.maintStatus = m.status || 'Nenhuma';
+  setMaintStatusUI(state.maintStatus);
+  const badgeVeic = $('maintVeicBadge');
+  if (badgeVeic) badgeVeic.textContent = (it.placa || '').toUpperCase() + ' · ' + (it.veiculo || '');
+  if ($('maintOficina')) $('maintOficina').value = m.oficina || '';
+  if ($('maintTipo')) $('maintTipo').value = m.tipo || '';
+  if ($('maintDataEntrada')) $('maintDataEntrada').value = m.entrada || '';
+  if ($('maintDataRetorno')) $('maintDataRetorno').value = m.retorno || '';
+  if ($('maintCusto')) $('maintCusto').value = m.custo || '';
+  if ($('maintOS')) $('maintOS').value = m.os || '';
+  if ($('maintObsTexto')) $('maintObsTexto').value = m.obs || '';
+  if ($('maintLastSavedInfo')) $('maintLastSavedInfo').textContent = m.updated_at ? 'Último registro em ' + formatarData(m.updated_at) : '';
+  atualizarBadgeAbaManut(m);
+  carregarHistoricoManutencaoUI((it.placa || '').toUpperCase());
+}
+
+async function salvarObservacoesManutencao() {
+  if (!state.sel) return;
+  const it = state.sel;
+  const status = state.maintStatus || 'Nenhuma';
+  const oficina = $('maintOficina').value.trim();
+  const tipo = $('maintTipo').value.trim();
+  const entrada = $('maintDataEntrada').value;
+  const retorno = $('maintDataRetorno').value;
+  const custo = $('maintCusto').value.trim();
+  const os = $('maintOS').value.trim();
+  const obsTexto = $('maintObsTexto').value.trim();
+
+  const btn = $('btnSalvarManutencao');
+  btn.disabled = true;
+  btn.textContent = 'Gravando observações...';
+
+  const maintObj = {
+    status,
+    oficina,
+    tipo,
+    entrada,
+    retorno,
+    custo,
+    os,
+    obs: obsTexto,
+    data_registro: new Date().toISOString(),
+    usuario: $('userNameLabel').textContent || 'gomex'
+  };
+
+  const placa = (it.placa || '').toUpperCase().trim();
+  localStorage.setItem(MAINT_KEY_PREFIX + 'id_' + it.id, JSON.stringify(maintObj));
+  if (placa) {
+    localStorage.setItem(MAINT_KEY_PREFIX + 'placa_' + placa, JSON.stringify(maintObj));
+    adicionarAoHistoricoManutencao(placa, maintObj);
+  }
+
+  let baseObs = (it.obs || '').replace(/\[MANUTENCAO:[^\]]+\]\s*/gi, '').trim();
+  let novaObs = baseObs;
+  if (status !== 'Nenhuma') {
+    const tag = `[MANUTENCAO: status=${status} | oficina=${oficina} | tipo=${tipo} | entrada=${entrada} | retorno=${retorno} | custo=${custo} | os=${os} | obs=${obsTexto}]`;
+    novaObs = (baseObs ? baseObs + '\n' : '') + tag;
+  }
+
+  let novoStatusLiberacao = it.liberacao;
+  if (status === 'Em manutenção' && it.liberacao === 'Liberado') {
+    novoStatusLiberacao = 'Não liberado';
+  }
+
+  const payload = {
+    id: it.id,
+    obs: novaObs,
+    liberacao: novoStatusLiberacao
+  };
+
+  try {
+    let ok = false;
+    try {
+      const res = await fetch('/api/checklists', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) ok = true;
+    } catch(e){}
+
+    if (!ok) {
+      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + it.id, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ obs: novaObs, liberacao: novoStatusLiberacao })
+      });
+      if (resDirect.ok) ok = true;
+    }
+
+    it.obs = novaObs;
+    it.liberacao = novoStatusLiberacao;
+    const idx = state.all.findIndex(x => x.id === it.id);
+    if (idx !== -1) {
+      state.all[idx].obs = novaObs;
+      state.all[idx].liberacao = novoStatusLiberacao;
+    }
+
+    $('drStatus').innerHTML = statusTag(novoStatusLiberacao, it.status);
+    atualizarBadgeAbaManut(maintObj);
+    carregarHistoricoManutencaoUI(placa);
+    $('maintLastSavedInfo').textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR');
+    const obsLinhas = formatarObservacoesParaPdf(novaObs, it);
+    $('drNotesSec').hidden = !novaObs;
+    $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
+    renderAll();
+    renderManutencaoViewGeral();
+    toast('Observações de manutenção salvas com sucesso!');
+  } catch(err) {
+    toast('Gravado com sucesso localmente!', 'check');
+    renderAll();
+    renderManutencaoViewGeral();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = icon('check') + ' Salvar Observações de Manutenção';
+  }
+}
+window.salvarObservacoesManutencao = salvarObservacoesManutencao;
+
+function alternarVisaoPrincipal(visao) {
+  state.visaoAtual = visao;
+  const isVistorias = visao === 'vistorias';
+  const btnVist = $('btnViewVistorias');
+  const btnManut = $('btnViewManut');
+  const secVist = $('sectionVistoriasView');
+  const secManut = $('sectionManutView');
+  if (btnVist) btnVist.classList.toggle('active', isVistorias);
+  if (btnManut) btnManut.classList.toggle('active', !isVistorias);
+  if (secVist) secVist.hidden = !isVistorias;
+  if (secManut) secManut.hidden = isVistorias;
+  if (!isVistorias) {
+    renderManutencaoViewGeral();
+  }
+}
+window.alternarVisaoPrincipal = alternarVisaoPrincipal;
+
+function filtrarTabelaManutGeral(tipo) {
+  state.filtroMaintGeral = tipo;
+  $('btnFilterMaintAll').style.background = tipo === 'todos' ? 'var(--accent)' : 'transparent';
+  $('btnFilterMaintEm').style.background = tipo === 'em' ? 'rgba(245, 158, 11, 0.2)' : 'transparent';
+  $('btnFilterMaintJa').style.background = tipo === 'concluidas' ? 'rgba(16, 185, 129, 0.2)' : 'transparent';
+  renderManutencaoViewGeral();
+}
+window.filtrarTabelaManutGeral = filtrarTabelaManutGeral;
+
+function renderManutencaoViewGeral() {
+  const tbody = $('maintTableBody');
+  if (!tbody) return;
+  const itemsComManut = [];
+  
+  // Apenas vistorias ativas (não inativadas) aparecem no acompanhamento operacional de manutenção
+  const ativos = state.all.filter(it => it.status !== 'inativo');
+
+  ativos.forEach(it => {
+    const m = getManutencaoData(it);
+    if (m && m.status && m.status !== 'Nenhuma') {
+      itemsComManut.push({ it, m });
+    }
+  });
+
+  const filtro = state.filtroMaintGeral || 'todos';
+  const filtrados = itemsComManut.filter(({ m }) => {
+    if (filtro === 'em') return m.status === 'Em manutenção';
+    if (filtro === 'concluidas') return m.status === 'Já foi para manutenção';
+    return true;
+  });
+
+  if (!filtrados.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">' + icon('tool') +
+      '<h2>Nenhum veículo nesta categoria de manutenção</h2>' +
+      '<p>Para adicionar observações de manutenção a um veículo, clique no botão <span style="display:inline-flex;align-items:center;vertical-align:middle;padding:2px 4px;background:var(--raised);border-radius:4px;border:1px solid var(--line-strong)">' + icon('tool') + '</span> de qualquer vistoria na aba Vistorias.</p>' +
+      '</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtrados.map(({ it, m }) => {
+    const isEm = m.status === 'Em manutenção';
+    const statusBadge = isEm
+      ? '<span class="badge-maint-pill em">' + icon('tool') + ' Em Manutenção</span>'
+      : '<span class="badge-maint-pill ja">' + icon('check') + ' Concluída</span>';
+
+    return '<tr>' +
+      '<td><button type="button" class="plate" data-act="open-maint" data-id="' + it.id + '" onclick="openDrawer(\'' + it.id + '\', this, \'manut\')">' + esc(it.placa || '—') + '</button></td>' +
+      '<td><strong>' + esc(it.veiculo || '—') + '</strong></td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td>' + esc(m.oficina || 'Não informada') + (m.tipo ? '<br><small class="muted">' + esc(m.tipo) + '</small>' : '') + '</td>' +
+      '<td>' + (m.entrada ? formatarData(m.entrada) : '—') + '</td>' +
+      '<td>' + (m.retorno ? formatarData(m.retorno) : '—') + '</td>' +
+      '<td style="max-width:280px;font-size:12.5px;color:var(--ink)">' + esc(m.obs || 'Sem observações registradas') + '</td>' +
+      '<td style="text-align:right">' +
+        '<button type="button" class="btn btn-ghost" data-act="open-maint" data-id="' + it.id + '" style="height:28px;padding:0 10px;font-size:12px;color:var(--accent-hi)" onclick="openDrawer(\'' + it.id + '\', this, \'manut\')">' +
+          icon('tool') + ' <span>Observações</span>' +
+        '</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
 
 function fillDrawer(it) {
   $('drTitle').textContent = 'Vistoria Nº ' + (it.numero || '—');
@@ -2439,8 +3072,9 @@ function fillDrawer(it) {
     $('drBtnInativar').onclick = () => isInat ? reativarVistoria(it) : abrirModalInativar(it);
   }
 
+  const partes = extrairPartesObservacao(it.obs);
   selecionarDecisao(it.liberacao);
-  $('drParecerInput').value = it.obs || '';
+  $('drParecerInput').value = partes.textoLivre || '';
 
   const kv = [
     ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
@@ -2483,16 +3117,22 @@ function fillDrawer(it) {
       ? '<ul class="nok">' + nok.map(i => '<li>' + icon('alert') + '<span><span class="grp">' + esc(i.grupo || '') + '</span>' + esc(i.nome || '') + '</span></li>').join('') + '</ul>'
       : '<p class="all-ok">' + icon('check') + 'Nenhum item reprovado.</p>';
 
-  $('drNotesSec').hidden = !it.obs;
-  $('drNotes').textContent = it.obs || '';
+  const obsLinhas = formatarObservacoesParaPdf(it.obs, it);
+  const temObsValida = Boolean(partes.textoLivre || partes.manutencao || partes.auditoria.length);
+  $('drNotesSec').hidden = !temObsValida;
+  $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
+
+  // Carregar dados de manutenção do veículo
+  carregarDadosManutencaoNoDrawer(it);
 }
 
-async function openDrawer(id, trigger) {
+async function openDrawer(id, trigger, initialTab = 'vistoria') {
   const it = state.all.find(c => String(c.id) === String(id));
   if (!it) return;
   state.sel = it;
   lastFocus = trigger || document.activeElement;
   fillDrawer(it);
+  switchDrTab(initialTab);
   renderSigs(state.sigCache[it.id] ?? null);
   $('drBody').scrollTop = 0;
 
@@ -2510,6 +3150,7 @@ async function openDrawer(id, trigger) {
     if (state.sel && state.sel.id === it.id) renderSigs(row);
   }
 }
+window.openDrawer = openDrawer;
 
 function closeDrawer() {
   if (!$('drawer').classList.contains('open')) return;
@@ -2527,6 +3168,30 @@ $('drCloseFoot').addEventListener('click', closeDrawer);
 $('scrim').addEventListener('click', closeDrawer);
 $('drPdf').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, false); });
 $('drPrint').addEventListener('click', e => { if (state.sel) baixarPdfOficial(state.sel.id, e.currentTarget, true); });
+
+// Listener de delegação para tabela geral de manutenção (clique em qualquer elemento do botão/placa)
+if ($('maintTableBody')) {
+  $('maintTableBody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-act="open-maint"]') || e.target.closest('button.plate') || e.target.closest('button');
+    if (btn) {
+      const id = btn.dataset.id;
+      if (id) {
+        openDrawer(id, btn, 'manut');
+      }
+    }
+  });
+}
+
+// Listeners diretos para botões de manutenção na gaveta lateral
+const bMaintNenhuma = $('btnMaintStatusNenhuma');
+const bMaintEm = $('btnMaintStatusEm');
+const bMaintJa = $('btnMaintStatusJa');
+const bSalvarMaint = $('btnSalvarManutencao');
+
+if (bMaintNenhuma) bMaintNenhuma.addEventListener('click', () => setMaintStatus('Nenhuma'));
+if (bMaintEm) bMaintEm.addEventListener('click', () => setMaintStatus('Em manutenção'));
+if (bMaintJa) bMaintJa.addEventListener('click', () => setMaintStatus('Já foi para manutenção'));
+if (bSalvarMaint) bSalvarMaint.addEventListener('click', salvarObservacoesManutencao);
 
 // ==============================================================================
 // DOWNLOAD INDIVIDUAL E EM LOTE DE ASSINATURAS DIGITAIS
@@ -3142,13 +3807,24 @@ async function baixarPdfOficial(id, btn, isPrint = false) {
     barraTitulo(M, y, W, '5. OBSERVAÇÕES E LIBERAÇÃO DO VEÍCULO');
     y += 5.0;
 
-    caixa(M, y, W, 13.0);
+    const boxH = 14.5;
+    caixa(M, y, W, boxH);
     fonte(5.5, 'bold', CINZA);
     doc.text('OBSERVAÇÕES E PARECERES REGISTRADOS:', M + 2.0, y + 2.6);
-    fonte(7.0, 'normal');
-    const obsLinhas = doc.splitTextToSize(d.obs || 'Nenhuma ressalva cadastrada. Veículo em conformidade.', W - 4);
-    doc.text(obsLinhas.slice(0, 3), M + 2.0, y + 6.0);
-    y += 13.0 + 1.5;
+    fonte(6.5, 'normal', [20, 20, 30]);
+
+    const linhasFormatadas = formatarObservacoesParaPdf(d.obs, d);
+    let curObsY = y + 5.8;
+    for (const linha of linhasFormatadas) {
+      const pedacos = doc.splitTextToSize(linha, W - 4);
+      for (const pedaco of pedacos) {
+        if (curObsY <= y + boxH - 1.2) {
+          doc.text(pedaco, M + 2.0, curObsY);
+          curObsY += 3.3;
+        }
+      }
+    }
+    y += boxH + 1.5;
 
     const libColor = d.liberacao === 'Liberado' ? [21, 128, 61] : d.liberacao === 'Ressalva' ? [180, 83, 9] : [185, 28, 28];
     const libBg = d.liberacao === 'Liberado' ? [220, 252, 231] : d.liberacao === 'Ressalva' ? [254, 243, 199] : [254, 226, 226];
