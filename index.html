@@ -1312,6 +1312,39 @@
   }
 
   /* ============================================================================
+     BADGES E EDIÇÃO DE ROTA
+     ============================================================================ */
+  .badge-rota {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 700;
+    background: rgba(91, 147, 255, 0.15); color: #93c5fd; border: 1px solid rgba(91, 147, 255, 0.3);
+    white-space: nowrap;
+  }
+  .btn-add-rota-inline {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600;
+    background: transparent; color: var(--accent-hi); border: 1px dashed rgba(91, 147, 255, 0.45);
+    cursor: pointer; transition: all .15s;
+  }
+  .btn-add-rota-inline:hover {
+    background: rgba(91, 147, 255, 0.18); border-style: solid;
+  }
+  .edit-grid-2 {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .edit-grid-2 { grid-template-columns: 1fr; }
+  }
+  .pill-sugestao {
+    background: var(--raised); border: 1px solid var(--line); border-radius: 12px;
+    padding: 3px 10px; font-size: 11.5px; font-weight: 600; color: var(--ink-2);
+    cursor: pointer; transition: all .15s;
+  }
+  .pill-sugestao:hover {
+    background: var(--hover); color: var(--accent-hi); border-color: var(--accent);
+  }
+
+  /* ============================================================================
      TOAST
      ============================================================================ */
   .toast {
@@ -1963,6 +1996,9 @@
     <button type="button" class="dr-tab active" id="drTabBtnVistoria" onclick="switchDrTab('vistoria')">
       <svg class="i"><use href="#i-truck"/></svg> <span>Vistoria & Check-list</span>
     </button>
+    <button type="button" class="dr-tab" id="drTabBtnEditar" onclick="switchDrTab('editar')">
+      <svg class="i"><use href="#i-edit"/></svg> <span>Editar Vistoria & Rota</span>
+    </button>
     <button type="button" class="dr-tab" id="drTabBtnManut" onclick="switchDrTab('manut')">
       <svg class="i"><use href="#i-tool"/></svg> <span>Manutenção & Observações</span>
       <span class="dr-tab-badge" id="drTabBadgeManut" hidden>Em manutenção</span>
@@ -2223,6 +2259,121 @@
         </div>
       </section>
     </div>
+
+    <!-- ====================================================================== -->
+    <!-- ABA 3: EDIÇÃO DA VISTORIA & ROTA -->
+    <!-- ====================================================================== -->
+    <div id="drPaneEditar" hidden>
+      <div class="maint-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h3 style="margin:0;font-size:14px;color:var(--ink);font-weight:700">Editar Vistoria & Rota Operacional</h3>
+          <span id="drEditNumeroBadge" class="plate" style="font-size:12px"></span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:-6px">
+          Atualize a rota do vendedor, motorista, placa, quilometragem ou parecer desta vistoria.
+        </p>
+
+        <!-- Destaque Rota -->
+        <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:12px 14px;display:grid;gap:8px">
+          <label for="drEditRota" style="font-size:12.5px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
+            <span>📍 Rota / Região do Vendedor:</span>
+          </label>
+          <input type="text" class="input" id="drEditRota" placeholder="Ex: Rota 01 - Centro / Oeste, Rota Sul..." style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;color:var(--ink-3);font-weight:600">Sugestões:</span>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 01')">Rota 01</button>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 02')">Rota 02</button>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 03')">Rota 03</button>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 04')">Rota 04</button>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 05')">Rota 05</button>
+            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Matriz')">Matriz</button>
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Motorista / Vendedor:</label>
+            <input type="text" class="input" id="drEditMotorista" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Placa do Veículo:</label>
+            <input type="text" class="input" id="drEditPlaca" style="height:38px;font-weight:700;text-transform:uppercase" maxlength="8">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Modelo do Veículo:</label>
+            <input type="text" class="input" id="drEditVeiculo" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Quilometragem (KM):</label>
+            <input type="number" class="input" id="drEditKm" style="height:38px">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Data da Vistoria:</label>
+            <input type="date" class="input" id="drEditData" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Hora da Vistoria:</label>
+            <input type="time" class="input" id="drEditHora" style="height:38px">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Tipo de Vistoria:</label>
+            <select class="input" id="drEditTipo" style="height:38px">
+              <option value="Saída">Saída</option>
+              <option value="Retorno">Retorno</option>
+              <option value="Periódica">Periódica</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Combustível:</label>
+            <select class="input" id="drEditCombustivel" style="height:38px">
+              <option value="Reserva">Reserva</option>
+              <option value="1/4">1/4</option>
+              <option value="1/2">1/2</option>
+              <option value="3/4">3/4</option>
+              <option value="Cheio">Cheio</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Situação / Liberação:</label>
+            <select class="input" id="drEditLiberacao" style="height:38px;font-weight:700">
+              <option value="Liberado">Liberado</option>
+              <option value="Ressalva">Com Ressalva</option>
+              <option value="Não liberado">Não Liberado (Bloqueado)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Condição do Motorista:</label>
+            <select class="input" id="drEditCondicao" style="height:38px">
+              <option value="Apto">Apto</option>
+              <option value="Cansado">Cansado</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Observações Gerais / Parecer:</label>
+          <textarea class="approval-textarea" id="drEditObs" style="min-height:75px"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:6px">
+          <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" onclick="salvarEdicaoVistoria(true)">
+            <svg class="i"><use href="#i-check"/></svg> Salvar Alterações no Supabase
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer class="dr-foot">
@@ -2234,6 +2385,7 @@
       </button>
     </div>
     <div class="dr-foot-actions">
+      <button type="button" class="btn" id="drBtnEditar" onclick="abrirModalEditarVistoria(state.sel)" title="Editar dados da vistoria e rota"><svg class="i"><use href="#i-edit"/></svg> Editar Vistoria</button>
       <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i"><use href="#i-printer"/></svg> Imprimir</button>
       <button type="button" class="btn btn-primary" id="drPdf" title="Baixar PDF Oficial"><svg class="i"><use href="#i-download"/></svg> Baixar PDF</button>
     </div>
@@ -2324,6 +2476,160 @@
       <button type="button" class="btn btn-ghost" onclick="fecharModalInativar()">Cancelar</button>
       <button type="button" class="btn btn-primary" id="btnConfirmarInativacao" style="background:#dc2626;border-color:#b91c1c" onclick="confirmarInativacao()">
         <svg class="i"><use href="#i-check"/></svg> Confirmar Inativação
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- ========================================================================== -->
+<!-- MODAL DE EDIÇÃO DE VISTORIA & ROTA -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="modalEditarVistoria">
+  <div class="modal-card" style="max-width:680px;width:95%">
+    <header class="modal-head">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(91,147,255,0.15);color:var(--accent-hi);display:grid;place-items:center">
+          <svg class="i" style="width:20px;height:20px"><use href="#i-edit"/></svg>
+        </div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700">Editar Vistoria Nº <span id="mEditNumero">000000</span></h3>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Altere rota, vendedor, veículo, quilometragem ou parecer</p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalEditarVistoria()"><svg class="i"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
+      <input type="hidden" id="editVistoriaId">
+
+      <!-- DESTAQUE PRINCIPAL: ROTA / REGIÃO OPERACIONAL -->
+      <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:14px 16px;display:grid;gap:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <label for="editRota" style="font-size:13px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
+            <span>📍 Rota / Região do Vendedor:</span>
+          </label>
+          <span style="font-size:11px;color:var(--ink-3)">Aparecerá no PDF e nos relatórios</span>
+        </div>
+        <input type="text" class="input" id="editRota" placeholder="Ex: Rota 01 - Centro / Oeste, Rota Goiânia Sul..." style="height:40px;font-weight:700;font-size:14px;background:var(--bg)">
+        <!-- Pílulas de Sugestão Rápida -->
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-top:2px">
+          <span style="font-size:11px;color:var(--ink-3);font-weight:600">Sugestões:</span>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 01')">Rota 01</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 02')">Rota 02</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 03')">Rota 03</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 04')">Rota 04</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 05')">Rota 05</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Matriz')">Matriz</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Goiânia Sul')">Goiânia Sul</button>
+          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Anápolis')">Anápolis</button>
+        </div>
+      </div>
+
+      <!-- MOTORISTA E VEÍCULO -->
+      <div class="edit-grid-2">
+        <div>
+          <label for="editMotorista" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Motorista / Vendedor *:
+          </label>
+          <input type="text" class="input" id="editMotorista" placeholder="Nome completo do condutor" style="height:38px">
+        </div>
+        <div>
+          <label for="editPlaca" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Placa do Veículo *:
+          </label>
+          <input type="text" class="input" id="editPlaca" placeholder="Ex: ABC1234" maxlength="8" style="height:38px;font-weight:800;text-transform:uppercase">
+        </div>
+      </div>
+
+      <div class="edit-grid-2">
+        <div>
+          <label for="editVeiculo" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Modelo do Veículo:
+          </label>
+          <input type="text" class="input" id="editVeiculo" placeholder="Ex: Fiorino, Kangoo, Master..." style="height:38px">
+        </div>
+        <div>
+          <label for="editKm" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Quilometragem (KM) Atual:
+          </label>
+          <input type="number" class="input" id="editKm" placeholder="Ex: 85200" style="height:38px">
+        </div>
+      </div>
+
+      <!-- DATA, HORA, TIPO, COMBUSTÍVEL -->
+      <div class="edit-grid-2">
+        <div>
+          <label for="editData" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Data da Vistoria:
+          </label>
+          <input type="date" class="input" id="editData" style="height:38px">
+        </div>
+        <div>
+          <label for="editHora" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Hora da Vistoria:
+          </label>
+          <input type="time" class="input" id="editHora" style="height:38px">
+        </div>
+      </div>
+
+      <div class="edit-grid-2">
+        <div>
+          <label for="editTipo" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Tipo de Vistoria:
+          </label>
+          <select class="input" id="editTipo" style="height:38px">
+            <option value="Saída">Saída</option>
+            <option value="Retorno">Retorno</option>
+            <option value="Periódica">Periódica</option>
+          </select>
+        </div>
+        <div>
+          <label for="editCombustivel" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Nível de Combustível:
+          </label>
+          <select class="input" id="editCombustivel" style="height:38px">
+            <option value="Reserva">Reserva</option>
+            <option value="1/4">1/4</option>
+            <option value="1/2">1/2</option>
+            <option value="3/4">3/4</option>
+            <option value="Cheio">Cheio</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- LIBERAÇÃO E OBSERVAÇÕES -->
+      <div class="edit-grid-2">
+        <div>
+          <label for="editLiberacao" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Situação da Vistoria:
+          </label>
+          <select class="input" id="editLiberacao" style="height:38px;font-weight:700">
+            <option value="Liberado">Liberado</option>
+            <option value="Ressalva">Com Ressalva</option>
+            <option value="Não liberado">Não Liberado (Bloqueado)</option>
+          </select>
+        </div>
+        <div>
+          <label for="editCondicao" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+            Condição do Motorista:
+          </label>
+          <select class="input" id="editCondicao" style="height:38px">
+            <option value="Apto">Apto</option>
+            <option value="Cansado">Cansado</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label for="editObs" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+          Observações Gerais / Parecer:
+        </label>
+        <textarea class="approval-textarea" id="editObs" style="min-height:75px" placeholder="Observações da vistoria, notas operacionais, etc."></textarea>
+      </div>
+    </div>
+    <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+      <button type="button" class="btn" onclick="fecharModalEditarVistoria()">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnSalvarEdicaoVistoria" onclick="salvarEdicaoVistoria(false)">
+        <svg class="i"><use href="#i-check"/></svg> Salvar Alterações
       </button>
     </footer>
   </div>
@@ -2459,7 +2765,7 @@ const SOUND_KEY = 'gomex_painel_sound_v1';
 const PAGE_SIZE = 15;
 const POLL_MS = 8000;
 
-const LIST_COLS = 'id,numero,created_at,veiculo,veiculo_outro,placa,km,motorista,data,hora,tipo,combustivel,liberacao,avarias,sem_avarias,pneus,pneu_dano,itens,obs,rev_ult_km,rev_ult_data,rev_prox_km,rev_prox_data,condicao_motorista,extintor_validade,thermo_temp,status';
+const LIST_COLS = 'id,numero,created_at,veiculo,veiculo_outro,placa,km,motorista,rota,data,hora,tipo,combustivel,liberacao,avarias,sem_avarias,pneus,pneu_dano,itens,obs,rev_ult_km,rev_ult_data,rev_prox_km,rev_prox_data,condicao_motorista,extintor_validade,thermo_temp,status';
 const SIG_COLS = 'id,ass_motorista,ass_vistoriador,ass_responsavel';
 
 const STATUS = {
@@ -3061,6 +3367,10 @@ function rowHtml(it) {
         '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
           tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
+          (it.rota
+            ? '<span class="badge-rota" title="Rota do Vendedor">📍 ' + esc(it.rota) + '</span>'
+            : '<button type="button" class="btn-add-rota-inline" data-act="editar" data-id="' + id + '" title="Adicionar rota desta vistoria">+ Rota</button>'
+          ) +
         '</div>' +
         (isRevAlert
           ? '<div style="margin-top:3px"><span class="badge-row-alert ' + (isRevOverdue ? 'red' : 'yellow') + '" title="Meta da revisão preventiva: ' + fmtKm(kmRev) + '">' +
@@ -3108,6 +3418,7 @@ function rowHtml(it) {
     '<td class="c-act">' +
       '<div class="row-actions">' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="open" data-id="' + id + '" title="Ver detalhes completos">' + icon('eye') + '</button>' +
+        '<button type="button" class="btn btn-ghost btn-icon" data-act="editar" data-id="' + id + '" title="Editar dados da vistoria e rota" style="color:var(--accent-hi)">' + icon('edit') + '</button>' +
         '<button type="button" class="btn btn-ghost btn-icon" data-act="manutencao" data-id="' + id + '" title="Observações de Manutenção" style="' + (() => {
           const m = getManutencaoData(it);
           return m && m.status !== 'Nenhuma' ? 'color:#f59e0b' : '';
@@ -3174,6 +3485,7 @@ $('tableBody').addEventListener('click', e => {
   if (btn) {
     const act = btn.dataset.act;
     if (act === 'open') openDrawer(btn.dataset.id, btn, 'vistoria');
+    else if (act === 'editar' || act === 'edit') abrirModalEditarVistoria(btn.dataset.id);
     else if (act === 'manutencao') openDrawer(btn.dataset.id, btn, 'manut');
     else if (act === 'pdf') baixarPdfOficial(btn.dataset.id, btn, false);
     else if (act === 'print') baixarPdfOficial(btn.dataset.id, btn, true);
@@ -3408,16 +3720,228 @@ function getManutencaoData(it) {
 function switchDrTab(tab) {
   state.activeDrTab = tab;
   const isVistoria = tab === 'vistoria';
+  const isEditar = tab === 'editar';
+  const isManut = tab === 'manut';
+
   const tabVistoria = $('drTabBtnVistoria');
+  const tabEditar = $('drTabBtnEditar');
   const tabManut = $('drTabBtnManut');
   const paneVistoria = $('drPaneVistoria');
+  const paneEditar = $('drPaneEditar');
   const paneManut = $('drPaneManut');
+
   if (tabVistoria) tabVistoria.classList.toggle('active', isVistoria);
-  if (tabManut) tabManut.classList.toggle('active', !isVistoria);
+  if (tabEditar) tabEditar.classList.toggle('active', isEditar);
+  if (tabManut) tabManut.classList.toggle('active', isManut);
+
   if (paneVistoria) paneVistoria.hidden = !isVistoria;
-  if (paneManut) paneManut.hidden = isVistoria;
+  if (paneEditar) paneEditar.hidden = !isEditar;
+  if (paneManut) paneManut.hidden = !isManut;
+
+  if (isEditar && state.sel) {
+    povoarFormEdicaoDrawer(state.sel);
+  }
 }
 window.switchDrTab = switchDrTab;
+
+// ==============================================================================
+// GESTÃO DE EDIÇÃO DE VISTORIA & ROTA
+// ==============================================================================
+function povoarFormEdicaoDrawer(it) {
+  if (!it) return;
+  if ($('drEditNumeroBadge')) $('drEditNumeroBadge').textContent = 'Nº ' + (it.numero || '—') + ' · ' + (it.placa || '').toUpperCase();
+  if ($('drEditRota')) $('drEditRota').value = it.rota || '';
+  if ($('drEditMotorista')) $('drEditMotorista').value = it.motorista || '';
+  if ($('drEditPlaca')) $('drEditPlaca').value = (it.placa || '').toUpperCase();
+  if ($('drEditVeiculo')) $('drEditVeiculo').value = it.veiculo || '';
+  if ($('drEditKm')) $('drEditKm').value = it.km ?? '';
+  if ($('drEditData')) $('drEditData').value = it.data ? String(it.data).split('T')[0] : '';
+  if ($('drEditHora')) $('drEditHora').value = it.hora || '';
+  if ($('drEditTipo')) $('drEditTipo').value = it.tipo || 'Saída';
+  if ($('drEditCombustivel')) $('drEditCombustivel').value = it.combustivel || 'Cheio';
+  if ($('drEditLiberacao')) $('drEditLiberacao').value = it.liberacao || 'Liberado';
+  if ($('drEditCondicao')) $('drEditCondicao').value = it.condicao_motorista || 'Apto';
+  if ($('drEditObs')) {
+    const partes = extrairPartesObservacao(it.obs || '');
+    $('drEditObs').value = partes.textoLivre || '';
+  }
+}
+
+function abrirModalEditarVistoria(target) {
+  let it = null;
+  if (typeof target === 'object' && target !== null) {
+    it = target;
+  } else if (target) {
+    it = state.all.find(x => String(x.id) === String(target));
+  }
+  if (!it && state.sel) it = state.sel;
+  if (!it) return;
+
+  $('editVistoriaId').value = it.id;
+  $('mEditNumero').textContent = it.numero || '000000';
+  $('editRota').value = it.rota || '';
+  $('editMotorista').value = it.motorista || '';
+  $('editPlaca').value = (it.placa || '').toUpperCase();
+  $('editVeiculo').value = it.veiculo || '';
+  $('editKm').value = it.km ?? '';
+  $('editData').value = it.data ? String(it.data).split('T')[0] : '';
+  $('editHora').value = it.hora || '';
+  $('editTipo').value = it.tipo || 'Saída';
+  $('editCombustivel').value = it.combustivel || 'Cheio';
+  $('editLiberacao').value = it.liberacao || 'Liberado';
+  $('editCondicao').value = it.condicao_motorista || 'Apto';
+  
+  const partes = extrairPartesObservacao(it.obs || '');
+  $('editObs').value = partes.textoLivre || '';
+
+  $('modalEditarVistoria').classList.add('open');
+  setTimeout(() => {
+    const inpRota = $('editRota');
+    if (inpRota) {
+      inpRota.focus();
+      inpRota.select();
+    }
+  }, 100);
+}
+window.abrirModalEditarVistoria = abrirModalEditarVistoria;
+
+function fecharModalEditarVistoria() {
+  $('modalEditarVistoria').classList.remove('open');
+}
+window.fecharModalEditarVistoria = fecharModalEditarVistoria;
+
+function setEditRotaSugestao(sug) {
+  const inp = $('editRota');
+  if (inp) {
+    inp.value = sug;
+    inp.focus();
+  }
+}
+window.setEditRotaSugestao = setEditRotaSugestao;
+
+function setDrEditRotaSugestao(sug) {
+  const inp = $('drEditRota');
+  if (inp) {
+    inp.value = sug;
+    inp.focus();
+  }
+}
+window.setDrEditRotaSugestao = setDrEditRotaSugestao;
+
+async function salvarEdicaoVistoria(fromDrawer = false) {
+  const pfx = fromDrawer ? 'drEdit' : 'edit';
+  const id = fromDrawer ? (state.sel ? state.sel.id : null) : $('editVistoriaId').value;
+  if (!id) return;
+
+  const itOriginal = state.all.find(x => String(x.id) === String(id));
+  if (!itOriginal) return;
+
+  const btn = fromDrawer ? $('btnSalvarDrEdicao') : $('btnSalvarEdicaoVistoria');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Salvando no Supabase...';
+  }
+
+  const rota = $(pfx + 'Rota').value.trim() || null;
+  const motorista = $(pfx + 'Motorista').value.trim() || itOriginal.motorista;
+  const placa = ($(pfx + 'Placa').value.trim() || itOriginal.placa || '').toUpperCase();
+  const veiculo = $(pfx + 'Veiculo').value.trim() || itOriginal.veiculo;
+  const km = $(pfx + 'Km').value !== '' ? Number($(pfx + 'Km').value) : itOriginal.km;
+  const data = $(pfx + 'Data').value || itOriginal.data;
+  const hora = $(pfx + 'Hora').value || itOriginal.hora;
+  const tipo = $(pfx + 'Tipo').value || itOriginal.tipo;
+  const combustivel = $(pfx + 'Combustivel').value || itOriginal.combustivel;
+  const liberacao = $(pfx + 'Liberacao').value || itOriginal.liberacao;
+  const condicao_motorista = $(pfx + 'Condicao').value || itOriginal.condicao_motorista;
+  const obsTexto = $(pfx + 'Obs').value.trim();
+
+  // Preservar tags de manutenção e auditoria já existentes
+  const tagsExtras = (itOriginal.obs || '').match(/\[(INATIVADO|REATIVADO|MANUTENCAO)[^\]]+\]/gi) || [];
+  const obsFinal = (obsTexto + (tagsExtras.length ? (obsTexto ? '\n' : '') + tagsExtras.join('\n') : '')).trim();
+
+  const payload = {
+    id: Number(id),
+    rota,
+    motorista,
+    placa,
+    veiculo,
+    km,
+    data,
+    hora,
+    tipo,
+    combustivel,
+    liberacao,
+    condicao_motorista,
+    obs: obsFinal
+  };
+
+  try {
+    let ok = false;
+    // 1. Tenta proxy local /api/checklists
+    try {
+      const res = await fetch('/api/checklists', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) ok = true;
+    } catch (e) {
+      console.warn('Erro proxy, tentando direto no Supabase:', e);
+    }
+
+    // 2. Fallback direto REST Supabase
+    if (!ok) {
+      const patchData = { ...payload };
+      delete patchData.id;
+      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + id, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify(patchData)
+      });
+      if (resDirect.ok) ok = true;
+    }
+
+    // Atualiza registro local
+    Object.assign(itOriginal, {
+      rota,
+      motorista,
+      placa,
+      veiculo,
+      km,
+      data,
+      hora,
+      tipo,
+      combustivel,
+      liberacao,
+      condicao_motorista,
+      obs: obsFinal
+    });
+
+    if (state.sel && String(state.sel.id) === String(id)) {
+      Object.assign(state.sel, itOriginal);
+      fillDrawer(state.sel);
+    }
+
+    renderAll();
+
+    if (!fromDrawer) {
+      fecharModalEditarVistoria();
+    } else {
+      switchDrTab('vistoria');
+    }
+
+    toast('✅ Vistoria Nº ' + (itOriginal.numero || '') + ' atualizada com sucesso!');
+  } catch (err) {
+    console.error('Erro ao salvar edição:', err);
+    toast('Erro ao atualizar no banco de dados. Tente novamente.', 'bad');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = icon('check') + ' Salvar Alterações';
+    }
+  }
+}
+window.salvarEdicaoVistoria = salvarEdicaoVistoria;
 
 function setMaintStatus(status) {
   state.maintStatus = status;
@@ -3764,6 +4288,7 @@ function getVendedoresData() {
     });
 
     const maisRecente = rec.vistorias[0];
+    const rotaRecente = rec.vistorias.find(v => v.rota && v.rota.trim())?.rota || '';
     let diasSemVistoria = 999;
     if (maisRecente && maisRecente.data) {
       const cleanDate = String(maisRecente.data).split('T')[0];
@@ -3781,6 +4306,7 @@ function getVendedoresData() {
 
     list.push({
       nome: rec.nome,
+      rota: rotaRecente,
       totalVistorias: rec.vistorias.length,
       vistorias: rec.vistorias,
       veiculoAtual: maisRecente ? (maisRecente.placa || '').toUpperCase() : '—',
@@ -3833,7 +4359,7 @@ function renderVendedoresView() {
   const filtrados = todos.filter(v => {
     if (state.filtroVend !== 'todos' && v.statusPontual !== state.filtroVend) return false;
     if (q) {
-      const hay = (v.nome + ' ' + v.veiculoAtual + ' ' + v.modeloAtual).toLowerCase();
+      const hay = (v.nome + ' ' + v.veiculoAtual + ' ' + v.modeloAtual + ' ' + (v.rota || '')).toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -3865,7 +4391,10 @@ function renderVendedoresView() {
           '<div class="vend-avatar">' + esc(iniciais) + '</div>' +
           '<div>' +
             '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
-            '<div style="font-size:11.5px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</div>' +
+            '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
+              (v.rota ? '<span class="badge-rota" style="font-size:10px">📍 ' + esc(v.rota) + '</span>' : '') +
+              '<span style="font-size:11px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</span>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</td>' +
@@ -4267,6 +4796,7 @@ function fillDrawer(it) {
   const kv = [
     ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
     ['Motorista', esc(it.motorista || '—')],
+    ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">📍 ' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(91,147,255,0.35);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">✏️ Editar</button>'],
     ['Data e hora', formatarData(it.data) + ' às ' + esc(it.hora || '--:--')],
     ['Quilometragem', fmtKm(it.km)],
     ['Tipo de vistoria', esc(it.tipo || '—')],
@@ -4830,17 +5360,22 @@ async function baixarPdfOficial(id, btn, isPrint = false) {
     fonte(7.8, 'normal'); doc.text(dataBr(d.data) + ' · ' + (d.hora || '—'), M + colW[0] + colW[1] + 2, y + 5.7);
     y += hRowId;
 
-    caixa(M, y, colW[0], hRowId);
+    // Linha 2: Motorista (64mm), Rota (34mm), KM (36mm), Tipo (60mm)
+    caixa(M, y, 64, hRowId);
     fonte(5.5, 'bold', CINZA); doc.text('MOTORISTA / VENDEDOR', M + 2, y + 2.5);
-    fonte(7.8, 'normal'); doc.text(corta(d.motorista || '—', colW[0] - 4), M + 2, y + 5.7);
+    fonte(7.8, 'normal'); doc.text(corta(d.motorista || '—', 60), M + 2, y + 5.7);
 
-    caixa(M + colW[0], y, colW[1], hRowId);
-    fonte(5.5, 'bold', CINZA); doc.text('KM ATUAL', M + colW[0] + 2, y + 2.5);
-    fonte(7.8, 'bold'); doc.text(d.km ? d.km + ' km' : '—', M + colW[0] + 2, y + 5.7);
+    caixa(M + 64, y, 34, hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('ROTA / REGIÃO', M + 64 + 2, y + 2.5);
+    fonte(7.8, 'bold', ROXO); doc.text(corta(d.rota || '—', 30), M + 64 + 2, y + 5.7);
 
-    caixa(M + colW[0] + colW[1], y, colW[2], hRowId);
-    fonte(5.5, 'bold', CINZA); doc.text('TIPO DE VISTORIA', M + colW[0] + colW[1] + 2, y + 2.5);
-    fonte(7.8, 'normal'); doc.text('[X] ' + (d.tipo || '—'), M + colW[0] + colW[1] + 2, y + 5.7);
+    caixa(M + 98, y, 36, hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('KM ATUAL', M + 98 + 2, y + 2.5);
+    fonte(7.8, 'bold'); doc.text(d.km ? d.km + ' km' : '—', M + 98 + 2, y + 5.7);
+
+    caixa(M + 134, y, 60, hRowId);
+    fonte(5.5, 'bold', CINZA); doc.text('TIPO DE VISTORIA', M + 134 + 2, y + 2.5);
+    fonte(7.8, 'normal'); doc.text('[X] ' + (d.tipo || '—'), M + 134 + 2, y + 5.7);
     y += hRowId;
 
     caixa(M, y, colW[0], hRowId);
