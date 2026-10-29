@@ -716,10 +716,127 @@
   .alert-pill {
     display: inline-flex; align-items: center; gap: 5px;
     background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.12);
-    padding: 3px 9px; border-radius: 12px; font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 700;
+    cursor: pointer; user-select: none; transition: all 180ms ease;
+    font-family: inherit;
+  }
+  .alert-pill:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.2);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.35);
   }
   .alert-pill.red { color: #f87171; border-color: rgba(248, 113, 113, 0.4); }
+  .alert-pill.red.active {
+    background: rgba(239, 68, 68, 0.25); border-color: #ef4444;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+  }
   .alert-pill.yellow { color: #fbbf24; border-color: rgba(251, 191, 36, 0.4); }
+  .alert-pill.yellow.active {
+    background: rgba(245, 158, 11, 0.25); border-color: #f59e0b;
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+  }
+
+  /* Badges de Alerta Operacional nas Linhas da Tabela */
+  .badge-row-alert {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 7px; border-radius: 6px;
+    font-size: 11px; font-weight: 700; line-height: 1.3;
+    white-space: nowrap;
+    animation: fadeInAlert 0.2s var(--ease);
+  }
+  @keyframes fadeInAlert {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .badge-row-alert.yellow {
+    background: rgba(251, 191, 36, 0.16);
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    color: #fbbf24;
+  }
+  .badge-row-alert.red {
+    background: rgba(239, 68, 68, 0.16);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    color: #f87171;
+  }
+  tr.row-alert-yellow td:first-child {
+    border-left: 3px solid #fbbf24 !important;
+  }
+  tr.row-alert-red td:first-child {
+    border-left: 3px solid #ef4444 !important;
+  }
+  tr.row-alert-yellow {
+    background: rgba(251, 191, 36, 0.02);
+  }
+  tr.row-alert-red {
+    background: rgba(239, 68, 68, 0.03);
+  }
+
+  /* Cards de Alerta Operacional dentro da Gaveta (Drawer) */
+  .dr-alert-card {
+    border-radius: var(--r);
+    padding: 13px 15px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    animation: alertSlideDown 0.25s var(--ease);
+  }
+  .dr-alert-card.yellow {
+    background: rgba(251, 191, 36, 0.09);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+  }
+  .dr-alert-card.red {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+  }
+  .dr-alert-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: grid; place-items: center; flex: none;
+  }
+  .dr-alert-card.yellow .dr-alert-icon {
+    background: rgba(251, 191, 36, 0.2); color: #fbbf24;
+  }
+  .dr-alert-card.red .dr-alert-icon {
+    background: rgba(239, 68, 68, 0.2); color: #f87171;
+  }
+  .dr-alert-title {
+    font-size: 13.5px; font-weight: 700; margin-bottom: 3px;
+  }
+  .dr-alert-card.yellow .dr-alert-title { color: #fbbf24; }
+  .dr-alert-card.red .dr-alert-title { color: #f87171; }
+  .dr-alert-desc {
+    font-size: 12.5px; color: var(--ink-2); line-height: 1.45;
+  }
+  .dr-alert-action-btn {
+    margin-top: 9px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600;
+    padding: 5px 12px; border-radius: 6px;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: #fbbf24; cursor: pointer;
+    transition: all 150ms ease;
+  }
+  .dr-alert-action-btn:hover {
+    background: #fbbf24; color: #0a0f1a;
+  }
+  .dr-alert-action-btn.red {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+  }
+  .dr-alert-action-btn.red:hover {
+    background: #ef4444; color: #fff;
+  }
+  .badge-rev-diff {
+    font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 4px; margin-left: 6px;
+  }
+  .badge-rev-diff.yellow {
+    background: rgba(251, 191, 36, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35);
+  }
+  .badge-rev-diff.red {
+    background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);
+  }
 
   /* ============================================================================
      RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES
@@ -1419,9 +1536,9 @@
           </div>
         </div>
         <div class="alerts-pills">
-          <span class="alert-pill red" id="pillBloqueados" hidden>0 Bloqueados</span>
-          <span class="alert-pill yellow" id="pillPneus" hidden>0 Pneu c/ Dano</span>
-          <span class="alert-pill yellow" id="pillRevisao" hidden>0 Revisão Vencendo</span>
+          <button type="button" class="alert-pill red" id="pillBloqueados" hidden title="Filtrar apenas veículos bloqueados">0 Bloqueados</button>
+          <button type="button" class="alert-pill yellow" id="pillPneus" hidden title="Filtrar apenas veículos com dano em pneus">0 Pneu c/ Dano</button>
+          <button type="button" class="alert-pill yellow" id="pillRevisao" hidden title="Filtrar apenas veículos com revisão próxima ou vencida">0 Revisão Próxima</button>
           <button type="button" class="btn btn-ghost" id="btnFilterAlerts" style="height:28px;padding:0 10px;font-size:12px;background:rgba(255,255,255,0.15)">
             Filtrar Alertas
           </button>
@@ -1683,6 +1800,9 @@
   <div class="dr-body" id="drBody">
     <!-- ABA 1: CONTEÚDO DA VISTORIA -->
     <div id="drPaneVistoria">
+      <!-- ALERTAS OPERACIONAIS CRÍTICOS -->
+      <div id="drOperationalAlerts" hidden></div>
+
       <!-- BANNER DE VISTORIA INATIVADA -->
       <div id="drInatBanner" hidden style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
@@ -2082,6 +2202,7 @@ const state = {
   veic: '',
   per: '',
   alertOnly: false,
+  alertType: '',
   sortCol: 'data',
   sortAsc: false,
   page: 1,
@@ -2410,22 +2531,63 @@ function renderSummary() {
     $('alertsSummaryText').textContent = totalAlertas + ' ocorrência(s) precisam de atenção imediata da manutenção ou portaria.';
     
     const pBlk = $('pillBloqueados');
-    if (blk > 0) { pBlk.hidden = false; pBlk.textContent = blk + ' Bloqueado(s)'; } else { pBlk.hidden = true; }
+    if (blk > 0) {
+      pBlk.hidden = false;
+      pBlk.textContent = blk + ' Bloqueado(s)';
+      pBlk.classList.toggle('active', state.alertType === 'bloqueado');
+    } else {
+      pBlk.hidden = true;
+    }
 
     const pPn = $('pillPneus');
-    if (comPneuDano > 0) { pPn.hidden = false; pPn.textContent = comPneuDano + ' Pneu c/ Dano'; } else { pPn.hidden = true; }
+    if (comPneuDano > 0) {
+      pPn.hidden = false;
+      pPn.textContent = comPneuDano + ' Pneu c/ Dano';
+      pPn.classList.toggle('active', state.alertType === 'pneu');
+    } else {
+      pPn.hidden = true;
+    }
 
     const pRev = $('pillRevisao');
-    if (revisaoVencendo > 0) { pRev.hidden = false; pRev.textContent = revisaoVencendo + ' Revisão Próxima'; } else { pRev.hidden = true; }
+    if (revisaoVencendo > 0) {
+      pRev.hidden = false;
+      pRev.textContent = revisaoVencendo + ' Revisão Próxima';
+      pRev.classList.toggle('active', state.alertType === 'revisao');
+    } else {
+      pRev.hidden = true;
+    }
+
+    const isFiltered = Boolean(state.alertOnly || state.alertType);
+    $('btnFilterAlerts').textContent = isFiltered ? 'Exibir Todas' : 'Filtrar Alertas';
+    $('btnFilterAlerts').style.background = isFiltered ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
   } else {
     banner.hidden = true;
   }
 }
 
+function alternarFiltroAlerta(tipo) {
+  if (state.alertType === tipo) {
+    state.alertType = '';
+    state.alertOnly = false;
+  } else {
+    state.alertType = tipo;
+    state.alertOnly = true;
+  }
+  onFilterChange();
+}
+
+if ($('pillBloqueados')) $('pillBloqueados').addEventListener('click', () => alternarFiltroAlerta('bloqueado'));
+if ($('pillPneus')) $('pillPneus').addEventListener('click', () => alternarFiltroAlerta('pneu'));
+if ($('pillRevisao')) $('pillRevisao').addEventListener('click', () => alternarFiltroAlerta('revisao'));
+
 $('btnFilterAlerts').addEventListener('click', () => {
-  state.alertOnly = !state.alertOnly;
-  $('btnFilterAlerts').textContent = state.alertOnly ? 'Exibir Todas' : 'Filtrar Alertas';
-  $('btnFilterAlerts').style.background = state.alertOnly ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
+  if (state.alertOnly || state.alertType) {
+    state.alertOnly = false;
+    state.alertType = '';
+  } else {
+    state.alertOnly = true;
+    state.alertType = 'all';
+  }
   onFilterChange();
 });
 
@@ -2458,11 +2620,21 @@ function applyFilters() {
       if (state.status && it.liberacao !== state.status) return false;
     }
 
-    if (state.alertOnly) {
+    if (state.alertOnly || state.alertType) {
       const isBlk = it.liberacao === 'Não liberado';
       const isPn = it.pneu_dano === 'Sim';
-      const isRev = it.km && it.rev_prox_km && (Number(it.rev_prox_km) - Number(it.km) <= 1000);
-      if (!isBlk && !isPn && !isRev) return false;
+      const diffRev = (it.km && it.rev_prox_km) ? (Number(it.rev_prox_km) - Number(it.km)) : null;
+      const isRev = diffRev !== null && diffRev <= 1000;
+
+      if (state.alertType === 'bloqueado') {
+        if (!isBlk) return false;
+      } else if (state.alertType === 'pneu') {
+        if (!isPn) return false;
+      } else if (state.alertType === 'revisao') {
+        if (!isRev) return false;
+      } else {
+        if (!isBlk && !isPn && !isRev) return false;
+      }
     }
     if (q) {
       const hay = (it.placa || '') + ' ' + (it.motorista || '') + ' ' + (it.numero || '') + ' ' + (it.obs || '');
@@ -2498,6 +2670,7 @@ $('btnClearFilters').addEventListener('click', clearFilters);
 function clearFilters() {
   state.status = state.q = state.veic = state.per = '';
   state.alertOnly = false;
+  state.alertType = '';
   $('btnFilterAlerts').textContent = 'Filtrar Alertas';
   $('btnFilterAlerts').style.background = 'rgba(255,255,255,0.15)';
   $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = '';
@@ -2567,7 +2740,24 @@ function rowHtml(it) {
   const placa = esc((it.placa || '').toUpperCase());
   const isInat = it.status === 'inativo';
 
-  return '<tr data-id="' + id + '" class="' + (state.fresh.has(it.id) ? 'row-new' : '') + (isInat ? ' row-inat' : '') + '">' +
+  // Diagnóstico de Alertas Operacionais da Linha
+  const kmAtual = Number(it.km) || 0;
+  const kmRev = Number(it.rev_prox_km) || 0;
+  const diffRev = (kmRev > 0 && kmAtual > 0) ? (kmRev - kmAtual) : null;
+  const isRevOverdue = diffRev !== null && diffRev <= 0;
+  const isRevClose = diffRev !== null && diffRev > 0 && diffRev <= 1000;
+  const isRevAlert = isRevOverdue || isRevClose;
+  const isPnAlert = it.pneu_dano === 'Sim';
+  const isBlkAlert = it.liberacao === 'Não liberado';
+
+  let alertRowClass = '';
+  if (isBlkAlert || isRevOverdue || isPnAlert) {
+    alertRowClass = ' row-alert-red';
+  } else if (isRevClose) {
+    alertRowClass = ' row-alert-yellow';
+  }
+
+  return '<tr data-id="' + id + '" class="' + (state.fresh.has(it.id) ? 'row-new' : '') + (isInat ? ' row-inat' : '') + alertRowClass + '">' +
     '<td class="c-num"><button type="button" class="num" data-act="open" data-id="' + id + '" aria-label="Abrir vistoria ' + num + '">' + num + '</button></td>' +
     '<td class="c-date"><span class="t1">' + formatarData(it.data) + '</span><span class="t2">' + esc(it.hora || '--:--') + '</span></td>' +
     '<td class="c-veic">' +
@@ -2579,15 +2769,28 @@ function rowHtml(it) {
     '<td class="c-driver">' +
       '<div class="stack">' +
         '<span class="t1">' + esc(it.motorista || 'Não informado') + '</span>' +
-        '<div style="display:flex;align-items:center;gap:6px">' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
           tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
         '</div>' +
+        (isRevAlert
+          ? '<div style="margin-top:3px"><span class="badge-row-alert ' + (isRevOverdue ? 'red' : 'yellow') + '" title="Meta da revisão preventiva: ' + fmtKm(kmRev) + '">' +
+              '<svg class="i" style="width:11px;height:11px;stroke-width:2.2"><use href="#i-tool"/></svg>' +
+              '<span>' + (isRevOverdue ? 'Revisão Vencida (' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km)' : 'Próx. Revisão: faltam ' + diffRev.toLocaleString('pt-BR') + ' km') + '</span>' +
+            '</span></div>'
+          : '') +
         (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">' + icon('alert') + ' <span>Motivo: ' + esc(extrairMotivoInativacao(it)) + '</span></div>' : '') +
       '</div>' +
     '</td>' +
     '<td class="c-av">' + (av ? '<span class="txt-warn">' + av + ' ' + (av === 1 ? 'marca' : 'marcas') + '</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
-    '<td class="c-pneu">' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
+    '<td class="c-pneu">' +
+      (isPnAlert
+        ? '<span class="badge-row-alert red"><svg class="i" style="width:11px;height:11px;stroke-width:2.2"><use href="#i-alert"/></svg> Danificado</span>'
+        : alert
+          ? '<span class="txt-warn">Atenção</span>'
+          : '<span class="muted">Normal</span>'
+      ) +
+    '</td>' +
     '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
     '<td class="c-status">' +
       statusTag(it.liberacao, it.status) +
@@ -2600,6 +2803,18 @@ function rowHtml(it) {
         }
         return '';
       })() +
+      (isRevAlert
+        ? '<div style="margin-top:4px"><span class="badge-row-alert ' + (isRevOverdue ? 'red' : 'yellow') + '" title="Meta da revisão: ' + fmtKm(kmRev) + '">' +
+            '<svg class="i" style="width:10px;height:10px;stroke-width:2.2"><use href="#i-tool"/></svg>' +
+            '<span>' + (isRevOverdue ? 'Revisão Vencida' : 'Revisão em ' + diffRev.toLocaleString('pt-BR') + ' km') + '</span>' +
+          '</span></div>'
+        : '') +
+      (isPnAlert
+        ? '<div style="margin-top:4px"><span class="badge-row-alert red">' +
+            '<svg class="i" style="width:10px;height:10px;stroke-width:2.2"><use href="#i-alert"/></svg>' +
+            '<span>Pneu c/ Dano</span>' +
+          '</span></div>'
+        : '') +
     '</td>' +
     '<td class="c-act">' +
       '<div class="row-actions">' +
@@ -2629,9 +2844,9 @@ function renderTable() {
   const start = (state.page - 1) * PAGE_SIZE;
   const items = state.filtered.slice(start, start + PAGE_SIZE);
 
-  const hasFilters = !!(state.status || state.q || state.veic || state.per || state.alertOnly);
+  const hasFilters = !!(state.status || state.q || state.veic || state.per || state.alertOnly || state.alertType);
   $('btnClearFilters').hidden = !hasFilters;
-  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status && !state.alertOnly)));
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.status === state.status && !state.alertOnly && !state.alertType)));
   document.querySelectorAll('.grid th[data-col]').forEach(th => {
     th.setAttribute('aria-sort', th.dataset.col === state.sortCol ? (state.sortAsc ? 'ascending' : 'descending') : 'none');
   });
@@ -3202,6 +3417,26 @@ function renderManutencaoViewGeral() {
   }).join('');
 }
 
+function encaminharRevisaoParaManutencao() {
+  if (!state.sel) return;
+  switchDrTab('manut');
+  setMaintStatus('Em manutenção');
+  const kmAtual = Number(state.sel.km) || 0;
+  const kmRev = Number(state.sel.rev_prox_km) || 0;
+  const diff = kmRev - kmAtual;
+  
+  if ($('maintTipo')) {
+    $('maintTipo').value = 'Revisão Preventiva (' + fmtKm(kmRev) + ')';
+  }
+  if ($('maintObs') && !$('maintObs').value) {
+    $('maintObs').value = diff <= 0
+      ? 'Veículo com revisão vencida há ' + Math.abs(diff).toLocaleString('pt-BR') + ' km (KM atual: ' + fmtKm(kmAtual) + ' / Meta: ' + fmtKm(kmRev) + '). Necessário agendamento urgente de revisão preventiva.'
+      : 'Veículo próximo da revisão preventiva (KM atual: ' + fmtKm(kmAtual) + ' / Meta: ' + fmtKm(kmRev) + ' - faltam ' + diff.toLocaleString('pt-BR') + ' km). Realizar revisão periódica.';
+  }
+  if ($('maintOficina')) $('maintOficina').focus();
+}
+window.encaminharRevisaoParaManutencao = encaminharRevisaoParaManutencao;
+
 function fillDrawer(it) {
   $('drTitle').textContent = 'Vistoria Nº ' + (it.numero || '—');
   $('drPlate').textContent = (it.placa || '').toUpperCase();
@@ -3209,6 +3444,76 @@ function fillDrawer(it) {
   
   const isInat = it.status === 'inativo';
   $('drStatus').innerHTML = statusTag(it.liberacao, it.status);
+
+  // Diagnóstico de Alertas Operacionais da Vistoria
+  const kmAtual = Number(it.km) || 0;
+  const kmRev = Number(it.rev_prox_km) || 0;
+  const diffRev = (kmRev > 0 && kmAtual > 0) ? (kmRev - kmAtual) : null;
+  const isRevOverdue = diffRev !== null && diffRev <= 0;
+  const isRevClose = diffRev !== null && diffRev > 0 && diffRev <= 1000;
+  const isRevAlert = isRevOverdue || isRevClose;
+  const isPnAlert = it.pneu_dano === 'Sim';
+  const isBlkAlert = it.liberacao === 'Não liberado';
+  const nok = nokOf(it);
+
+  const elAlerts = $('drOperationalAlerts');
+  if (elAlerts) {
+    let cardsHtml = '';
+
+    if (isRevAlert) {
+      const color = isRevOverdue ? 'red' : 'yellow';
+      const title = isRevOverdue
+        ? '🚨 Revisão Preventiva Vencida (' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km atrás)'
+        : '⚠️ Revisão Preventiva Próxima (Faltam ' + diffRev.toLocaleString('pt-BR') + ' km)';
+      const desc = isRevOverdue
+        ? 'A quilometragem deste veículo (<strong>' + fmtKm(kmAtual) + '</strong>) já ultrapassou a marca programada de <strong>' + fmtKm(kmRev) + '</strong> por <strong>' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km</strong>. Encaminhe o veículo para a oficina imediatamente para troca de óleo, filtros e revisão geral.'
+        : 'Este veículo está a apenas <strong>' + diffRev.toLocaleString('pt-BR') + ' km</strong> da revisão preventiva programada (KM Atual: <strong>' + fmtKm(kmAtual) + '</strong> · Meta da Revisão: <strong>' + fmtKm(kmRev) + '</strong>' + (it.rev_prox_data ? ' · Prevista para: <strong>' + formatarData(it.rev_prox_data) + '</strong>' : '') + '). Recomenda-se o agendamento prévio com a oficina para evitar paradas na entrega.';
+
+      cardsHtml += '<div class="dr-alert-card ' + color + '">' +
+        '<div class="dr-alert-icon">' + icon('tool') + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="dr-alert-title">' + title + '</div>' +
+          '<div class="dr-alert-desc">' + desc + '</div>' +
+          '<button type="button" class="dr-alert-action-btn' + (isRevOverdue ? ' red' : '') + '" onclick="encaminharRevisaoParaManutencao()">' +
+            icon('tool') + ' Abrir Ordem / Observação de Manutenção' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }
+
+    if (isPnAlert) {
+      cardsHtml += '<div class="dr-alert-card red">' +
+        '<div class="dr-alert-icon">' + icon('alert') + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="dr-alert-title">⚠️ Pneu com Dano Registrado na Vistoria</div>' +
+          '<div class="dr-alert-desc">O motorista ou vistoriador apontou dano nos pneus durante esta vistoria. Verifique o estado dos pneus abaixo imediatamente.</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    if (isBlkAlert) {
+      cardsHtml += '<div class="dr-alert-card red">' +
+        '<div class="dr-alert-icon">' + icon('ban') + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="dr-alert-title">⛔ Veículo Bloqueado para Operação</div>' +
+          '<div class="dr-alert-desc">Este veículo não está autorizado para circulação até que as pendências sejam sanadas pela gestão ou manutenção.</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    if (nok.length > 0) {
+      cardsHtml += '<div class="dr-alert-card red">' +
+        '<div class="dr-alert-icon">' + icon('alert') + '</div>' +
+        '<div style="flex:1">' +
+          '<div class="dr-alert-title">❌ ' + nok.length + ' Item(ns) Reprovado(s) no Check-list</div>' +
+          '<div class="dr-alert-desc">' + nok.map(i => (i.grupo ? '<strong>' + esc(i.grupo) + ':</strong> ' : '') + esc(i.nome)).join('; ') + '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    elAlerts.innerHTML = cardsHtml;
+    elAlerts.hidden = !cardsHtml;
+  }
 
   const inatBanner = $('drInatBanner');
   if (inatBanner) {
@@ -3239,7 +3544,13 @@ function fillDrawer(it) {
     ['Combustível', esc(it.combustivel || '—')],
     ['Condição do motorista', esc(it.condicao_motorista || '—')],
     ['Última revisão', esc(revText(it.rev_ult_km, it.rev_ult_data))],
-    ['Próxima revisão', esc(revText(it.rev_prox_km, it.rev_prox_data))]
+    ['Próxima revisão', esc(revText(it.rev_prox_km, it.rev_prox_data)) + (
+      isRevAlert
+        ? ' <span class="badge-rev-diff ' + (isRevOverdue ? 'red' : 'yellow') + '">' +
+            (isRevOverdue ? 'Vencida há ' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km' : 'Faltam ' + diffRev.toLocaleString('pt-BR') + ' km') +
+          '</span>'
+        : ''
+    )]
   ];
   $('drKv').innerHTML = kv.map(([k, v]) => '<div><dt>' + k + '</dt><dd>' + v + '</dd></div>').join('');
 
@@ -3263,7 +3574,6 @@ function fillDrawer(it) {
     '</tr>'
   ).join('') : '<tr><td colspan="4" class="muted">Sem registro de pneus nesta vistoria.</td></tr>';
 
-  const nok = nokOf(it);
   $('drNokCount').textContent = itensOf(it).length ? nok.length + ' de ' + itensOf(it).length + ' itens' : '';
   $('drNok').innerHTML = !itensOf(it).length
     ? '<p class="muted">Esta vistoria não trouxe itens de verificação.</p>'
