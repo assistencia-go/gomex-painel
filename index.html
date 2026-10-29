@@ -167,21 +167,31 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ============================================================================
-     LOGIN — ENTERPRISE CENTERED SUITE
+     LOGIN — ENTERPRISE FLEET SUITE (SPLIT LAYOUT)
      ============================================================================ */
   .login {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 16px;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
     background: #070b14;
     position: relative;
-    overflow: hidden;
   }
 
-  /* Grid sutil de fundo e iluminação ambiente */
-  .login::before {
+  /* Painel Esquerdo Hero & Branding */
+  .login-brand {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 18% 18%, #101c38 0%, #091124 55%, #050812 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 48px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  /* Grid de telemetria e brilhos dinâmicos */
+  .login-brand::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -195,128 +205,193 @@
     z-index: 0;
   }
 
-  .login-bg-glow {
+  .login-brand-glow-1 {
     position: absolute;
+    width: 450px;
+    height: 450px;
     border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+    top: -120px;
+    left: -100px;
+    filter: blur(60px);
     pointer-events: none;
   }
 
-  .login-bg-glow-1 {
-    width: 520px;
-    height: 520px;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
-    top: -120px;
-    left: 50%;
-    transform: translateX(-50%);
-    filter: blur(70px);
-  }
-
-  .login-bg-glow-2 {
-    width: 440px;
-    height: 440px;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, transparent 70%);
-    bottom: -80px;
-    left: 20%;
-    filter: blur(60px);
-  }
-
-  .login-bg-glow-3 {
+  .login-brand-glow-2 {
+    position: absolute;
     width: 380px;
     height: 380px;
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, transparent 70%);
     bottom: -60px;
-    right: 20%;
-    filter: blur(60px);
+    right: -40px;
+    filter: blur(50px);
+    pointer-events: none;
   }
 
-  .login-wrapper {
+  .login-brand-head {
     position: relative;
     z-index: 2;
-    width: 100%;
-    max-width: 420px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
-  /* Logo e Cabeçalho Centralizado com o Caminhãozinho */
-  .login-brand-header {
+  .login-brand-head .brand {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    gap: 12px;
+    gap: 14px;
   }
 
-  .brand-mark-lg {
-    width: 54px;
-    height: 54px;
-    border-radius: 15px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  .login-brand-head .brand-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     display: grid;
     place-items: center;
-    color: #ffffff;
-    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 200ms ease, box-shadow 200ms ease;
-  }
-  .brand-mark-lg:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
   }
 
-  .brand-mark-lg .i {
-    width: 28px;
-    height: 28px;
-    stroke-width: 2.1;
+  .login-brand-head .brand-mark .i {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2;
   }
 
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .brand-title {
-    font-size: 24px;
+  .login-brand-head .brand-name {
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.015em;
     color: #ffffff;
-    margin: 0;
-    line-height: 1.2;
   }
 
-  .brand-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.12em;
+  .login-brand-head .brand-sub {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #38bdf8;
-    background: rgba(37, 99, 235, 0.12);
-    border: 1px solid rgba(56, 189, 248, 0.25);
-    padding: 3px 10px;
-    border-radius: 999px;
   }
 
-  .login-secure-footer {
-    display: flex;
+  /* Centro do Hero sem os 3 blocos */
+  .login-hero-center {
+    position: relative;
+    z-index: 2;
+    margin: auto 0;
+    max-width: 580px;
+    padding: 24px 0;
+  }
+
+  .hero-category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #60a5fa;
+    margin-bottom: 20px;
+    background: rgba(37, 99, 235, 0.1);
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 99, 235, 0.25);
+  }
+
+  .hero-headline {
+    font-size: 40px;
+    line-height: 1.25;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #f8fafc;
+    margin-bottom: 20px;
+  }
+
+  /* Badge iluminada para a palavra dinâmica */
+  .rotator-pill {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0 16px;
+    margin: 0 4px;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.12));
+    border: 1.5px solid rgba(56, 189, 248, 0.45);
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(14, 165, 233, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    vertical-align: middle;
+    min-width: 140px;
+    height: 48px;
+    overflow: hidden;
+  }
+
+  .word-rotator {
+    display: inline-block;
+    font-weight: 800;
+    background: linear-gradient(135deg, #67e8f9 0%, #38bdf8 50%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), opacity 380ms ease;
+  }
+  .word-rotator.word-exit {
+    transform: translateY(-80%);
+    opacity: 0;
+  }
+  .word-rotator.word-enter {
+    transform: translateY(80%);
+    opacity: 0;
+    transition: none !important;
+  }
+
+  .hero-desc {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #94a3b8;
+    margin-bottom: 0;
+    max-width: 520px;
+  }
+
+  /* Rodapé do painel institucional */
+  .login-brand-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
     gap: 8px;
     font-size: 11.5px;
     color: #475569;
-    text-align: center;
   }
-  .login-secure-footer .i {
-    width: 13px;
-    height: 13px;
+  .login-brand-foot .i {
+    width: 14px;
+    height: 14px;
     stroke-width: 2;
     color: #38bdf8;
+  }
+
+  /* Painel Direito & Card Elevado */
+  .login-pane {
+    background: #090e1a;
+    display: grid;
+    place-items: center;
+    padding: 40px 32px;
+    position: relative;
+  }
+
+  .login-pane::before {
+    content: '';
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(55px);
+    pointer-events: none;
   }
 
   .login-card {
@@ -513,42 +588,56 @@
   }
 
   /* Responsividade Login */
-  @media (max-width: 480px) {
-    .login-wrapper {
-      max-width: 100%;
+  @media (max-width: 1024px) {
+    .login {
+      grid-template-columns: 1fr;
     }
-    .login-card {
-      padding: 28px 20px;
-      border-radius: 16px;
+    .login-brand {
+      padding: 36px 28px;
+    }
+    .hero-headline {
+      font-size: 30px;
+    }
+    .rotator-pill {
+      min-width: 120px;
+      height: 42px;
     }
   }
 
-  /* Tema Claro para o Login Centralizado */
+  /* Tema Claro para o Login */
   body.theme-light .login {
     background: #f1f5f9;
   }
-  body.theme-light .login::before {
+  body.theme-light .login-brand {
+    background: radial-gradient(circle at 18% 18%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%);
+    border-right-color: #cbd5e1;
+  }
+  body.theme-light .login-brand::before {
     background-image: 
       radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
       linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
     opacity: 0.8;
   }
-  body.theme-light .brand-title {
+  body.theme-light .login-brand-head .brand-name,
+  body.theme-light .hero-headline {
     color: #0f172a;
+  }
+  body.theme-light .hero-desc {
+    color: #475569;
+  }
+  body.theme-light .login-pane {
+    background: #f8fafc;
   }
   body.theme-light .login-card {
     background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.09);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
   }
   body.theme-light .login-card-head h1 {
     color: #0f172a;
   }
   body.theme-light .login-card-head .lead {
-    color: #64748b;
-  }
-  body.theme-light .login-secure-footer {
     color: #64748b;
   }
   body.theme-light .driver-companion-link {
@@ -1139,23 +1228,46 @@
 <!-- LOGIN -->
 <!-- ========================================================================== -->
 <div class="login" id="login">
-  <div class="login-bg-glow login-bg-glow-1"></div>
-  <div class="login-bg-glow login-bg-glow-2"></div>
-  <div class="login-bg-glow login-bg-glow-3"></div>
+  <!-- Painel Esquerdo com Telemetria e Apresentação Executiva -->
+  <aside class="login-brand">
+    <div class="login-brand-glow-1"></div>
+    <div class="login-brand-glow-2"></div>
 
-  <div class="login-wrapper">
-    <!-- Logo e Marca Centralizados no Topo -->
-    <div class="login-brand-header">
-      <div class="brand-mark-lg">
-        <svg class="i"><use href="#i-truck"/></svg>
-      </div>
-      <div class="brand-text">
-        <div class="brand-title">Gomex Frota</div>
-        <div class="brand-tag">Painel Executivo</div>
+    <div class="login-brand-head">
+      <div class="brand">
+        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+        <div>
+          <div class="brand-name">Gomex Frota</div>
+          <div class="brand-sub">Painel Executivo</div>
+        </div>
       </div>
     </div>
 
-    <!-- Card de Acesso Corporativo -->
+    <div class="login-hero-center">
+      <div class="hero-category-tag">
+        <svg class="i" style="width:13px;height:13px;stroke-width:2.2"><use href="#i-shield"/></svg>
+        <span>Plataforma Integrada de Auditoria</span>
+      </div>
+      <h1 class="hero-headline">
+        Cada vistoria
+        <span class="rotator-pill">
+          <span class="word-rotator" id="wordRotator">organiza</span>
+        </span><br>
+        toda a frota.
+      </h1>
+      <p class="hero-desc">
+        Monitoramento inteligente de pneus com mapa térmico de danos, auditoria de carroceria, conformidade de segurança e aprovações gerenciais em tempo real.
+      </p>
+    </div>
+
+    <div class="login-brand-foot">
+      <svg class="i"><use href="#i-lock"/></svg>
+      <span>Acesso Corporativo Seguro • Criptografia TLS 1.3 • Gomex Distribuidora</span>
+    </div>
+  </aside>
+
+  <!-- Painel Direito com Card Glassmórfico Elevado -->
+  <main class="login-pane">
     <div class="login-card">
       <div class="login-card-head">
         <span class="login-card-badge">Acesso Corporativo</span>
@@ -1212,13 +1324,7 @@
         </a>
       </form>
     </div>
-
-    <!-- Rodapé Seguro Corporativo -->
-    <div class="login-secure-footer">
-      <svg class="i"><use href="#i-lock"/></svg>
-      <span>Acesso Corporativo Seguro • Gomex Distribuidora</span>
-    </div>
-  </div>
+  </main>
 </div>
 
 <!-- ========================================================================== -->
