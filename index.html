@@ -1237,22 +1237,48 @@
     background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4);
   }
 
-  /* Alternador de Visão no Topo da Página */
-  .view-switch {
-    display: inline-flex; background: var(--raised); padding: 3px; border-radius: 10px;
-    border: 1px solid var(--line-strong); gap: 2px;
+  /* ============================================================================
+     MENU LATERAL ESQUERDO
+     ============================================================================ */
+  :root { --sidebar-w: 240px; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 41;
+    width: var(--sidebar-w); display: flex; flex-direction: column;
+    background: var(--panel-2); border-right: 1px solid var(--line);
+    padding: 16px 12px;
   }
-  .view-switch-btn {
-    display: inline-flex; align-items: center; gap: 7px;
-    height: 32px; padding: 0 14px; border-radius: 8px;
-    border: none; background: transparent; color: var(--ink-2);
-    font-size: 13px; font-weight: 700; cursor: pointer;
-    transition: all 160ms ease;
+  .sb-brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 18px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .sidebar .brand-mark { width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0; }
+  .sb-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); padding: 0 10px 8px; }
+  .sb-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+  .sb-item {
+    position: relative; display: flex; align-items: center; gap: 12px;
+    height: 42px; padding: 0 12px; border-radius: 9px; border: 0;
+    background: transparent; color: var(--ink-2); text-align: left;
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
   }
-  .view-switch-btn:hover { color: var(--ink); }
-  .view-switch-btn.active {
-    background: var(--accent); color: #fff;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  .sb-item .i { width: 18px; height: 18px; flex-shrink: 0; }
+  .sb-item:hover { background: var(--raised); color: var(--ink); }
+  .sb-item.active { background: rgba(91, 147, 255, 0.14); color: var(--accent-hi); }
+  .sb-item.active::before {
+    content: ''; position: absolute; left: -12px; top: 9px; bottom: 9px; width: 3px;
+    border-radius: 0 3px 3px 0; background: var(--accent);
+  }
+  .sb-foot { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 6px; }
+  .sidebar .whoami { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border-left: 0; height: auto; }
+  .sidebar .whoami span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sidebar #btnLogout { justify-content: flex-start; width: 100%; }
+  .app-main { margin-left: var(--sidebar-w); min-width: 0; }
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 68px; }
+    .sidebar { padding: 14px 8px; align-items: stretch; }
+    .sb-brand { justify-content: center; padding: 4px 0 14px; }
+    .sb-brand > div:not(.brand-mark), .sb-label, .sb-item span, .sidebar .whoami span, .sidebar #btnLogout span { display: none; }
+    .sb-item { justify-content: center; padding: 0; }
+    .sb-item.active::before { left: -8px; }
+    .sidebar .whoami { display: flex; justify-content: center; padding: 6px 0; }
+    .sidebar #btnLogout { justify-content: center; padding: 0; }
   }
 
   /* Vendedores & Custódia */
@@ -1555,16 +1581,40 @@
 <!-- APLICAÇÃO -->
 <!-- ========================================================================== -->
 <div id="app" hidden>
+  <!-- MENU LATERAL -->
+  <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+    <div class="sb-brand">
+      <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+      <div>
+        <div class="brand-name">Gomex Frota</div>
+        <div class="brand-sub">Painel executivo</div>
+      </div>
+    </div>
+
+    <nav class="sb-nav" aria-label="Seções">
+      <div class="sb-label">Menu</div>
+      <button type="button" class="sb-item active" id="btnViewVistorias" onclick="alternarVisaoPrincipal('vistorias')" title="Vistorias">
+        <svg class="i"><use href="#i-truck"/></svg><span>Vistorias</span>
+      </button>
+      <button type="button" class="sb-item" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')" title="Painel Manutenção">
+        <svg class="i"><use href="#i-tool"/></svg><span>Painel Manutenção</span>
+      </button>
+      <button type="button" class="sb-item" id="btnViewVendedores" onclick="alternarVisaoPrincipal('vendedores')" title="Vendedores e Custódia">
+        <svg class="i"><use href="#i-user"/></svg><span>Vendedores &amp; Custódia</span>
+      </button>
+    </nav>
+
+    <div class="sb-foot">
+      <div class="whoami"><svg class="i"><use href="#i-user"/></svg><span id="userNameLabel">gomex</span></div>
+      <button type="button" class="btn btn-ghost" id="btnLogout" aria-label="Sair do painel">
+        <svg class="i"><use href="#i-logout"/></svg><span>Sair</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="app-main">
   <header class="topbar">
     <div class="topbar-in">
-      <div class="brand">
-        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
-        <div>
-          <div class="brand-name">Gomex Frota</div>
-          <div class="brand-sub">Painel executivo de vistorias</div>
-        </div>
-      </div>
-
       <div class="spacer"></div>
 
       <!-- Sincronismo -->
@@ -1582,11 +1632,6 @@
         <svg class="i" id="icoTheme"><use href="#i-sun"/></svg>
       </button>
 
-      <!-- Usuário & Sair -->
-      <div class="whoami"><svg class="i"><use href="#i-user"/></svg><span id="userNameLabel">gomex</span></div>
-      <button type="button" class="btn btn-ghost" id="btnLogout" aria-label="Sair do painel">
-        <svg class="i"><use href="#i-logout"/></svg><span>Sair</span>
-      </button>
     </div>
   </header>
 
@@ -1597,18 +1642,6 @@
         <p>Acompanhamento em tempo real, aprovação de liberação e reemissão oficial de check-lists.</p>
       </div>
       <div class="head-actions">
-        <!-- Alternador de Visão: Vistorias vs Painel Manutenção vs Vendedores & Custódia -->
-        <div class="view-switch">
-          <button type="button" class="view-switch-btn active" id="btnViewVistorias" onclick="alternarVisaoPrincipal('vistorias')">
-            <svg class="i"><use href="#i-truck"/></svg> <span>Vistorias</span>
-          </button>
-          <button type="button" class="view-switch-btn" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')">
-            <svg class="i"><use href="#i-tool"/></svg> <span>Painel Manutenção</span>
-          </button>
-          <button type="button" class="view-switch-btn" id="btnViewVendedores" onclick="alternarVisaoPrincipal('vendedores')">
-            <svg class="i"><use href="#i-user"/></svg> <span>Vendedores & Custódia</span>
-          </button>
-        </div>
         <button type="button" class="btn" id="btnRefresh" title="Sincronizar agora"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
         <button type="button" class="btn" id="btnExport" title="Download em formato CSV para Excel"><svg class="i"><use href="#i-download"/></svg><span>Exportar CSV</span></button>
       </div>
@@ -1937,13 +1970,13 @@
                 Todos
               </button>
               <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia" onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px">
-                🟢 Em dia
+                Em dia
               </button>
               <button type="button" class="btn btn-ghost" id="btnFilterVendAtencao" onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px">
-                🟡 Atenção
+                Atenção
               </button>
               <button type="button" class="btn btn-ghost" id="btnFilterVendCritico" onclick="filtrarTabelaVendedores('critico')" style="font-size:12px;height:32px">
-                🔴 Atrasados
+                Atrasados
               </button>
             </div>
 
@@ -1976,6 +2009,7 @@
       </section>
     </div>
   </main>
+  </div>
 </div>
 
 <!-- ========================================================================== -->
@@ -2276,7 +2310,7 @@
         <!-- Destaque Rota -->
         <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:12px 14px;display:grid;gap:8px">
           <label for="drEditRota" style="font-size:12.5px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
-            <span>📍 Rota / Região do Vendedor:</span>
+            <span>Rota / Região do Vendedor:</span>
           </label>
           <input type="text" class="input" id="drEditRota" placeholder="Ex: Rota 01 - Centro / Oeste, Rota Sul..." style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
@@ -2505,7 +2539,7 @@
       <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:14px 16px;display:grid;gap:8px">
         <div style="display:flex;align-items:center;justify-content:space-between">
           <label for="editRota" style="font-size:13px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
-            <span>📍 Rota / Região do Vendedor:</span>
+            <span>Rota / Região do Vendedor:</span>
           </label>
           <span style="font-size:11px;color:var(--ink-3)">Aparecerá no PDF e nos relatórios</span>
         </div>
@@ -3368,7 +3402,7 @@ function rowHtml(it) {
           tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
           (it.rota
-            ? '<span class="badge-rota" title="Rota do Vendedor">📍 ' + esc(it.rota) + '</span>'
+            ? '<span class="badge-rota" title="Rota do Vendedor">' + esc(it.rota) + '</span>'
             : '<button type="button" class="btn-add-rota-inline" data-act="editar" data-id="' + id + '" title="Adicionar rota desta vistoria">+ Rota</button>'
           ) +
         '</div>' +
@@ -3930,7 +3964,7 @@ async function salvarEdicaoVistoria(fromDrawer = false) {
       switchDrTab('vistoria');
     }
 
-    toast('✅ Vistoria Nº ' + (itOriginal.numero || '') + ' atualizada com sucesso!');
+    toast('Vistoria Nº ' + (itOriginal.numero || '') + ' atualizada com sucesso!');
   } catch (err) {
     console.error('Erro ao salvar edição:', err);
     toast('Erro ao atualizar no banco de dados. Tente novamente.', 'bad');
@@ -4392,7 +4426,7 @@ function renderVendedoresView() {
           '<div>' +
             '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
             '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
-              (v.rota ? '<span class="badge-rota" style="font-size:10px">📍 ' + esc(v.rota) + '</span>' : '') +
+              (v.rota ? '<span class="badge-rota" style="font-size:10px">' + esc(v.rota) + '</span>' : '') +
               '<span style="font-size:11px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</span>' +
             '</div>' +
           '</div>' +
@@ -4452,11 +4486,11 @@ function abrirModalVendedor(nome) {
 
   let pontualBadge = '';
   if (v.statusPontual === 'em_dia') {
-    pontualBadge = '<span class="badge-pontual em-dia">🟢 Vistorias em dia</span>';
+    pontualBadge = '<span class="badge-pontual em-dia">Vistorias em dia</span>';
   } else if (v.statusPontual === 'atencao') {
-    pontualBadge = '<span class="badge-pontual atencao">🟡 ' + v.diasSemVistoria + ' dias sem vistoria</span>';
+    pontualBadge = '<span class="badge-pontual atencao">' + v.diasSemVistoria + ' dias sem vistoria</span>';
   } else {
-    pontualBadge = '<span class="badge-pontual critico">🔴 ' + v.diasSemVistoria + ' dias sem vistoria</span>';
+    pontualBadge = '<span class="badge-pontual critico">' + v.diasSemVistoria + ' dias sem vistoria</span>';
   }
   $('mHVendPontualidade').innerHTML = pontualBadge;
 
@@ -4524,14 +4558,14 @@ function getTransicoesCustodia(placaAlvo = null) {
         const diffAv = avB - avA;
 
         let veredito = 'ok';
-        let vereditoTexto = '✅ CONFORMIDADE: O veículo foi recebido por ' + motB + ' nas mesmas condições de carroceria entregues por ' + motA + '.';
+        let vereditoTexto = 'CONFORMIDADE: O veículo foi recebido por ' + motB + ' nas mesmas condições de carroceria entregues por ' + motA + '.';
 
         if (diffAv > 0) {
           veredito = 'alerta';
-          vereditoTexto = '⚠️ NOVO DANO DETECTADO: O veículo foi entregue por ' + motA + ' com ' + avA + ' avaria(s) e já constam ' + avB + ' avaria(s) com ' + motB + ' (+' + diffAv + ' nova(s) avaria(s) registradas).';
+          vereditoTexto = 'NOVO DANO DETECTADO: O veículo foi entregue por ' + motA + ' com ' + avA + ' avaria(s) e já constam ' + avB + ' avaria(s) com ' + motB + ' (+' + diffAv + ' nova(s) avaria(s) registradas).';
         } else if (avA > 0 && avB > 0) {
           veredito = 'preexistente';
-          vereditoTexto = 'ℹ️ AVARIAS PRÉ-EXISTENTES: O veículo já possuía ' + avA + ' avaria(s) registradas antes de ' + motB + ' assumir a custódia.';
+          vereditoTexto = 'AVARIAS PRÉ-EXISTENTES: O veículo já possuía ' + avA + ' avaria(s) registradas antes de ' + motB + ' assumir a custódia.';
         }
 
         transicoes.push({
@@ -4597,7 +4631,6 @@ function renderModalCustodiaConteudo(placaAlvo = '') {
 
   if (!trans.length) {
     container.innerHTML = '<div style="text-align:center;padding:32px 16px;background:var(--panel-2);border-radius:var(--r);border:1px dashed var(--line-strong)">' +
-      '<div style="font-size:28px;margin-bottom:8px">🚗</div>' +
       '<h4 style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma transferência de custódia encontrada</h4>' +
       '<p style="font-size:12.5px;color:var(--ink-3);max-width:440px;margin:0 auto;line-height:1.45">' +
         (placaAlvo
@@ -4721,8 +4754,8 @@ function fillDrawer(it) {
     if (isRevAlert) {
       const color = isRevOverdue ? 'red' : 'yellow';
       const title = isRevOverdue
-        ? '🚨 Revisão Preventiva Vencida (' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km atrás)'
-        : '⚠️ Revisão Preventiva Próxima (Faltam ' + diffRev.toLocaleString('pt-BR') + ' km)';
+        ? 'Revisão Preventiva Vencida (' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km atrás)'
+        : 'Revisão Preventiva Próxima (Faltam ' + diffRev.toLocaleString('pt-BR') + ' km)';
       const desc = isRevOverdue
         ? 'A quilometragem deste veículo (<strong>' + fmtKm(kmAtual) + '</strong>) já ultrapassou a marca programada de <strong>' + fmtKm(kmRev) + '</strong> por <strong>' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km</strong>. Encaminhe o veículo para a oficina imediatamente para troca de óleo, filtros e revisão geral.'
         : 'Este veículo está a apenas <strong>' + diffRev.toLocaleString('pt-BR') + ' km</strong> da revisão preventiva programada (KM Atual: <strong>' + fmtKm(kmAtual) + '</strong> · Meta da Revisão: <strong>' + fmtKm(kmRev) + '</strong>' + (it.rev_prox_data ? ' · Prevista para: <strong>' + formatarData(it.rev_prox_data) + '</strong>' : '') + '). Recomenda-se o agendamento prévio com a oficina para evitar paradas na entrega.';
@@ -4743,7 +4776,7 @@ function fillDrawer(it) {
       cardsHtml += '<div class="dr-alert-card red">' +
         '<div class="dr-alert-icon">' + icon('alert') + '</div>' +
         '<div style="flex:1">' +
-          '<div class="dr-alert-title">⚠️ Pneu com Dano Registrado na Vistoria</div>' +
+          '<div class="dr-alert-title">Pneu com Dano Registrado na Vistoria</div>' +
           '<div class="dr-alert-desc">O motorista ou vistoriador apontou dano nos pneus durante esta vistoria. Verifique o estado dos pneus abaixo imediatamente.</div>' +
         '</div>' +
       '</div>';
@@ -4753,7 +4786,7 @@ function fillDrawer(it) {
       cardsHtml += '<div class="dr-alert-card red">' +
         '<div class="dr-alert-icon">' + icon('ban') + '</div>' +
         '<div style="flex:1">' +
-          '<div class="dr-alert-title">⛔ Veículo Bloqueado para Operação</div>' +
+          '<div class="dr-alert-title">Veículo Bloqueado para Operação</div>' +
           '<div class="dr-alert-desc">Este veículo não está autorizado para circulação até que as pendências sejam sanadas pela gestão ou manutenção.</div>' +
         '</div>' +
       '</div>';
@@ -4763,7 +4796,7 @@ function fillDrawer(it) {
       cardsHtml += '<div class="dr-alert-card red">' +
         '<div class="dr-alert-icon">' + icon('alert') + '</div>' +
         '<div style="flex:1">' +
-          '<div class="dr-alert-title">❌ ' + nok.length + ' Item(ns) Reprovado(s) no Check-list</div>' +
+          '<div class="dr-alert-title">' + nok.length + ' Item(ns) Reprovado(s) no Check-list</div>' +
           '<div class="dr-alert-desc">' + nok.map(i => (i.grupo ? '<strong>' + esc(i.grupo) + ':</strong> ' : '') + esc(i.nome)).join('; ') + '</div>' +
         '</div>' +
       '</div>';
@@ -4796,7 +4829,7 @@ function fillDrawer(it) {
   const kv = [
     ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
     ['Motorista', esc(it.motorista || '—')],
-    ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">📍 ' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(91,147,255,0.35);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">✏️ Editar</button>'],
+    ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(91,147,255,0.35);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">Editar</button>'],
     ['Data e hora', formatarData(it.data) + ' às ' + esc(it.hora || '--:--')],
     ['Quilometragem', fmtKm(it.km)],
     ['Tipo de vistoria', esc(it.tipo || '—')],
