@@ -1255,6 +1255,62 @@
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
   }
 
+  /* Vendedores & Custódia */
+  .vend-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: #fff; font-size: 11.5px; font-weight: 800;
+    display: grid; place-items: center; flex: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .badge-pontual {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border-radius: 6px; font-size: 11.5px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .badge-pontual.em-dia {
+    background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);
+  }
+  .badge-pontual.atencao {
+    background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35);
+  }
+  .badge-pontual.critico {
+    background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35);
+  }
+
+  /* Comparador de Custódia */
+  .custodia-compare-grid {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px;
+    align-items: stretch; margin-top: 14px;
+  }
+  @media (max-width: 768px) {
+    .custodia-compare-grid { grid-template-columns: 1fr; }
+  }
+  .custodia-driver-card {
+    background: var(--raised); border: 1px solid var(--line);
+    border-radius: var(--r); padding: 14px 16px;
+  }
+  .custodia-driver-card.old { border-color: rgba(91, 147, 255, 0.35); }
+  .custodia-driver-card.new { border-color: rgba(245, 158, 11, 0.4); }
+  .custodia-arrow-divider {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: var(--ink-3); font-size: 18px; padding: 10px 0;
+  }
+  .custodia-veredicto-box {
+    padding: 12px 14px; border-radius: var(--r-sm); margin-top: 14px;
+    font-size: 12.5px; line-height: 1.45;
+  }
+  .custodia-veredicto-box.alerta {
+    background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5;
+  }
+  .custodia-veredicto-box.ok {
+    background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7;
+  }
+  .custodia-veredicto-box.preexistente {
+    background: rgba(91, 147, 255, 0.12); border: 1px solid rgba(91, 147, 255, 0.35); color: #93c5fd;
+  }
+
   /* ============================================================================
      TOAST
      ============================================================================ */
@@ -1508,13 +1564,16 @@
         <p>Acompanhamento em tempo real, aprovação de liberação e reemissão oficial de check-lists.</p>
       </div>
       <div class="head-actions">
-        <!-- Alternador de Visão: Vistorias vs Painel Geral de Manutenções -->
+        <!-- Alternador de Visão: Vistorias vs Painel Manutenção vs Vendedores & Custódia -->
         <div class="view-switch">
           <button type="button" class="view-switch-btn active" id="btnViewVistorias" onclick="alternarVisaoPrincipal('vistorias')">
             <svg class="i"><use href="#i-truck"/></svg> <span>Vistorias</span>
           </button>
           <button type="button" class="view-switch-btn" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')">
             <svg class="i"><use href="#i-tool"/></svg> <span>Painel Manutenção</span>
+          </button>
+          <button type="button" class="view-switch-btn" id="btnViewVendedores" onclick="alternarVisaoPrincipal('vendedores')">
+            <svg class="i"><use href="#i-user"/></svg> <span>Vendedores & Custódia</span>
           </button>
         </div>
         <button type="button" class="btn" id="btnRefresh" title="Sincronizar agora"><svg class="i"><use href="#i-refresh"/></svg><span>Atualizar</span></button>
@@ -1765,6 +1824,119 @@
                   </div>
                 </td>
               </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- VISÃO 3: VENDEDORES & CUSTÓDIA DA FROTA -->
+    <!-- ====================================================================== -->
+    <div id="sectionVendedoresView" hidden>
+      <!-- Resumo de Vendedores -->
+      <section class="summary" aria-label="Resumo dos vendedores">
+        <dl class="summary-grid" style="grid-template-columns: repeat(5, 1fr)">
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Vendedores Registrados</span>
+              <div class="stat-ico blue"><svg class="i"><use href="#i-user"/></svg></div>
+            </div>
+            <dd id="vendStatTotal">0</dd>
+            <span class="stat-sub">Motoristas na base</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Check-list em Dia</span>
+              <div class="stat-ico green"><svg class="i"><use href="#i-badge-check"/></svg></div>
+            </div>
+            <dd id="vendStatEmDia" style="color:#34d399">0</dd>
+            <span class="stat-sub">Vistoriado há ≤ 2 dias</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Atenção (3 a 5 dias)</span>
+              <div class="stat-ico amber"><svg class="i"><use href="#i-alert"/></svg></div>
+            </div>
+            <dd id="vendStatAtencao" style="color:#fbbf24">0</dd>
+            <span class="stat-sub">Sem vistoria recente</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Crítico (> 5 dias)</span>
+              <div class="stat-ico red"><svg class="i"><use href="#i-alert"/></svg></div>
+            </div>
+            <dd id="vendStatCritico" style="color:#f87171">0</dd>
+            <span class="stat-sub">Sem vistoria há muitos dias</span>
+          </div>
+
+          <div class="stat">
+            <div class="stat-head">
+              <span class="stat-lbl">Carros em Custódia</span>
+              <div class="stat-ico blue"><svg class="i"><use href="#i-truck"/></svg></div>
+            </div>
+            <dd id="vendStatCarros">0</dd>
+            <span class="stat-sub">Veículos alocados</span>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Painel de Vendedores & Custódia -->
+      <section class="panel">
+        <div class="panel-head" style="gap:14px;flex-wrap:wrap">
+          <div>
+            <h2>Gestão de Vendedores & Custódia dos Veículos</h2>
+            <p>Monitore a pontualidade dos check-lists por vendedor e acompanhe o histórico de avarias na troca de motoristas.</p>
+          </div>
+
+          <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="search-wrap" style="width:260px">
+              <svg class="i"><use href="#i-search"/></svg>
+              <input type="text" class="input input-search" id="filtroVendBusca" placeholder="Buscar vendedor ou placa...">
+            </div>
+
+            <!-- Botões de Filtro -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-ghost" id="btnFilterVendAll" onclick="filtrarTabelaVendedores('todos')" style="font-size:12px;height:32px;background:var(--accent)">
+                Todos
+              </button>
+              <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia" onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px">
+                🟢 Em dia
+              </button>
+              <button type="button" class="btn btn-ghost" id="btnFilterVendAtencao" onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px">
+                🟡 Atenção
+              </button>
+              <button type="button" class="btn btn-ghost" id="btnFilterVendCritico" onclick="filtrarTabelaVendedores('critico')" style="font-size:12px;height:32px">
+                🔴 Atrasados
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-ghost" onclick="abrirModalCustodia()" style="font-size:12px;height:32px;display:flex;align-items:center;gap:6px;border-color:rgba(91,147,255,0.4);color:var(--accent-hi)">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-history"/></svg>
+              <span>Linha do Tempo de Trocas</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="grid" id="vendTable">
+            <thead>
+              <tr>
+                <th>Vendedor / Motorista</th>
+                <th style="width:160px">Veículo Atual</th>
+                <th style="width:140px">Última Vistoria</th>
+                <th style="width:160px">Pontualidade</th>
+                <th style="width:110px">Quilometragem</th>
+                <th style="width:120px">Carroceria</th>
+                <th style="width:110px">Situação</th>
+                <th style="width:190px;text-align:right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="vendTableBody">
+              <!-- Preenchido via renderVendedoresView() -->
             </tbody>
           </table>
         </div>
@@ -2157,6 +2329,115 @@
   </div>
 </div>
 
+<!-- ========================================================================== -->
+<!-- MODAL DE HISTÓRICO COMPLETO DO VENDEDOR -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="modalHistVendedor">
+  <div class="modal-card" style="max-width:820px;width:95%">
+    <header class="modal-head">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="vend-avatar" id="mHVendAvatar" style="width:38px;height:38px;font-size:14px">GV</div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700" id="mHVendNome">Vendedor</h3>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:2px" id="mHVendSub">Histórico operacional do vendedor</p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalVendedor()"><svg class="i"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
+      <!-- Cards de Resumo do Vendedor -->
+      <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:12px;background:var(--raised);border-radius:8px">
+        <div>
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600">Veículo Atual</div>
+          <div id="mHVendCarro" style="font-size:14px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600">Último Check-list</div>
+          <div id="mHVendUltimaData" style="font-size:13.5px;font-weight:700;color:var(--ink);margin-top:2px">–</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600">Status Pontualidade</div>
+          <div id="mHVendPontualidade" style="margin-top:4px">–</div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
+          <div id="mHVendTotal" style="font-size:16px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
+        </div>
+      </div>
+
+      <!-- Tabela de Vistorias do Vendedor -->
+      <div>
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--ink-2)">Vistorias Realizadas por Este Vendedor:</h4>
+        <div class="table-wrap">
+          <table class="grid" style="font-size:12.5px">
+            <thead>
+              <tr>
+                <th style="width:70px">Nº</th>
+                <th style="width:130px">Data / Hora</th>
+                <th style="width:110px">Placa</th>
+                <th style="width:90px">Tipo</th>
+                <th style="width:100px">Quilometragem</th>
+                <th style="width:90px">Avarias</th>
+                <th style="width:90px">Pneus</th>
+                <th>Situação</th>
+                <th style="width:70px;text-align:right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="mHVendTableBody">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <button type="button" class="btn" onclick="fecharModalVendedor()">Fechar</button>
+    </footer>
+  </div>
+</div>
+
+<!-- ========================================================================== -->
+<!-- MODAL DE TRANSIÇÃO E COMPARATIVO DE CUSTÓDIA -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="modalCustodiaVeiculo">
+  <div class="modal-card" style="max-width:880px;width:95%">
+    <header class="modal-head">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(91,147,255,0.15);color:var(--accent-hi);display:grid;place-items:center">
+          <svg class="i" style="width:20px;height:20px"><use href="#i-history"/></svg>
+        </div>
+        <div>
+          <h3 style="font-size:16px;font-weight:700">Rastreio de Custódia & Troca de Motoristas</h3>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Auditoria de avarias entre vendedores para identificar a origem dos danos</p>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCustodia()"><svg class="i"><use href="#i-x"/></svg></button>
+    </header>
+    <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
+      <!-- Seletor de Veículo para Auditoria -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--raised);padding:12px 16px;border-radius:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:10px">
+          <label for="selectCustodiaPlaca" style="font-size:13px;font-weight:700;color:var(--ink)">Filtrar Veículo:</label>
+          <select id="selectCustodiaPlaca" class="input" style="height:34px;width:200px;font-weight:700" onchange="renderModalCustodiaConteudo(this.value)">
+            <option value="">Todos os Veículos</option>
+          </select>
+        </div>
+        <div id="custodiaTransCountBadge" style="font-size:12px;color:var(--ink-2);font-weight:600">
+          Carregando transições...
+        </div>
+      </div>
+
+      <!-- Container das Transições / Comparações -->
+      <div id="custodiaTransicoesContainer" style="display:grid;gap:16px">
+        <!-- Preenchido via JS com os comparativos Antes vs Depois -->
+      </div>
+    </div>
+    <footer class="modal-foot">
+      <button type="button" class="btn" onclick="fecharModalCustodia()">Fechar</button>
+    </footer>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -2210,7 +2491,10 @@ const state = {
   sig: '',
   theme: localStorage.getItem(THEME_KEY) || 'dark',
   sound: localStorage.getItem(SOUND_KEY) !== 'muted',
-  decisaoAtual: null
+  decisaoAtual: null,
+  visaoAtual: 'vistorias',
+  filtroVend: 'todos',
+  filtroVendBusca: ''
 };
 
 let pollTimer = null;
@@ -2288,14 +2572,19 @@ function tocarChimeAlerta(tipo) {
 // ==============================================================================
 // HELPERS DE FORMATAÇÃO E HIGIENIZAÇÃO
 // ==============================================================================
-const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const isoLocal = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 const formatarData = iso => {
   if (!iso) return '—';
-  const p = String(iso).split('-');
+  const clean = String(iso).split('T')[0];
+  const p = clean.split('-');
   return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso;
 };
-const fmtKm = n => n ? Number(n).toLocaleString('pt-BR') + ' km' : '—';
+const fmtKm = n => {
+  if (n === null || n === undefined || n === '') return '—';
+  const cleanNum = typeof n === 'number' ? n : Number(String(n).replace(/\./g, '').replace(/\D/g, ''));
+  return !isNaN(cleanNum) ? cleanNum.toLocaleString('pt-BR') + ' km' : '—';
+};
 const icon = name => '<svg class="i"><use href="#i-' + name + '"/></svg>';
 const avariasOf = it => Array.isArray(it.avarias) ? it.avarias : [];
 const pneusOf = it => Array.isArray(it.pneus) ? it.pneus : [];
@@ -2874,6 +3163,7 @@ function renderAll() {
   renderSummary();
   renderTable();
   renderManutencaoViewGeral();
+  renderVendedoresView();
 }
 
 $('btnPrevPage').addEventListener('click', () => { if (state.page > 1) { state.page--; renderTable(); } });
@@ -3329,16 +3619,29 @@ window.salvarObservacoesManutencao = salvarObservacoesManutencao;
 function alternarVisaoPrincipal(visao) {
   state.visaoAtual = visao;
   const isVistorias = visao === 'vistorias';
+  const isManut = visao === 'manutencao';
+  const isVend = visao === 'vendedores';
+
   const btnVist = $('btnViewVistorias');
   const btnManut = $('btnViewManut');
+  const btnVend = $('btnViewVendedores');
+
   const secVist = $('sectionVistoriasView');
   const secManut = $('sectionManutView');
+  const secVend = $('sectionVendedoresView');
+
   if (btnVist) btnVist.classList.toggle('active', isVistorias);
-  if (btnManut) btnManut.classList.toggle('active', !isVistorias);
+  if (btnManut) btnManut.classList.toggle('active', isManut);
+  if (btnVend) btnVend.classList.toggle('active', isVend);
+
   if (secVist) secVist.hidden = !isVistorias;
-  if (secManut) secManut.hidden = isVistorias;
-  if (!isVistorias) {
+  if (secManut) secManut.hidden = !isManut;
+  if (secVend) secVend.hidden = !isVend;
+
+  if (isManut) {
     renderManutencaoViewGeral();
+  } else if (isVend) {
+    renderVendedoresView();
   }
 }
 window.alternarVisaoPrincipal = alternarVisaoPrincipal;
@@ -3416,6 +3719,432 @@ function renderManutencaoViewGeral() {
     '</tr>';
   }).join('');
 }
+
+// ==============================================================================
+// GESTÃO DE VENDEDORES & CUSTÓDIA DA FROTA
+// ==============================================================================
+function getIniciaisNome(nome) {
+  if (!nome) return 'VD';
+  const parts = nome.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function getVendedoresData() {
+  const map = new Map();
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  state.all.forEach(it => {
+    if (it.status === 'inativo') return;
+    const rawNome = (it.motorista || '').trim();
+    if (!rawNome) return;
+    const nomeKey = rawNome.toLowerCase();
+
+    if (!map.has(nomeKey)) {
+      map.set(nomeKey, {
+        nome: rawNome,
+        vistorias: [],
+        veiculosSet: new Set()
+      });
+    }
+
+    const rec = map.get(nomeKey);
+    rec.vistorias.push(it);
+    if (it.placa) rec.veiculosSet.add(it.placa.toUpperCase());
+  });
+
+  const list = [];
+
+  map.forEach(rec => {
+    rec.vistorias.sort((a, b) => {
+      const da = (a.data || '') + ' ' + (a.hora || '');
+      const db = (b.data || '') + ' ' + (b.hora || '');
+      return db.localeCompare(da);
+    });
+
+    const maisRecente = rec.vistorias[0];
+    let diasSemVistoria = 999;
+    if (maisRecente && maisRecente.data) {
+      const cleanDate = String(maisRecente.data).split('T')[0];
+      const p = cleanDate.split('-');
+      if (p.length === 3) {
+        const dVist = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+        const diffMs = hoje - dVist;
+        diasSemVistoria = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+      }
+    }
+
+    let statusPontual = 'critico';
+    if (diasSemVistoria <= 2) statusPontual = 'em_dia';
+    else if (diasSemVistoria <= 5) statusPontual = 'atencao';
+
+    list.push({
+      nome: rec.nome,
+      totalVistorias: rec.vistorias.length,
+      vistorias: rec.vistorias,
+      veiculoAtual: maisRecente ? (maisRecente.placa || '').toUpperCase() : '—',
+      modeloAtual: maisRecente ? (maisRecente.veiculo || '—') : '—',
+      dataUltima: maisRecente ? maisRecente.data : null,
+      horaUltima: maisRecente ? maisRecente.hora : null,
+      tipoUltimo: maisRecente ? maisRecente.tipo : '—',
+      diasSemVistoria,
+      statusPontual,
+      kmAtual: maisRecente ? maisRecente.km : null,
+      avariasRecentes: maisRecente ? avariasOf(maisRecente).length : 0,
+      pneuAlerta: maisRecente ? pneuAlert(maisRecente) : false,
+      liberacaoAtual: maisRecente ? maisRecente.liberacao : 'Liberado',
+      todosVeiculos: Array.from(rec.veiculosSet)
+    });
+  });
+
+  list.sort((a, b) => b.diasSemVistoria - a.diasSemVistoria);
+  return list;
+}
+
+function filtrarTabelaVendedores(tipo) {
+  state.filtroVend = tipo;
+  if ($('btnFilterVendAll')) $('btnFilterVendAll').style.background = tipo === 'todos' ? 'var(--accent)' : 'transparent';
+  if ($('btnFilterVendEmDia')) $('btnFilterVendEmDia').style.background = tipo === 'em_dia' ? 'rgba(16, 185, 129, 0.2)' : 'transparent';
+  if ($('btnFilterVendAtencao')) $('btnFilterVendAtencao').style.background = tipo === 'atencao' ? 'rgba(245, 158, 11, 0.2)' : 'transparent';
+  if ($('btnFilterVendCritico')) $('btnFilterVendCritico').style.background = tipo === 'critico' ? 'rgba(239, 68, 68, 0.2)' : 'transparent';
+  renderVendedoresView();
+}
+window.filtrarTabelaVendedores = filtrarTabelaVendedores;
+
+function renderVendedoresView() {
+  const tbody = $('vendTableBody');
+  if (!tbody) return;
+
+  const todos = getVendedoresData();
+
+  const emDia = todos.filter(v => v.statusPontual === 'em_dia').length;
+  const atencao = todos.filter(v => v.statusPontual === 'atencao').length;
+  const critico = todos.filter(v => v.statusPontual === 'critico').length;
+  const carrosSet = new Set(todos.map(v => v.veiculoAtual).filter(p => p !== '—'));
+
+  if ($('vendStatTotal')) $('vendStatTotal').textContent = todos.length;
+  if ($('vendStatEmDia')) $('vendStatEmDia').textContent = emDia;
+  if ($('vendStatAtencao')) $('vendStatAtencao').textContent = atencao;
+  if ($('vendStatCritico')) $('vendStatCritico').textContent = critico;
+  if ($('vendStatCarros')) $('vendStatCarros').textContent = carrosSet.size;
+
+  const q = (state.filtroVendBusca || '').toLowerCase();
+  const filtrados = todos.filter(v => {
+    if (state.filtroVend !== 'todos' && v.statusPontual !== state.filtroVend) return false;
+    if (q) {
+      const hay = (v.nome + ' ' + v.veiculoAtual + ' ' + v.modeloAtual).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if (!filtrados.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">' +
+      '<div class="empty-icon-wrap"><svg class="i"><use href="#i-user"/></svg></div>' +
+      '<h2>Nenhum vendedor encontrado</h2>' +
+      '<p>Tente ajustar os filtros de busca ou verifique se há vistorias registradas.</p>' +
+    '</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtrados.map(v => {
+    const iniciais = getIniciaisNome(v.nome);
+    let pontualBadge = '';
+    if (v.statusPontual === 'em_dia') {
+      pontualBadge = '<span class="badge-pontual em-dia">' + icon('check') + (v.diasSemVistoria === 0 ? 'Vistoriado hoje' : 'Há ' + v.diasSemVistoria + (v.diasSemVistoria === 1 ? ' dia' : ' dias')) + '</span>';
+    } else if (v.statusPontual === 'atencao') {
+      pontualBadge = '<span class="badge-pontual atencao">' + icon('alert') + 'Há ' + v.diasSemVistoria + ' dias sem check</span>';
+    } else {
+      pontualBadge = '<span class="badge-pontual critico">' + icon('alert') + (v.diasSemVistoria >= 999 ? 'Sem data' : 'Atrasado (' + v.diasSemVistoria + ' dias)') + '</span>';
+    }
+
+    return '<tr>' +
+      '<td>' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div class="vend-avatar">' + esc(iniciais) + '</div>' +
+          '<div>' +
+            '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
+            '<div style="font-size:11.5px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</td>' +
+      '<td>' +
+        (v.veiculoAtual !== '—'
+          ? '<div class="stack">' +
+              '<button type="button" class="plate" data-act="history" data-placa="' + esc(v.veiculoAtual) + '" title="Ver histórico deste veículo">' + esc(v.veiculoAtual) + '</button>' +
+              '<span class="t2">' + esc(v.modeloAtual) + '</span>' +
+            '</div>'
+          : '<span class="muted">Sem carro atribuído</span>'
+        ) +
+      '</td>' +
+      '<td>' +
+        '<span class="t1">' + formatarData(v.dataUltima) + '</span>' +
+        '<span class="t2">' + esc(v.horaUltima || '--:--') + ' (' + esc(v.tipoUltimo) + ')</span>' +
+      '</td>' +
+      '<td>' + pontualBadge + '</td>' +
+      '<td><span class="badge-km">' + fmtKm(v.kmAtual) + '</span></td>' +
+      '<td>' +
+        (v.avariasRecentes
+          ? '<span class="txt-warn font-semibold">' + v.avariasRecentes + ' ' + (v.avariasRecentes === 1 ? 'marca' : 'marcas') + '</span>'
+          : '<span class="muted">Íntegro</span>'
+        ) +
+      '</td>' +
+      '<td>' + statusTag(v.liberacaoAtual) + '</td>' +
+      '<td style="text-align:right">' +
+        '<div style="display:inline-flex;align-items:center;gap:6px">' +
+          '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:var(--accent-hi)" onclick="abrirModalVendedor(\'' + esc(v.nome) + '\')" title="Ver todas as vistorias deste vendedor">' +
+            icon('user') + ' <span>Vistorias</span>' +
+          '</button>' +
+          (v.veiculoAtual !== '—'
+            ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:#fbbf24" onclick="abrirModalCustodia(\'' + esc(v.veiculoAtual) + '\')" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
+                icon('history') + ' <span>Custódia</span>' +
+              '</button>'
+            : ''
+          ) +
+        '</div>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+window.renderVendedoresView = renderVendedoresView;
+
+function abrirModalVendedor(nome) {
+  const todos = getVendedoresData();
+  const v = todos.find(x => x.nome.toLowerCase() === nome.toLowerCase());
+  if (!v) return;
+
+  $('mHVendAvatar').textContent = getIniciaisNome(v.nome);
+  $('mHVendNome').textContent = v.nome;
+  $('mHVendSub').textContent = v.todosVeiculos.length ? 'Veículos operados: ' + v.todosVeiculos.join(', ') : 'Histórico de vistorias';
+  $('mHVendCarro').textContent = v.veiculoAtual + (v.modeloAtual !== '—' ? ' (' + v.modeloAtual + ')' : '');
+  $('mHVendUltimaData').textContent = formatarData(v.dataUltima) + (v.horaUltima ? ' às ' + v.horaUltima : '');
+  $('mHVendTotal').textContent = v.totalVistorias;
+
+  let pontualBadge = '';
+  if (v.statusPontual === 'em_dia') {
+    pontualBadge = '<span class="badge-pontual em-dia">🟢 Vistorias em dia</span>';
+  } else if (v.statusPontual === 'atencao') {
+    pontualBadge = '<span class="badge-pontual atencao">🟡 ' + v.diasSemVistoria + ' dias sem vistoria</span>';
+  } else {
+    pontualBadge = '<span class="badge-pontual critico">🔴 ' + v.diasSemVistoria + ' dias sem vistoria</span>';
+  }
+  $('mHVendPontualidade').innerHTML = pontualBadge;
+
+  const tbody = $('mHVendTableBody');
+  tbody.innerHTML = v.vistorias.map(it => {
+    const av = avariasOf(it).length;
+    const alert = pneuAlert(it);
+    return '<tr>' +
+      '<td><span class="num">' + esc(it.numero || '—') + '</span></td>' +
+      '<td>' + formatarData(it.data) + ' ' + esc(it.hora || '') + '</td>' +
+      '<td><span class="plate" style="font-size:11px">' + esc((it.placa || '').toUpperCase()) + '</span></td>' +
+      '<td>' + tipoBadge(it.tipo) + '</td>' +
+      '<td>' + fmtKm(it.km) + '</td>' +
+      '<td>' + (av ? '<span class="txt-warn">' + av + ' marcas</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
+      '<td>' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
+      '<td>' + statusTag(it.liberacao, it.status) + '</td>' +
+      '<td style="text-align:right">' +
+        '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px" onclick="fecharModalVendedor(); openDrawer(\'' + it.id + '\', this, \'vistoria\')" title="Abrir ficha">' +
+          icon('eye') +
+        '</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+
+  $('modalHistVendedor').classList.add('open');
+}
+window.abrirModalVendedor = abrirModalVendedor;
+
+function fecharModalVendedor() {
+  $('modalHistVendedor').classList.remove('open');
+}
+window.fecharModalVendedor = fecharModalVendedor;
+
+function getTransicoesCustodia(placaAlvo = null) {
+  const transicoes = [];
+  const veiculos = new Map();
+
+  state.all.forEach(it => {
+    if (it.status === 'inativo') return;
+    const placa = (it.placa || '').toUpperCase().trim();
+    if (!placa) return;
+    if (placaAlvo && placa !== placaAlvo.toUpperCase().trim()) return;
+
+    if (!veiculos.has(placa)) veiculos.set(placa, []);
+    veiculos.get(placa).push(it);
+  });
+
+  veiculos.forEach((list, placa) => {
+    list.sort((a, b) => {
+      const da = (a.data || '') + ' ' + (a.hora || '');
+      const db = (b.data || '') + ' ' + (b.hora || '');
+      return da.localeCompare(db);
+    });
+
+    for (let i = 0; i < list.length - 1; i++) {
+      const vAnterior = list[i];
+      const vProxima = list[i + 1];
+
+      const motA = (vAnterior.motorista || 'Não informado').trim();
+      const motB = (vProxima.motorista || 'Não informado').trim();
+
+      if (motA.toLowerCase() !== motB.toLowerCase()) {
+        const avA = avariasOf(vAnterior).length;
+        const avB = avariasOf(vProxima).length;
+        const diffAv = avB - avA;
+
+        let veredito = 'ok';
+        let vereditoTexto = '✅ CONFORMIDADE: O veículo foi recebido por ' + motB + ' nas mesmas condições de carroceria entregues por ' + motA + '.';
+
+        if (diffAv > 0) {
+          veredito = 'alerta';
+          vereditoTexto = '⚠️ NOVO DANO DETECTADO: O veículo foi entregue por ' + motA + ' com ' + avA + ' avaria(s) e já constam ' + avB + ' avaria(s) com ' + motB + ' (+' + diffAv + ' nova(s) avaria(s) registradas).';
+        } else if (avA > 0 && avB > 0) {
+          veredito = 'preexistente';
+          vereditoTexto = 'ℹ️ AVARIAS PRÉ-EXISTENTES: O veículo já possuía ' + avA + ' avaria(s) registradas antes de ' + motB + ' assumir a custódia.';
+        }
+
+        transicoes.push({
+          placa,
+          veiculo: vProxima.veiculo || vAnterior.veiculo || '—',
+          entreguePor: {
+            motorista: motA,
+            data: vAnterior.data,
+            hora: vAnterior.hora,
+            km: vAnterior.km,
+            avarias: avA,
+            liberacao: vAnterior.liberacao,
+            numero: vAnterior.numero || '—'
+          },
+          recebidoPor: {
+            motorista: motB,
+            data: vProxima.data,
+            hora: vProxima.hora,
+            km: vProxima.km,
+            avarias: avB,
+            liberacao: vProxima.liberacao,
+            numero: vProxima.numero || '—'
+          },
+          diffAv,
+          veredito,
+          vereditoTexto
+        });
+      }
+    }
+  });
+
+  return transicoes;
+}
+
+function abrirModalCustodia(placaPadrao = '') {
+  const sel = $('selectCustodiaPlaca');
+  if (sel) {
+    const placasUnicas = [...new Set(state.all.filter(it => it.status !== 'inativo' && it.placa).map(it => it.placa.toUpperCase()))].sort();
+    sel.innerHTML = '<option value="">Todos os Veículos (' + placasUnicas.length + ')</option>' +
+      placasUnicas.map(p => '<option value="' + esc(p) + '" ' + (p === (placaPadrao || '').toUpperCase() ? 'selected' : '') + '>' + esc(p) + '</option>').join('');
+  }
+
+  renderModalCustodiaConteudo(placaPadrao);
+  $('modalCustodiaVeiculo').classList.add('open');
+}
+window.abrirModalCustodia = abrirModalCustodia;
+
+function fecharModalCustodia() {
+  $('modalCustodiaVeiculo').classList.remove('open');
+}
+window.fecharModalCustodia = fecharModalCustodia;
+
+function renderModalCustodiaConteudo(placaAlvo = '') {
+  const container = $('custodiaTransicoesContainer');
+  const badge = $('custodiaTransCountBadge');
+  if (!container) return;
+
+  const trans = getTransicoesCustodia(placaAlvo);
+
+  if (badge) {
+    badge.textContent = trans.length ? trans.length + (trans.length === 1 ? ' transição de motorista detectada' : ' transições de motorista detectadas') : 'Nenhuma troca de vendedor registrada';
+  }
+
+  if (!trans.length) {
+    container.innerHTML = '<div style="text-align:center;padding:32px 16px;background:var(--panel-2);border-radius:var(--r);border:1px dashed var(--line-strong)">' +
+      '<div style="font-size:28px;margin-bottom:8px">🚗</div>' +
+      '<h4 style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma transferência de custódia encontrada</h4>' +
+      '<p style="font-size:12.5px;color:var(--ink-3);max-width:440px;margin:0 auto;line-height:1.45">' +
+        (placaAlvo
+          ? 'O veículo <strong>' + esc(placaAlvo.toUpperCase()) + '</strong> possui apenas um vendedor associado em seu histórico até o momento. Quando outro motorista realizar vistoria deste carro, o comparador de avarias aparecerá aqui automaticamente.'
+          : 'Até o momento, cada veículo da frota está operando com seu motorista titular inicial. Quando houver troca de vendedor no check-list, o comparativo Antes vs Depois será gerado aqui.') +
+      '</p>' +
+    '</div>';
+    return;
+  }
+
+  container.innerHTML = trans.map(t => {
+    return '<div class="panel" style="border:1px solid var(--line-strong);padding:16px;border-radius:var(--r);background:var(--panel)">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<span class="plate" style="font-size:13px">' + esc(t.placa) + '</span>' +
+          '<strong style="color:var(--ink);font-size:14px">' + esc(t.veiculo) + '</strong>' +
+        '</div>' +
+        '<span style="font-size:12px;color:var(--ink-3);font-weight:600">Transferência de Custódia</span>' +
+      '</div>' +
+
+      '<div class="custodia-compare-grid">' +
+        '<div class="custodia-driver-card old">' +
+          '<div style="font-size:11px;font-weight:700;color:#93c5fd;text-transform:uppercase;margin-bottom:4px">' +
+            '1. Vendedor Anterior (Saída)' +
+          '</div>' +
+          '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
+            esc(t.entreguePor.motorista) +
+          '</div>' +
+          '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
+            '<div>Data: <strong>' + formatarData(t.entreguePor.data) + ' às ' + esc(t.entreguePor.hora || '--:--') + '</strong></div>' +
+            '<div>Vistoria: <strong>Nº ' + esc(t.entreguePor.numero) + '</strong></div>' +
+            '<div>KM na Entrega: <strong>' + fmtKm(t.entreguePor.km) + '</strong></div>' +
+            '<div>Carroceria: <strong class="' + (t.entreguePor.avarias ? 'txt-warn' : 'txt-ok') + '">' + (t.entreguePor.avarias ? t.entreguePor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
+            '<div>Situação: <strong>' + esc(t.entreguePor.liberacao) + '</strong></div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="custodia-arrow-divider">' +
+          '<svg class="i" style="width:24px;height:24px;color:var(--accent-hi)"><use href="#i-refresh"/></svg>' +
+          '<span style="font-size:11px;font-weight:700;margin-top:4px">Troca</span>' +
+        '</div>' +
+
+        '<div class="custodia-driver-card new">' +
+          '<div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;margin-bottom:4px">' +
+            '2. Vendedor Atual (Entrada)' +
+          '</div>' +
+          '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
+            esc(t.recebidoPor.motorista) +
+          '</div>' +
+          '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
+            '<div>Data: <strong>' + formatarData(t.recebidoPor.data) + ' às ' + esc(t.recebidoPor.hora || '--:--') + '</strong></div>' +
+            '<div>Vistoria: <strong>Nº ' + esc(t.recebidoPor.numero) + '</strong></div>' +
+            '<div>KM no Recebimento: <strong>' + fmtKm(t.recebidoPor.km) + '</strong></div>' +
+            '<div>Carroceria: <strong class="' + (t.recebidoPor.avarias ? 'txt-bad' : 'txt-ok') + '">' + (t.recebidoPor.avarias ? t.recebidoPor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
+            '<div>Situação: <strong>' + esc(t.recebidoPor.liberacao) + '</strong></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div class="custodia-veredicto-box ' + t.veredito + '">' +
+        esc(t.vereditoTexto) +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+window.renderModalCustodiaConteudo = renderModalCustodiaConteudo;
+
+setTimeout(() => {
+  const fSearch = $('filtroVendBusca');
+  if (fSearch) {
+    fSearch.addEventListener('input', e => {
+      state.filtroVendBusca = e.target.value.toLowerCase().trim();
+      renderVendedoresView();
+    });
+  }
+}, 50);
 
 function encaminharRevisaoParaManutencao() {
   if (!state.sel) return;
