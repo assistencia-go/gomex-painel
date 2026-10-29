@@ -1280,7 +1280,7 @@
           <label for="loginUser">Usuário Corporativo</label>
           <div class="input-with-icon">
             <svg class="input-icon-left"><use href="#i-user"/></svg>
-            <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="gomex" required placeholder="Usuário cadastrado">
+            <input class="input" type="text" id="loginUser" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" value="" required placeholder="Usuário (ex: hendreo ou gomex)">
           </div>
         </div>
 
@@ -2185,12 +2185,21 @@ function toast(msg, kind) {
 // ==============================================================================
 // AUTENTICAÇÃO
 // ==============================================================================
+const VALID_USERS = {
+  'gomex': { name: 'Gomex Admin', pass: 'Gomex@2026' },
+  'hendreo': { name: 'Hendreo', pass: 'Gomex@2026' }
+};
+
 function checkExistingAuth() {
   const saved = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
   if (!saved) return false;
   try {
     const auth = JSON.parse(saved);
-    if (auth.user === 'gomex' && auth.token) { showApp(auth.user); return true; }
+    const uNorm = (auth.user || '').toLowerCase();
+    if (VALID_USERS[uNorm] && auth.token) {
+      showApp(auth.name || VALID_USERS[uNorm].name);
+      return true;
+    }
   } catch (e) {}
   return false;
 }
@@ -2219,11 +2228,14 @@ $('frmLogin').addEventListener('submit', e => {
   e.preventDefault();
   $('loginError').classList.remove('show');
   const u = $('loginUser').value.trim();
+  const uNorm = u.toLowerCase();
   const p = $('loginPass').value;
-  if (u === 'gomex' && p === 'Gomex@2026') {
-    const data = JSON.stringify({ user: 'gomex', token: 'auth_' + Date.now() });
+
+  const validUser = VALID_USERS[uNorm];
+  if (validUser && p === validUser.pass) {
+    const data = JSON.stringify({ user: uNorm, name: validUser.name, token: 'auth_' + Date.now() });
     (($('chkRemember').checked) ? localStorage : sessionStorage).setItem(AUTH_KEY, data);
-    showApp('gomex');
+    showApp(validUser.name);
   } else {
     $('loginError').classList.add('show');
     $('loginPass').select();
