@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0a0f1a" id="metaThemeColor">
+<meta name="theme-color" content="#09090b" id="metaThemeColor">
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="Painel interno de gestão das vistorias da frota Gomex.">
 <title>Vistorias da frota · Gomex Frota</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232b66e8'/%3E%3Cpath d='M7 21V11a1.5 1.5 0 0 1 1.5-1.5H17A1.5 1.5 0 0 1 18.5 11v10M18.5 13h3.2l3.3 4v4h-2' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3Ccircle cx='21' cy='22' r='2' fill='none' stroke='white' stroke-width='1.8'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ed8570'/%3E%3Cpath d='M7 21V11a1.5 1.5 0 0 1 1.5-1.5H17A1.5 1.5 0 0 1 18.5 11v10M18.5 13h3.2l3.3 4v4h-2' fill='none' stroke='%23110c0a' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='11' cy='22' r='2' fill='none' stroke='%23110c0a' stroke-width='1.9'/%3E%3Ccircle cx='21' cy='22' r='2' fill='none' stroke='%23110c0a' stroke-width='1.9'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,26 +15,26 @@
 
 <style>
   /* ============================================================================
-     DESIGN TOKENS — DARK MODE (PADRÃO) E LIGHT MODE
+     DESIGN TOKENS — IDENTIDADE VISUAL GOMEX (PRETO OBSIDIAN & ROSA SALMÃO)
      ============================================================================ */
   :root {
     color-scheme: dark;
 
-    --bg: #0a0f1a;
-    --panel: #0f1624;
-    --panel-2: #0c1320;
-    --raised: #151e30;
-    --hover: #131c2e;
-    --line: #1c2640;
-    --line-strong: #2a3757;
+    --bg: #09090b;
+    --panel: #121215;
+    --panel-2: #0d0d10;
+    --raised: #1a1a1f;
+    --hover: #17171c;
+    --line: #24242b;
+    --line-strong: #32323c;
 
-    --ink: #eef2f9;
-    --ink-2: #b0bbcf;
-    --ink-3: #8392ab;
+    --ink: #f5f2ed;
+    --ink-2: #cfc9c2;
+    --ink-3: #9e9890;
 
-    --accent: #2b66e8;
-    --accent-hi: #5b93ff;
-    --accent-tint: rgba(91, 147, 255, 0.14);
+    --accent: #ed8570;
+    --accent-hi: #f49b89;
+    --accent-tint: rgba(237, 133, 112, 0.15);
 
     --ok: #3ddc97;
     --ok-tint: rgba(61, 220, 151, 0.12);
@@ -51,7 +51,7 @@
 
   body.theme-light {
     color-scheme: light;
-    --bg: #f4f6fa;
+    --bg: #f3f4f8;
     --panel: #ffffff;
     --panel-2: #f8fafc;
     --raised: #eef2f7;
@@ -59,13 +59,13 @@
     --line: #e2e8f0;
     --line-strong: #cbd5e1;
 
-    --ink: #0f172a;
+    --ink: #111827;
     --ink-2: #334155;
     --ink-3: #64748b;
 
-    --accent: #1e40af;
-    --accent-hi: #2563eb;
-    --accent-tint: rgba(37, 99, 235, 0.12);
+    --accent: #1e2a78;
+    --accent-hi: #2A3492;
+    --accent-tint: rgba(30, 42, 120, 0.12);
 
     --ok: #15803d;
     --ok-tint: rgba(21, 128, 61, 0.12);
@@ -80,11 +80,16 @@
   body.theme-light .approval-textarea {
     background: #ffffff;
     border-color: #cbd5e1;
-    color: #0f172a;
+    color: #111827;
   }
   body.theme-light .input:hover,
   body.theme-light .select:hover {
     border-color: #94a3b8;
+  }
+  body.theme-light .input:focus-visible,
+  body.theme-light .select:focus-visible {
+    border-color: #1e2a78;
+    box-shadow: 0 0 0 3px rgba(30, 42, 120, 0.14);
   }
   body.theme-light .sig {
     background: #f8fafc;
@@ -93,15 +98,110 @@
   body.theme-light .map {
     border: 1px solid #e2e8f0;
   }
-  body.theme-light .btn:hover:not(:disabled) {
+  body.theme-light .btn:not(.btn-primary):hover:not(:disabled) {
     background: #e2e8f0;
     border-color: #cbd5e1;
   }
+  body.theme-light .btn-primary {
+    background: #1e2a78;
+    border-color: #1e2a78;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(30, 42, 120, 0.22);
+  }
+  body.theme-light .btn-primary:hover:not(:disabled) {
+    background: #2A3492;
+    border-color: #2A3492;
+    color: #ffffff;
+  }
+  body.theme-light .brand-mark {
+    background: #1e2a78;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(30, 42, 120, 0.25);
+  }
+  body.theme-light .sb-item.active {
+    background: rgba(30, 42, 120, 0.12);
+    color: #1e2a78;
+  }
+  body.theme-light .stat-ico.blue {
+    background: rgba(30, 42, 120, 0.12);
+    color: #1e2a78;
+  }
+  body.theme-light .badge-rota {
+    background: rgba(30, 42, 120, 0.12);
+    color: #1e2a78;
+    border-color: rgba(30, 42, 120, 0.28);
+  }
+  body.theme-light .btn-add-rota-inline {
+    color: #1e2a78;
+    border-color: rgba(30, 42, 120, 0.4);
+  }
+  body.theme-light .btn-add-rota-inline:hover {
+    background: rgba(30, 42, 120, 0.14);
+  }
+  body.theme-light .vend-avatar {
+    background: linear-gradient(135deg, #2A3492 0%, #1e2a78 100%);
+    color: #ffffff;
+  }
+  body.theme-light ::selection {
+    background: rgba(30, 42, 120, 0.22);
+    color: #1e2a78;
+  }
+  body.theme-light input:-webkit-autofill {
+    -webkit-text-fill-color: #111827;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+    caret-color: #111827;
+  }
+  body.theme-light * {
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  body.theme-light ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-color: var(--bg);
+  }
+  body.theme-light .sk {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+  }
+  body.theme-light .empty .empty-icon-wrap {
+    background: rgba(30, 42, 120, 0.10);
+    border-color: rgba(30, 42, 120, 0.25);
+    color: #1e2a78;
+    box-shadow: 0 6px 20px rgba(30, 42, 120, 0.12);
+  }
+  body.theme-light .empty .empty-icon-wrap .i {
+    color: #1e2a78 !important;
+  }
+  body.theme-light .view-switch-btn.active {
+    background: #1e2a78;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(30, 42, 120, 0.25);
+  }
+  body.theme-light .dr-tab.active {
+    color: #1e2a78;
+    border-bottom-color: #1e2a78;
+  }
+  body.theme-light .tab[aria-pressed="true"] .cnt {
+    background: rgba(30, 42, 120, 0.14);
+    color: #1e2a78;
+  }
+
+  .rota-highlight-box {
+    background: linear-gradient(135deg, rgba(237, 133, 112, 0.14), rgba(237, 133, 112, 0.06));
+    border: 1.5px solid rgba(237, 133, 112, 0.38);
+    border-radius: 10px;
+    padding: 13px 15px;
+    display: grid;
+    gap: 8px;
+  }
+  body.theme-light .rota-highlight-box {
+    background: linear-gradient(135deg, rgba(30, 42, 120, 0.09), rgba(30, 42, 120, 0.03));
+    border-color: rgba(30, 42, 120, 0.28);
+  }
 
   *, *::before, *::after { box-sizing: border-box; }
-  * { margin: 0; scrollbar-width: thin; scrollbar-color: #26324f transparent; }
+  * { margin: 0; scrollbar-width: thin; scrollbar-color: #2e2e38 transparent; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-thumb { background: #26324f; border-radius: 8px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #2e2e38; border-radius: 8px; border: 2px solid var(--bg); }
   ::-webkit-scrollbar-track { background: transparent; }
 
   html { -webkit-text-size-adjust: 100%; }
@@ -115,7 +215,7 @@
     transition: background-color 200ms ease, color 200ms ease;
   }
   body.lock { overflow: hidden; }
-  ::selection { background: rgba(91, 147, 255, 0.38); color: #fff; }
+  ::selection { background: rgba(237, 133, 112, 0.35); color: #fff; }
 
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
@@ -126,7 +226,7 @@
   select option { background: var(--panel); color: var(--ink); }
   input:-webkit-autofill {
     -webkit-text-fill-color: var(--ink);
-    -webkit-box-shadow: 0 0 0 1000px #0a1120 inset;
+    -webkit-box-shadow: 0 0 0 1000px #0d0d10 inset;
     caret-color: var(--ink);
   }
 
@@ -154,12 +254,25 @@
     cursor: pointer;
   }
   .btn * { pointer-events: none; }
-  .btn:hover:not(:disabled) { background: #1b2742; border-color: #3a4b74; }
-  .btn:active:not(:disabled) { background: #16213a; transform: translateY(1px); }
+  .btn:hover:not(:disabled) { background: #24242c; border-color: #454552; }
+  .btn:active:not(:disabled) { background: #1c1c22; transform: translateY(1px); }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn-primary:hover:not(:disabled) { background: #2457cf; border-color: #2457cf; }
-  .btn-primary:active:not(:disabled) { background: #2559cf; }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #120b09;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: #f39784;
+    border-color: #f39784;
+    color: #120b09;
+  }
+  .btn-primary:active:not(:disabled) {
+    background: #df745e;
+    border-color: #df745e;
+  }
   .btn-ghost { background: transparent; border-color: transparent; color: var(--ink-2); }
   .btn-ghost:hover:not(:disabled) { background: var(--raised); border-color: transparent; color: var(--ink); }
   .btn-icon { width: 34px; padding: 0; border-radius: 6px; }
@@ -167,13 +280,13 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ============================================================================
-     LOGIN — ENTERPRISE FLEET SUITE (SPLIT LAYOUT)
+     LOGIN — ENTERPRISE FLEET SUITE (SPLIT LAYOUT GOMEX)
      ============================================================================ */
   .login {
     min-height: 100vh;
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
-    background: #070b14;
+    background: #070709;
     position: relative;
   }
 
@@ -181,7 +294,7 @@
   .login-brand {
     position: relative;
     overflow: hidden;
-    background: radial-gradient(circle at 18% 18%, #101c38 0%, #091124 55%, #050812 100%);
+    background: radial-gradient(circle at 18% 18%, #181416 0%, #0d0d10 55%, #070709 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     padding: 48px 56px;
     display: flex;
@@ -196,7 +309,7 @@
     position: absolute;
     inset: 0;
     background-image: 
-      radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+      radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
       linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     background-size: 32px 32px, 96px 96px, 96px 96px;
@@ -210,7 +323,7 @@
     width: 450px;
     height: 450px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.22) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(237, 133, 112, 0.20) 0%, transparent 70%);
     top: -120px;
     left: -100px;
     filter: blur(60px);
@@ -222,7 +335,7 @@
     width: 380px;
     height: 380px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(40, 35, 118, 0.28) 0%, transparent 70%);
     bottom: -60px;
     right: -40px;
     filter: blur(50px);
@@ -249,11 +362,11 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: linear-gradient(135deg, #ed8570, #dc6c56);
     display: grid;
     place-items: center;
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+    color: #120b09;
+    box-shadow: 0 8px 20px rgba(237, 133, 112, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.35);
   }
 
   .login-brand-head .brand-mark .i {
@@ -266,7 +379,7 @@
     font-size: 18px;
     font-weight: 800;
     letter-spacing: -0.015em;
-    color: #ffffff;
+    color: #f5f2ed;
   }
 
   .login-brand-head .brand-sub {
@@ -274,7 +387,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #38bdf8;
+    color: #ed8570;
   }
 
   /* Centro do Hero sem os 3 blocos */
@@ -294,12 +407,12 @@
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #60a5fa;
+    color: #f49b89;
     margin-bottom: 20px;
-    background: rgba(37, 99, 235, 0.1);
+    background: rgba(237, 133, 112, 0.12);
     padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(37, 99, 235, 0.25);
+    border: 1px solid rgba(237, 133, 112, 0.3);
   }
 
   .hero-headline {
@@ -307,7 +420,7 @@
     line-height: 1.25;
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: #f8fafc;
+    color: #f5f2ed;
     margin-bottom: 20px;
   }
 
@@ -318,10 +431,10 @@
     justify-content: center;
     padding: 0 16px;
     margin: 0 4px;
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(14, 165, 233, 0.12));
-    border: 1.5px solid rgba(56, 189, 248, 0.45);
+    background: linear-gradient(135deg, rgba(237, 133, 112, 0.22), rgba(237, 133, 112, 0.10));
+    border: 1.5px solid rgba(237, 133, 112, 0.5);
     border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(14, 165, 233, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 18px rgba(237, 133, 112, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     vertical-align: middle;
     min-width: 140px;
     height: 48px;
@@ -331,9 +444,7 @@
   .word-rotator {
     display: inline-block;
     font-weight: 800;
-    background: linear-gradient(135deg, #67e8f9 0%, #38bdf8 50%, #60a5fa 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #f49b89;
     transition: transform 380ms cubic-bezier(0.16, 1, 0.3, 1), opacity 380ms ease;
   }
   .word-rotator.word-exit {
@@ -349,7 +460,7 @@
   .hero-desc {
     font-size: 15px;
     line-height: 1.65;
-    color: #94a3b8;
+    color: #a8a29b;
     margin-bottom: 0;
     max-width: 520px;
   }
@@ -362,18 +473,18 @@
     align-items: center;
     gap: 8px;
     font-size: 11.5px;
-    color: #475569;
+    color: #9e9890;
   }
   .login-brand-foot .i {
     width: 14px;
     height: 14px;
     stroke-width: 2;
-    color: #38bdf8;
+    color: #ed8570;
   }
 
   /* Painel Direito & Card Elevado */
   .login-pane {
-    background: #090e1a;
+    background: #0b0b0e;
     display: grid;
     place-items: center;
     padding: 40px 32px;
@@ -386,7 +497,7 @@
     width: 340px;
     height: 340px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(237, 133, 112, 0.12) 0%, transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -399,13 +510,13 @@
     z-index: 2;
     width: 100%;
     max-width: 420px;
-    background: rgba(15, 23, 42, 0.78);
+    background: rgba(18, 18, 22, 0.88);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.09);
     box-shadow: 
-      0 24px 50px -12px rgba(0, 0, 0, 0.6),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 24px 50px -12px rgba(0, 0, 0, 0.75),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
     border-radius: 20px;
     padding: 38px 34px;
   }
@@ -420,7 +531,7 @@
     font-weight: 800;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #38bdf8;
+    color: #ed8570;
     margin-bottom: 8px;
   }
 
@@ -428,13 +539,13 @@
     font-size: 25px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: #f5f2ed;
     line-height: 1.25;
   }
 
   .login-card-head .lead {
     font-size: 13.5px;
-    color: #8392ab;
+    color: #8c8780;
     margin-top: 6px;
     line-height: 1.5;
   }
@@ -448,8 +559,8 @@
   .brand { display: flex; align-items: center; gap: 12px; }
   .brand-mark {
     width: 36px; height: 36px; border-radius: 9px; background: var(--accent);
-    display: grid; place-items: center; color: #fff;
-    box-shadow: 0 4px 12px rgba(43, 102, 232, 0.3);
+    display: grid; place-items: center; color: #120b09;
+    box-shadow: 0 4px 12px rgba(237, 133, 112, 0.28);
   }
   .brand-mark .i { width: 20px; height: 20px; stroke-width: 1.9; }
   .brand-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
@@ -459,13 +570,13 @@
   .field label { font-size: 13px; font-weight: 600; color: var(--ink-2); }
   .input {
     width: 100%; height: 44px; padding: 0 12px;
-    background: #0a1120; border: 1px solid var(--line-strong); border-radius: 8px;
+    background: #0d0d10; border: 1px solid var(--line-strong); border-radius: 8px;
     transition: border-color 150ms, box-shadow 150ms;
     color: var(--ink);
   }
   .input::placeholder { color: var(--ink-3); }
-  .input:hover { border-color: #3a4b74; }
-  .input:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(91, 147, 255, 0.15); }
+  .input:hover { border-color: #464654; }
+  .input:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(237, 133, 112, 0.18); }
   
   .input-with-icon {
     position: relative;
@@ -479,17 +590,17 @@
     width: 17px;
     height: 17px;
     fill: none;
-    stroke: #ffffff;
+    stroke: #f5f2ed;
     stroke-width: 2;
-    color: #ffffff;
+    color: #f5f2ed;
     pointer-events: none;
     transition: all 150ms ease;
-    opacity: 0.9;
+    opacity: 0.85;
   }
 
   .input-with-icon:focus-within .input-icon-left {
-    stroke: #38bdf8;
-    color: #38bdf8;
+    stroke: #ed8570;
+    color: #ed8570;
     opacity: 1;
   }
 
@@ -499,7 +610,7 @@
 
   .pwd { position: relative; }
   .pwd .input { padding-right: 46px; }
-  .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; color: #ffffff; }
+  .pwd .btn-icon { position: absolute; right: 4px; top: 5px; height: 34px; color: #f5f2ed; }
   .check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-2); cursor: pointer; user-select: none; }
   .check input { width: 16px; height: 16px; accent-color: var(--accent); }
   
@@ -514,13 +625,13 @@
   .login-btn-submit {
     height: 46px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #ed8570 0%, #e0705a 100%);
+    color: #120b09;
     font-size: 14.5px;
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: 0.01em;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 6px 18px rgba(237, 133, 112, 0.32);
     transition: all 180ms ease;
     cursor: pointer;
     display: flex;
@@ -529,8 +640,8 @@
     gap: 8px;
   }
   .login-btn-submit:hover:not(:disabled) {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+    background: linear-gradient(135deg, #f49b89 0%, #ed8570 100%);
+    box-shadow: 0 8px 24px rgba(237, 133, 112, 0.45);
     transform: translateY(-1px);
   }
   .login-btn-submit:active:not(:disabled) {
@@ -542,7 +653,7 @@
     align-items: center;
     gap: 12px;
     margin: 4px 0 0;
-    color: #475569;
+    color: #9e9890;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -561,16 +672,16 @@
     padding: 11px 14px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #a8a29b;
     text-decoration: none;
     font-size: 12.5px;
     transition: all 180ms ease;
   }
   .driver-companion-link:hover {
-    background: rgba(37, 99, 235, 0.1);
-    border-color: rgba(37, 99, 235, 0.3);
-    color: #e2e8f0;
+    background: rgba(237, 133, 112, 0.10);
+    border-color: rgba(237, 133, 112, 0.35);
+    color: #f5f2ed;
   }
   .driver-companion-link .d-left {
     display: flex;
@@ -581,12 +692,12 @@
     width: 16px;
     height: 16px;
     stroke-width: 2;
-    color: #38bdf8;
+    color: #ed8570;
   }
   .driver-companion-link .d-right {
     font-size: 11.5px;
     font-weight: 700;
-    color: #38bdf8;
+    color: #f49b89;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -611,49 +722,95 @@
 
   /* Tema Claro para o Login */
   body.theme-light .login {
-    background: #f1f5f9;
+    background: #f3f4f8;
   }
   body.theme-light .login-brand {
-    background: radial-gradient(circle at 18% 18%, #ffffff 0%, #f8fafc 55%, #e2e8f0 100%);
+    background: linear-gradient(135deg, #141d52 0%, #1e2a78 60%, #2A3492 100%);
     border-right-color: #cbd5e1;
   }
-  body.theme-light .login-brand::before {
-    background-image: 
-      radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
-      linear-gradient(to right, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-    opacity: 0.8;
+  body.theme-light .login-brand-head .brand-mark {
+    background: #ffffff;
+    color: #1e2a78;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
   }
   body.theme-light .login-brand-head .brand-name,
   body.theme-light .hero-headline {
-    color: #0f172a;
+    color: #ffffff;
+  }
+  body.theme-light .login-brand-head .brand-sub,
+  body.theme-light .hero-category-tag {
+    color: #dbeafe;
+  }
+  body.theme-light .hero-category-tag {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+  }
+  body.theme-light .rotator-pill {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+  body.theme-light .word-rotator {
+    color: #ffffff;
   }
   body.theme-light .hero-desc {
-    color: #475569;
+    color: #e2e8f0;
+  }
+  body.theme-light .login-brand-foot {
+    color: #cbd5e1;
+  }
+  body.theme-light .login-brand-foot .i {
+    color: #ffffff;
   }
   body.theme-light .login-pane {
-    background: #f8fafc;
+    background: #f3f4f8;
   }
   body.theme-light .login-card {
     background: #ffffff;
     border-color: #e2e8f0;
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 40px -10px rgba(30, 42, 120, 0.10);
+  }
+  body.theme-light .login-card-badge {
+    color: #1e2a78;
   }
   body.theme-light .login-card-head h1 {
-    color: #0f172a;
+    color: #111827;
   }
   body.theme-light .login-card-head .lead {
     color: #64748b;
   }
+  body.theme-light .login-btn-submit {
+    background: linear-gradient(135deg, #2A3492 0%, #1e2a78 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(30, 42, 120, 0.28);
+  }
+  body.theme-light .login-btn-submit:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3541b0 0%, #2A3492 100%);
+  }
   body.theme-light .driver-companion-link {
-    background: #f1f5f9;
+    background: #f8fafc;
     border-color: #e2e8f0;
-    color: #475569;
+    color: #334155;
+  }
+  body.theme-light .driver-companion-link .d-left .i,
+  body.theme-light .driver-companion-link .d-right {
+    color: #1e2a78;
   }
   body.theme-light .input {
     background: #ffffff;
     border-color: #cbd5e1;
-    color: #0f172a;
+    color: #111827;
+  }
+  body.theme-light .input-with-icon .input-icon-left {
+    stroke: #64748b;
+    color: #64748b;
+  }
+  body.theme-light .input-with-icon:focus-within .input-icon-left {
+    stroke: #1e2a78;
+    color: #1e2a78;
+  }
+  body.theme-light .pwd .btn-icon {
+    color: #475569;
   }
 
   /* ============================================================================
@@ -856,7 +1013,7 @@
     display: grid; place-items: center;
     background: var(--raised); color: var(--ink-2);
   }
-  .stat-ico.blue { background: rgba(43, 102, 232, 0.15); color: #5b93ff; }
+  .stat-ico.blue { background: rgba(237, 133, 112, 0.15); color: #f49b89; }
   .stat-ico.emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; }
   .stat-ico.purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
   .stat-ico.green { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
@@ -888,7 +1045,7 @@
     display: inline-grid; place-items: center;
     background: var(--raised); color: var(--ink-2); font-size: 12px; font-weight: 600;
   }
-  .tab[aria-pressed="true"] .cnt { background: var(--accent-tint); color: #cfe0ff; }
+  .tab[aria-pressed="true"] .cnt { background: var(--accent-tint); color: var(--accent-hi); }
   .tab .dot { width: 7px; height: 7px; border-radius: 50%; }
   .dot-ok { background: var(--ok); } .dot-warn { background: var(--warn); } .dot-bad { background: var(--bad); }
 
@@ -904,9 +1061,9 @@
   }
   .select {
     height: 36px; padding: 0 10px; border: 1px solid var(--line-strong); border-radius: 8px;
-    background: #0a1120; font-size: 13px; color: var(--ink);
+    background: #0d0d10; font-size: 13px; color: var(--ink);
   }
-  .select:hover { border-color: #3a4b74; }
+  .select:hover { border-color: #464654; }
   .toolbar .spacer { flex: 1; }
 
   /* Polimento: abas rolaveis, foco de teclado, numerais e controles consistentes */
@@ -923,7 +1080,7 @@
   .search:focus-within kbd { opacity: 0; }
   .search kbd { transition: opacity 150ms; }
   .select { max-width: 220px; text-overflow: ellipsis; cursor: pointer; }
-  .select:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(91, 147, 255, 0.15); }
+  .select:focus-visible { border-color: var(--accent-hi); outline: none; box-shadow: 0 0 0 3px rgba(237, 133, 112, 0.18); }
   .grid td, .grid th { font-variant-numeric: tabular-nums; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -974,7 +1131,7 @@
     display: inline-flex; align-items: center; gap: 4px;
     font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
   }
-  .tipo-saida { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+  .tipo-saida { background: rgba(237, 133, 112, 0.15); color: #f49b89; border: 1px solid rgba(237, 133, 112, 0.32); }
   .tipo-retorno { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
   .tipo-periodica { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
 
@@ -991,16 +1148,18 @@
   .tag-ok { background: var(--ok-tint); color: var(--ok); border: 1px solid rgba(61, 220, 151, 0.25); }
   .tag-warn { background: var(--warn-tint); color: var(--warn); border: 1px solid rgba(242, 184, 75, 0.25); }
   .tag-bad { background: var(--bad-tint); color: var(--bad); border: 1px solid rgba(248, 120, 120, 0.25); }
+  .tag-inativo { background: rgba(148, 163, 184, 0.14); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3); }
+  body.theme-light .tag-inativo { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
   .tag-neutral { background: var(--raised); color: var(--ink-2); }
   .txt-motivo-inat { font-size: 11px; color: var(--bad); margin-top: 3px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
   .txt-motivo-inat .i { width: 12px; height: 12px; flex-shrink: 0; }
 
   .row-new td { animation: rowIn 2.4s ease-out; }
-  @keyframes rowIn { from { background: rgba(91, 147, 255, 0.2); } to { background: transparent; } }
+  @keyframes rowIn { from { background: rgba(237, 133, 112, 0.22); } to { background: transparent; } }
 
   .sk {
     display: block; height: 12px; border-radius: 6px; width: 70%;
-    background: linear-gradient(90deg, #131c2f 25%, #1a2540 50%, #131c2f 75%);
+    background: linear-gradient(90deg, #17171c 25%, #23232b 50%, #17171c 75%);
     background-size: 200% 100%; animation: shimmer 1.4s linear infinite;
   }
   .sk.w40 { width: 40%; } .sk.w55 { width: 55%; } .sk.w90 { width: 90%; }
@@ -1011,15 +1170,15 @@
   .grid tbody tr:has(.empty):hover td { background: transparent; }
   .empty .empty-icon-wrap {
     width: 56px; height: 56px; border-radius: 16px;
-    background: rgba(37, 99, 235, 0.12);
-    border: 1px solid rgba(56, 189, 248, 0.25);
+    background: rgba(237, 133, 112, 0.12);
+    border: 1px solid rgba(237, 133, 112, 0.30);
     display: inline-flex; align-items: center; justify-content: center;
-    color: #38bdf8; margin: 0 auto 16px;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.18);
+    color: #f49b89; margin: 0 auto 16px;
+    box-shadow: 0 6px 20px rgba(237, 133, 112, 0.18);
   }
   .empty .empty-icon-wrap .i {
     width: 26px !important; height: 26px !important;
-    margin: 0 !important; color: #38bdf8 !important;
+    margin: 0 !important; color: #f49b89 !important;
   }
   .empty > .i { width: 32px; height: 32px; color: var(--ink-3); margin-bottom: 12px; }
   .empty h2 { font-size: 16.5px; font-weight: 700; margin-bottom: 6px; color: var(--ink); }
@@ -1280,7 +1439,7 @@
   }
   .sb-item .i { width: 18px; height: 18px; flex-shrink: 0; }
   .sb-item:hover { background: var(--raised); color: var(--ink); }
-  .sb-item.active { background: rgba(91, 147, 255, 0.14); color: var(--accent-hi); }
+  .sb-item.active { background: rgba(237, 133, 112, 0.15); color: var(--accent-hi); }
   .sb-item.active::before {
     content: ''; position: absolute; left: -12px; top: 9px; bottom: 9px; width: 3px;
     border-radius: 0 3px 3px 0; background: var(--accent);
@@ -1304,8 +1463,8 @@
   /* Vendedores & Custódia */
   .vend-avatar {
     width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-    color: #fff; font-size: 11.5px; font-weight: 800;
+    background: linear-gradient(135deg, #ed8570 0%, #c85a44 100%);
+    color: #120b09; font-size: 11.5px; font-weight: 800;
     display: grid; place-items: center; flex: none;
     border: 1px solid rgba(255,255,255,0.2);
     box-shadow: 0 2px 6px rgba(0,0,0,0.25);
@@ -1337,7 +1496,7 @@
     background: var(--raised); border: 1px solid var(--line);
     border-radius: var(--r); padding: 14px 16px;
   }
-  .custodia-driver-card.old { border-color: rgba(91, 147, 255, 0.35); }
+  .custodia-driver-card.old { border-color: rgba(237, 133, 112, 0.38); }
   .custodia-driver-card.new { border-color: rgba(245, 158, 11, 0.4); }
   .custodia-arrow-divider {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1354,7 +1513,7 @@
     background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7;
   }
   .custodia-veredicto-box.preexistente {
-    background: rgba(91, 147, 255, 0.12); border: 1px solid rgba(91, 147, 255, 0.35); color: #93c5fd;
+    background: rgba(237, 133, 112, 0.12); border: 1px solid rgba(237, 133, 112, 0.35); color: #f49b89;
   }
 
   /* ============================================================================
@@ -1363,17 +1522,17 @@
   .badge-rota {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 700;
-    background: rgba(91, 147, 255, 0.15); color: #93c5fd; border: 1px solid rgba(91, 147, 255, 0.3);
+    background: rgba(237, 133, 112, 0.15); color: #f49b89; border: 1px solid rgba(237, 133, 112, 0.32);
     white-space: nowrap;
   }
   .btn-add-rota-inline {
     display: inline-flex; align-items: center; gap: 3px;
     padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 600;
-    background: transparent; color: var(--accent-hi); border: 1px dashed rgba(91, 147, 255, 0.45);
+    background: transparent; color: var(--accent-hi); border: 1px dashed rgba(237, 133, 112, 0.48);
     cursor: pointer; transition: all .15s;
   }
   .btn-add-rota-inline:hover {
-    background: rgba(91, 147, 255, 0.18); border-style: solid;
+    background: rgba(237, 133, 112, 0.18); border-style: solid;
   }
   .edit-grid-2 {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
@@ -1854,7 +2013,7 @@
               <span class="stat-lbl">Investimento em Reparos</span>
               <div class="stat-ico blue"><svg class="i"><use href="#i-wallet"/></svg></div>
             </div>
-            <dd id="maintStatCusto" style="color:#60a5fa">R$ 0,00</dd>
+            <dd id="maintStatCusto" style="color:var(--accent-hi)">R$ 0,00</dd>
             <span class="stat-sub">Custo acumulado informado</span>
           </div>
 
@@ -1991,7 +2150,7 @@
 
             <!-- Botões de Filtro -->
             <div class="btn-group">
-              <button type="button" class="btn btn-ghost" id="btnFilterVendAll" onclick="filtrarTabelaVendedores('todos')" style="font-size:12px;height:32px;background:var(--accent)">
+              <button type="button" class="btn btn-ghost" id="btnFilterVendAll" onclick="filtrarTabelaVendedores('todos')" style="font-size:12px;height:32px;background:var(--accent-tint);color:var(--accent-hi);font-weight:700">
                 Todos
               </button>
               <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia" onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px">
@@ -2005,7 +2164,7 @@
               </button>
             </div>
 
-            <button type="button" class="btn btn-ghost" onclick="abrirModalCustodia()" style="font-size:12px;height:32px;display:flex;align-items:center;gap:6px;border-color:rgba(91,147,255,0.4);color:var(--accent-hi)">
+            <button type="button" class="btn btn-ghost" onclick="abrirModalCustodia()" style="font-size:12px;height:32px;display:flex;align-items:center;gap:6px;border-color:var(--line-strong);color:var(--accent-hi)">
               <svg class="i" style="width:14px;height:14px"><use href="#i-history"/></svg>
               <span>Linha do Tempo de Trocas</span>
             </button>
@@ -2333,20 +2492,11 @@
         </p>
 
         <!-- Destaque Rota -->
-        <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:12px 14px;display:grid;gap:8px">
+        <div class="rota-highlight-box">
           <label for="drEditRota" style="font-size:12.5px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
-            <span>Rota / Região do Vendedor:</span>
+            <span>Rota do Vendedor:</span>
           </label>
-          <input type="text" class="input" id="drEditRota" placeholder="Ex: Rota 01 - Centro / Oeste, Rota Sul..." style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-size:11px;color:var(--ink-3);font-weight:600">Sugestões:</span>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 01')">Rota 01</button>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 02')">Rota 02</button>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 03')">Rota 03</button>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 04')">Rota 04</button>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Rota 05')">Rota 05</button>
-            <button type="button" class="pill-sugestao" onclick="setDrEditRotaSugestao('Matriz')">Matriz</button>
-          </div>
+          <input type="text" class="input" id="drEditRota" style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
         </div>
 
         <div class="edit-grid-2">
@@ -2510,7 +2660,7 @@
       <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalInativar()"><svg class="i"><use href="#i-x"/></svg></button>
     </header>
     <div class="modal-body" style="padding:20px;display:grid;gap:16px">
-      <div style="padding:12px 14px;background:rgba(250,138,138,0.08);border:1px solid rgba(250,138,138,0.25);border-radius:8px;font-size:13px;line-height:1.5;color:#fecaca">
+      <div style="padding:12px 14px;background:var(--bad-tint);border:1px solid rgba(248,120,120,0.28);border-radius:8px;font-size:13px;line-height:1.5;color:var(--bad)">
         <strong>Atenção:</strong> A vistoria deixará de aparecer na lista de vistorias ativas, mantendo seu painel organizado. Os dados permanecerão salvos na aba <em>"Inativas"</em>.
       </div>
 
@@ -2547,7 +2697,7 @@
   <div class="modal-card" style="max-width:680px;width:95%">
     <header class="modal-head">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:36px;height:36px;border-radius:8px;background:rgba(91,147,255,0.15);color:var(--accent-hi);display:grid;place-items:center">
+        <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
           <svg class="i" style="width:20px;height:20px"><use href="#i-edit"/></svg>
         </div>
         <div>
@@ -2560,27 +2710,14 @@
     <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
       <input type="hidden" id="editVistoriaId">
 
-      <!-- DESTAQUE PRINCIPAL: ROTA / REGIÃO OPERACIONAL -->
-      <div style="background:linear-gradient(135deg, rgba(91,147,255,0.12), rgba(124,58,237,0.12));border:1.5px solid rgba(91,147,255,0.35);border-radius:10px;padding:14px 16px;display:grid;gap:8px">
+      <!-- DESTAQUE PRINCIPAL: ROTA DO VENDEDOR -->
+      <div class="rota-highlight-box">
         <div style="display:flex;align-items:center;justify-content:space-between">
           <label for="editRota" style="font-size:13px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
-            <span>Rota / Região do Vendedor:</span>
+            <span>Rota do Vendedor:</span>
           </label>
-          <span style="font-size:11px;color:var(--ink-3)">Aparecerá no PDF e nos relatórios</span>
         </div>
-        <input type="text" class="input" id="editRota" placeholder="Ex: Rota 01 - Centro / Oeste, Rota Goiânia Sul..." style="height:40px;font-weight:700;font-size:14px;background:var(--bg)">
-        <!-- Pílulas de Sugestão Rápida -->
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding-top:2px">
-          <span style="font-size:11px;color:var(--ink-3);font-weight:600">Sugestões:</span>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 01')">Rota 01</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 02')">Rota 02</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 03')">Rota 03</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 04')">Rota 04</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Rota 05')">Rota 05</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Matriz')">Matriz</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Goiânia Sul')">Goiânia Sul</button>
-          <button type="button" class="pill-sugestao" onclick="setEditRotaSugestao('Anápolis')">Anápolis</button>
-        </div>
+        <input type="text" class="input" id="editRota" style="height:40px;font-weight:700;font-size:14px;background:var(--bg)">
       </div>
 
       <!-- MOTORISTA E VEÍCULO -->
@@ -2768,7 +2905,7 @@
   <div class="modal-card" style="max-width:880px;width:95%">
     <header class="modal-head">
       <div style="display:flex;align-items:center;gap:12px">
-        <div style="width:36px;height:36px;border-radius:8px;background:rgba(91,147,255,0.15);color:var(--accent-hi);display:grid;place-items:center">
+        <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
           <svg class="i" style="width:20px;height:20px"><use href="#i-history"/></svg>
         </div>
         <div>
@@ -2878,12 +3015,12 @@ function aplicarTema(t) {
     document.body.classList.add('theme-light');
     $('icoTheme').querySelector('use').setAttribute('href', '#i-moon');
     $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Escuro');
-    $('metaThemeColor').setAttribute('content', '#f4f6fa');
+    $('metaThemeColor').setAttribute('content', '#1e2a78');
   } else {
     document.body.classList.remove('theme-light');
     $('icoTheme').querySelector('use').setAttribute('href', '#i-sun');
     $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Claro');
-    $('metaThemeColor').setAttribute('content', '#0a0f1a');
+    $('metaThemeColor').setAttribute('content', '#09090b');
   }
 }
 aplicarTema(state.theme);
@@ -2975,9 +3112,10 @@ function tipoBadge(tipo) {
 
 let toastTimer = null;
 function toast(msg, kind) {
+  const isErr = kind === 'error' || kind === 'bad';
   const el = $('toast');
-  el.className = 'toast show' + (kind === 'error' ? ' error' : '');
-  el.innerHTML = icon(kind === 'error' ? 'alert' : 'check') + '<span>' + esc(msg) + '</span>';
+  el.className = 'toast show' + (isErr ? ' error' : '');
+  el.innerHTML = icon(isErr ? 'alert' : 'check') + '<span>' + esc(msg) + '</span>';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 3800);
 }
@@ -3053,9 +3191,142 @@ $('btnLogout').addEventListener('click', () => {
 });
 
 // ==============================================================================
-// DADOS — API REST (PROXY BACKEND E FALLBACK DIRETO)
+// DADOS — API REST, CACHE OFFLINE E FILA DE PERSISTÊNCIA SEGURA (ZERO DATA LOSS)
 // ==============================================================================
+const OFFLINE_CACHE_KEY = 'gomex_offline_cache_v1';
+const PENDING_SYNC_KEY = 'gomex_pending_sync_v1';
 const authHeaders = () => ({ apikey: apiKey(), Authorization: 'Bearer ' + apiKey(), 'Content-Type': 'application/json' });
+
+function getPendingSyncMap() {
+  try {
+    return JSON.parse(localStorage.getItem(PENDING_SYNC_KEY) || '{}') || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function setPendingSyncItem(id, patchFields) {
+  try {
+    const map = getPendingSyncMap();
+    map[String(id)] = { ...(map[String(id)] || {}), ...patchFields, _ts: Date.now() };
+    localStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(map));
+  } catch (e) {}
+}
+
+function clearPendingSyncItem(id) {
+  try {
+    const map = getPendingSyncMap();
+    if (map[String(id)]) {
+      delete map[String(id)];
+      localStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(map));
+    }
+  } catch (e) {}
+}
+
+function salvarSnapshotLocal(rows) {
+  try {
+    if (Array.isArray(rows) && rows.length) {
+      localStorage.setItem(OFFLINE_CACHE_KEY, JSON.stringify(rows));
+    }
+  } catch (e) {}
+}
+
+function lerSnapshotLocal() {
+  try {
+    const raw = localStorage.getItem(OFFLINE_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length ? parsed : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function aplicarPendentesLocais(rows) {
+  if (!Array.isArray(rows)) return rows;
+  const map = getPendingSyncMap();
+  const ids = Object.keys(map);
+  if (!ids.length) return rows;
+  return rows.map(r => {
+    const pend = map[String(r.id)];
+    if (!pend) return r;
+    const copy = { ...r, ...pend };
+    delete copy._ts;
+    return copy;
+  });
+}
+
+async function enviarPatchSupabase(id, patchFields) {
+  const numId = Number(id);
+  const cleanFields = { ...patchFields };
+  delete cleanFields.id;
+  delete cleanFields._ts;
+
+  // 1. Tenta proxy no servidor (/api/checklists)
+  try {
+    const res = await fetch('/api/checklists', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: numId, ...cleanFields })
+    });
+    if (res.ok) return true;
+  } catch (e) {}
+
+  // 2. Fallback direto no Supabase REST
+  try {
+    const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + numId, {
+      method: 'PATCH',
+      headers: { ...authHeaders(), Prefer: 'return=representation' },
+      body: JSON.stringify(cleanFields)
+    });
+    if (resDirect.ok) return true;
+  } catch (e) {}
+
+  return false;
+}
+
+async function persistirNoBanco(id, patchFields) {
+  const numId = Number(id);
+  // Salva imediatamente no buffer local contra perda de dados
+  setPendingSyncItem(numId, patchFields);
+
+  // Atualiza em memória e no snapshot local imediatamente
+  const idx = state.all.findIndex(x => Number(x.id) === numId);
+  if (idx !== -1) {
+    Object.assign(state.all[idx], patchFields);
+  }
+  if (state.sel && Number(state.sel.id) === numId) {
+    Object.assign(state.sel, patchFields);
+  }
+  salvarSnapshotLocal(state.all);
+  state.sig = computeStateSig(state.all);
+
+  const synced = await enviarPatchSupabase(numId, patchFields);
+  if (synced) {
+    clearPendingSyncItem(numId);
+  }
+  return { ok: true, synced };
+}
+
+async function sincronizarPendentes() {
+  const map = getPendingSyncMap();
+  const ids = Object.keys(map);
+  if (!ids.length) return;
+  for (const id of ids) {
+    const ok = await enviarPatchSupabase(id, map[id]);
+    if (ok) clearPendingSyncItem(id);
+  }
+}
+
+function computeStateSig(rows) {
+  if (!Array.isArray(rows)) return '';
+  return rows.map(x => [
+    x.id, x.status || '', x.liberacao || '', x.rota || '',
+    x.motorista || '', x.placa || '', x.veiculo || '',
+    x.km ?? '', x.data || '', x.hora || '', x.tipo || '',
+    x.combustivel || '', x.condicao_motorista || '', x.obs || ''
+  ].join(':')).join('|');
+}
 
 async function getRows(proxyPath, directPath) {
   try {
@@ -3076,7 +3347,7 @@ function setSync(kind) { $('sync').dataset.state = kind; renderSyncText(); }
 function renderSyncText() {
   const kind = $('sync').dataset.state;
   const el = $('syncText');
-  if (kind === 'error') { el.textContent = 'Sem conexão · tentando reconectar'; return; }
+  if (kind === 'error') { el.textContent = 'Modo offline · dados salvos localmente'; return; }
   if (kind === 'loading') { el.textContent = state.loaded ? 'Atualizando…' : 'Conectando…'; return; }
   if (!state.lastSync) return;
   const s = Math.max(0, Math.round((Date.now() - state.lastSync) / 1000));
@@ -3088,22 +3359,41 @@ async function load({ silent = false } = {}) {
   if (loading || !authed) return;
   loading = true;
   if (!silent) { setSync('loading'); $('btnRefresh').classList.add('is-loading'); }
-  const d = await fetchList();
+
+  // Sincroniza quaisquer edições pendentes antes de buscar a lista
+  await sincronizarPendentes();
+
+  let raw = await fetchList();
   loading = false;
   $('btnRefresh').classList.remove('is-loading');
 
-  if (!d) {
+  if (!raw) {
     state.error = true;
     setSync('error');
-    if (!state.loaded) renderTable();
+    if (!state.loaded) {
+      const cached = lerSnapshotLocal();
+      if (cached) {
+        const merged = aplicarPendentesLocais(cached);
+        merged.forEach(x => state.known.add(x.id));
+        state.all = merged;
+        state.sig = computeStateSig(merged);
+        state.loaded = true;
+        renderAll();
+        return;
+      }
+      renderTable();
+    }
     return;
   }
+
+  const d = aplicarPendentesLocais(raw);
+  salvarSnapshotLocal(d);
 
   state.error = false;
   state.lastSync = Date.now();
   setSync('ok');
 
-  const sig = d.map(x => x.id + ':' + x.liberacao + ':' + (x.obs || '')).join('|');
+  const sig = computeStateSig(d);
   if (state.loaded && sig === state.sig) return;
 
   const fresh = state.loaded ? d.filter(x => !state.known.has(x.id)) : [];
@@ -3112,6 +3402,10 @@ async function load({ silent = false } = {}) {
   state.sig = sig;
   state.loaded = true;
   state.fresh = new Set(fresh.map(x => x.id));
+  if (state.sel) {
+    const updatedSel = d.find(x => Number(x.id) === Number(state.sel.id));
+    if (updatedSel) state.sel = updatedSel;
+  }
   renderAll();
 
   if (fresh.length) {
@@ -3446,19 +3740,12 @@ function rowHtml(it) {
       '<div class="stack">' +
         '<span class="t1">' + esc(it.motorista || 'Não informado') + '</span>' +
         '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
-          tipoBadge(it.tipo) +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
           (it.rota
             ? '<span class="badge-rota" title="Rota do Vendedor">' + esc(it.rota) + '</span>'
             : '<button type="button" class="btn-add-rota-inline" data-act="editar" data-id="' + id + '" title="Adicionar rota desta vistoria">+ Rota</button>'
           ) +
         '</div>' +
-        (isRevAlert
-          ? '<div style="margin-top:3px"><span class="badge-row-alert ' + (isRevOverdue ? 'red' : 'yellow') + '" title="Meta da revisão preventiva: ' + fmtKm(kmRev) + '">' +
-              '<svg class="i" style="width:11px;height:11px;stroke-width:2.2"><use href="#i-tool"/></svg>' +
-              '<span>' + (isRevOverdue ? 'Revisão Vencida (' + Math.abs(diffRev).toLocaleString('pt-BR') + ' km)' : 'Próx. Revisão: faltam ' + diffRev.toLocaleString('pt-BR') + ' km') + '</span>' +
-            '</span></div>'
-          : '') +
         (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">' + icon('alert') + ' <span>Motivo: ' + esc(extrairMotivoInativacao(it)) + '</span></div>' : '') +
       '</div>' +
     '</td>' +
@@ -3487,12 +3774,6 @@ function rowHtml(it) {
         ? '<div style="margin-top:4px"><span class="badge-row-alert ' + (isRevOverdue ? 'red' : 'yellow') + '" title="Meta da revisão: ' + fmtKm(kmRev) + '">' +
             '<svg class="i" style="width:10px;height:10px;stroke-width:2.2"><use href="#i-tool"/></svg>' +
             '<span>' + (isRevOverdue ? 'Revisão Vencida' : 'Revisão em ' + diffRev.toLocaleString('pt-BR') + ' km') + '</span>' +
-          '</span></div>'
-        : '') +
-      (isPnAlert
-        ? '<div style="margin-top:4px"><span class="badge-row-alert red">' +
-            '<svg class="i" style="width:10px;height:10px;stroke-width:2.2"><use href="#i-alert"/></svg>' +
-            '<span>Pneu c/ Dano</span>' +
           '</span></div>'
         : '') +
     '</td>' +
@@ -3637,53 +3918,23 @@ async function salvarDecisaoGestor() {
   const tagsExtras = (state.sel.obs || '').match(/\[(INATIVADO|REATIVADO|MANUTENCAO)[^\]]+\]/gi) || [];
   const obsFinal = (parecer + (tagsExtras.length ? (parecer ? '\n' : '') + tagsExtras.join('\n') : '')).trim();
 
-  const payload = {
-    id: state.sel.id,
-    liberacao: status,
-    obs: obsFinal
-  };
-
   try {
-    let ok = false;
-    // 1. Tenta proxy no servidor
-    try {
-      const res = await fetch('/api/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) ok = true;
-    } catch (e) {}
+    const { synced } = await persistirNoBanco(state.sel.id, {
+      liberacao: status,
+      obs: obsFinal
+    });
 
-    // 2. Fallback direto Supabase
-    if (!ok) {
-      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + state.sel.id, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ liberacao: status, obs: payload.obs })
-      });
-      if (resDirect.ok) ok = true;
-    }
-
-    if (ok) {
-      state.sel.liberacao = status;
-      state.sel.obs = payload.obs;
-      const idx = state.all.findIndex(x => x.id === state.sel.id);
-      if (idx !== -1) {
-        state.all[idx].liberacao = status;
-        state.all[idx].obs = payload.obs;
-      }
-      $('drStatus').innerHTML = statusTag(status, state.sel.status);
-      const obsLinhas = formatarObservacoesParaPdf(payload.obs, state.sel);
-      $('drNotesSec').hidden = !payload.obs;
-      $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
-      renderAll();
-      toast('Parecer e situação atualizados com sucesso!');
-    } else {
-      toast('Não foi possível gravar a alteração.', 'error');
-    }
+    $('drStatus').innerHTML = statusTag(status, state.sel.status);
+    if ($('drEditLiberacao')) $('drEditLiberacao').value = status;
+    if ($('drEditObs')) $('drEditObs').value = parecer;
+    const obsLinhas = formatarObservacoesParaPdf(obsFinal, state.sel);
+    const partes = extrairPartesObservacao(obsFinal);
+    $('drNotesSec').hidden = !Boolean(partes.textoLivre || partes.manutencao || partes.auditoria.length);
+    $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
+    renderAll();
+    toast(synced ? 'Parecer e situação salvos no banco de dados!' : 'Parecer salvo localmente (sincronizará automaticamente)!');
   } catch (err) {
-    toast('Erro de rede: ' + err.message, 'error');
+    toast('Erro ao salvar: ' + err.message, 'error');
   } finally {
     btn.disabled = false;
     btn.innerHTML = icon('check') + ' Salvar Parecer no Supabase';
@@ -3769,31 +4020,31 @@ function formatarObservacoesParaPdf(rawObs, item) {
 
 function getManutencaoData(it) {
   if (!it) return null;
-  const placa = (it.placa || '').toUpperCase().trim();
-  
-  // 1. Tentar ler do localStorage por ID da vistoria
-  const localById = localStorage.getItem(MAINT_KEY_PREFIX + 'id_' + it.id);
-  if (localById) {
-    try { return JSON.parse(localById); } catch(e){}
-  }
 
-  // 2. Tentar extrair do campo it.obs gravado no Supabase
+  // 1. Prioriza o dado gravado no banco de dados (campo it.obs no Supabase)
   if (it.obs) {
     const m = extrairPartesObservacao(it.obs).manutencao;
-    if (m) {
+    if (m && m.status && m.status !== 'Nenhuma') {
+      let extra = {};
+      try {
+        const localById = localStorage.getItem(MAINT_KEY_PREFIX + 'id_' + it.id);
+        if (localById) extra = JSON.parse(localById) || {};
+      } catch (e) {}
       return {
+        ...extra,
         ...m,
-        updated_at: it.data || ''
+        updated_at: extra.data_registro || it.data || ''
       };
     }
   }
 
-  // 3. Fallback: procurar por placa
-  if (placa) {
-    const localByPlaca = localStorage.getItem(MAINT_KEY_PREFIX + 'placa_' + placa);
-    if (localByPlaca) {
-      try { return JSON.parse(localByPlaca); } catch(e){}
-    }
+  // 2. Fallback para registro local específico desta vistoria (caso salvo offline)
+  const localById = localStorage.getItem(MAINT_KEY_PREFIX + 'id_' + it.id);
+  if (localById) {
+    try {
+      const parsed = JSON.parse(localById);
+      if (parsed && parsed.status && parsed.status !== 'Nenhuma') return parsed;
+    } catch (e) {}
   }
 
   return null;
@@ -3941,8 +4192,7 @@ async function salvarEdicaoVistoria(fromDrawer = false) {
   const tagsExtras = (itOriginal.obs || '').match(/\[(INATIVADO|REATIVADO|MANUTENCAO)[^\]]+\]/gi) || [];
   const obsFinal = (obsTexto + (tagsExtras.length ? (obsTexto ? '\n' : '') + tagsExtras.join('\n') : '')).trim();
 
-  const payload = {
-    id: Number(id),
+  const patchData = {
     rota,
     motorista,
     placa,
@@ -3958,49 +4208,9 @@ async function salvarEdicaoVistoria(fromDrawer = false) {
   };
 
   try {
-    let ok = false;
-    // 1. Tenta proxy local /api/checklists
-    try {
-      const res = await fetch('/api/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) ok = true;
-    } catch (e) {
-      console.warn('Erro proxy, tentando direto no Supabase:', e);
-    }
-
-    // 2. Fallback direto REST Supabase
-    if (!ok) {
-      const patchData = { ...payload };
-      delete patchData.id;
-      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + id, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify(patchData)
-      });
-      if (resDirect.ok) ok = true;
-    }
-
-    // Atualiza registro local
-    Object.assign(itOriginal, {
-      rota,
-      motorista,
-      placa,
-      veiculo,
-      km,
-      data,
-      hora,
-      tipo,
-      combustivel,
-      liberacao,
-      condicao_motorista,
-      obs: obsFinal
-    });
+    const { synced } = await persistirNoBanco(id, patchData);
 
     if (state.sel && String(state.sel.id) === String(id)) {
-      Object.assign(state.sel, itOriginal);
       fillDrawer(state.sel);
     }
 
@@ -4012,14 +4222,17 @@ async function salvarEdicaoVistoria(fromDrawer = false) {
       switchDrTab('vistoria');
     }
 
-    toast('Vistoria Nº ' + (itOriginal.numero || '') + ' atualizada com sucesso!');
+    toast(synced
+      ? 'Vistoria Nº ' + (itOriginal.numero || '') + ' salva no banco de dados com sucesso!'
+      : 'Vistoria Nº ' + (itOriginal.numero || '') + ' salva localmente (sincronizará automaticamente)!'
+    );
   } catch (err) {
     console.error('Erro ao salvar edição:', err);
-    toast('Erro ao atualizar no banco de dados. Tente novamente.', 'bad');
+    toast('Erro ao atualizar no banco de dados. Tente novamente.', 'error');
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = icon('check') + ' Salvar Alterações';
+      btn.innerHTML = icon('check') + (fromDrawer ? ' Salvar Alterações no Supabase' : ' Salvar Alterações');
     }
   }
 }
@@ -4119,17 +4332,19 @@ function carregarDadosManutencaoNoDrawer(it) {
   carregarHistoricoManutencaoUI((it.placa || '').toUpperCase());
 }
 
+const cleanMaintField = s => String(s || '').replace(/\|/g, '·').replace(/\[/g, '(').replace(/\]/g, ')').replace(/\r?\n/g, ' / ').trim();
+
 async function salvarObservacoesManutencao() {
   if (!state.sel) return;
   const it = state.sel;
   const status = state.maintStatus || 'Nenhuma';
-  const oficina = $('maintOficina').value.trim();
-  const tipo = $('maintTipo').value.trim();
+  const oficina = cleanMaintField($('maintOficina').value);
+  const tipo = cleanMaintField($('maintTipo').value);
   const entrada = $('maintDataEntrada').value;
   const retorno = $('maintDataRetorno').value;
-  const custo = $('maintCusto').value.trim();
-  const os = $('maintOS').value.trim();
-  const obsTexto = $('maintObsTexto').value.trim();
+  const custo = cleanMaintField($('maintCusto').value);
+  const os = cleanMaintField($('maintOS').value);
+  const obsTexto = cleanMaintField($('maintObsTexto').value);
 
   const btn = $('btnSalvarManutencao');
   btn.disabled = true;
@@ -4149,13 +4364,18 @@ async function salvarObservacoesManutencao() {
   };
 
   const placa = (it.placa || '').toUpperCase().trim();
-  localStorage.setItem(MAINT_KEY_PREFIX + 'id_' + it.id, JSON.stringify(maintObj));
-  if (placa) {
-    localStorage.setItem(MAINT_KEY_PREFIX + 'placa_' + placa, JSON.stringify(maintObj));
-    adicionarAoHistoricoManutencao(placa, maintObj);
+  if (status === 'Nenhuma') {
+    localStorage.removeItem(MAINT_KEY_PREFIX + 'id_' + it.id);
+    if (placa) localStorage.removeItem(MAINT_KEY_PREFIX + 'placa_' + placa);
+  } else {
+    localStorage.setItem(MAINT_KEY_PREFIX + 'id_' + it.id, JSON.stringify(maintObj));
+    if (placa) {
+      localStorage.setItem(MAINT_KEY_PREFIX + 'placa_' + placa, JSON.stringify(maintObj));
+      adicionarAoHistoricoManutencao(placa, maintObj);
+    }
   }
 
-  let baseObs = (it.obs || '').replace(/\[MANUTENCAO:[^\]]+\]\s*/gi, '').trim();
+  let baseObs = (it.obs || '').replace(/\[MANUTENCAO:[^\]]*\]?\s*/gi, '').trim();
   let novaObs = baseObs;
   if (status !== 'Nenhuma') {
     const tag = `[MANUTENCAO: status=${status} | oficina=${oficina} | tipo=${tipo} | entrada=${entrada} | retorno=${retorno} | custo=${custo} | os=${os} | obs=${obsTexto}]`;
@@ -4167,50 +4387,24 @@ async function salvarObservacoesManutencao() {
     novoStatusLiberacao = 'Não liberado';
   }
 
-  const payload = {
-    id: it.id,
-    obs: novaObs,
-    liberacao: novoStatusLiberacao
-  };
-
   try {
-    let ok = false;
-    try {
-      const res = await fetch('/api/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) ok = true;
-    } catch(e){}
-
-    if (!ok) {
-      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + it.id, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ obs: novaObs, liberacao: novoStatusLiberacao })
-      });
-      if (resDirect.ok) ok = true;
-    }
-
-    it.obs = novaObs;
-    it.liberacao = novoStatusLiberacao;
-    const idx = state.all.findIndex(x => x.id === it.id);
-    if (idx !== -1) {
-      state.all[idx].obs = novaObs;
-      state.all[idx].liberacao = novoStatusLiberacao;
-    }
+    const { synced } = await persistirNoBanco(it.id, {
+      obs: novaObs,
+      liberacao: novoStatusLiberacao
+    });
 
     $('drStatus').innerHTML = statusTag(novoStatusLiberacao, it.status);
+    selecionarDecisao(novoStatusLiberacao);
     atualizarBadgeAbaManut(maintObj);
     carregarHistoricoManutencaoUI(placa);
     $('maintLastSavedInfo').textContent = 'Salvo às ' + new Date().toLocaleTimeString('pt-BR');
     const obsLinhas = formatarObservacoesParaPdf(novaObs, it);
-    $('drNotesSec').hidden = !novaObs;
+    const partes = extrairPartesObservacao(novaObs);
+    $('drNotesSec').hidden = !Boolean(partes.textoLivre || partes.manutencao || partes.auditoria.length);
     $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
     renderAll();
     renderManutencaoViewGeral();
-    toast('Observações de manutenção salvas com sucesso!');
+    toast(synced ? 'Observações de manutenção salvas no banco de dados!' : 'Observações salvas localmente (sincronizará automaticamente)!');
   } catch(err) {
     toast('Gravado com sucesso localmente!', 'check');
     renderAll();
@@ -4254,7 +4448,8 @@ window.alternarVisaoPrincipal = alternarVisaoPrincipal;
 
 function filtrarTabelaManutGeral(tipo) {
   state.filtroMaintGeral = tipo;
-  $('btnFilterMaintAll').style.background = tipo === 'todos' ? 'var(--accent)' : 'transparent';
+  $('btnFilterMaintAll').style.background = tipo === 'todos' ? 'var(--accent-tint)' : 'transparent';
+  $('btnFilterMaintAll').style.color = tipo === 'todos' ? 'var(--accent-hi)' : '';
   $('btnFilterMaintEm').style.background = tipo === 'em' ? 'rgba(245, 158, 11, 0.2)' : 'transparent';
   $('btnFilterMaintJa').style.background = tipo === 'concluidas' ? 'rgba(16, 185, 129, 0.2)' : 'transparent';
   renderManutencaoViewGeral();
@@ -4291,7 +4486,7 @@ function renderManutencaoViewGeral() {
     if (itemsComManut.length > 0 && filtro !== 'todos') {
       emptyTitle = filtro === 'em' ? 'Nenhum veículo "Em Manutenção" no momento' : 'Nenhuma manutenção "Concluída" encontrada';
       emptyDesc = 'Existem outros registros de manutenção cadastrados na frota.';
-      actionBtn = '<button type="button" class="btn btn-primary" onclick="filtrarManutGeral(\'todos\')"><svg class="i" style="width:15px;height:15px;margin:0;"><use href="#i-tool"/></svg><span>Ver Todas as Manutenções</span></button>';
+      actionBtn = '<button type="button" class="btn btn-primary" onclick="filtrarTabelaManutGeral(\'todos\')"><svg class="i" style="width:15px;height:15px;margin:0;"><use href="#i-tool"/></svg><span>Ver Todas as Manutenções</span></button>';
     }
 
     tbody.innerHTML = '<tr><td colspan="8" class="empty">' +
@@ -4412,7 +4607,10 @@ function getVendedoresData() {
 
 function filtrarTabelaVendedores(tipo) {
   state.filtroVend = tipo;
-  if ($('btnFilterVendAll')) $('btnFilterVendAll').style.background = tipo === 'todos' ? 'var(--accent)' : 'transparent';
+  if ($('btnFilterVendAll')) {
+    $('btnFilterVendAll').style.background = tipo === 'todos' ? 'var(--accent-tint)' : 'transparent';
+    $('btnFilterVendAll').style.color = tipo === 'todos' ? 'var(--accent-hi)' : '';
+  }
   if ($('btnFilterVendEmDia')) $('btnFilterVendEmDia').style.background = tipo === 'em_dia' ? 'rgba(16, 185, 129, 0.2)' : 'transparent';
   if ($('btnFilterVendAtencao')) $('btnFilterVendAtencao').style.background = tipo === 'atencao' ? 'rgba(245, 158, 11, 0.2)' : 'transparent';
   if ($('btnFilterVendCritico')) $('btnFilterVendCritico').style.background = tipo === 'critico' ? 'rgba(239, 68, 68, 0.2)' : 'transparent';
@@ -4483,7 +4681,7 @@ function renderVendedoresView() {
       '<td>' +
         (v.veiculoAtual !== '—'
           ? '<div class="stack">' +
-              '<button type="button" class="plate" data-act="history" data-placa="' + esc(v.veiculoAtual) + '" title="Ver histórico deste veículo">' + esc(v.veiculoAtual) + '</button>' +
+              '<button type="button" class="plate" data-act="history" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirHistoricoVeiculo(this.dataset.placa)" title="Ver histórico deste veículo">' + esc(v.veiculoAtual) + '</button>' +
               '<span class="t2">' + esc(v.modeloAtual) + '</span>' +
             '</div>'
           : '<span class="muted">Sem carro atribuído</span>'
@@ -4504,11 +4702,11 @@ function renderVendedoresView() {
       '<td>' + statusTag(v.liberacaoAtual) + '</td>' +
       '<td style="text-align:right">' +
         '<div style="display:inline-flex;align-items:center;gap:6px">' +
-          '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:var(--accent-hi)" onclick="abrirModalVendedor(\'' + esc(v.nome) + '\')" title="Ver todas as vistorias deste vendedor">' +
+          '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:var(--accent-hi)" data-vend="' + esc(v.nome) + '" onclick="abrirModalVendedor(this.dataset.vend)" title="Ver todas as vistorias deste vendedor">' +
             icon('user') + ' <span>Vistorias</span>' +
           '</button>' +
           (v.veiculoAtual !== '—'
-            ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:#fbbf24" onclick="abrirModalCustodia(\'' + esc(v.veiculoAtual) + '\')" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
+            ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:#fbbf24" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirModalCustodia(this.dataset.placa)" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
                 icon('history') + ' <span>Custódia</span>' +
               '</button>'
             : ''
@@ -4701,7 +4899,7 @@ function renderModalCustodiaConteudo(placaAlvo = '') {
 
       '<div class="custodia-compare-grid">' +
         '<div class="custodia-driver-card old">' +
-          '<div style="font-size:11px;font-weight:700;color:#93c5fd;text-transform:uppercase;margin-bottom:4px">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--accent-hi);text-transform:uppercase;margin-bottom:4px">' +
             '1. Vendedor Anterior (Saída)' +
           '</div>' +
           '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
@@ -4767,8 +4965,9 @@ function encaminharRevisaoParaManutencao() {
   if ($('maintTipo')) {
     $('maintTipo').value = 'Revisão Preventiva (' + fmtKm(kmRev) + ')';
   }
-  if ($('maintObs') && !$('maintObs').value) {
-    $('maintObs').value = diff <= 0
+  const obsField = $('maintObsTexto') || $('maintObs');
+  if (obsField && !obsField.value) {
+    obsField.value = diff <= 0
       ? 'Veículo com revisão vencida há ' + Math.abs(diff).toLocaleString('pt-BR') + ' km (KM atual: ' + fmtKm(kmAtual) + ' / Meta: ' + fmtKm(kmRev) + '). Necessário agendamento urgente de revisão preventiva.'
       : 'Veículo próximo da revisão preventiva (KM atual: ' + fmtKm(kmAtual) + ' / Meta: ' + fmtKm(kmRev) + ' - faltam ' + diff.toLocaleString('pt-BR') + ' km). Realizar revisão periódica.';
   }
@@ -4877,7 +5076,7 @@ function fillDrawer(it) {
   const kv = [
     ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
     ['Motorista', esc(it.motorista || '—')],
-    ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(91,147,255,0.35);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">Editar</button>'],
+    ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(237,133,112,0.38);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">Editar</button>'],
     ['Data e hora', formatarData(it.data) + ' às ' + esc(it.hora || '--:--')],
     ['Quilometragem', fmtKm(it.km)],
     ['Tipo de vistoria', esc(it.tipo || '—')],
@@ -5092,10 +5291,25 @@ $('modalInativar').addEventListener('click', e => {
 $('historyModal').addEventListener('click', e => {
   if (e.target === $('historyModal')) fecharHistoricoModal();
 });
+if ($('modalEditarVistoria')) {
+  $('modalEditarVistoria').addEventListener('click', e => {
+    if (e.target === $('modalEditarVistoria')) fecharModalEditarVistoria();
+  });
+}
+if ($('modalHistVendedor')) {
+  $('modalHistVendedor').addEventListener('click', e => {
+    if (e.target === $('modalHistVendedor')) fecharModalVendedor();
+  });
+}
+if ($('modalCustodiaVeiculo')) {
+  $('modalCustodiaVeiculo').addEventListener('click', e => {
+    if (e.target === $('modalCustodiaVeiculo')) fecharModalCustodia();
+  });
+}
 
 async function confirmarInativacao() {
   if (!vistoriaParaInativar) return;
-  const motivo = $('motivoInativacaoInput').value.trim();
+  const motivo = $('motivoInativacaoInput').value.replace(/[\[\]\r\n]/g, ' ').trim();
   if (!motivo) {
     $('motivoInativacaoErro').style.display = 'block';
     $('motivoInativacaoInput').focus();
@@ -5108,56 +5322,27 @@ async function confirmarInativacao() {
   btn.textContent = 'Inativando...';
 
   const d = new Date();
-  const carimbo = `[INATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por gomex - Motivo: ${motivo}]`;
+  const usuario = ($('userNameLabel') && $('userNameLabel').textContent) || 'gomex';
+  const carimbo = `[INATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por ${usuario} - Motivo: ${motivo}]`;
   const novaObs = (vistoriaParaInativar.obs ? vistoriaParaInativar.obs + '\n' : '') + carimbo;
-
-  const payload = {
-    id: vistoriaParaInativar.id,
-    status: 'inativo',
-    obs: novaObs
-  };
+  const targetVistoria = vistoriaParaInativar;
 
   try {
-    let ok = false;
-    try {
-      const res = await fetch('/api/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) ok = true;
-    } catch (e) {}
+    const { synced } = await persistirNoBanco(targetVistoria.id, {
+      status: 'inativo',
+      obs: novaObs,
+      motivo_inativacao: motivo
+    });
 
-    if (!ok) {
-      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + vistoriaParaInativar.id, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ status: 'inativo', obs: novaObs })
-      });
-      if (resDirect.ok) ok = true;
+    fecharModalInativar();
+    if (state.sel && state.sel.id === targetVistoria.id) {
+      closeDrawer();
     }
-
-    if (ok) {
-      vistoriaParaInativar.status = 'inativo';
-      vistoriaParaInativar.obs = novaObs;
-      vistoriaParaInativar.motivo_inativacao = motivo;
-
-      const idx = state.all.findIndex(x => x.id === vistoriaParaInativar.id);
-      if (idx !== -1) {
-        state.all[idx].status = 'inativo';
-        state.all[idx].obs = novaObs;
-        state.all[idx].motivo_inativacao = motivo;
-      }
-
-      fecharModalInativar();
-      if (state.sel && state.sel.id === vistoriaParaInativar.id) {
-        closeDrawer();
-      }
-      renderAll();
-      toast(`Vistoria Nº ${vistoriaParaInativar.numero || ''} inativada com sucesso!`);
-    } else {
-      toast('Não foi possível inativar a vistoria no servidor.', 'error');
-    }
+    renderAll();
+    toast(synced
+      ? `Vistoria Nº ${targetVistoria.numero || ''} inativada e salva no banco!`
+      : `Vistoria Nº ${targetVistoria.numero || ''} inativada localmente (sincronizará automaticamente)!`
+    );
   } catch (err) {
     toast('Erro: ' + err.message, 'error');
   } finally {
@@ -5172,54 +5357,25 @@ async function reativarVistoria(it) {
   if (!confirm(`Deseja reativar a Vistoria Nº ${it.numero || ''} (${(it.placa||'').toUpperCase()}) para a lista operacional ativa?`)) return;
 
   const d = new Date();
-  const carimbo = `[REATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por gomex]`;
+  const usuario = ($('userNameLabel') && $('userNameLabel').textContent) || 'gomex';
+  const carimbo = `[REATIVADO em ${formatarData(isoLocal(d))} ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')} por ${usuario}]`;
   const novaObs = (it.obs ? it.obs + '\n' : '') + carimbo;
 
-  const payload = {
-    id: it.id,
-    status: 'concluido',
-    obs: novaObs
-  };
-
   try {
-    let ok = false;
-    try {
-      const res = await fetch('/api/checklists', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) ok = true;
-    } catch (e) {}
+    const { synced } = await persistirNoBanco(it.id, {
+      status: 'concluido',
+      obs: novaObs
+    });
+    delete it.motivo_inativacao;
 
-    if (!ok) {
-      const resDirect = await fetch(SUPABASE_URL + '/rest/v1/veiculo_checklists?id=eq.' + it.id, {
-        method: 'PATCH',
-        headers: authHeaders(),
-        body: JSON.stringify({ status: 'concluido', obs: novaObs })
-      });
-      if (resDirect.ok) ok = true;
+    if (state.sel && state.sel.id === it.id) {
+      fillDrawer(state.sel);
     }
-
-    if (ok) {
-      it.status = 'concluido';
-      it.obs = novaObs;
-      delete it.motivo_inativacao;
-
-      const idx = state.all.findIndex(x => x.id === it.id);
-      if (idx !== -1) {
-        state.all[idx].status = 'concluido';
-        state.all[idx].obs = novaObs;
-      }
-
-      if (state.sel && state.sel.id === it.id) {
-        fillDrawer(it);
-      }
-      renderAll();
-      toast(`Vistoria Nº ${it.numero || ''} reativada com sucesso!`);
-    } else {
-      toast('Não foi possível reativar no servidor.', 'error');
-    }
+    renderAll();
+    toast(synced
+      ? `Vistoria Nº ${it.numero || ''} reativada com sucesso!`
+      : `Vistoria Nº ${it.numero || ''} reativada localmente (sincronizará automaticamente)!`
+    );
   } catch (err) {
     toast('Erro: ' + err.message, 'error');
   }
@@ -5228,8 +5384,11 @@ window.reativarVistoria = reativarVistoria;
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
-    if ($('modalInativar').classList.contains('open')) fecharModalInativar();
-    else if ($('historyModal').classList.contains('open')) fecharHistoricoModal();
+    if ($('modalInativar') && $('modalInativar').classList.contains('open')) fecharModalInativar();
+    else if ($('modalEditarVistoria') && $('modalEditarVistoria').classList.contains('open')) fecharModalEditarVistoria();
+    else if ($('modalHistVendedor') && $('modalHistVendedor').classList.contains('open')) fecharModalVendedor();
+    else if ($('modalCustodiaVeiculo') && $('modalCustodiaVeiculo').classList.contains('open')) fecharModalCustodia();
+    else if ($('historyModal') && $('historyModal').classList.contains('open')) fecharHistoricoModal();
     else closeDrawer();
     return;
   }
