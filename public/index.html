@@ -669,19 +669,23 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 11px 14px;
+    min-height: 48px;
+    padding: 12px 16px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: #a8a29b;
+    background: rgba(237, 133, 112, 0.06);
+    border: 1.5px solid rgba(237, 133, 112, 0.35);
+    color: #f5f2ed;
     text-decoration: none;
-    font-size: 12.5px;
+    font-size: 13px;
+    font-weight: 600;
     transition: all 180ms ease;
   }
-  .driver-companion-link:hover {
-    background: rgba(237, 133, 112, 0.10);
-    border-color: rgba(237, 133, 112, 0.35);
-    color: #f5f2ed;
+  .driver-companion-link:hover,
+  .driver-companion-link:active {
+    background: rgba(237, 133, 112, 0.14);
+    border-color: #ed8570;
+    color: #ffffff;
+    transform: translateY(-1px);
   }
   .driver-companion-link .d-left {
     display: flex;
@@ -1564,8 +1568,27 @@
   .toast.error .i { color: var(--bad); }
 
   /* ============================================================================
-     RESPONSIVO
+     RESPONSIVO & OTIMIZAÇÃO MOBILE-FIRST
      ============================================================================ */
+  .topbar-mobile-brand {
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-mobile-brand .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #ed8570, #dc6c56);
+    color: #120b09; display: grid; place-items: center;
+    box-shadow: 0 4px 10px rgba(237, 133, 112, 0.28);
+  }
+  .topbar-mobile-brand .brand-name {
+    font-size: 15px; font-weight: 800; color: var(--ink); line-height: 1.1;
+  }
+  .topbar-mobile-brand .brand-sub-mob {
+    font-size: 10px; font-weight: 700; color: var(--accent-hi);
+    text-transform: uppercase; letter-spacing: 0.06em; display: block;
+  }
+
   @media (max-width: 1100px) {
     .c-pneu { display: none; }
   }
@@ -1578,31 +1601,284 @@
     .whoami { display: none; }
   }
   @media (max-width: 760px) {
-    .topbar-in, .page { padding-left: 16px; padding-right: 16px; }
+    /* Previne zoom automático no iOS ao focar inputs */
+    .input, .select, textarea, .approval-textarea {
+      font-size: 16px !important;
+    }
+
+    /* Login compacto e 100% visível no celular */
+    .login {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+    .login-brand {
+      padding: 16px 20px;
+      flex: none;
+    }
+    .login-hero-center {
+      padding: 10px 0 4px;
+    }
+    .hero-category-tag, .hero-desc, .login-brand-foot {
+      display: none;
+    }
+    .hero-headline {
+      font-size: 21px;
+      margin-bottom: 0;
+      line-height: 1.25;
+    }
+    .rotator-pill {
+      min-width: 98px;
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 7px;
+    }
+    .login-pane {
+      flex: 1;
+      padding: 16px 14px 28px;
+      align-items: flex-start;
+    }
+    .login-card {
+      padding: 24px 20px;
+      border-radius: 16px;
+      max-width: 100%;
+    }
+    .login-card-head {
+      margin-bottom: 18px;
+    }
+    .login-card-head h1 {
+      font-size: 22px;
+    }
+
+    /* Menu Lateral vira Barra de Navegação Inferior Nativa no Mobile */
+    :root { --sidebar-w: 0px; }
+    .app-main {
+      margin-left: 0 !important;
+      padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+    }
+    .topbar-mobile-brand {
+      display: flex;
+    }
+    .sidebar {
+      position: fixed;
+      top: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: calc(62px + env(safe-area-inset-bottom, 0px));
+      padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      background: var(--panel);
+      border-right: 0;
+      border-top: 1px solid var(--line-strong);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+      z-index: 48;
+    }
+    .sb-brand, .sb-label, .sidebar .whoami {
+      display: none !important;
+    }
+    .sb-nav {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-around;
+      width: 100%;
+      gap: 2px;
+    }
+    .sb-foot {
+      border-top: 0;
+      padding-top: 0;
+      display: flex;
+      align-items: center;
+    }
+    .sb-item, .sidebar #btnLogout {
+      flex: 1;
+      height: 48px;
+      padding: 4px 6px !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      border-radius: 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .sb-item span, .sidebar #btnLogout span {
+      display: block !important;
+      font-size: 10.5px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .sb-item .i, .sidebar #btnLogout .i {
+      width: 18px;
+      height: 18px;
+    }
+    .sb-item.active::before {
+      display: none;
+    }
+
+    /* Topbar & Page no Mobile */
+    .topbar-in, .page { padding-left: 14px; padding-right: 14px; }
+    .page { padding-top: 16px; padding-bottom: 32px; }
+    .page-head { gap: 10px; margin-bottom: 14px; }
+    .page-head h1 { font-size: 20px; }
+    .page-head p { font-size: 12.5px; }
     .brand-sub { display: none; }
     .sync span:last-child { display: none; }
-    .grid thead { display: none; }
-    .grid, .grid tbody { display: block; }
-    .grid tr { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
-    .grid tbody tr:last-child { border-bottom: 0; }
-    .grid td { display: block; padding: 0; border: 0; }
-    .grid td.c-num { grid-column: 1; grid-row: 1; }
-    .grid td.c-status { grid-column: 2; grid-row: 1; justify-self: end; }
-    .grid td.c-veic { grid-column: 1 / -1; grid-row: 2; }
-    .grid td.c-driver { grid-column: 1; grid-row: 3; }
-    .grid td.c-date { grid-column: 2; grid-row: 3; text-align: right; }
-    .grid td.c-av { grid-column: 1 / -1; grid-row: 4; }
-    .grid td.c-act { grid-column: 1 / -1; grid-row: 5; margin-top: 6px; }
-    .grid td.c-pneu, .grid td.c-nok { display: none; }
-    .empty { grid-column: 1 / -1; }
-    .dr-body .sigs { grid-template-columns: 1fr; }
     .head-actions .btn span { display: none; }
-    .head-actions .btn { width: 36px; padding: 0; }
+    .head-actions .btn { width: 38px; height: 38px; padding: 0; }
+
+    /* Banner de Alertas Críticos no Mobile */
+    .alerts-banner { padding: 12px 14px; gap: 10px; }
+    .alerts-pills { width: 100%; }
+    .alert-pill { flex: 1 1 auto; justify-content: center; padding: 6px 10px; }
+
+    /* Filtros e Busca no Mobile */
+    .toolbar { padding: 12px; gap: 8px; }
+    .search { flex: 1 1 100%; max-width: 100%; }
+    .search kbd { display: none; }
+    .toolbar .select { flex: 1 1 calc(50% - 4px); max-width: none; height: 40px; }
+    .toolbar .spacer { display: none; }
+    #btnClearFilters { width: 100%; height: 38px; }
+
+    .panel-filters { width: 100%; }
+    .panel-filters .search-wrap { width: 100% !important; }
+    .panel-filters .btn-group {
+      width: 100%;
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+    .panel-filters .btn-group .btn {
+      padding: 0 4px;
+      font-size: 11.5px !important;
+    }
+
+    /* Tabela Principal de Vistorias em Formato de Card Mobile */
+    #sectionVistoriasView .grid thead { display: none; }
+    #sectionVistoriasView .grid, #sectionVistoriasView .grid tbody { display: block; }
+    #sectionVistoriasView .grid tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 12px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    #sectionVistoriasView .grid tbody tr:last-child { border-bottom: 0; }
+    #sectionVistoriasView .grid td { display: block; padding: 0; border: 0; }
+    #sectionVistoriasView .grid td.c-num { grid-column: 1; grid-row: 1; align-self: center; }
+    #sectionVistoriasView .grid td.c-status { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; }
+    #sectionVistoriasView .grid td.c-veic { grid-column: 1; grid-row: 2; }
+    #sectionVistoriasView .grid td.c-date { grid-column: 2; grid-row: 2; text-align: right; align-self: center; }
+    #sectionVistoriasView .grid td.c-driver { grid-column: 1 / -1; grid-row: 3; }
+    #sectionVistoriasView .grid td.c-av { grid-column: 1 / -1; grid-row: 4; font-size: 12px; }
+    #sectionVistoriasView .grid td.c-act {
+      grid-column: 1 / -1;
+      grid-row: 5;
+      margin-top: 4px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--line);
+      text-align: left;
+    }
+    #sectionVistoriasView .grid td.c-act .row-actions {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    #sectionVistoriasView .grid td.c-act .btn-icon {
+      flex: 1;
+      height: 36px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+    }
+    #sectionVistoriasView .grid td.c-pneu, #sectionVistoriasView .grid td.c-nok { display: none; }
+    .empty { grid-column: 1 / -1; padding: 32px 16px !important; }
+
+    /* Tabela de Manutenção e Vendedores em Cards Mobile */
+    #sectionManutView .grid thead, #vendTable thead { display: none; }
+    #sectionManutView .grid, #sectionManutView .grid tbody,
+    #vendTable, #vendTable tbody { display: block; }
+    #sectionManutView .grid tr, #vendTable tr {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    #sectionManutView .grid td, #vendTable td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0;
+      border: 0;
+      max-width: 100% !important;
+      text-align: left !important;
+    }
+    #sectionManutView .grid td:last-child button,
+    #vendTable td:last-child > div {
+      width: 100%;
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    #vendTable td:last-child > div button {
+      flex: 1;
+      height: 34px !important;
+    }
+
+    /* Gaveta de Detalhes (Drawer) Otimizada para Mobile */
+    .drawer { width: 100vw; }
+    .dr-head { padding: 12px 14px; }
+    .dr-tabs {
+      padding: 0 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      white-space: nowrap;
+    }
+    .dr-tabs::-webkit-scrollbar { display: none; }
+    .dr-tab {
+      padding: 11px 12px;
+      font-size: 12.5px;
+      flex-shrink: 0;
+    }
+    .dr-body { padding: 4px 14px 20px; }
+    .dr-body .sigs { grid-template-columns: 1fr; }
     .approval-actions { grid-template-columns: 1fr; }
+    .dr-foot {
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .dr-foot > div, .dr-foot-actions {
+      width: 100%;
+      display: flex;
+      gap: 6px;
+    }
+    .dr-foot > div .btn, .dr-foot-actions .btn {
+      flex: 1;
+      padding: 0 8px;
+      font-size: 12px;
+    }
+
+    /* Modais no Mobile */
+    .modal-overlay { padding: 10px; }
+    .modal-card { width: 100% !important; max-height: 92dvh !important; border-radius: 14px; }
+    .modal-head { padding: 14px 16px; }
+    .modal-body { padding: 16px !important; }
+    .modal-foot { padding: 12px 16px; }
   }
   @media (max-width: 560px) {
-    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+    .summary-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .stat { padding: 12px 14px; }
+    .stat dd { font-size: 22px; }
     .kv { grid-template-columns: 1fr; }
+    .board-foot { flex-direction: column; align-items: stretch; text-align: center; }
+    .pager { justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -1741,7 +2017,7 @@
 
         <div class="login-divider">Ou</div>
 
-        <a class="driver-companion-link" href="../gomex-checklist/index.html" target="_blank" rel="noopener" title="Abrir checklist de motorista">
+        <a class="driver-companion-link" href="https://gomex-checklist.gomexassistencia2026.workers.dev/" target="_blank" rel="noopener" title="Abrir aplicativo de check-list do motorista">
           <div class="d-left">
             <svg class="i"><use href="#i-truck"/></svg>
             <span>É motorista? Abrir Vistoria</span>
@@ -1776,11 +2052,14 @@
         <svg class="i"><use href="#i-truck"/></svg><span>Vistorias</span>
       </button>
       <button type="button" class="sb-item" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')" title="Painel Manutenção">
-        <svg class="i"><use href="#i-tool"/></svg><span>Painel Manutenção</span>
+        <svg class="i"><use href="#i-tool"/></svg><span>Manutenção</span>
       </button>
       <button type="button" class="sb-item" id="btnViewVendedores" onclick="alternarVisaoPrincipal('vendedores')" title="Vendedores">
         <svg class="i"><use href="#i-user"/></svg><span>Vendedores</span>
       </button>
+      <a class="sb-item" href="https://gomex-checklist.gomexassistencia2026.workers.dev/" target="_blank" rel="noopener" title="Abrir aplicativo de Check-list do Motorista" style="text-decoration:none">
+        <svg class="i"><use href="#i-shield-check"/></svg><span>Check-list</span>
+      </a>
     </nav>
 
     <div class="sb-foot">
@@ -1794,6 +2073,13 @@
   <div class="app-main">
   <header class="topbar">
     <div class="topbar-in">
+      <div class="topbar-mobile-brand">
+        <div class="brand-mark"><svg class="i"><use href="#i-truck"/></svg></div>
+        <div>
+          <div class="brand-name">Gomex Frota</div>
+          <span class="brand-sub-mob">Painel Executivo</span>
+        </div>
+      </div>
       <div class="spacer"></div>
 
       <!-- Sincronismo -->
@@ -2086,7 +2372,7 @@
     <div id="sectionVendedoresView" hidden>
       <!-- Resumo de Vendedores -->
       <section class="summary" aria-label="Resumo dos vendedores">
-        <dl class="summary-grid" style="grid-template-columns: repeat(5, 1fr)">
+        <dl class="summary-grid">
           <div class="stat">
             <div class="stat-head">
               <span class="stat-lbl">Vendedores Registrados</span>
