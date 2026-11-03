@@ -3673,6 +3673,21 @@ async function load({ silent = false } = {}) {
   }
 
   const d = aplicarPendentesLocais(raw);
+  // Propaga automaticamente a rota mais recente informada pelo vendedor no check-list
+  const rotaPorMotorista = new Map();
+  d.forEach(item => {
+    const motKey = (item.motorista || '').trim().toLowerCase();
+    const rt = (item.rota || '').trim();
+    if (motKey && rt && !rotaPorMotorista.has(motKey)) {
+      rotaPorMotorista.set(motKey, rt);
+    }
+  });
+  d.forEach(item => {
+    const motKey = (item.motorista || '').trim().toLowerCase();
+    if (motKey && (!item.rota || !String(item.rota).trim()) && rotaPorMotorista.has(motKey)) {
+      item.rota = rotaPorMotorista.get(motKey);
+    }
+  });
   salvarSnapshotLocal(d);
 
   state.error = false;
@@ -4847,7 +4862,8 @@ function getVendedoresData() {
     rec.vistorias.sort((a, b) => {
       const da = (a.data || '') + ' ' + (a.hora || '');
       const db = (b.data || '') + ' ' + (b.hora || '');
-      return db.localeCompare(da);
+      if (db !== da) return db.localeCompare(da);
+      return (Number(b.id) || 0) - (Number(a.id) || 0);
     });
 
     const maisRecente = rec.vistorias[0];
