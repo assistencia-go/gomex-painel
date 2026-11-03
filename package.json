@@ -2,14 +2,26 @@
   "name": "gomex-painel",
   "version": "1.0.0",
   "description": "Painel Executivo de Gestão de Frota e Vistorias · Gomex Distribuidora",
-  "main": "server.js",
+  "main": "worker.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "build": "node generate_worker.js",
+    "deploy": "wrangler deploy",
     "push": "node push_to_github.mjs"
   },
-  "keywords": ["gomex", "frota", "dashboard", "gestao", "supabase"],
+  "devDependencies": {
+    "wrangler": "^3.107.0"
+  },
+  "keywords": [
+    "gomex",
+    "frota",
+    "painel",
+    "dashboard",
+    "gestao",
+    "supabase",
+    "cloudflare-worker"
+  ],
   "author": "Gomex Distribuidora",
-  "license": "UNLICENSED",
-  "private": true
+  "license": "ISC"
 }
