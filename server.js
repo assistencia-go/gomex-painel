@@ -12,17 +12,38 @@ const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
 const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
 const SUPABASE_KEY = process.env.SUPABASE_KEY || Buffer.from(FALLBACK_KEY_B64, 'base64').toString('utf8');
 
+const ALLOWED_PATCH_COLS = new Set([
+  'veiculo', 'veiculo_outro', 'placa', 'km', 'motorista', 'rota',
+  'data', 'hora', 'tipo', 'combustivel',
+  'rev_ult_km', 'rev_ult_data', 'rev_prox_km', 'rev_prox_data',
+  'avarias', 'sem_avarias', 'pneus', 'pneu_dano', 'itens',
+  'extintor_validade', 'thermo_temp', 'outro_item',
+  'obs', 'condicao_motorista', 'liberacao',
+  'ass_motorista', 'ass_vistoriador', 'ass_responsavel', 'status'
+]);
+
+const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env']);
+
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css',
-  '.js': 'text/javascript',
-  '.json': 'application/json',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.svg': 'image/svg+xml'
 };
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Referrer-Policy': 'no-referrer'
+};
+
 const server = http.createServer((req, res) => {
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
+    res.setHeader(k, v);
+  }
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey');
@@ -33,28 +54,57 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  } catch (e) {
+    res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ error: 'URL inválida' }));
+    return;
+  }
   const pathname = parsedUrl.pathname;
 
   // Proxy seguro para /api/checklists
   if (pathname === '/api/checklists') {
-    // 1. Atualizações de Status (PATCH ou POST com id)
+    // 1. Atualizações de Vistoria (PATCH ou POST com id)
     if (req.method === 'PATCH' || req.method === 'POST') {
       let body = '';
-      req.on('data', chunk => body += chunk);
+      let aborted = false;
+      req.on('data', chunk => {
+        body += chunk;
+        if (body.length > 1024 * 1024) {
+          aborted = true;
+          res.writeHead(413, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ error: 'Payload excede o limite permitido' }));
+          req.destroy();
+        }
+      });
       req.on('end', () => {
+        if (aborted) return;
         try {
-          const payload = JSON.parse(body || '{}');
-          const id = payload.id;
-          if (!id) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'ID da vistoria é obrigatório' }));
+          const rawPayload = JSON.parse(body || '{}');
+          const id = rawPayload.id;
+          if (!id || !/^\d+$/.test(String(id))) {
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ error: 'ID numérico da vistoria é obrigatório' }));
             return;
           }
-          delete payload.id;
+
+          const cleanPayload = {};
+          for (const [k, v] of Object.entries(rawPayload)) {
+            if (ALLOWED_PATCH_COLS.has(k) && v !== undefined) {
+              cleanPayload[k] = v;
+            }
+          }
+
+          if (Object.keys(cleanPayload).length === 0) {
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ error: 'Nenhum campo válido para atualização' }));
+            return;
+          }
 
           const targetUrl = new URL(`/rest/v1/veiculo_checklists?id=eq.${id}`, SUPABASE_URL);
-          const postData = JSON.stringify(payload);
+          const postData = JSON.stringify(cleanPayload);
           const options = {
             method: 'PATCH',
             headers: {
@@ -71,7 +121,8 @@ const server = http.createServer((req, res) => {
             sRes.on('data', chunk => data += chunk);
             sRes.on('end', () => {
               res.writeHead(sRes.statusCode, {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
+                'Cache-Control': 'no-store',
                 'Access-Control-Allow-Origin': '*'
               });
               res.end(data);
@@ -79,13 +130,13 @@ const server = http.createServer((req, res) => {
           });
 
           sReq.on('error', err => {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.writeHead(502, { 'Content-Type': 'application/json; charset=utf-8' });
             res.end(JSON.stringify({ error: err.message }));
           });
           sReq.write(postData);
           sReq.end();
         } catch (err) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
           res.end(JSON.stringify({ error: 'Corpo da requisição inválido' }));
         }
       });
@@ -95,8 +146,8 @@ const server = http.createServer((req, res) => {
     // 2. Consulta de Checklists (GET)
     const select = parsedUrl.searchParams.get('select') || '*';
     const idParam = parsedUrl.searchParams.get('id');
-    if (!/^[a-z_,*]+$/i.test(select) || (idParam !== null && !/^\d+$/.test(idParam))) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
+    if (!/^[a-z0-9_,*]+$/i.test(select) || (idParam !== null && !/^\d+$/.test(idParam))) {
+      res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ error: 'Parâmetros inválidos' }));
       return;
     }
@@ -118,7 +169,8 @@ const server = http.createServer((req, res) => {
       sRes.on('data', chunk => data += chunk);
       sRes.on('end', () => {
         res.writeHead(sRes.statusCode, {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
+          'Cache-Control': 'no-store',
           'Access-Control-Allow-Origin': '*'
         });
         res.end(data);
@@ -126,17 +178,20 @@ const server = http.createServer((req, res) => {
     });
 
     sReq.on('error', err => {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.writeHead(502, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ error: err.message }));
     });
     sReq.end();
     return;
   }
 
-  // Serviço de arquivos estáticos
-  let filePath = path.join(__dirname, pathname === '/' ? 'index.html' : pathname);
-  if (!fs.existsSync(filePath)) {
-    filePath = path.join(__dirname, 'index.html');
+  // Serviço seguro de arquivos estáticos (sem path traversal ou exposição de scripts internos)
+  const safeRel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const resolvedBase = path.resolve(__dirname);
+  let filePath = path.resolve(__dirname, safeRel);
+
+  if (!filePath.startsWith(resolvedBase) || BLOCKED_FILES.has(path.basename(filePath)) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(resolvedBase, 'index.html');
   }
 
   const ext = path.extname(filePath).toLowerCase();
