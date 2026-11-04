@@ -7636,6 +7636,16 @@
         if ($('userNameLabel')) $('userNameLabel').textContent = user;
         if ($('login')) $('login').hidden = true;
         if ($('app')) $('app').hidden = false;
+
+        // Ativação da visão correspondente ao caminho da URL (/vistoria, /manutencao, /custos, etc.)
+        const caminhoAtual = window.location.pathname;
+        const visaoInicial = obterVisaoPorCaminho(caminhoAtual);
+        if (visaoInicial && visaoInicial !== 'vistorias') {
+          alternarVisaoPrincipal(visaoInicial, false);
+        } else if (caminhoAtual === '/vistoria' || caminhoAtual === '/vistorias') {
+          alternarVisaoPrincipal('vistorias', false);
+        }
+
         try {
           renderTable();
           load();
@@ -7699,7 +7709,7 @@
         if (confirm('Sair do painel executivo?')) {
           localStorage.removeItem(AUTH_KEY);
           sessionStorage.removeItem(AUTH_KEY);
-          location.reload();
+          window.location.href = '/';
         }
       });
 
@@ -9272,7 +9282,57 @@
       }
       window.salvarObservacoesManutencao = salvarObservacoesManutencao;
 
-      function alternarVisaoPrincipal(visao) {
+      // ==============================================================================
+      // ROTEAMENTO DINÂMICO SPA (URLs LIMPAS: /vistoria, /manutencao, /custos, etc.)
+      // ==============================================================================
+      const ROUTE_MAP = {
+        'vistorias': '/vistoria',
+        'manutencao': '/manutencao',
+        'gastos': '/custos',
+        'galeria': '/galeria',
+        'vendedores': '/vendedores',
+        'frotacad': '/frota'
+      };
+
+      const ROUTE_TITLES = {
+        'vistorias': 'Vistorias da frota · Gomex Frota',
+        'manutencao': 'Manutenção & Oficina · Gomex Frota',
+        'gastos': 'Custos, Peças & Insumos · Gomex Frota',
+        'galeria': 'Galeria de Fotos · Gomex Frota',
+        'vendedores': 'Vendedores & Custódia · Gomex Frota',
+        'frotacad': 'Frota & Veículos · Gomex Frota'
+      };
+
+      const PATH_TO_VIEW = {
+        '/': 'vistorias',
+        '/vistoria': 'vistorias',
+        '/vistorias': 'vistorias',
+        '/manutencao': 'manutencao',
+        '/manuntecao': 'manutencao',
+        '/manut': 'manutencao',
+        '/custos': 'gastos',
+        '/pecas': 'gastos',
+        '/gastos': 'gastos',
+        '/custos-pecas': 'gastos',
+        '/galeria': 'galeria',
+        '/fotos': 'galeria',
+        '/galeria-fotos': 'galeria',
+        '/vendedores': 'vendedores',
+        '/vendedor': 'vendedores',
+        '/frota': 'frotacad',
+        '/veiculos': 'frotacad',
+        '/veiculo': 'frotacad',
+        '/frotacad': 'frotacad'
+      };
+
+      function obterVisaoPorCaminho(caminho) {
+        if (!caminho) return 'vistorias';
+        const pathNorm = caminho.toLowerCase().replace(/\/+$/, '') || '/';
+        return PATH_TO_VIEW[pathNorm] || 'vistorias';
+      }
+      window.obterVisaoPorCaminho = obterVisaoPorCaminho;
+
+      function alternarVisaoPrincipal(visao, atualizarUrl = true) {
         state.visaoAtual = visao;
         const isVistorias = visao === 'vistorias';
         const isManut = visao === 'manutencao';
@@ -9280,6 +9340,17 @@
         const isGaleria = visao === 'galeria';
         const isVend = visao === 'vendedores';
         const isFrotaCad = visao === 'frotacad';
+
+        // Atualização da URL na barra de endereços (HTML5 History API)
+        if (atualizarUrl && window.history && window.history.pushState) {
+          const novoCaminho = ROUTE_MAP[visao] || '/vistoria';
+          if (window.location.pathname !== novoCaminho) {
+            window.history.pushState({ visao: visao }, document.title, novoCaminho);
+          }
+        }
+        if (ROUTE_TITLES[visao]) {
+          document.title = ROUTE_TITLES[visao];
+        }
 
         const btnVist = $('btnViewVistorias');
         const btnManut = $('btnViewManut');
@@ -9346,6 +9417,15 @@
         }
       }
       window.alternarVisaoPrincipal = alternarVisaoPrincipal;
+
+      // Listener para botões Voltar / Avançar do navegador (histórico SPA)
+      window.addEventListener('popstate', e => {
+        if (!authed) return;
+        const visao = (e.state && e.state.visao) ? e.state.visao : obterVisaoPorCaminho(window.location.pathname);
+        if (visao) {
+          alternarVisaoPrincipal(visao, false);
+        }
+      });
 
       function filtrarTabelaManutGeral(tipo) {
         state.filtroMaintGeral = tipo;
@@ -16053,6 +16133,12 @@
             });
           }, 380);
         }, 2400);
+      }
+
+      // Atalho direto de acesso ao Check-list do motorista
+      if (window.location.pathname === '/checklist' || window.location.pathname === '/check-list') {
+        window.location.href = 'https://gomex-checklist.gomexassistencia2026.workers.dev/';
+        return;
       }
 
       // ==============================================================================
