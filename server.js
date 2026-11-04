@@ -22,7 +22,29 @@ const ALLOWED_PATCH_COLS = new Set([
   'ass_motorista', 'ass_vistoriador', 'ass_responsavel', 'status'
 ]);
 
-const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env']);
+const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json']);
+const GASTOS_DB_FILE = path.join(__dirname, 'frota_gastos_db.json');
+
+function lerGastosLocais() {
+  try {
+    if (fs.existsSync(GASTOS_DB_FILE)) {
+      const parsed = JSON.parse(fs.readFileSync(GASTOS_DB_FILE, 'utf8'));
+      return {
+        produtos: Array.isArray(parsed.produtos) ? parsed.produtos : null,
+        lancamentos: Array.isArray(parsed.lancamentos) ? parsed.lancamentos : [],
+        historico_manutencoes: parsed.historico_manutencoes && typeof parsed.historico_manutencoes === 'object' ? parsed.historico_manutencoes : {},
+        galeria: Array.isArray(parsed.galeria) ? parsed.galeria : []
+      };
+    }
+  } catch (e) {}
+  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] };
+}
+
+function salvarGastosLocais(data) {
+  try {
+    fs.writeFileSync(GASTOS_DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {}
+}
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -63,6 +85,153 @@ const server = http.createServer((req, res) => {
     return;
   }
   const pathname = parsedUrl.pathname;
+
+  // API para Catálogo de Produtos/Peças, Lançamentos de Gastos, Histórico de Manutenção e Galeria (/api/frota-gastos)
+  if (pathname === '/api/frota-gastos') {
+    if (req.method === 'GET') {
+      const localData = lerGastosLocais();
+      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1)&select=*', SUPABASE_URL);
+      const options = {
+        method: 'GET',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const sReq = https.request(targetUrl, options, sRes => {
+        let data = '';
+        sRes.on('data', chunk => data += chunk);
+        sRes.on('end', () => {
+          let out = { ...localData };
+          try {
+            const rows = JSON.parse(data);
+            if (Array.isArray(rows)) {
+              for (const row of rows) {
+                if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
+                  const p = JSON.parse(row.descricao);
+                  if (Array.isArray(p)) out.produtos = p;
+                }
+                if (row.id === 'frota_lancamentos_gastos_v1' && row.descricao) {
+                  const l = JSON.parse(row.descricao);
+                  if (Array.isArray(l)) out.lancamentos = l;
+                }
+                if (row.id === 'frota_historico_manutencoes_v1' && row.descricao) {
+                  const hm = JSON.parse(row.descricao);
+                  if (hm && typeof hm === 'object') out.historico_manutencoes = hm;
+                }
+                if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
+                  const gal = JSON.parse(row.descricao);
+                  if (Array.isArray(gal)) out.galeria = gal;
+                }
+              }
+              salvarGastosLocais(out);
+            }
+          } catch (e) {}
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+          res.end(JSON.stringify(out));
+        });
+      });
+
+      sReq.on('error', () => {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify(localData));
+      });
+      sReq.end();
+      return;
+    }
+
+    if (req.method === 'POST' || req.method === 'PATCH') {
+      let body = '';
+      req.on('data', chunk => {
+        body += chunk;
+        if (body.length > 25 * 1024 * 1024) req.destroy();
+      });
+      req.on('end', () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const current = lerGastosLocais();
+          if (Array.isArray(payload.produtos)) current.produtos = payload.produtos;
+          if (Array.isArray(payload.lancamentos)) current.lancamentos = payload.lancamentos;
+          if (payload.historico_manutencoes && typeof payload.historico_manutencoes === 'object') {
+            current.historico_manutencoes = payload.historico_manutencoes;
+          }
+          if (Array.isArray(payload.galeria)) current.galeria = payload.galeria;
+          salvarGastosLocais(current);
+
+          const rowsToUpsert = [];
+          if (Array.isArray(current.produtos)) {
+            rowsToUpsert.push({
+              id: 'frota_catalogo_produtos_v1',
+              valor: current.produtos.length,
+              descricao: JSON.stringify(current.produtos)
+            });
+          }
+          if (Array.isArray(current.lancamentos)) {
+            const totalInvestido = current.lancamentos.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
+            rowsToUpsert.push({
+              id: 'frota_lancamentos_gastos_v1',
+              valor: Number(totalInvestido.toFixed(2)),
+              descricao: JSON.stringify(current.lancamentos)
+            });
+          }
+          if (current.historico_manutencoes && typeof current.historico_manutencoes === 'object') {
+            rowsToUpsert.push({
+              id: 'frota_historico_manutencoes_v1',
+              valor: Object.keys(current.historico_manutencoes).length,
+              descricao: JSON.stringify(current.historico_manutencoes)
+            });
+          }
+          if (Array.isArray(current.galeria)) {
+            rowsToUpsert.push({
+              id: 'frota_galeria_veiculos_v1',
+              valor: current.galeria.length,
+              descricao: JSON.stringify(current.galeria)
+            });
+          }
+
+          if (!rowsToUpsert.length) {
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ ok: true, synced: false }));
+            return;
+          }
+
+          const targetUrl = new URL('/rest/v1/parametros', SUPABASE_URL);
+          const postData = JSON.stringify(rowsToUpsert);
+          const options = {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'resolution=merge-duplicates,return=representation',
+              'Content-Length': Buffer.byteLength(postData)
+            }
+          };
+
+          const sReq = https.request(targetUrl, options, sRes => {
+            let rData = '';
+            sRes.on('data', c => rData += c);
+            sRes.on('end', () => {
+              res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+              res.end(JSON.stringify({ ok: true, synced: sRes.statusCode >= 200 && sRes.statusCode < 300 }));
+            });
+          });
+          sReq.on('error', () => {
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ ok: true, synced: false }));
+          });
+          sReq.write(postData);
+          sReq.end();
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ error: 'Payload inválido' }));
+        }
+      });
+      return;
+    }
+  }
 
   // Proxy seguro para /api/checklists
   if (pathname === '/api/checklists') {
