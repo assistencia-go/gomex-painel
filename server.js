@@ -22,7 +22,7 @@ const ALLOWED_PATCH_COLS = new Set([
   'ass_motorista', 'ass_vistoriador', 'ass_responsavel', 'status'
 ]);
 
-const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json']);
+const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json', 'generate_worker.js', 'push_to_github.mjs', 'patch_security_and_design.js']);
 const GASTOS_DB_FILE = path.join(__dirname, 'frota_gastos_db.json');
 
 function lerGastosLocais() {
@@ -60,7 +60,9 @@ const MIME_TYPES = {
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'no-referrer'
+  'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'geolocation=(), camera=(), microphone=()',
+  'X-XSS-Protection': '1; mode=block'
 };
 
 const server = http.createServer((req, res) => {
