@@ -85,6 +85,14 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ error: 'URL inválida' }));
     return;
   }
+  const pathname = parsedUrl.pathname;
+
+  // Atalhos amigáveis do painel e do checklist
+  if (pathname === '/checklist' || pathname === '/check-list') {
+    res.writeHead(302, { 'Location': 'https://gomex-checklist.gomexassistencia2026.workers.dev/' });
+    res.end();
+    return;
+  }
 
   // Sanitização de Segurança: Redireciona removendo credenciais da URL se alguém acessar com parâmetros no link
   if (parsedUrl.searchParams.has('username') || parsedUrl.searchParams.has('password') || parsedUrl.searchParams.has('user') || parsedUrl.searchParams.has('pass')) {
@@ -97,8 +105,6 @@ const server = http.createServer((req, res) => {
     res.end();
     return;
   }
-
-  const pathname = parsedUrl.pathname;
 
   // API para Catálogo de Produtos/Peças, Lançamentos de Gastos, Histórico de Manutenção e Galeria (/api/frota-gastos)
   if (pathname === '/api/frota-gastos') {
