@@ -300,5 +300,5 @@ const EMBEDDED_HTML = ${JSON.stringify(htmlContent)};
 `;
 
 fs.writeFileSync(path.join(__dirname, 'worker.js'), workerCode, 'utf8');
-console.log('✅ public/index.html e worker.js gerados com sucesso! Tamanho worker.js:', (Buffer.byteLength(workerCode) / 1024).toFixed(1), 'KB');
+console.log('[OK] public/index.html e worker.js gerados com sucesso! Tamanho worker.js:', (Buffer.byteLength(workerCode) / 1024).toFixed(1), 'KB');
 
