@@ -8086,15 +8086,15 @@
           status = 'vencido';
           const atrasoKm = Math.abs(diffKm);
           labelCurto = 'Óleo Vencido (' + fmtKm(atrasoKm) + ')';
-          badgeHtml = '<span class="status-badge bad" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">⚠️ Óleo Vencido (' + fmtKm(atrasoKm) + ')</span>';
+          badgeHtml = '<span class="status-badge bad" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">Óleo Vencido (' + fmtKm(atrasoKm) + ')</span>';
         } else if (diffKm <= 1000) {
           status = 'proximo';
           labelCurto = 'Trocar Óleo em ' + fmtKm(diffKm);
-          badgeHtml = '<span class="status-badge warn" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">⏰ Trocar em ' + fmtKm(diffKm) + '</span>';
+          badgeHtml = '<span class="status-badge warn" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">Trocar em ' + fmtKm(diffKm) + '</span>';
         } else {
           status = 'em_dia';
           labelCurto = 'Óleo em dia (' + fmtKm(diffKm) + ')';
-          badgeHtml = '<span class="status-badge ok" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">✓ Em dia (restam ' + fmtKm(diffKm) + ')</span>';
+          badgeHtml = '<span class="status-badge ok" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">Em dia (restam ' + fmtKm(diffKm) + ')</span>';
         }
 
         return {
@@ -8227,7 +8227,7 @@
           if (pVistVenc) {
             if (vistMensalVencida > 0) {
               pVistVenc.hidden = false;
-              pVistVenc.textContent = '📅 ' + vistMensalVencida + (vistMensalVencida === 1 ? ' Vistoria Mensal Vencida' : ' Vistorias Mensais Vencidas');
+              pVistVenc.textContent = vistMensalVencida + (vistMensalVencida === 1 ? ' Vistoria Mensal Vencida' : ' Vistorias Mensais Vencidas');
               pVistVenc.classList.toggle('active', state.alertType === 'vistoria_vencida');
             } else {
               pVistVenc.hidden = true;
@@ -8238,7 +8238,7 @@
           if (pVistProx) {
             if (vistMensalProxima > 0) {
               pVistProx.hidden = false;
-              pVistProx.textContent = '⏰ ' + vistMensalProxima + (vistMensalProxima === 1 ? ' Vistoria Mensal Próxima' : ' Vistorias Mensais Próximas');
+              pVistProx.textContent = vistMensalProxima + (vistMensalProxima === 1 ? ' Vistoria Mensal Próxima' : ' Vistorias Mensais Próximas');
               pVistProx.classList.toggle('active', state.alertType === 'vistoria_proxima');
             } else {
               pVistProx.hidden = true;
@@ -8267,7 +8267,7 @@
           if (pOleoVenc) {
             if (oleoVencidoCount > 0) {
               pOleoVenc.hidden = false;
-              pOleoVenc.textContent = '🛢️ ' + oleoVencidoCount + (oleoVencidoCount === 1 ? ' Troca de Óleo Vencida' : ' Trocas de Óleo Vencidas');
+              pOleoVenc.textContent = oleoVencidoCount + (oleoVencidoCount === 1 ? ' Troca de Óleo Vencida' : ' Trocas de Óleo Vencidas');
               pOleoVenc.classList.toggle('active', state.alertType === 'oleo_vencido');
             } else {
               pOleoVenc.hidden = true;
@@ -8278,7 +8278,7 @@
           if (pOleoProx) {
             if (oleoProximoCount > 0) {
               pOleoProx.hidden = false;
-              pOleoProx.textContent = '⚡ ' + oleoProximoCount + (oleoProximoCount === 1 ? ' Troca de Óleo Próxima' : ' Trocas de Óleo Próximas');
+              pOleoProx.textContent = oleoProximoCount + (oleoProximoCount === 1 ? ' Troca de Óleo Próxima' : ' Trocas de Óleo Próximas');
               pOleoProx.classList.toggle('active', state.alertType === 'oleo_proximo');
             } else {
               pOleoProx.hidden = true;
@@ -12847,8 +12847,8 @@
           partes = [
             'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
             'Estou acompanhando o controle operacional da frota e verifiquei que o check-list mensal do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ') está pendente/vencido há *' + atraso + ' dia(s)*.',
-            'Por favor, acesse o link abaixo e realize o check-list do veículo hoje mesmo:\n🔗 ' + LINK_CHECKLIST,
-            'Qualquer dúvida ou caso o veículo esteja com alguma avaria ou necessidade de manutenção, me avise por aqui!\nObrigado pela colaboração! 🚚📦'
+            'Por favor, acesse o link abaixo e realize o check-list do veículo hoje mesmo:\n' + LINK_CHECKLIST,
+            'Qualquer dúvida ou caso o veículo esteja com alguma avaria ou necessidade de manutenção, me avise por aqui!\nObrigado pela colaboração!'
           ];
         } else if (tipoAviso === 'oleo' || tipoAviso === 'oleo_vencido' || tipoAviso === 'oleo_proximo') {
           var kmInfo = extra.diffKm ? '(previsão de troca em ' + fmtKm(extra.diffKm) + ')' : '';
@@ -12856,15 +12856,15 @@
             'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
             'Estamos acompanhando a quilometragem do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ') e identificamos que está no momento da *troca de óleo e revisão preventiva* ' + kmInfo + '.',
             'Por favor, nos informe o KM atual do painel e verifique a disponibilidade para realizarmos a troca de óleo na oficina.',
-            'Aproveite também para atualizar o check-list mensal pelo link:\n🔗 ' + LINK_CHECKLIST,
-            'Conto com seu retorno! Um abraço e boa rota! 🚚🔧'
+            'Aproveite também para atualizar o check-list mensal pelo link:\n' + LINK_CHECKLIST,
+            'Conto com seu retorno! Um abraço e boa rota!'
           ];
         } else {
           partes = [
             'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
             'Passando para lembrar que está na data de renovação do *check-list mensal* do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ').',
-            'É bem rápido, basta acessar o link e registrar a vistoria com as fotos:\n🔗 ' + LINK_CHECKLIST,
-            'Obrigado pela dedicação e boa rota! 🚚📦'
+            'É bem rápido, basta acessar o link e registrar a vistoria com as fotos:\n' + LINK_CHECKLIST,
+            'Obrigado pela dedicação e boa rota!'
           ];
         }
 
@@ -12917,7 +12917,7 @@
 
         const btnLbl = $('btnCopiarTextoWppLabel');
         if (btnLbl) {
-          btnLbl.textContent = '✓ Texto Copiado!';
+          btnLbl.textContent = 'Texto Copiado!';
           setTimeout(() => {
             if (btnLbl) btnLbl.textContent = 'Copiar Texto Pronto';
           }, 2400);
@@ -13088,19 +13088,19 @@
           let atrasoDias = 0;
 
           if (v.vistStatus === 'sem_vistoria') {
-            vistoriaBadge = '<span class="status-badge bad" style="font-weight:700">⚠️ Sem Vistoria Feita</span>';
+            vistoriaBadge = '<span class="status-badge bad" style="font-weight:700">Sem Vistoria Feita</span>';
             tipoAvisoWpp = 'vistoria_vencida';
             atrasoDias = 30;
           } else if (v.vistStatus === 'vencida') {
             const at = Math.abs(v.cicloMensal.diasParaVencer);
-            vistoriaBadge = '<span class="status-badge bad">📅 Vencida há ' + at + 'd</span>';
+            vistoriaBadge = '<span class="status-badge bad">Vencida há ' + at + 'd</span>';
             tipoAvisoWpp = 'vistoria_vencida';
             atrasoDias = at;
           } else if (v.vistStatus === 'proxima') {
-            vistoriaBadge = '<span class="status-badge warn">⏰ Vence em ' + v.cicloMensal.diasParaVencer + 'd</span>';
+            vistoriaBadge = '<span class="status-badge warn">Vence em ' + v.cicloMensal.diasParaVencer + 'd</span>';
             tipoAvisoWpp = 'vistoria_mensal';
           } else {
-            vistoriaBadge = '<span class="status-badge ok">✓ Em dia (Próx: ' + v.cicloMensal.dataProximaFmt + ')</span>';
+            vistoriaBadge = '<span class="status-badge ok">Em dia (Próx: ' + v.cicloMensal.dataProximaFmt + ')</span>';
           }
 
           if (v.stOleo.status === 'vencido') tipoAvisoWpp = 'oleo_vencido';
