@@ -5540,7 +5540,7 @@
             </svg>
           </button>
 
-          <!-- Botão Instalar Aplicativo (PWA) -->
+          <!-- Botão Instalar Aplicativo no Aparelho -->
           <button type="button" class="btn btn-ghost btn-icon" id="btnPwaInstall" title="Instalar Aplicativo Gomex Frota" aria-label="Instalar aplicativo" hidden>
             <svg class="i"><use href="#i-download" /></svg>
           </button>
@@ -8306,7 +8306,7 @@
   </div>
 
   <!-- ========================================================================== -->
-  <!-- MODAL DE NOTIFICAÇÕES & ALERTAS DO SISTEMA PWA -->
+  <!-- MODAL DE NOTIFICAÇÕES NO APARELHO -->
   <!-- ========================================================================== -->
   <div class="modal-overlay" id="modalNotificacoesPush">
     <div class="modal-card" style="width:min(520px, 94vw);max-width:520px">
@@ -8318,8 +8318,8 @@
             </svg>
           </div>
           <div>
-            <h3 style="font-size:16px;font-weight:700;margin:0">Notificações & Alertas PWA</h3>
-            <p style="font-size:12px;color:var(--ink-3);margin:2px 0 0 0">Alertas de novas vistorias no aparelho</p>
+            <h3 style="font-size:16px;font-weight:700;margin:0">Notificações no Aparelho</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin:2px 0 0 0">Receba avisos de novas vistorias no celular ou computador</p>
           </div>
         </div>
         <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalNotificacoesPush()"><svg class="i">
@@ -8363,14 +8363,14 @@
           </button>
         </div>
 
-        <!-- Guia para Celulares (Android e iOS) -->
+        <!-- Instruções de Uso Simples no Celular -->
         <div style="background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px;padding:12px 14px;font-size:11.5px;line-height:1.45;color:var(--ink-2);display:grid;gap:6px">
           <div style="font-weight:700;color:var(--ink);display:flex;align-items:center;gap:6px">
             <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-shield" /></svg>
-            <span>Como funciona no celular e computador:</span>
+            <span>Como funciona no celular e no computador:</span>
           </div>
-          <div>• <strong>Android / Computador:</strong> Notificações chegam na barra de status mesmo com o aplicativo fechado.</div>
-          <div>• <strong>iPhone / iPad (iOS 16.4+):</strong> A Apple exige que o aplicativo seja adicionado à tela de início (Compartilhar &gt; Adicionar à Tela de Início) para ativar notificações push.</div>
+          <div>• <strong>Android e Computador:</strong> Os avisos chegam na tela do aparelho mesmo com a página fechada.</div>
+          <div>• <strong>iPhone e iPad:</strong> Toque no botão de compartilhar do Safari e selecione <strong>Adicionar à Tela de Início</strong> para receber os avisos.</div>
         </div>
       </div>
 
@@ -17643,18 +17643,18 @@
       window.checarExibicaoBannerPush = checarExibicaoBannerPush;
 
       // ==============================================================================
-      // PWA: SERVICE WORKER & INSTALAÇÃO DO APLICATIVO
+      // INSTALAÇÃO DO APLICATIVO NO APARELHO & SERVICE WORKER
       // ==============================================================================
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then(reg => {
-              console.log('[PWA] ServiceWorker registrado com sucesso:', reg.scope);
+              console.log('[App] ServiceWorker registrado com sucesso:', reg.scope);
               checarExibicaoBannerPush();
               atualizarStatusPushUi();
             })
             .catch(err => {
-              console.warn('[PWA] ServiceWorker falhou ao registrar:', err);
+              console.warn('[App] ServiceWorker falhou ao registrar:', err);
             });
         });
       }
@@ -17671,7 +17671,7 @@
             if (deferredPwaPrompt) {
               deferredPwaPrompt.prompt();
               const { outcome } = await deferredPwaPrompt.userChoice;
-              console.log('[PWA] Escolha:', outcome);
+              console.log('[App] Escolha:', outcome);
               deferredPwaPrompt = null;
             }
           };
@@ -17681,7 +17681,7 @@
       window.addEventListener('appinstalled', () => {
         const btn = $('btnPwaInstall');
         if (btn) btn.hidden = true;
-        console.log('[PWA] Aplicativo instalado!');
+        console.log('[App] Aplicativo instalado!');
       });
 
       if (!checkExistingAuth()) {
