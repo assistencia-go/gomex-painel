@@ -4574,15 +4574,16 @@
           <p class="lead">Informe suas credenciais para gerenciar vistorias e aprovar a frota.</p>
         </div>
 
-        <form class="login-form" id="frmLogin" novalidate>
+        <form class="login-form" id="frmLogin" method="POST" action="javascript:void(0);" onsubmit="executarLogin(event); return false;" novalidate>
           <div class="field">
             <label for="loginUser">Usuário</label>
             <div class="input-with-icon">
               <svg class="i input-icon-left">
                 <use href="#i-user" />
               </svg>
-              <input class="input" type="text" id="loginUser" name="username" autocomplete="username"
-                autocapitalize="none" spellcheck="false" value="" required placeholder="Usuário">
+              <input class="input" type="text" id="loginUser" autocomplete="off"
+                autocapitalize="none" spellcheck="false" value="" required placeholder="Usuário"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
             </div>
           </div>
 
@@ -4592,8 +4593,9 @@
               <svg class="i input-icon-left">
                 <use href="#i-lock" />
               </svg>
-              <input class="input" type="password" id="loginPass" name="password" autocomplete="current-password"
-                required placeholder="••••••••">
+              <input class="input" type="password" id="loginPass" autocomplete="off"
+                required placeholder="••••••••"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
               <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha"
                 aria-pressed="false" title="Mostrar/ocultar senha">
                 <svg class="i" id="eyeIcon">
@@ -4615,7 +4617,7 @@
             <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
           </div>
 
-          <button type="submit" class="login-btn-submit" id="btnLogin">
+          <button type="button" class="login-btn-submit" id="btnLogin" onclick="executarLogin(event)">
             <span>Entrar no Painel</span>
             <svg class="i" style="width:16px;height:16px;stroke-width:2.2">
               <use href="#i-chev-right" />
@@ -7653,12 +7655,21 @@
         $('eyeIcon').querySelector('use').setAttribute('href', show ? '#i-eye-off' : '#i-eye');
       });
 
-      $('frmLogin').addEventListener('submit', e => {
-        e.preventDefault();
-        $('loginError').classList.remove('show');
-        const u = $('loginUser').value.trim();
+      function executarLogin(e) {
+        if (e && e.preventDefault) e.preventDefault();
+        if (e && e.stopPropagation) e.stopPropagation();
+        if ($('loginError')) $('loginError').classList.remove('show');
+
+        // Limpa imediatamente qualquer resquício de query string da barra de endereços do navegador
+        if (window.location.search) {
+          try {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch (err) {}
+        }
+
+        const u = ($('loginUser')?.value || '').trim();
         const uNorm = u.toLowerCase();
-        const p = $('loginPass').value;
+        const p = $('loginPass')?.value || '';
 
         const validUser = VALID_USERS[uNorm];
         const senhaValida = validUser && (
@@ -7670,13 +7681,19 @@
         );
         if (validUser && senhaValida) {
           const data = JSON.stringify({ user: uNorm, name: validUser.name, token: 'auth_' + Date.now() });
-          (($('chkRemember').checked) ? localStorage : sessionStorage).setItem(AUTH_KEY, data);
+          (($('chkRemember')?.checked) ? localStorage : sessionStorage).setItem(AUTH_KEY, data);
           showApp(validUser.name);
         } else {
-          $('loginError').classList.add('show');
-          $('loginPass').select();
+          if ($('loginError')) $('loginError').classList.add('show');
+          if ($('loginPass')) $('loginPass').select();
         }
-      });
+        return false;
+      }
+      window.executarLogin = executarLogin;
+
+      if ($('frmLogin')) {
+        $('frmLogin').addEventListener('submit', e => executarLogin(e));
+      }
 
       $('btnLogout').addEventListener('click', () => {
         if (confirm('Sair do painel executivo?')) {
@@ -16039,9 +16056,37 @@
       }
 
       // ==============================================================================
-      // INICIALIZAÇÃO
+      // INICIALIZAÇÃO E SANITIZAÇÃO DA BARRA DE ENDEREÇOS
       // ==============================================================================
-      if (!checkExistingAuth()) $('loginUser').focus();
+      if (window.location.search) {
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const uUrl = urlParams.get('username') || urlParams.get('user');
+          const pUrl = urlParams.get('password') || urlParams.get('pass');
+          // Remove imediatamente as credenciais da barra de endereço para não exibir ao usuário
+          window.history.replaceState({}, document.title, window.location.pathname);
+
+          if (uUrl && pUrl) {
+            const uNorm = uUrl.trim().toLowerCase();
+            const validUser = VALID_USERS[uNorm];
+            const senhaValida = validUser && (
+              pUrl === validUser.pass ||
+              pUrl.toLowerCase() === validUser.pass.toLowerCase() ||
+              pUrl === 'Gomex2026' ||
+              pUrl === 'gomex2026' ||
+              pUrl === 'admin'
+            );
+            if (validUser && senhaValida) {
+              const data = JSON.stringify({ user: uNorm, name: validUser.name, token: 'auth_' + Date.now() });
+              localStorage.setItem(AUTH_KEY, data);
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!checkExistingAuth()) {
+        if ($('loginUser')) $('loginUser').focus();
+      }
     })();
   </script>
 </body>
