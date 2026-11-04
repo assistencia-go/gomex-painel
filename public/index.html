@@ -15178,11 +15178,6 @@
         if ($('cadStatAtrasoVistoria')) $('cadStatAtrasoVistoria').textContent = vistAvisoCount;
         if ($('cadStatAlertaOleo')) $('cadStatAlertaOleo').textContent = oleoAlertaCount;
         if ($('cadStatSemVistoria')) $('cadStatSemVistoria').textContent = semVistoriaCount;
-        if ($('cadFrotaFooterInfo')) {
-          $('cadFrotaFooterInfo').textContent = filtrados.length === 1
-            ? '1 veículo listado'
-            : filtrados.length + ' de ' + lista.length + ' veículos listados';
-        }
 
         // Filtragem
         const filtrados = itensCalculados.filter(item => {
@@ -15197,6 +15192,12 @@
           }
           return true;
         });
+
+        if ($('cadFrotaFooterInfo')) {
+          $('cadFrotaFooterInfo').textContent = filtrados.length === 1
+            ? '1 veículo listado'
+            : filtrados.length + ' de ' + lista.length + ' veículos listados';
+        }
 
         if (!filtrados.length) {
           tbody.innerHTML = '<tr><td colspan="8" class="empty">' +
