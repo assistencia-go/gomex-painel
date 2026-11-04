@@ -22,8 +22,176 @@ const ALLOWED_PATCH_COLS = new Set([
   'ass_motorista', 'ass_vistoriador', 'ass_responsavel', 'status'
 ]);
 
-const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json', 'generate_worker.js', 'push_to_github.mjs', 'patch_security_and_design.js']);
+const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json', 'push_subscriptions.json', 'generate_worker.js', 'push_to_github.mjs', 'patch_security_and_design.js']);
 const GASTOS_DB_FILE = path.join(__dirname, 'frota_gastos_db.json');
+const PUSH_SUBS_FILE = path.join(__dirname, 'push_subscriptions.json');
+
+const VAPID_PUB_B64URL = 'BNC0C6aRpTSIkY76KeYB_x7VTA52qvjRrV6nAoeHHpZHgC6chgFIA2SCL-ZklO2bJ4egYC8yydWvV-ypBZW9Qfc';
+const PRIV_JWK = {
+  key_ops: ['sign'],
+  ext: true,
+  kty: 'EC',
+  x: '0LQLppGlNIiRjvop5gH_HtVMDnaq-NGtXqcCh4celkc',
+  y: 'gC6chgFIA2SCL-ZklO2bJ4egYC8yydWvV-ypBZW9Qfc',
+  crv: 'P-256',
+  d: '-SIssqVleGqKh03BuMunJteSZYOC5XxA1RG4Q_0hbVY'
+};
+
+let ultimoAlertaPush = {
+  title: 'Gomex Frota · Sistema Conectado',
+  body: 'Notificações ativadas com sucesso neste aparelho.',
+  url: '/',
+  timestamp: Date.now()
+};
+
+function lerPushSubsLocais() {
+  try {
+    if (fs.existsSync(PUSH_SUBS_FILE)) {
+      const parsed = JSON.parse(fs.readFileSync(PUSH_SUBS_FILE, 'utf8'));
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {}
+  return [];
+}
+
+function salvarPushSubsLocais(subs) {
+  try {
+    fs.writeFileSync(PUSH_SUBS_FILE, JSON.stringify(subs, null, 2), 'utf8');
+  } catch (e) {}
+}
+
+async function sincronizarPushSubsComSupabase(subs) {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/parametros`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify([{
+        id: 'frota_push_subscriptions_v1',
+        valor: subs.length,
+        descricao: JSON.stringify(subs)
+      }])
+    });
+  } catch (e) {}
+}
+
+async function carregarTodasPushSubs() {
+  let subs = lerPushSubsLocais();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/parametros?id=eq.frota_push_subscriptions_v1&select=*`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    if (res.ok) {
+      const rows = await res.json();
+      if (Array.isArray(rows) && rows[0] && rows[0].descricao) {
+        const remoteSubs = JSON.parse(rows[0].descricao);
+        if (Array.isArray(remoteSubs)) {
+          const map = new Map();
+          subs.forEach(s => s && s.endpoint && map.set(s.endpoint, s));
+          remoteSubs.forEach(s => s && s.endpoint && map.set(s.endpoint, s));
+          subs = Array.from(map.values());
+          salvarPushSubsLocais(subs);
+        }
+      }
+    }
+  } catch (e) {}
+  return subs;
+}
+
+async function gerarVapidJwt(endpointUrl, subject = 'mailto:contato@gomex.com.br') {
+  try {
+    const urlObj = new URL(endpointUrl);
+    const audience = `${urlObj.protocol}//${urlObj.host}`;
+    const now = Math.floor(Date.now() / 1000);
+    const header = { typ: 'JWT', alg: 'ES256' };
+    const payload = {
+      aud: audience,
+      exp: now + 43200,
+      sub: subject
+    };
+
+    const toB64Url = str => Buffer.from(str).toString('base64url');
+    const unsigned = toB64Url(JSON.stringify(header)) + '.' + toB64Url(JSON.stringify(payload));
+
+    const webcrypto = crypto.webcrypto || require('crypto').webcrypto;
+    const key = await webcrypto.subtle.importKey(
+      'jwk',
+      PRIV_JWK,
+      { name: 'ECDSA', namedCurve: 'P-256' },
+      false,
+      ['sign']
+    );
+
+    const sig = await webcrypto.subtle.sign(
+      { name: 'ECDSA', hash: 'SHA-256' },
+      key,
+      Buffer.from(unsigned, 'utf8')
+    );
+
+    return unsigned + '.' + Buffer.from(sig).toString('base64url');
+  } catch (e) {
+    return '';
+  }
+}
+
+async function dispararPushParaTodos(alerta) {
+  ultimoAlertaPush = {
+    title: alerta.title || 'Gomex Frota · Alerta da Frota',
+    body: alerta.body || 'Nova movimentação na frota.',
+    url: alerta.url || '/',
+    timestamp: Date.now()
+  };
+
+  const subs = await carregarTodasPushSubs();
+  if (subs.length === 0) return { ok: true, sent: 0, total: 0 };
+
+  const endpointsValidos = [];
+  let sentCount = 0;
+
+  for (const sub of subs) {
+    if (!sub || !sub.endpoint) continue;
+    try {
+      const jwt = await gerarVapidJwt(sub.endpoint);
+      if (!jwt) continue;
+
+      const res = await fetch(sub.endpoint, {
+        method: 'POST',
+        headers: {
+          'TTL': '86400',
+          'Urgency': 'high',
+          'Authorization': `vapid t=${jwt}, k=${VAPID_PUB_B64URL}`,
+          'Content-Length': '0'
+        }
+      });
+
+      if (res.status === 410 || res.status === 404) {
+        continue;
+      }
+
+      endpointsValidos.push(sub);
+      if (res.ok || res.status === 201 || res.status === 200 || res.status === 202) {
+        sentCount++;
+      }
+    } catch (e) {
+      endpointsValidos.push(sub);
+    }
+  }
+
+  if (endpointsValidos.length !== subs.length) {
+    salvarPushSubsLocais(endpointsValidos);
+    await sincronizarPushSubsComSupabase(endpointsValidos);
+  }
+
+  return { ok: true, sent: sentCount, total: subs.length };
+}
 
 function lerGastosLocais() {
   try {
@@ -106,6 +274,78 @@ const server = http.createServer((req, res) => {
     res.writeHead(302, { 'Location': redirectTarget });
     res.end();
     return;
+  }
+
+  // ==============================================================================
+  // ROTAS DE WEB PUSH NOTIFICATIONS
+  // ==============================================================================
+  if (pathname === '/api/push-vapid-key') {
+    res.writeHead(200, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+    res.end(JSON.stringify({ ok: true, publicKey: VAPID_PUB_B64URL }));
+    return;
+  }
+
+  if (pathname === '/api/push-ultimo-alerta') {
+    res.writeHead(200, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' });
+    res.end(JSON.stringify(ultimoAlertaPush));
+    return;
+  }
+
+  if (pathname === '/api/push-subscribe') {
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', async () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const sub = payload.subscription || (payload.endpoint ? payload : null);
+          if (!sub || !sub.endpoint) {
+            res.writeHead(400, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+            return res.end(JSON.stringify({ error: 'Inscrição push inválida' }));
+          }
+
+          const subs = await carregarTodasPushSubs();
+          const map = new Map();
+          subs.forEach(s => s && s.endpoint && map.set(s.endpoint, s));
+          map.set(sub.endpoint, {
+            ...sub,
+            userAgent: payload.userAgent || '',
+            deviceName: payload.deviceName || 'Aparelho',
+            updatedAt: new Date().toISOString()
+          });
+
+          const atualizados = Array.from(map.values());
+          salvarPushSubsLocais(atualizados);
+          await sincronizarPushSubsComSupabase(atualizados);
+
+          res.writeHead(200, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ ok: true, total: atualizados.length }));
+        } catch (err) {
+          res.writeHead(500, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
+  }
+
+  if (pathname === '/api/push-send') {
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => body += chunk);
+      req.on('end', async () => {
+        try {
+          const payload = JSON.parse(body || '{}');
+          const resultado = await dispararPushParaTodos(payload);
+          res.writeHead(200, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify(resultado));
+        } catch (err) {
+          res.writeHead(500, { ...SECURITY_HEADERS, 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
   }
 
   // API para Catálogo de Produtos/Peças, Lançamentos de Gastos, Histórico de Manutenção e Galeria (/api/frota-gastos)
