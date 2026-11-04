@@ -33,11 +33,12 @@ function lerGastosLocais() {
         produtos: Array.isArray(parsed.produtos) ? parsed.produtos : null,
         lancamentos: Array.isArray(parsed.lancamentos) ? parsed.lancamentos : [],
         historico_manutencoes: parsed.historico_manutencoes && typeof parsed.historico_manutencoes === 'object' ? parsed.historico_manutencoes : {},
-        galeria: Array.isArray(parsed.galeria) ? parsed.galeria : []
+        galeria: Array.isArray(parsed.galeria) ? parsed.galeria : [],
+        veiculos: Array.isArray(parsed.veiculos) ? parsed.veiculos : []
       };
     }
   } catch (e) {}
-  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] };
+  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [] };
 }
 
 function salvarGastosLocais(data) {
@@ -90,7 +91,7 @@ const server = http.createServer((req, res) => {
   if (pathname === '/api/frota-gastos') {
     if (req.method === 'GET') {
       const localData = lerGastosLocais();
-      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1)&select=*', SUPABASE_URL);
+      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1)&select=*', SUPABASE_URL);
       const options = {
         method: 'GET',
         headers: {
@@ -125,6 +126,10 @@ const server = http.createServer((req, res) => {
                   const gal = JSON.parse(row.descricao);
                   if (Array.isArray(gal)) out.galeria = gal;
                 }
+                if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
+                  const vc = JSON.parse(row.descricao);
+                  if (Array.isArray(vc)) out.veiculos = vc;
+                }
               }
               salvarGastosLocais(out);
             }
@@ -158,6 +163,7 @@ const server = http.createServer((req, res) => {
             current.historico_manutencoes = payload.historico_manutencoes;
           }
           if (Array.isArray(payload.galeria)) current.galeria = payload.galeria;
+          if (Array.isArray(payload.veiculos)) current.veiculos = payload.veiculos;
           salvarGastosLocais(current);
 
           const rowsToUpsert = [];
@@ -188,6 +194,13 @@ const server = http.createServer((req, res) => {
               id: 'frota_galeria_veiculos_v1',
               valor: current.galeria.length,
               descricao: JSON.stringify(current.galeria)
+            });
+          }
+          if (Array.isArray(current.veiculos)) {
+            rowsToUpsert.push({
+              id: 'frota_cadastro_veiculos_v1',
+              valor: current.veiculos.length,
+              descricao: JSON.stringify(current.veiculos)
             });
           }
 
