@@ -78,7 +78,7 @@ export default {
 
       if (request.method === 'GET') {
         try {
-          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1)&select=*\`, {
+          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1)&select=*\`, {
             headers: {
               'apikey': supabaseKey,
               'Authorization': \`Bearer \${supabaseKey}\`,
@@ -86,7 +86,7 @@ export default {
             }
           });
           const rows = await res.json();
-          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] };
+          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [] };
           if (Array.isArray(rows)) {
             for (const row of rows) {
               if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
@@ -100,6 +100,9 @@ export default {
               }
               if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
                 try { out.galeria = JSON.parse(row.descricao); } catch (e) {}
+              }
+              if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
+                try { out.veiculos = JSON.parse(row.descricao); } catch (e) {}
               }
             }
           }
@@ -146,6 +149,13 @@ export default {
               id: 'frota_galeria_veiculos_v1',
               valor: payload.galeria.length,
               descricao: JSON.stringify(payload.galeria)
+            });
+          }
+          if (Array.isArray(payload.veiculos)) {
+            rowsToUpsert.push({
+              id: 'frota_cadastro_veiculos_v1',
+              valor: payload.veiculos.length,
+              descricao: JSON.stringify(payload.veiculos)
             });
           }
           const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros\`, {
