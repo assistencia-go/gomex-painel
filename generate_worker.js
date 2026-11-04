@@ -32,7 +32,9 @@ const ALLOWED_PATCH_COLS = new Set([
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'no-referrer'
+  'Referrer-Policy': 'no-referrer',
+  'Permissions-Policy': 'geolocation=(), camera=(), microphone=()',
+  'X-XSS-Protection': '1; mode=block'
 };
 
 function getSupabaseKey(env) {
