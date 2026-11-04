@@ -3174,6 +3174,15 @@
       align-items: end;
     }
 
+    .rapido-prod-form-grid {
+      display: grid;
+      grid-template-columns: 80px minmax(180px, 1.8fr) 180px 140px 120px auto;
+      gap: 10px;
+      align-items: end;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
     .edit-grid-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -3946,6 +3955,76 @@
         height: 40px !important;
       }
 
+      /* MODAL DE LANÇAR GASTO & CADASTRO RÁPIDO DE PRODUTO 100% RESPONSIVOS */
+      #modalLancarGasto .modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 94dvh !important;
+        margin: 0 !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+      }
+
+      #modalLancarGasto .modal-head {
+        padding: 14px 16px !important;
+      }
+
+      #modalLancarGasto .modal-body {
+        padding: 14px 16px !important;
+        max-height: 78dvh !important;
+        overflow-x: hidden !important;
+        display: grid !important;
+        gap: 14px !important;
+        box-sizing: border-box !important;
+      }
+
+      #modalLancarGasto .modal-foot {
+        padding: 12px 16px !important;
+        display: flex !important;
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
+      }
+
+      #modalLancarGasto .modal-foot .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        height: 42px !important;
+      }
+
+      #boxCadastroRapidoProduto {
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        padding: 12px !important;
+      }
+
+      .rapido-prod-form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .rapido-prod-form-grid > div {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .rapido-prod-form-grid > div input,
+      .rapido-prod-form-grid > div select {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .rapido-prod-form-grid .btn {
+        width: 100% !important;
+        height: 40px !important;
+        margin-top: 4px !important;
+        justify-content: center !important;
+      }
+
 
       /* Correção Universal de Estados Vazios no Mobile (Estrutura Vertical Perfeita) */
       .empty,
@@ -4680,7 +4759,7 @@
       grid-template-columns: 78px 1fr 96px 120px 125px;
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 760px) {
 
       .gasto-form-grid-3,
       .gasto-form-grid-2 {
@@ -7747,15 +7826,13 @@
 
           <!-- Mini-form de Cadastro Rápido de Produto sem sair do lançamento -->
           <div id="boxCadastroRapidoProduto" hidden
-            style="padding:12px;background:var(--bg);border:1px dashed var(--accent);border-radius:8px;display:grid;gap:10px">
-            <div style="display:flex;align-items:center;justify-content:space-between">
+            style="padding:12px;background:var(--bg);border:1px dashed var(--accent);border-radius:8px;display:grid;gap:10px;box-sizing:border-box;max-width:100%;overflow-x:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
               <strong style="font-size:12px;color:var(--accent-hi)">Novo Produto / Peça para o Catálogo:</strong>
               <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px"
                 onclick="toggleCadastroRapidoProdutoInline(false)">Fechar</button>
             </div>
-            <div
-              style="display:grid;grid-template-columns:80px minmax(200px, 1.8fr) 200px 150px 120px auto;gap:10px;align-items:end"
-              class="edit-grid-2">
+            <div class="rapido-prod-form-grid">
               <div>
                 <label class="gasto-field-lbl" style="font-size:11px">Código</label>
                 <input type="text" id="rapidoProdCodigo" class="input" placeholder="20"
