@@ -4017,6 +4017,7 @@
     }
 
     .prod-suggest-menu {
+      display: none;
       position: absolute;
       left: 0;
       right: 0;
@@ -4029,6 +4030,10 @@
       border-radius: 8px;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.65);
       padding: 4px;
+    }
+
+    .prod-suggest-menu.open {
+      display: block !important;
     }
 
     .prod-suggest-item {
@@ -13818,7 +13823,7 @@
             '</div>' +
             '<div class="prod-autocomplete-wrap">' +
             '<label class="gasto-field-lbl" style="font-size:11px">' + (idx + 1) + '. Produto / Peça / Óleo (digite o nome ou código)</label>' +
-            '<input type="text" id="gastoItemNome_' + idx + '" class="input" placeholder="Escreva o nome da peça/óleo ou clique para ver..." value="' + esc(item.produto_nome || '') + '" autocomplete="off" style="height:36px;font-weight:600" onfocus="abrirMenuSugestaoProd(' + idx + ', \'\')" oninput="onDigitarNomeProdutoLinha(' + idx + ', this.value)" onblur="setTimeout(() => fecharMenuSugestaoProd(' + idx + '), 160)">' +
+            '<input type="text" id="gastoItemNome_' + idx + '" class="input" placeholder="Escreva o nome da peça/óleo ou clique para ver..." value="' + esc(item.produto_nome || '') + '" autocomplete="off" style="height:36px;font-weight:600" onfocus="abrirMenuSugestaoProd(' + idx + ', \'\')" oninput="onDigitarNomeProdutoLinha(' + idx + ', this.value)" onblur="setTimeout(() => fecharMenuSugestaoProd(' + idx + '), 200)" onkeydown="if(event.key===\'Escape\'||event.key===\'Enter\'){fecharMenuSugestaoProd(' + idx + ');}">' +
             '<div class="prod-suggest-menu" id="prodSuggestMenu_' + idx + '"></div>' +
             '</div>' +
             '<div>' +
@@ -13849,23 +13854,36 @@
         fecharTodosMenusSugestaoProd(idx);
         const menu = $('prodSuggestMenu_' + idx);
         if (!menu) return;
-        menu.innerHTML = gerarHtmlMenuSugestoesProd(idx, termo);
+        const html = gerarHtmlMenuSugestoesProd(idx, termo);
+        if (!html) {
+          fecharMenuSugestaoProd(idx);
+          return;
+        }
+        menu.innerHTML = html;
+        menu.style.display = 'block';
         menu.classList.add('open');
       }
       window.abrirMenuSugestaoProd = abrirMenuSugestaoProd;
 
       function fecharMenuSugestaoProd(idx) {
         const menu = $('prodSuggestMenu_' + idx);
-        if (menu) menu.classList.remove('open');
+        if (menu) {
+          menu.style.display = 'none';
+          menu.classList.remove('open');
+          menu.innerHTML = '';
+        }
       }
       window.fecharMenuSugestaoProd = fecharMenuSugestaoProd;
 
       function fecharTodosMenusSugestaoProd(excetoIdx = -1) {
-        document.querySelectorAll('.prod-suggest-menu.open').forEach(el => {
+        document.querySelectorAll('.prod-suggest-menu').forEach(el => {
           if (excetoIdx >= 0 && el.id === 'prodSuggestMenu_' + excetoIdx) return;
+          el.style.display = 'none';
           el.classList.remove('open');
+          el.innerHTML = '';
         });
       }
+      window.fecharTodosMenusSugestaoProd = fecharTodosMenusSugestaoProd;
 
       function onDigitarCodigoProdutoLinha(idx, rawCod) {
         if (!gastosState.modalItensDraft[idx]) return;
@@ -13883,6 +13901,7 @@
 
         if (prod) {
           aplicarProdutoNoItemDraft(idx, prod, false);
+          fecharMenuSugestaoProd(idx);
         }
       }
       window.onDigitarCodigoProdutoLinha = onDigitarCodigoProdutoLinha;
@@ -13899,6 +13918,9 @@
         if (!prod || !gastosState.modalItensDraft[idx]) return;
         aplicarProdutoNoItemDraft(idx, prod, true);
         fecharMenuSugestaoProd(idx);
+        fecharTodosMenusSugestaoProd();
+        const inp = $('gastoItemNome_' + idx);
+        if (inp) inp.blur();
       }
       window.selecionarProdutoSugestao = selecionarProdutoSugestao;
 
@@ -14910,9 +14932,18 @@
 
       if ($('modalLancarGasto')) {
         $('modalLancarGasto').addEventListener('click', e => {
+          if (!e.target.closest('.prod-autocomplete-wrap')) {
+            fecharTodosMenusSugestaoProd();
+          }
           if (e.target === $('modalLancarGasto')) fecharModalLancarGasto();
         });
       }
+
+      document.addEventListener('click', e => {
+        if (!e.target.closest('.prod-autocomplete-wrap')) {
+          fecharTodosMenusSugestaoProd();
+        }
+      });
       if ($('modalCatalogoProdutos')) {
         $('modalCatalogoProdutos').addEventListener('click', e => {
           if (e.target === $('modalCatalogoProdutos')) fecharModalCatalogoProdutos();
