@@ -69,6 +69,11 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
+    // Atalhos amigáveis e redirecionamentos
+    if (url.pathname === '/checklist' || url.pathname === '/check-list') {
+      return Response.redirect('https://gomex-checklist.gomexassistencia2026.workers.dev/', 302);
+    }
+
     // 1. ROTA HEALTH CHECK
     if (url.pathname === '/api/health') {
       return new Response(JSON.stringify({
