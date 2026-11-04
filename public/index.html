@@ -2837,6 +2837,14 @@
       --sidebar-w: 240px;
     }
 
+    
+    .sb-lbl-mob {
+      display: none;
+    }
+    .topbar-mobile-logout {
+      display: none;
+    }
+
     .sidebar {
       position: fixed;
       top: 0;
@@ -3363,6 +3371,18 @@
         --sidebar-w: 0px;
       }
 
+      .sb-lbl-full {
+        display: none !important;
+      }
+
+      .sb-lbl-mob {
+        display: inline !important;
+      }
+
+      .topbar-mobile-logout {
+        display: inline-flex !important;
+      }
+
       .app-main {
         margin-left: 0 !important;
         padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
@@ -3379,21 +3399,22 @@
         right: 0;
         bottom: 0;
         width: 100%;
-        height: calc(62px + env(safe-area-inset-bottom, 0px));
-        padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+        height: calc(58px + env(safe-area-inset-bottom, 0px));
+        padding: 4px 6px calc(4px + env(safe-area-inset-bottom, 0px));
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
         background: var(--panel);
         border-right: 0;
         border-top: 1px solid var(--line-strong);
-        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
         z-index: 48;
       }
 
       .sb-brand,
       .sb-label,
-      .sidebar .whoami {
+      .sidebar .whoami,
+      .sidebar .sb-foot {
         display: none !important;
       }
 
@@ -3405,39 +3426,43 @@
         gap: 2px;
       }
 
-      .sb-foot {
-        border-top: 0;
-        padding-top: 0;
-        display: flex;
-        align-items: center;
-      }
-
-      .sb-item,
-      .sidebar #btnLogout {
+      .sb-item {
         flex: 1;
+        max-width: calc(100% / 6);
         height: 48px;
-        padding: 4px 6px !important;
+        padding: 3px 2px !important;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 3px;
-        border-radius: 10px;
-        font-size: 10.5px;
-        font-weight: 700;
+        gap: 2px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--ink-2);
+        transition: background 120ms ease;
       }
 
-      .sb-item span,
-      .sidebar #btnLogout span {
+      .sb-item span.sb-label-text,
+      .sb-item span {
         display: block !important;
-        font-size: 10.5px;
-        line-height: 1;
+        font-size: 10px;
+        line-height: 1.1;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        text-align: center;
       }
 
-      .sb-item .i,
-      .sidebar #btnLogout .i {
+      .sb-item .i {
         width: 18px;
         height: 18px;
+      }
+
+      .sb-item.active {
+        background: var(--accent-tint);
+        color: var(--accent-hi);
+        font-weight: 700;
       }
 
       .sb-item.active::before {
@@ -3650,6 +3675,296 @@
         padding: 32px 16px !important;
       }
 
+      /* Tabela de Cadastro e Prontuário da Frota em Cards Mobile */
+      #cadFrotaTable thead {
+        display: none;
+      }
+
+      #cadFrotaTable,
+      #cadFrotaTable tbody {
+        display: block;
+        width: 100%;
+      }
+
+      #cadFrotaTable tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        padding: 13px 14px;
+        margin-bottom: 11px;
+        background: var(--raised);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--r);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+      }
+
+      #cadFrotaTable tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0;
+        border: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: left !important;
+      }
+
+      /* Linha 1: Placa e Modelo */
+      #cadFrotaTable tbody td:nth-child(1) {
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      #cadFrotaTable tbody td:nth-child(1) .stack {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 8px;
+      }
+
+      #cadFrotaTable tbody td:nth-child(1) .plate {
+        font-size: 14px;
+        padding: 3px 9px;
+        font-weight: 800;
+      }
+
+      #cadFrotaTable tbody td:nth-child(1) .t2 {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+
+      /* Linha 2: Motorista Titular */
+      #cadFrotaTable tbody td:nth-child(2) {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+      }
+
+      #cadFrotaTable tbody td:nth-child(2) .t1 {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      #cadFrotaTable tbody td:nth-child(2) .t2 {
+        font-size: 11.5px;
+        color: var(--ink-3);
+      }
+
+      /* Linhas 3 a 7: Rota, KM, Vistoria, Óleo e Custo */
+      #cadFrotaTable tbody td:nth-child(3)::before {
+        content: "Rota:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #cadFrotaTable tbody td:nth-child(4)::before {
+        content: "KM Atual:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #cadFrotaTable tbody td:nth-child(5)::before {
+        content: "Vistoria Mensal:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #cadFrotaTable tbody td:nth-child(6)::before {
+        content: "Troca de Óleo:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #cadFrotaTable tbody td:nth-child(7)::before {
+        content: "Custo por KM:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      /* Linha 8: Ações Rápidas */
+      #cadFrotaTable tbody td:nth-child(8) {
+        padding-top: 10px;
+        border-top: 1px dashed var(--line);
+        justify-content: stretch;
+      }
+
+      #cadFrotaTable tbody td:nth-child(8) > div {
+        display: grid !important;
+        grid-template-columns: 1fr 38px 38px 38px;
+        gap: 8px;
+        width: 100%;
+      }
+
+      #cadFrotaTable tbody td:nth-child(8) .btn-whatsapp-copy {
+        height: 38px !important;
+        font-size: 12px !important;
+        font-weight: 700;
+        background: rgba(37, 211, 102, 0.15) !important;
+        color: #25D366 !important;
+        border: 1.5px solid rgba(37, 211, 102, 0.35) !important;
+        justify-content: center;
+        border-radius: 8px;
+      }
+
+      #cadFrotaTable tbody td:nth-child(8) .btn-whatsapp-copy svg {
+        width: 15px !important;
+        height: 15px !important;
+      }
+
+      #cadFrotaTable tbody td:nth-child(8) .btn-icon {
+        height: 38px !important;
+        width: 38px !important;
+        background: var(--bg);
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+      }
+
+      /* Tabela de Custos & Peças em Cards Mobile */
+      #gastosTable thead {
+        display: none;
+      }
+
+      #gastosTable,
+      #gastosTable tbody {
+        display: block;
+        width: 100%;
+      }
+
+      #gastosTable tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 14px;
+        margin-bottom: 9px;
+        background: var(--raised);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--r);
+      }
+
+      #gastosTable tbody td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 0;
+        border: 0;
+        width: 100% !important;
+        max-width: 100% !important;
+        text-align: left !important;
+      }
+
+      /* Módulo de Custos & Peças no Mobile */
+      .gastos-period-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      .gastos-date-inputs {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .gastos-date-inputs > div:first-child {
+        margin-bottom: 2px;
+      }
+
+      .gastos-date-field {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .gastos-quick-periods {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .gastos-quick-periods::-webkit-scrollbar {
+        display: none;
+      }
+
+      .gastos-quick-periods .pill-period {
+        flex-shrink: 0;
+      }
+
+      .gastos-period-bar > div:last-child {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .gastos-period-bar > div:last-child .btn {
+        width: 100%;
+        justify-content: center;
+        height: 40px;
+      }
+
+      #gastosSubTabs {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 0 4px 6px;
+      }
+
+      #gastosSubTabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      #gastosSubTabs .tab {
+        flex-shrink: 0;
+        font-size: 12px;
+        padding: 8px 12px;
+      }
+
+      #sectionGastosView .board > div:first-child > div:last-child {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        padding: 8px 0;
+      }
+
+      #sectionGastosView .board > div:first-child > div:last-child .btn {
+        padding: 0 4px;
+        font-size: 11px;
+        justify-content: center;
+        height: 36px;
+      }
+
+      /* Galeria de Fotos no Mobile */
+      .galeria-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        padding: 12px !important;
+      }
+
+      .galeria-card img {
+        max-height: 240px;
+        object-fit: cover;
+      }
+
       /* Tabela de Manutenção e Vendedores em Cards Mobile */
       #sectionManutView .grid thead,
       #vendTable thead {
@@ -3783,14 +4098,27 @@
     @media (max-width: 560px) {
       .summary-grid {
         grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+      }
+
+      .summary-grid > .stat:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
       }
 
       .stat {
-        padding: 12px 14px;
+        padding: 10px 12px !important;
+      }
+
+      .stat-head .stat-lbl {
+        font-size: 11px !important;
       }
 
       .stat dd {
-        font-size: 22px;
+        font-size: 20px !important;
+      }
+
+      .stat-sub {
+        font-size: 10.5px !important;
       }
 
       .kv {
@@ -3994,7 +4322,25 @@
 
       .gasto-item-row,
       .gasto-item-row.single-item {
-        grid-template-columns: 80px 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px;
+        background: var(--raised);
+        border-radius: 10px;
+      }
+
+      .gasto-item-row > div {
+        width: 100%;
+      }
+
+      .gasto-item-row .prod-suggest-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        width: 100%;
+        max-height: 220px;
       }
     }
 
@@ -4747,6 +5093,11 @@
             <svg class="i" id="icoTheme">
               <use href="#i-sun" />
             </svg>
+          </button>
+
+          <!-- Botão Sair Dedicado para Mobile no Topo -->
+          <button type="button" class="btn btn-ghost btn-icon topbar-mobile-logout" onclick="encerrarSessao()" title="Sair do painel" aria-label="Sair">
+            <svg class="i"><use href="#i-logout" /></svg>
           </button>
 
         </div>
