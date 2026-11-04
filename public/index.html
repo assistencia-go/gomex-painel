@@ -4194,6 +4194,107 @@
       cursor: pointer;
       font-size: 12px;
     }
+
+    /* Anexo de Foto da NF / Cupom no Modal de Gasto */
+    .gasto-anexo-box {
+      background: var(--panel-2);
+      border: 1.5px dashed var(--line-strong);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: grid;
+      gap: 10px;
+      transition: border-color .2s;
+    }
+    .gasto-anexo-box:focus-within, .gasto-anexo-box:hover {
+      border-color: var(--accent);
+    }
+    .btn-anexo-nf {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(237, 133, 112, 0.12);
+      color: var(--accent-hi);
+      border: 1px solid rgba(237, 133, 112, 0.35);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 3px;
+      transition: all 140ms ease;
+    }
+    .btn-anexo-nf:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Botão e Caixa de Mensagem Pronta WhatsApp */
+    .btn-whatsapp-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: rgba(37, 211, 102, 0.12);
+      color: #25d366;
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 160ms ease;
+      font-family: inherit;
+    }
+    .btn-whatsapp-copy:hover {
+      background: #25d366;
+      color: #0b141a;
+      box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+      transform: translateY(-1px);
+    }
+    .whatsapp-preview-box {
+      background: #0b141a;
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e9edef;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Prontuário do Veículo (Custo por KM) */
+    .custo-km-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .timeline-filter-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink-2);
+      transition: all 140ms ease;
+    }
+    .timeline-filter-btn.active {
+      background: var(--accent-tint);
+      color: var(--accent-hi);
+      border-color: var(--accent);
+    }
   </style>
 </head>
 
@@ -4271,6 +4372,10 @@
       <symbol id="i-whatsapp" viewBox="0 0 24 24">
         <path
           d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+      </symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
       </symbol>
       <symbol id="i-x" viewBox="0 0 24 24">
         <path d="M18 6 6 18" />
@@ -4587,6 +4692,12 @@
             <use href="#i-user" />
           </svg><span>Vendedores</span>
         </button>
+        <button type="button" class="sb-item" id="btnViewFrotaCad" onclick="alternarVisaoPrincipal('frotacad')"
+          title="Cadastro Fixo & Prontuário da Frota">
+          <svg class="i">
+            <use href="#i-truck" />
+          </svg><span>Frota & Veículos</span>
+        </button>
         <a class="sb-item" href="https://gomex-checklist.gomexassistencia2026.workers.dev/" target="_blank"
           rel="noopener" title="Abrir aplicativo de Check-list do Motorista" style="text-decoration:none">
           <svg class="i">
@@ -4692,6 +4803,10 @@
                 title="Filtrar veículos com vistoria mensal vencida (mais de 30 dias sem nova vistoria)">0 Vistoria Mensal Vencida</button>
               <button type="button" class="alert-pill yellow" id="pillVistoriaProxima" hidden
                 title="Filtrar veículos cuja vistoria mensal vence nos próximos 7 dias">0 Vistoria Mensal Próxima</button>
+              <button type="button" class="alert-pill red" id="pillOleoVencido" hidden
+                title="Filtrar veículos com troca de óleo vencida por KM">0 Troca de Óleo Vencida</button>
+              <button type="button" class="alert-pill yellow" id="pillOleoProximo" hidden
+                title="Filtrar veículos com troca de óleo próxima por KM">0 Troca de Óleo Próxima</button>
               <button type="button" class="alert-pill yellow" id="pillPneus" hidden
                 title="Filtrar apenas veículos com dano em pneus">0 Pneu c/ Dano</button>
               <button type="button" class="alert-pill yellow" id="pillRevisao" hidden
@@ -5487,6 +5602,124 @@
             </div>
           </section>
         </div>
+
+        <!-- ====================================================================== -->
+        <!-- VISÃO 6: CADASTRO FIXO DA FROTA & PRONTUÁRIO DOS VEÍCULOS -->
+        <!-- ====================================================================== -->
+        <div id="sectionFrotaCadView" hidden>
+          <!-- Resumo da Frota -->
+          <section class="summary" aria-label="Resumo da frota de veículos">
+            <dl class="summary-grid">
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Veículos na Frota</span>
+                  <div class="stat-ico blue"><svg class="i"><use href="#i-truck" /></svg></div>
+                </div>
+                <dd id="cadStatTotal">0</dd>
+                <span class="stat-sub">Placas cadastradas</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Vistorias em Dia</span>
+                  <div class="stat-ico green"><svg class="i"><use href="#i-badge-check" /></svg></div>
+                </div>
+                <dd id="cadStatEmDia" style="color:#34d399">0</dd>
+                <span class="stat-sub">Ciclo mensal regular</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Aviso Vistoria</span>
+                  <div class="stat-ico amber"><svg class="i"><use href="#i-clock" /></svg></div>
+                </div>
+                <dd id="cadStatAtrasoVistoria" style="color:#fbbf24">0</dd>
+                <span class="stat-sub">Próxima ou vencida</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Troca de Óleo</span>
+                  <div class="stat-ico amber"><svg class="i"><use href="#i-droplet" /></svg></div>
+                </div>
+                <dd id="cadStatAlertaOleo" style="color:#fbbf24">0</dd>
+                <span class="stat-sub">Próxima ou vencida por KM</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Sem Vistoria Feita</span>
+                  <div class="stat-ico red"><svg class="i"><use href="#i-alert" /></svg></div>
+                </div>
+                <dd id="cadStatSemVistoria" style="color:#f87171">0</dd>
+                <span class="stat-sub">Pendente no sistema</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Quadro de Controle e Gestão da Frota -->
+          <section class="board" aria-label="Controle de Veículos">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px">
+              <div>
+                <h2 style="font-size:15px;font-weight:700">Cadastro Fixo de Veículos & Prontuário da Frota</h2>
+                <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Monitore cada placa, motorista titular, quilometragem, histórico de gastos por KM e cobre vistorias pelo WhatsApp.</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-primary" onclick="abrirModalCadastrarVeiculo()">
+                  <svg class="i"><use href="#i-plus" /></svg>
+                  <span>+ Cadastrar Novo Veículo</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar de Filtros da Frota -->
+            <div class="toolbar">
+              <div class="search">
+                <svg class="i"><use href="#i-search" /></svg>
+                <label for="cadFiltroBusca" class="sr-only">Buscar veículo</label>
+                <input class="input" type="search" id="cadFiltroBusca"
+                  placeholder="Buscar por placa, modelo, motorista titular ou rota..." autocomplete="off"
+                  oninput="renderFrotaCadView()">
+              </div>
+
+              <select class="select" id="cadFiltroStatus" onchange="renderFrotaCadView()">
+                <option value="todos">Todos os veículos</option>
+                <option value="em_dia">Vistoria em dia</option>
+                <option value="atencao_vistoria">Vistoria próxima ou vencida</option>
+                <option value="alerta_oleo">Troca de óleo próxima/vencida</option>
+                <option value="sem_vistoria">Sem vistoria realizada</option>
+              </select>
+
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosCad" onclick="limparFiltrosCad()" hidden>
+                <svg class="i"><use href="#i-x" /></svg>Limpar filtros
+              </button>
+            </div>
+
+            <!-- Tabela da Frota -->
+            <div class="table-wrap">
+              <table class="grid" id="cadFrotaTable">
+                <thead>
+                  <tr>
+                    <th style="width:125px">Placa / Veículo</th>
+                    <th style="width:160px">Motorista Titular</th>
+                    <th style="width:90px">Rota</th>
+                    <th style="width:115px">KM Atual</th>
+                    <th style="width:165px">Vistoria Mensal</th>
+                    <th style="width:165px">Troca de Óleo (KM)</th>
+                    <th style="width:140px">Custo por KM</th>
+                    <th style="width:180px;text-align:right">Ações Rápidas</th>
+                  </tr>
+                </thead>
+                <tbody id="cadFrotaTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="board-foot">
+              <span id="cadFrotaFooterInfo">0 veículos listados</span>
+              <span style="font-size:12px;color:var(--ink-3)">Controle de Frota Integrado com Check-list</span>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
   </div>
@@ -6012,39 +6245,55 @@
   </aside>
 
   <!-- ========================================================================== -->
-  <!-- MODAL DE HISTÓRICO COMPLETO DA PLACA -->
+  <!-- MODAL DE HISTÓRICO COMPLETO DA PLACA (PRONTUÁRIO DO VEÍCULO) -->
   <!-- ========================================================================== -->
   <div class="modal-overlay" id="historyModal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:920px;width:96%">
       <header class="modal-head">
-        <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <span class="plate" id="histPlateTitle">ABC 1234</span>
-          <h3 style="font-size:16px;font-weight:700">Linha do Tempo do Veículo</h3>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Prontuário & Linha do Tempo do Veículo</h3>
+            <span style="font-size:12px;color:var(--ink-3)" id="histVeiculoSubTitle">Histórico completo consolidado</span>
+          </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i">
-            <use href="#i-x" />
-          </svg></button>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button type="button" class="btn btn-ghost" id="btnHistCobrarWpp" style="color:#25d366;border-color:rgba(37,211,102,0.4);font-size:11.5px;height:28px;padding:0 8px">
+            <svg class="i" style="width:13px;height:13px"><use href="#i-whatsapp" /></svg>
+            <span>Cobrar WhatsApp</span>
+          </button>
+          <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i">
+              <use href="#i-x" />
+            </svg></button>
+        </div>
       </header>
-      <div class="modal-body">
-        <!-- Métricas do Veículo -->
-        <div
-          style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:12px;background:var(--raised);border-radius:8px">
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
+        <!-- Métricas Principais do Veículo (5 Colunas com Custo por KM e Troca de Óleo) -->
+        <div style="display:grid;grid-template-columns:repeat(5, 1fr);gap:10px;padding:12px 14px;background:var(--raised);border-radius:10px;border:1px solid var(--line)" class="edit-grid-2">
           <div>
-            <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
-            <div id="histTotalCount" style="font-size:18px;font-weight:800;color:var(--ink)">0</div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
+            <div id="histTotalCount" style="font-size:17px;font-weight:800;color:var(--ink)">0</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histFirstDate">–</span>
           </div>
           <div>
-            <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Última Quilometragem</div>
-            <div id="histLastKm" style="font-size:18px;font-weight:800;color:var(--ink)">–</div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Quilometragem Atual</div>
+            <div id="histLastKm" style="font-size:17px;font-weight:800;color:var(--ink)">–</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histKmRodadosSub">0 km rodados</span>
           </div>
           <div>
-            <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Investido na Placa</div>
-            <div id="histTotalGastoPlaca" style="font-size:16px;font-weight:800;color:var(--ok);margin-top:2px">R$ 0,00
-            </div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Investido</div>
+            <div id="histTotalGastoPlaca" style="font-size:16px;font-weight:800;color:var(--ok)">R$ 0,00</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histGastoPecasOSSub">Peças + O.S.</span>
           </div>
           <div>
-            <div style="font-size:11.5px;color:var(--ink-3);font-weight:600">Status Mais Recente</div>
-            <div id="histLastStatus" style="font-size:14px;font-weight:700;margin-top:2px">–</div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Custo por KM</div>
+            <div id="histCustoPorKm" style="font-size:16px;font-weight:800;color:#38bdf8">R$ 0,00/km</div>
+            <span style="font-size:10.5px;color:var(--ink-3)">Custo operacional</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Troca de Óleo (KM)</div>
+            <div id="histStatusOleo" style="font-size:13px;font-weight:700;margin-top:2px">–</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histMetaOleoSub">A cada 10.000 km</span>
           </div>
         </div>
 
@@ -6108,15 +6357,147 @@
             style="display:grid;grid-template-columns:repeat(auto-fill, minmax(115px, 1fr));gap:8px"></div>
         </div>
 
-        <!-- Timeline de Vistorias Anteriores -->
+        <!-- Timeline de Vistorias e Ocorrências -->
         <div>
-          <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--ink-2)">Histórico de Vistorias
-            Registradas:</h4>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+            <h4 style="font-size:13px;font-weight:700;color:var(--ink-2);margin:0">Linha do Tempo de Vistorias:</h4>
+            <div style="display:flex;gap:4px">
+              <button type="button" class="timeline-filter-btn active" id="btnHistFilterAll" onclick="filtrarTimelineHist('todos')">Todas</button>
+              <button type="button" class="timeline-filter-btn" id="btnHistFilterAvarias" onclick="filtrarTimelineHist('avarias')">Com Avarias</button>
+              <button type="button" class="timeline-filter-btn" id="btnHistFilterBloq" onclick="filtrarTimelineHist('bloqueadas')">Bloqueadas</button>
+            </div>
+          </div>
           <div class="hist-timeline" id="histTimeline"></div>
         </div>
       </div>
-      <footer class="modal-foot">
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
         <button type="button" class="btn" onclick="fecharHistoricoModal()">Fechar</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn" onclick="imprimirProntuarioVeiculo()">
+            <svg class="i"><use href="#i-printer" /></svg>
+            <span>Imprimir Prontuário</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: COPIAR MENSAGEM DE COBRANÇA PARA WHATSAPP -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalCopiarWhatsApp">
+    <div class="modal-card" style="max-width:540px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:34px;height:34px;border-radius:8px;background:rgba(37,211,102,0.18);color:#25d366;display:grid;place-items:center">
+            <svg class="i" style="width:18px;height:18px"><use href="#i-whatsapp" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Copiar Mensagem para WhatsApp</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Texto pronto formatado para o Hendreo enviar ao motorista</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCopiarWhatsApp()"><svg class="i"><use href="#i-x" /></svg></button>
+      </header>
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <span style="font-size:12.5px;color:var(--ink);font-weight:700" id="wppDestinatarioInfo">Destinatário: —</span>
+          <span class="plate" id="wppPlacaBadge">ABC1234</span>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:6px;display:block">
+            Mensagem Pronta para Copiar e Colar:
+          </label>
+          <div class="whatsapp-preview-box" id="wppTextoMensagem"></div>
+        </div>
+
+        <div style="font-size:11.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px">
+          <svg class="i" style="width:14px;height:14px;color:#25d366"><use href="#i-check" /></svg>
+          <span>Clique no botão abaixo para copiar o texto pronto para colar no WhatsApp.</span>
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalCopiarWhatsApp()">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnCopiarTextoWpp" onclick="executarCopiaTextoWhatsApp()" style="background:#25d366;border-color:#20ba5a;color:#0b141a;font-weight:800">
+          <svg class="i" style="width:15px;height:15px"><use href="#i-copy" /></svg>
+          <span id="btnCopiarTextoWppLabel">Copiar Mensagem</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: CADASTRAR / EDITAR VEÍCULO DA FROTA -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalCadastrarVeiculo">
+    <div class="modal-card" style="max-width:620px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:20px;height:20px"><use href="#i-truck" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="cadVeiculoModalTitle">Cadastrar Veículo na Frota</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Adicione a placa e o motorista responsável para controle e alertas</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCadastrarVeiculo()"><svg class="i"><use href="#i-x" /></svg></button>
+      </header>
+      <div class="modal-body" style="padding:20px;display:grid;gap:14px;max-height:76vh;overflow-y:auto">
+        <input type="hidden" id="cadVeiculoEditId">
+
+        <div class="gasto-form-grid-2">
+          <div>
+            <label for="cadInputPlaca" class="gasto-field-lbl" style="color:var(--accent-hi)">Placa do Veículo *</label>
+            <input type="text" id="cadInputPlaca" class="input" placeholder="Ex: ABC1234" maxlength="8"
+              style="height:38px;font-weight:800;text-transform:uppercase">
+          </div>
+          <div>
+            <label for="cadInputModelo" class="gasto-field-lbl">Modelo do Veículo *</label>
+            <input type="text" id="cadInputModelo" class="input" placeholder="Ex: Fiat Fiorino, Renault Master..."
+              style="height:38px;font-weight:600">
+          </div>
+        </div>
+
+        <div class="gasto-form-grid-2">
+          <div>
+            <label for="cadInputMotorista" class="gasto-field-lbl">Motorista Titular Responsável</label>
+            <input type="text" id="cadInputMotorista" list="datalistMotoristasFrota" class="input"
+              placeholder="Nome do motorista titular" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputRota" class="gasto-field-lbl">Rota Padrão do Veículo</label>
+            <input type="text" id="cadInputRota" class="input" placeholder="Ex: 217, 240, 222..." style="height:38px">
+          </div>
+        </div>
+
+        <div class="gasto-form-grid-3">
+          <div>
+            <label for="cadInputAno" class="gasto-field-lbl">Ano / Fabricação</label>
+            <input type="text" id="cadInputAno" class="input" placeholder="Ex: 2022/2023" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputKm" class="gasto-field-lbl">KM Inicial / Atual</label>
+            <input type="number" id="cadInputKm" class="input" placeholder="Ex: 85000" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputMetaOleo" class="gasto-field-lbl">Meta Troca Óleo (KM)</label>
+            <input type="number" id="cadInputMetaOleo" class="input" placeholder="Ex: 10000" value="10000" style="height:38px">
+          </div>
+        </div>
+
+        <div>
+          <label for="cadInputObs" class="gasto-field-lbl">Observações / Chassi / Seguro</label>
+          <input type="text" id="cadInputObs" class="input" placeholder="Detalhes adicionais do veículo" style="height:38px">
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalCadastrarVeiculo()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarCadVeiculo" onclick="salvarCadastroVeiculo()">
+          <svg class="i"><use href="#i-check" /></svg>
+          <span id="btnSalvarCadVeiculoLabel">Salvar Veículo</span>
+        </button>
       </footer>
     </div>
   </div>
@@ -6662,6 +7043,33 @@
             <input type="text" id="gastoInputObs" class="input"
               placeholder="Observações sobre a peça ou serviço realizado" style="height:38px">
           </div>
+        </div>
+
+        <!-- ANEXO: FOTO DA NOTA FISCAL / CUPOM / PEÇA TROCADA -->
+        <div class="gasto-anexo-box">
+          <input type="file" id="gastoAnexoInput" accept="image/*" multiple hidden
+            onchange="onSelecionarAnexosGasto(this.files)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div>
+              <h4 style="font-size:13px;font-weight:700;color:var(--ink);margin:0;display:flex;align-items:center;gap:6px">
+                <svg class="i" style="width:15px;height:15px;color:var(--accent-hi)">
+                  <use href="#i-file-text" />
+                </svg>
+                <span>Foto da Nota Fiscal / Cupom ou Peça Trocada</span>
+                <span style="font-weight:500;color:var(--ink-3);font-size:11.5px">(opcional)</span>
+              </h4>
+              <p style="font-size:11.5px;color:var(--ink-3);margin:2px 0 0">Fica salva junto com o lançamento e também na
+                galeria do veículo. Também aceita <strong>Ctrl + V</strong>.</p>
+            </div>
+            <button type="button" class="btn" style="height:30px;font-size:12px;padding:0 12px"
+              onclick="acionarSeletorAnexoGasto()">
+              <svg class="i" style="width:13px;height:13px">
+                <use href="#i-camera" />
+              </svg>
+              <span id="gastoAnexoBtnLabel">Anexar Foto</span>
+            </button>
+          </div>
+          <div class="upload-preview-grid" id="gastoAnexoPreview" hidden style="display:none"></div>
         </div>
 
         <!-- 4. BANNER DE VALOR TOTAL DO LANÇAMENTO -->
@@ -7574,6 +7982,125 @@
         };
       }
 
+      function calcularStatusOleoPorKm(placa) {
+        const pNorm = (placa || '').toUpperCase().trim();
+        if (!pNorm) {
+          return { status: 'sem_registro', labelCurto: '—', badgeHtml: '<span class="status-badge" style="background:rgba(255,255,255,0.06);color:var(--ink-3)">Sem dados</span>' };
+        }
+
+        const veics = (typeof gastosState !== 'undefined' && Array.isArray(gastosState.veiculos)) ? gastosState.veiculos : [];
+        const cad = veics.find(v => (v.placa || '').toUpperCase().trim() === pNorm);
+        const metaKm = (cad && Number(cad.meta_oleo_km) > 0) ? Number(cad.meta_oleo_km) : 10000;
+
+        // Vistorias ativas desta placa ordenadas por data/hora decrescente
+        const vistorias = (state.all || [])
+          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
+        const recVist = vistorias[0] || null;
+
+        // Lançamentos de gastos desta placa
+        const lancs = (typeof gastosState !== 'undefined' && Array.isArray(gastosState.lancamentos)) ? gastosState.lancamentos : [];
+        const gastosPlaca = lancs.filter(g => (g.placa || '').toUpperCase().trim() === pNorm);
+
+        // 1. Determinar KM Atual do Veículo (maior valor entre vistorias, gastos e cadastro)
+        let kmAtual = null;
+        if (recVist && recVist.km && !isNaN(Number(recVist.km))) kmAtual = Number(recVist.km);
+        gastosPlaca.forEach(g => {
+          if (g.km && !isNaN(Number(g.km)) && (kmAtual === null || Number(g.km) > kmAtual)) {
+            kmAtual = Number(g.km);
+          }
+        });
+        if (cad && cad.km_inicial && !isNaN(Number(cad.km_inicial)) && (kmAtual === null || Number(cad.km_inicial) > kmAtual)) {
+          kmAtual = Number(cad.km_inicial);
+        }
+
+        // 2. Determinar KM da Última Troca de Óleo
+        let kmUltimaTroca = null;
+        let dataUltimaTroca = null;
+        let fonteUltimaTroca = '';
+
+        const gastosOleo = gastosPlaca.filter(g => {
+          const cat = (g.categoria || '').toLowerCase();
+          const nm = (g.produto_nome || '').toLowerCase();
+          return cat.includes('óleo') || cat.includes('oleo') || cat.includes('lubrificante') ||
+                 nm.includes('óleo') || nm.includes('oleo') || nm.includes('5w30') || nm.includes('15w40');
+        }).sort((a, b) => (b.data || '').localeCompare(a.data || ''));
+
+        const gastoOleoComKm = gastosOleo.find(g => g.km && !isNaN(Number(g.km)));
+        if (gastoOleoComKm) {
+          kmUltimaTroca = Number(gastoOleoComKm.km);
+          dataUltimaTroca = gastoOleoComKm.data;
+          fonteUltimaTroca = 'Lançamento de Peça / Óleo';
+        }
+
+        // Se não tiver gasto com KM, checar rev_ult_km da vistoria
+        if (kmUltimaTroca === null && recVist && recVist.rev_ult_km && !isNaN(Number(recVist.rev_ult_km))) {
+          kmUltimaTroca = Number(recVist.rev_ult_km);
+          dataUltimaTroca = recVist.rev_ult_data || recVist.data;
+          fonteUltimaTroca = 'Revisão Registrada na Vistoria';
+        }
+
+        // Se ainda não tiver, checar rev_prox_km
+        let kmProximaTroca = null;
+        if (kmUltimaTroca !== null) {
+          kmProximaTroca = kmUltimaTroca + metaKm;
+        } else if (recVist && recVist.rev_prox_km && !isNaN(Number(recVist.rev_prox_km))) {
+          kmProximaTroca = Number(recVist.rev_prox_km);
+          kmUltimaTroca = Math.max(0, kmProximaTroca - metaKm);
+          fonteUltimaTroca = 'Meta Próx. Revisão da Vistoria';
+        }
+
+        if (kmUltimaTroca === null || kmProximaTroca === null) {
+          return {
+            status: 'sem_registro',
+            kmAtual: kmAtual || 0,
+            kmUltimaTroca: null,
+            kmProximaTroca: null,
+            diffKm: null,
+            metaKm,
+            dataUltimaTroca: null,
+            labelCurto: 'Sem troca reg.',
+            badgeHtml: '<span class="status-badge" style="background:rgba(255,255,255,0.06);color:var(--ink-3)">Sem troca reg.</span>'
+          };
+        }
+
+        const kmBaseAtual = (kmAtual !== null) ? kmAtual : kmUltimaTroca;
+        const diffKm = kmProximaTroca - kmBaseAtual;
+
+        let status = 'em_dia';
+        let labelCurto = '';
+        let badgeHtml = '';
+
+        if (diffKm < 0) {
+          status = 'vencido';
+          const atrasoKm = Math.abs(diffKm);
+          labelCurto = 'Óleo Vencido (' + fmtKm(atrasoKm) + ')';
+          badgeHtml = '<span class="status-badge bad" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">⚠️ Óleo Vencido (' + fmtKm(atrasoKm) + ')</span>';
+        } else if (diffKm <= 1000) {
+          status = 'proximo';
+          labelCurto = 'Trocar Óleo em ' + fmtKm(diffKm);
+          badgeHtml = '<span class="status-badge warn" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">⏰ Trocar em ' + fmtKm(diffKm) + '</span>';
+        } else {
+          status = 'em_dia';
+          labelCurto = 'Óleo em dia (' + fmtKm(diffKm) + ')';
+          badgeHtml = '<span class="status-badge ok" title="Próx: ' + fmtKm(kmProximaTroca) + ' · Atual: ' + fmtKm(kmBaseAtual) + '">✓ Em dia (restam ' + fmtKm(diffKm) + ')</span>';
+        }
+
+        return {
+          status,
+          kmAtual: kmBaseAtual,
+          kmUltimaTroca,
+          kmProximaTroca,
+          diffKm,
+          metaKm,
+          dataUltimaTroca,
+          fonteUltimaTroca,
+          labelCurto,
+          badgeHtml
+        };
+      }
+      window.calcularStatusOleoPorKm = calcularStatusOleoPorKm;
+
       function obterStatusMensalPorPlaca() {
         const mapa = new Map();
         const ativos = state.all.filter(x => x.status !== 'inativo');
@@ -7657,7 +8184,19 @@
           else if (info.ciclo?.status === 'vencida') vistMensalVencida++;
         });
 
-        const totalAlertas = blk + comPneuDano + revisaoVencendo + vistMensalProxima + vistMensalVencida;
+        // Alertas de Troca de Óleo por KM (Vencida ou Próxima)
+        let oleoVencidoCount = 0;
+        let oleoProximoCount = 0;
+        const todasPlacasConhecidas = typeof obterTodasPlacasConhecidas === 'function' ? obterTodasPlacasConhecidas() : [];
+        todasPlacasConhecidas.forEach(pObj => {
+          if (typeof calcularStatusOleoPorKm === 'function') {
+            const stOleo = calcularStatusOleoPorKm(pObj.placa);
+            if (stOleo.status === 'vencido') oleoVencidoCount++;
+            else if (stOleo.status === 'proximo') oleoProximoCount++;
+          }
+        });
+
+        const totalAlertas = blk + comPneuDano + revisaoVencendo + vistMensalProxima + vistMensalVencida + oleoVencidoCount + oleoProximoCount;
 
         const banner = $('alertsBanner');
         if (totalAlertas > 0) {
@@ -7713,6 +8252,28 @@
             pRev.hidden = true;
           }
 
+          const pOleoVenc = $('pillOleoVencido');
+          if (pOleoVenc) {
+            if (oleoVencidoCount > 0) {
+              pOleoVenc.hidden = false;
+              pOleoVenc.textContent = '🛢️ ' + oleoVencidoCount + (oleoVencidoCount === 1 ? ' Troca de Óleo Vencida' : ' Trocas de Óleo Vencidas');
+              pOleoVenc.classList.toggle('active', state.alertType === 'oleo_vencido');
+            } else {
+              pOleoVenc.hidden = true;
+            }
+          }
+
+          const pOleoProx = $('pillOleoProximo');
+          if (pOleoProx) {
+            if (oleoProximoCount > 0) {
+              pOleoProx.hidden = false;
+              pOleoProx.textContent = '⚡ ' + oleoProximoCount + (oleoProximoCount === 1 ? ' Troca de Óleo Próxima' : ' Trocas de Óleo Próximas');
+              pOleoProx.classList.toggle('active', state.alertType === 'oleo_proximo');
+            } else {
+              pOleoProx.hidden = true;
+            }
+          }
+
           const isFiltered = Boolean(state.alertOnly || state.alertType);
           $('btnFilterAlerts').textContent = isFiltered ? 'Exibir Todas' : 'Filtrar Alertas';
           $('btnFilterAlerts').style.background = isFiltered ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
@@ -7737,6 +8298,8 @@
       if ($('pillVistoriaProxima')) $('pillVistoriaProxima').addEventListener('click', () => alternarFiltroAlerta('vistoria_proxima'));
       if ($('pillPneus')) $('pillPneus').addEventListener('click', () => alternarFiltroAlerta('pneu'));
       if ($('pillRevisao')) $('pillRevisao').addEventListener('click', () => alternarFiltroAlerta('revisao'));
+      if ($('pillOleoVencido')) $('pillOleoVencido').addEventListener('click', () => alternarFiltroAlerta('oleo_vencido'));
+      if ($('pillOleoProximo')) $('pillOleoProximo').addEventListener('click', () => alternarFiltroAlerta('oleo_proximo'));
 
       $('btnFilterAlerts').addEventListener('click', () => {
         if (state.alertOnly || state.alertType) {
@@ -7800,8 +8363,16 @@
               if (!isPn) return false;
             } else if (state.alertType === 'revisao') {
               if (!isRev) return false;
+            } else if (state.alertType === 'oleo_vencido') {
+              const stO = typeof calcularStatusOleoPorKm === 'function' ? calcularStatusOleoPorKm(it.placa) : null;
+              if (!stO || stO.status !== 'vencido') return false;
+            } else if (state.alertType === 'oleo_proximo') {
+              const stO = typeof calcularStatusOleoPorKm === 'function' ? calcularStatusOleoPorKm(it.placa) : null;
+              if (!stO || stO.status !== 'proximo') return false;
             } else {
-              if (!isBlk && !isPn && !isRev && !isVistProx && !isVistVenc) return false;
+              const stO = typeof calcularStatusOleoPorKm === 'function' ? calcularStatusOleoPorKm(it.placa) : null;
+              const isOleoAlert = stO && (stO.status === 'vencido' || stO.status === 'proximo');
+              if (!isBlk && !isPn && !isRev && !isVistProx && !isVistVenc && !isOleoAlert) return false;
             }
           }
           if (q) {
@@ -8680,35 +9251,43 @@
         const isGastos = visao === 'gastos';
         const isGaleria = visao === 'galeria';
         const isVend = visao === 'vendedores';
+        const isFrotaCad = visao === 'frotacad';
 
         const btnVist = $('btnViewVistorias');
         const btnManut = $('btnViewManut');
         const btnGastos = $('btnViewGastos');
         const btnGaleria = $('btnViewGaleria');
         const btnVend = $('btnViewVendedores');
+        const btnFrotaCad = $('btnViewFrotaCad');
 
         const secVist = $('sectionVistoriasView');
         const secManut = $('sectionManutView');
         const secGastos = $('sectionGastosView');
         const secGaleria = $('sectionGaleriaView');
         const secVend = $('sectionVendedoresView');
+        const secFrotaCad = $('sectionFrotaCadView');
 
         if (btnVist) btnVist.classList.toggle('active', isVistorias);
         if (btnManut) btnManut.classList.toggle('active', isManut);
         if (btnGastos) btnGastos.classList.toggle('active', isGastos);
         if (btnGaleria) btnGaleria.classList.toggle('active', isGaleria);
         if (btnVend) btnVend.classList.toggle('active', isVend);
+        if (btnFrotaCad) btnFrotaCad.classList.toggle('active', isFrotaCad);
 
         if (secVist) secVist.hidden = !isVistorias;
         if (secManut) secManut.hidden = !isManut;
         if (secGastos) secGastos.hidden = !isGastos;
         if (secGaleria) secGaleria.hidden = !isGaleria;
         if (secVend) secVend.hidden = !isVend;
+        if (secFrotaCad) secFrotaCad.hidden = !isFrotaCad;
 
         const titleEl = $('pageMainTitle');
         const subEl = $('pageMainSubtitle');
         if (titleEl && subEl) {
-          if (isGastos) {
+          if (isFrotaCad) {
+            titleEl.textContent = 'Frota & Veículos Cadastrados';
+            subEl.textContent = 'Cadastro fixo da frota, motoristas titulares, ciclo mensal de vistoria e controle preventivo de troca de óleo.';
+          } else if (isGastos) {
             titleEl.textContent = 'Custos, Peças & Insumos da Frota';
             subEl.textContent = 'Controle de peças, litros de óleo e gastos por placa, motorista e período com emissão de relatórios.';
           } else if (isGaleria) {
@@ -8734,6 +9313,8 @@
           if (typeof renderGaleriaView === 'function') renderGaleriaView();
         } else if (isVend) {
           renderVendedoresView();
+        } else if (isFrotaCad) {
+          if (typeof renderFrotaCadView === 'function') renderFrotaCadView();
         }
       }
       window.alternarVisaoPrincipal = alternarVisaoPrincipal;
@@ -9702,8 +10283,90 @@
         const pNorm = placa.toUpperCase().trim();
         $('histPlateTitle').textContent = pNorm;
 
-        const vistorias = state.all.filter(x => (x.placa || '').toUpperCase().trim() === pNorm);
+        const info = obterInfoPlacaNaFrota(pNorm);
+        if ($('histVeiculoSubTitle')) {
+          $('histVeiculoSubTitle').textContent = (info.veiculo || 'Veículo da Frota') + (info.motorista ? ' · Titular: ' + info.motorista : '');
+        }
+
+        const vistorias = (state.all || [])
+          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
+
+        state.histAtualPlaca = pNorm;
+        state.histAtualVistorias = vistorias;
+
         $('histTotalCount').textContent = vistorias.length;
+        if ($('histFirstDate')) {
+          $('histFirstDate').textContent = vistorias.length
+            ? 'Desde ' + formatarData(vistorias[vistorias.length - 1].data)
+            : 'Sem vistorias';
+        }
+
+        // Quilometragem atual e percorrida
+        let kmMax = null;
+        let kmMin = null;
+        vistorias.forEach(v => {
+          if (v.km && !isNaN(Number(v.km))) {
+            const k = Number(v.km);
+            if (kmMax === null || k > kmMax) kmMax = k;
+            if (kmMin === null || k < kmMin) kmMin = k;
+          }
+        });
+
+        const stOleo = calcularStatusOleoPorKm(pNorm);
+        const kmAtual = (kmMax !== null) ? kmMax : (stOleo.kmAtual || (info.km ? Number(info.km) : null));
+        $('histLastKm').textContent = kmAtual ? fmtKm(kmAtual) : '—';
+
+        const kmRodados = (kmMax !== null && kmMin !== null && kmMax >= kmMin) ? (kmMax - kmMin) : 0;
+        if ($('histKmRodadosSub')) {
+          $('histKmRodadosSub').textContent = kmRodados > 0 ? fmtKm(kmRodados) + ' rodados' : 'Base cadastrada';
+        }
+
+        // Total investido em Peças + O.S. da placa
+        const itensGastos = (gastosState.lancamentos || []).filter(g => (g.placa || '').toUpperCase().trim() === pNorm);
+        const somaPecas = itensGastos.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
+
+        let somaOS = 0;
+        vistorias.forEach(v => {
+          const m = getManutencaoData(v);
+          if (m && m.custo) {
+            const c = parseFloat(String(m.custo).replace(/\./g, '').replace(',', '.'));
+            if (!isNaN(c)) somaOS += c;
+          }
+        });
+        const totalInvestido = somaPecas + somaOS;
+
+        if ($('histTotalGastoPlaca')) $('histTotalGastoPlaca').textContent = fmtMoeda(totalInvestido);
+        if ($('histGastoPecasOSSub')) {
+          $('histGastoPecasOSSub').textContent = fmtMoeda(somaPecas) + ' peças' + (somaOS > 0 ? ' + ' + fmtMoeda(somaOS) + ' OS' : '');
+        }
+
+        // Custo por KM
+        if ($('histCustoPorKm')) {
+          if (kmRodados > 0 && totalInvestido > 0) {
+            const cKm = totalInvestido / kmRodados;
+            $('histCustoPorKm').textContent = 'R$ ' + cKm.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '/km';
+          } else {
+            $('histCustoPorKm').textContent = 'R$ 0,00/km';
+          }
+        }
+
+        // Status da Troca de Óleo
+        if ($('histStatusOleo')) {
+          $('histStatusOleo').innerHTML = stOleo.badgeHtml;
+        }
+        if ($('histMetaOleoSub')) {
+          $('histMetaOleoSub').textContent = 'Meta: a cada ' + fmtKm(stOleo.metaKm);
+        }
+
+        // Configurar botão de Cobrança WhatsApp no cabeçalho do prontuário
+        const btnWpp = $('btnHistCobrarWpp');
+        if (btnWpp) {
+          const motResp = (vistorias[0] && vistorias[0].motorista) || info.motorista || 'Motorista';
+          const motivo = stOleo.status === 'vencido' ? 'oleo_vencido' : (stOleo.status === 'proximo' ? 'oleo_proximo' : 'vistoria_mensal');
+          btnWpp.onclick = () => abrirModalCopiarWhatsApp(motResp, pNorm, motivo, { diffKm: stOleo.diffKm });
+        }
+
         if (typeof renderResumoGastosNoModalHistorico === 'function') {
           renderResumoGastosNoModalHistorico(pNorm);
         }
@@ -9711,45 +10374,131 @@
           renderResumoGaleriaNoModalHistorico(pNorm);
         }
 
-        if (vistorias.length > 0) {
-          const maisRecente = vistorias[0];
-          $('histLastKm').textContent = fmtKm(maisRecente.km);
-          $('histLastStatus').innerHTML = statusTag(maisRecente.liberacao);
-
-          $('histTimeline').innerHTML = vistorias.map(v => {
-            const av = avariasOf(v).length;
-            const nok = nokOf(v).length;
-            const cls = v.liberacao === 'Não liberado' ? 'bad' : v.liberacao === 'Ressalva' ? 'warn' : 'ok';
-            return '<div class="hist-item ' + cls + '">' +
-              '<i class="hist-dot"></i>' +
-              '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
-              '<span style="font-weight:700;font-size:13px;color:var(--ink)">' +
-              'Vistoria Nº ' + v.numero + ' · ' + formatarData(v.data) + ' às ' + (v.hora || '--:--') +
-              '</span>' +
-              statusTag(v.liberacao) +
-              '</div>' +
-              '<div style="font-size:12px;color:var(--ink-2)">' +
-              'Motorista: <b>' + esc(v.motorista || 'Não informado') + '</b> · Km: ' + fmtKm(v.km) + ' · ' + esc(v.tipo || 'Saída') +
-              '</div>' +
-              '<div style="font-size:11.5px;color:var(--ink-3)">' +
-              (av ? '<span class="txt-warn">' + av + ' marca(s) na carroceria</span>' : 'Carroceria íntegra') +
-              (nok ? ' · <span class="txt-bad">' + nok + ' item(ns) reprovado(s)</span>' : '') +
-              '</div>' +
-              '<div style="margin-top:4px">' +
-              '<button type="button" class="btn btn-ghost" style="height:26px;font-size:11.5px;padding:0 8px" onclick="fecharHistoricoModal(); openDrawer(\'' + v.id + '\')">' +
-              icon('eye') + ' Ver Ficha Desta Vistoria' +
-              '</button>' +
-              '</div>' +
-              '</div>';
-          }).join('');
-        } else {
-          $('histLastKm').textContent = '—';
-          $('histLastStatus').textContent = '—';
-          $('histTimeline').innerHTML = '<p class="muted">Nenhuma vistoria encontrada para esta placa.</p>';
-        }
-
+        filtrarTimelineHist('todos');
         $('historyModal').classList.add('open');
       }
+
+      function filtrarTimelineHist(tipo) {
+        state.filtroHistTimeline = tipo || 'todos';
+        ['btnHistFilterAll', 'btnHistFilterAvarias', 'btnHistFilterBloq'].forEach(id => {
+          const btn = $(id);
+          if (btn) btn.classList.remove('active');
+        });
+        if (tipo === 'avarias' && $('btnHistFilterAvarias')) $('btnHistFilterAvarias').classList.add('active');
+        else if (tipo === 'bloqueadas' && $('btnHistFilterBloq')) $('btnHistFilterBloq').classList.add('active');
+        else if ($('btnHistFilterAll')) $('btnHistFilterAll').classList.add('active');
+
+        renderTimelineModalHistorico();
+      }
+      window.filtrarTimelineHist = filtrarTimelineHist;
+
+      function renderTimelineModalHistorico() {
+        const vistorias = state.histAtualVistorias || [];
+        const tipo = state.filtroHistTimeline || 'todos';
+        const timelineEl = $('histTimeline');
+        if (!timelineEl) return;
+
+        const filtradas = vistorias.filter(v => {
+          if (tipo === 'avarias') return avariasOf(v).length > 0;
+          if (tipo === 'bloqueadas') return v.liberacao === 'Não liberado' || v.liberacao === 'Ressalva';
+          return true;
+        });
+
+        if (!filtradas.length) {
+          timelineEl.innerHTML = '<p class="muted" style="padding:14px 0;text-align:center">Nenhuma vistoria encontrada com este filtro na placa ' + esc(state.histAtualPlaca || '') + '.</p>';
+          return;
+        }
+
+        timelineEl.innerHTML = filtradas.map(v => {
+          const av = avariasOf(v).length;
+          const nok = nokOf(v).length;
+          const cls = v.liberacao === 'Não liberado' ? 'bad' : v.liberacao === 'Ressalva' ? 'warn' : 'ok';
+          return '<div class="hist-item ' + cls + '">' +
+            '<i class="hist-dot"></i>' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+            '<span style="font-weight:700;font-size:13px;color:var(--ink)">' +
+            'Vistoria Nº ' + v.numero + ' · ' + formatarData(v.data) + ' às ' + (v.hora || '--:--') +
+            '</span>' +
+            statusTag(v.liberacao) +
+            '</div>' +
+            '<div style="font-size:12px;color:var(--ink-2);margin-top:2px">' +
+            'Motorista: <b>' + esc(v.motorista || 'Não informado') + '</b> · Km: ' + fmtKm(v.km) + ' · Rota: ' + esc(v.rota || '—') + ' · ' + esc(v.tipo || 'Saída') +
+            '</div>' +
+            '<div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">' +
+            (av ? '<span class="txt-warn">' + av + ' avaria(s) na carroceria</span>' : 'Carroceria íntegra') +
+            (nok ? ' · <span class="txt-bad">' + nok + ' item(ns) reprovado(s)</span>' : '') +
+            '</div>' +
+            '<div style="margin-top:6px">' +
+            '<button type="button" class="btn btn-ghost" style="height:26px;font-size:11.5px;padding:0 8px" onclick="fecharHistoricoModal(); openDrawer(\'' + v.id + '\')">' +
+            icon('eye') + ' Ver Ficha Desta Vistoria' +
+            '</button>' +
+            '</div>' +
+            '</div>';
+        }).join('');
+      }
+
+      function imprimirProntuarioVeiculo() {
+        const placa = ($('histPlateTitle')?.textContent || '').toUpperCase().trim();
+        if (!placa) return;
+        const vistorias = (state.all || []).filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === placa);
+        const stOleo = calcularStatusOleoPorKm(placa);
+        const info = obterInfoPlacaNaFrota(placa);
+        const lancs = (gastosState.lancamentos || []).filter(g => (g.placa || '').toUpperCase().trim() === placa);
+        const totalInvestido = lancs.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
+
+        const printWin = window.open('', '_blank');
+        if (!printWin) {
+          toast('Permita a abertura de pop-ups para imprimir o prontuário.', 'error');
+          return;
+        }
+
+        const html = '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+          '<title>Prontuário - Placa ' + placa + ' - Gomex Frota</title>' +
+          '<style>' +
+          'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;margin:24px;color:#1e293b;font-size:12.5px;line-height:1.45}' +
+          '.head{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #312e81;padding-bottom:12px;margin-bottom:16px}' +
+          '.title{font-size:18px;font-weight:800;color:#312e81;margin:0}' +
+          '.badge-placa{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:800;font-size:15px;background:#e0e7ff;color:#3730a3}' +
+          '.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}' +
+          '.box{padding:8px 10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px}' +
+          '.lbl{font-size:10.5px;color:#64748b;font-weight:700;text-transform:uppercase}' +
+          '.val{font-size:15px;font-weight:800;color:#0f172a;margin-top:2px}' +
+          'table{width:100%;border-collapse:collapse;margin-top:8px;font-size:11.5px}' +
+          'th{background:#f1f5f9;padding:6px 8px;text-align:left;font-weight:700;border-bottom:1px solid #cbd5e1}' +
+          'td{padding:6px 8px;border-bottom:1px solid #e2e8f0}' +
+          'h3{font-size:13px;font-weight:700;margin-top:18px;margin-bottom:6px;color:#1e1b4b;border-bottom:1px solid #e2e8f0;padding-bottom:4px}' +
+          '@media print{button{display:none}}' +
+          '</style></head><body>' +
+          '<div class="head"><div><h1 class="title">GOMEX DISTRIBUIDORA · PRONTUÁRIO DO VEÍCULO</h1><div style="font-size:11px;color:#64748b">Controle de Frota · Vistorias, Peças e Prevenção de Troca de Óleo</div></div><div class="badge-placa">PLACA: ' + placa + '</div></div>' +
+          '<div class="grid">' +
+          '<div class="box"><div class="lbl">Veículo</div><div class="val">' + esc(info.veiculo || '—') + '</div></div>' +
+          '<div class="box"><div class="lbl">Motorista Responsável</div><div class="val">' + esc(info.motorista || '—') + '</div></div>' +
+          '<div class="box"><div class="lbl">KM Atual</div><div class="val">' + (stOleo.kmAtual ? fmtKm(stOleo.kmAtual) : '—') + '</div></div>' +
+          '<div class="box"><div class="lbl">Total Investido</div><div class="val" style="color:#16a34a">' + fmtMoeda(totalInvestido) + '</div></div>' +
+          '</div>' +
+          '<div class="grid">' +
+          '<div class="box"><div class="lbl">Total de Vistorias</div><div class="val">' + vistorias.length + '</div></div>' +
+          '<div class="box"><div class="lbl">Status da Troca de Óleo</div><div class="val">' + esc(stOleo.labelCurto) + '</div></div>' +
+          '<div class="box"><div class="lbl">Próxima Troca de Óleo</div><div class="val">' + (stOleo.kmProximaTroca ? fmtKm(stOleo.kmProximaTroca) : '—') + '</div></div>' +
+          '<div class="box"><div class="lbl">Ciclo Recomendado</div><div class="val">A cada ' + fmtKm(stOleo.metaKm) + '</div></div>' +
+          '</div>' +
+          '<h3>HISTÓRICO RECENTE DE PEÇAS & GASTOS (' + lancs.length + ' lançamentos)</h3>' +
+          '<table><thead><tr><th>Data</th><th>Produto / Peça / Óleo</th><th>Qtd</th><th>Total</th><th>Motorista</th><th>NF/OS</th></tr></thead><tbody>' +
+          (lancs.length ? lancs.slice(0, 15).map(g => '<tr><td>' + formatarData(g.data) + '</td><td><strong>' + esc(g.produto_nome) + '</strong></td><td>' + g.quantidade + ' ' + esc(g.unidade||'un') + '</td><td style="color:#16a34a;font-weight:700">' + fmtMoeda(g.valor_total) + '</td><td>' + esc(g.motorista||'—') + '</td><td>' + esc(g.nf_os||'—') + '</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center;color:#64748b">Nenhum gasto ou peça registrado nesta placa.</td></tr>') +
+          '</tbody></table>' +
+          '<h3>HISTÓRICO DE VISTORIAS (' + vistorias.length + ' vistorias)</h3>' +
+          '<table><thead><tr><th>Nº</th><th>Data/Hora</th><th>Motorista</th><th>KM</th><th>Situação</th><th>Avarias</th></tr></thead><tbody>' +
+          (vistorias.length ? vistorias.slice(0, 15).map(v => '<tr><td>' + v.numero + '</td><td>' + formatarData(v.data) + ' ' + esc(v.hora||'') + '</td><td>' + esc(v.motorista||'—') + '</td><td>' + (v.km ? v.km + ' km' : '—') + '</td><td><strong>' + esc(v.liberacao||'—') + '</strong></td><td>' + avariasOf(v).length + ' avarias</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center;color:#64748b">Nenhuma vistoria encontrada.</td></tr>') +
+          '</tbody></table>' +
+          '<div style="margin-top:20px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#64748b">Emitido pelo Painel Operacional Gomex Frota em ' + new Date().toLocaleDateString('pt-BR') + '</span><button onclick="window.print()" style="padding:6px 14px;background:#312e81;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:700">Imprimir / Salvar PDF</button></div>' +
+          '<script>window.onload=function(){setTimeout(function(){window.print()},350)}</script>' +
+          '</body></html>';
+
+        printWin.document.open();
+        printWin.document.write(html);
+        printWin.document.close();
+      }
+      window.imprimirProntuarioVeiculo = imprimirProntuarioVeiculo;
       window.abrirHistoricoVeiculo = abrirHistoricoVeiculo;
 
       function fecharHistoricoModal() {
@@ -9764,6 +10513,7 @@
       const GASTOS_LANCAMENTOS_KEY = 'gomex_frota_lancamentos_gastos_v1';
       const GALERIA_VEICULOS_KEY = 'gomex_frota_galeria_veiculos_v1';
       const HIST_MANUT_ALL_KEY = 'gomex_frota_historico_manutencoes_v1';
+      const FROTA_VEICULOS_KEY = 'gomex_frota_cadastro_veiculos_v1';
 
       const PRODUTOS_PADRAO_FROTA = [
         { id: 'p_oleo_5w30', codigo: '01', nome: 'Óleo de Motor 5W30 Sintético', categoria: 'Óleo & Lubrificantes', unidade: 'L', preco_base: 45.00 },
@@ -9801,6 +10551,7 @@
         lancamentos: [],
         historico_manutencoes: {},
         galeria: [],
+        veiculos: [],
         aba: 'lancamentos',
         periodoQuick: 'todos',
         dataInicio: '',
@@ -9810,7 +10561,8 @@
         categoria: '',
         busca: '',
         modalItensDraft: [],
-        galUploadsDraft: []
+        galUploadsDraft: [],
+        gastoAnexosDraft: []
       };
 
       function garantirCodigosProdutos() {
@@ -9905,6 +10657,14 @@
             }
           }
         } catch (e) { }
+
+        try {
+          const rawV = localStorage.getItem(FROTA_VEICULOS_KEY);
+          if (rawV) {
+            const parsedV = JSON.parse(rawV);
+            if (Array.isArray(parsedV)) gastosState.veiculos = parsedV;
+          }
+        } catch (e) { }
       }
 
       function salvarGastosLocalStorage() {
@@ -9914,6 +10674,7 @@
           localStorage.setItem(GASTOS_LANCAMENTOS_KEY, JSON.stringify(gastosState.lancamentos));
           localStorage.setItem(HIST_MANUT_ALL_KEY, JSON.stringify(gastosState.historico_manutencoes || {}));
           localStorage.setItem(GALERIA_VEICULOS_KEY, JSON.stringify(gastosState.galeria || []));
+          localStorage.setItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
         } catch (e) { }
       }
 
@@ -9941,10 +10702,15 @@
                 gastosState.galeria = data.galeria;
                 mudou = true;
               }
+              if (Array.isArray(data.veiculos) && (data.veiculos.length || !gastosState.veiculos.length)) {
+                gastosState.veiculos = data.veiculos;
+                mudou = true;
+              }
               if (mudou) {
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
+                if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
               }
               return true;
             }
@@ -9952,7 +10718,7 @@
 
           // Fallback direto no Supabase (tabela parametros)
           try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1)&select=*', {
+            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1)&select=*', {
               headers: authHeaders(),
               cache: 'no-store'
             });
@@ -9976,10 +10742,15 @@
                     const g = JSON.parse(row.descricao);
                     if (Array.isArray(g)) gastosState.galeria = g;
                   }
+                  if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
+                    const vc = JSON.parse(row.descricao);
+                    if (Array.isArray(vc)) gastosState.veiculos = vc;
+                  }
                 }
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
+                if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
               }
             }
           } catch (e) { }
@@ -9996,7 +10767,8 @@
               produtos: gastosState.produtos,
               lancamentos: gastosState.lancamentos,
               historico_manutencoes: gastosState.historico_manutencoes,
-              galeria: gastosState.galeria
+              galeria: gastosState.galeria,
+              veiculos: gastosState.veiculos
             })
           });
           if (res.ok) return true;
@@ -10025,6 +10797,11 @@
               id: 'frota_galeria_veiculos_v1',
               valor: (gastosState.galeria || []).length,
               descricao: JSON.stringify(gastosState.galeria || [])
+            },
+            {
+              id: 'frota_cadastro_veiculos_v1',
+              valor: (gastosState.veiculos || []).length,
+              descricao: JSON.stringify(gastosState.veiculos || [])
             }
           ];
           await fetch(SUPABASE_URL + '/rest/v1/parametros', {
@@ -10084,11 +10861,20 @@
             km: fotoAnt.km || ''
           };
         }
+        const cadAnt = (gastosState.veiculos || []).find(v => (v.placa || '').toUpperCase().trim() === p);
+        if (cadAnt) {
+          return { placa: p, veiculo: cadAnt.modelo || '', motorista: cadAnt.motorista || '', km: cadAnt.km_inicial || '' };
+        }
         return { placa: p, veiculo: '', motorista: '', km: '' };
       }
 
       function obterTodasPlacasConhecidas() {
         const map = new Map();
+        (gastosState.veiculos || []).forEach(v => {
+          const p = (v.placa || '').toUpperCase().trim();
+          if (!p || v.ativo === false) return;
+          map.set(p, { placa: p, veiculo: v.modelo || '', motorista: v.motorista || '' });
+        });
         state.all.forEach(x => {
           if (x.status === 'inativo') return;
           const p = (x.placa || '').toUpperCase().trim();
@@ -10117,6 +10903,10 @@
 
       function obterTodosMotoristasConhecidos() {
         const set = new Set(['Hendreo']);
+        (gastosState.veiculos || []).forEach(v => {
+          const m = (v.motorista || '').trim();
+          if (m) set.add(m);
+        });
         state.all.forEach(x => {
           if (x.status === 'inativo') return;
           const m = (x.motorista || '').trim();
@@ -10547,6 +11337,9 @@
                 '<div class="stack">' +
                 '<span class="t1">' + esc(g.fornecedor || '—') + '</span>' +
                 (g.nf_os ? '<span class="t2">NF/OS: ' + esc(g.nf_os) + '</span>' : '') +
+                ((Array.isArray(g.anexo_ids) && g.anexo_ids.length)
+                  ? '<button type="button" class="btn-anexo-nf" onclick="abrirLightboxFoto(\'' + esc(g.anexo_ids[0]) + '\')" title="Ver foto da nota / comprovante">' + icon('file-text') + ' Ver NF' + (g.anexo_ids.length > 1 ? ' (' + g.anexo_ids.length + ')' : '') + '</button>'
+                  : '') +
                 '</div>' +
                 '</td>' +
                 '<td style="text-align:right">' +
@@ -10833,6 +11626,8 @@
 
         toggleCadastroRapidoProdutoInline(false);
         renderItensDraftNoModalGasto();
+        gastosState.gastoAnexosDraft = [];
+        renderAnexosGastoDraft();
         $('modalLancarGasto').classList.add('open');
       }
       window.abrirModalLancarGasto = abrirModalLancarGasto;
@@ -11114,6 +11909,106 @@
       }
       window.salvarProdutoRapidoInline = salvarProdutoRapidoInline;
 
+      function acionarSeletorAnexoGasto() {
+        const inp = $('gastoAnexoInput');
+        if (inp) {
+          inp.value = '';
+          inp.click();
+        }
+      }
+      window.acionarSeletorAnexoGasto = acionarSeletorAnexoGasto;
+
+      async function onSelecionarAnexosGasto(fileList) {
+        if (!fileList || !fileList.length) return;
+        const files = Array.from(fileList).filter(f => f.type && f.type.startsWith('image/'));
+        if (!files.length) {
+          toast('Selecione arquivos de imagem válidos para o comprovante/NF.', 'error');
+          return;
+        }
+        let add = 0;
+        for (const f of files) {
+          try {
+            const dataUrl = await comprimirImagemParaDataUrl(f, 1200, 0.82);
+            if (!Array.isArray(gastosState.gastoAnexosDraft)) gastosState.gastoAnexosDraft = [];
+            gastosState.gastoAnexosDraft.push({
+              uid: 'anx_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+              nome: f.name,
+              dataUrl
+            });
+            add++;
+          } catch (e) {}
+        }
+        renderAnexosGastoDraft();
+        if (add > 0) toast(add + (add === 1 ? ' comprovante/foto anexado!' : ' fotos/comprovantes anexados!'));
+      }
+      window.onSelecionarAnexosGasto = onSelecionarAnexosGasto;
+
+      function renderAnexosGastoDraft() {
+        const container = $('gastoAnexoPreview');
+        const btnLbl = $('gastoAnexoBtnLabel');
+        if (!container) return;
+        const list = gastosState.gastoAnexosDraft || [];
+        if (!list.length) {
+          container.hidden = true;
+          container.style.display = 'none';
+          container.innerHTML = '';
+          if (btnLbl) btnLbl.textContent = 'Anexar Foto';
+          return;
+        }
+        container.hidden = false;
+        container.style.display = 'grid';
+        if (btnLbl) btnLbl.textContent = 'Adicionar Mais Fotos (' + list.length + ')';
+        container.innerHTML = list.map((a, idx) =>
+          '<div class="upload-preview-item" title="' + esc(a.nome || ('Comprovante ' + (idx + 1))) + '">' +
+          '<img src="' + a.dataUrl + '" alt="Preview">' +
+          '<button type="button" class="upload-preview-remove" onclick="event.stopPropagation(); removerAnexoGastoDraft(' + idx + ')" title="Remover este anexo">×</button>' +
+          '</div>'
+        ).join('') +
+        '<button type="button" onclick="event.stopPropagation(); acionarSeletorAnexoGasto()" title="Anexar mais uma foto" style="height:82px;border-radius:8px;border:1.5px dashed var(--accent);background:var(--accent-tint);color:var(--accent-hi);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:11px;font-weight:700">' +
+        '<span style="font-size:18px;line-height:1">+</span>' +
+        '<span>Mais foto</span>' +
+        '</button>';
+      }
+      window.renderAnexosGastoDraft = renderAnexosGastoDraft;
+
+      function removerAnexoGastoDraft(idx) {
+        if (!Array.isArray(gastosState.gastoAnexosDraft)) return;
+        gastosState.gastoAnexosDraft.splice(idx, 1);
+        renderAnexosGastoDraft();
+      }
+      window.removerAnexoGastoDraft = removerAnexoGastoDraft;
+
+      function registrarAnexosGastoNaGaleria({ placa, veiculo, data, motorista, km, nf_os, fornecedor, usuarioLogado }) {
+        const list = gastosState.gastoAnexosDraft || [];
+        if (!list.length) return [];
+        if (!Array.isArray(gastosState.galeria)) gastosState.galeria = [];
+        const ids = [];
+        const baseTs = Date.now();
+
+        list.forEach((anx, i) => {
+          if (anx.fotoId) {
+            ids.push(anx.fotoId);
+            return;
+          }
+          const fotoId = 'foto_nf_' + (baseTs + i) + '_' + Math.random().toString(36).slice(2, 6);
+          gastosState.galeria.unshift({
+            id: fotoId,
+            created_ts: baseTs + i,
+            placa: (placa || '').toUpperCase().trim(),
+            veiculo: veiculo || 'Veículo da Frota',
+            data: data || isoLocal(new Date()),
+            motorista: motorista || 'Responsável',
+            categoria: 'Nota Fiscal / Comprovante',
+            km: km || null,
+            obs: 'Comprovante / NF de gasto lançado' + (nf_os ? ' (NF/OS: ' + nf_os + ')' : '') + (fornecedor ? ' · Fornecedor: ' + fornecedor : ''),
+            imagem: anx.dataUrl,
+            registrado_por: usuarioLogado || 'gomex'
+          });
+          ids.push(fotoId);
+        });
+        return ids;
+      }
+
       async function salvarLancamentoGasto() {
         const placa = ($('gastoInputPlaca').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
         if (!placa) {
@@ -11144,6 +12039,7 @@
 
         try {
           const usuarioLogado = ($('userNameLabel')?.textContent || 'gomex').trim();
+          const anexo_ids = registrarAnexosGastoNaGaleria({ placa, veiculo, data, motorista, km, nf_os, fornecedor, usuarioLogado });
 
           if (editId) {
             const itemDraft = gastosState.modalItensDraft[0];
@@ -11168,7 +12064,8 @@
                 valor_total: Number((qtd * vUnit).toFixed(2)),
                 fornecedor,
                 nf_os,
-                obs
+                obs,
+                anexo_ids
               };
             }
           } else {
@@ -11195,6 +12092,7 @@
                 fornecedor,
                 nf_os,
                 obs,
+                anexo_ids,
                 registrado_por: usuarioLogado
               });
             });
@@ -11203,6 +12101,8 @@
           await sincronizarGastosComServidor('push');
           fecharModalLancarGasto();
           renderGastosView();
+          if (typeof renderGaleriaView === 'function') renderGaleriaView();
+          if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
           if (state.sel && (state.sel.placa || '').toUpperCase().trim() === placa) {
             carregarGastosPlacaNoDrawer(placa);
           }
@@ -11251,6 +12151,13 @@
 
         toggleCadastroRapidoProdutoInline(false);
         renderItensDraftNoModalGasto();
+        gastosState.gastoAnexosDraft = (Array.isArray(g.anexo_ids) ? g.anexo_ids : [])
+          .map(fid => {
+            const foto = (gastosState.galeria || []).find(f => String(f.id) === String(fid));
+            return foto ? { uid: 'anx_' + fid, fotoId: foto.id, dataUrl: foto.imagem } : null;
+          })
+          .filter(Boolean);
+        renderAnexosGastoDraft();
         $('modalLancarGasto').classList.add('open');
       }
       window.editarLancamentoGasto = editarLancamentoGasto;
@@ -11887,6 +12794,461 @@
           if (e.target === $('modalVerFotoGaleria')) fecharLightboxFoto();
         });
       }
+      if ($('modalCopiarWhatsApp')) {
+        $('modalCopiarWhatsApp').addEventListener('click', e => {
+          if (e.target === $('modalCopiarWhatsApp')) fecharModalCopiarWhatsApp();
+        });
+      }
+      if ($('modalCadastrarVeiculo')) {
+        $('modalCadastrarVeiculo').addEventListener('click', e => {
+          if (e.target === $('modalCadastrarVeiculo')) fecharModalCadastrarVeiculo();
+        });
+      }
+
+      // ==============================================================================
+      // MODAL: COBRANÇA WHATSAPP EM 1 CLIQUE COM TEXTO PRONTO PARA COPIAR E COLAR
+      // ==============================================================================
+      function abrirModalCopiarWhatsApp(motoristaNome, placaRaw, tipoAviso, extra) {
+        tipoAviso = tipoAviso || 'vistoria_mensal';
+        extra = extra || {};
+        var p = (placaRaw || '').toUpperCase().trim();
+        var infoPlaca = p ? obterInfoPlacaNaFrota(p) : { placa: p, veiculo: '', motorista: motoristaNome };
+        var mot = (motoristaNome || infoPlaca.motorista || 'Motorista').trim();
+        var veic = infoPlaca.veiculo || 'veículo da frota';
+
+        if ($('wppDestinatarioInfo')) {
+          $('wppDestinatarioInfo').innerHTML = 'Destinatário: <strong>' + esc(mot) + '</strong>' + (veic ? ' · <span style="color:var(--ink-3)">' + esc(veic) + '</span>' : '');
+        }
+        if ($('wppPlacaBadge')) {
+          $('wppPlacaBadge').textContent = p || 'FROTA';
+        }
+
+        var LINK_CHECKLIST = 'https://gomex-checklist.gomexassistencia2026.workers.dev/';
+        var partes = [];
+
+        if (tipoAviso === 'vistoria_vencida' || (tipoAviso === 'vistoria_mensal' && Number(extra.atraso) > 0)) {
+          var atraso = extra.atraso || 'alguns';
+          partes = [
+            'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
+            'Estou acompanhando o controle operacional da frota e verifiquei que o check-list mensal do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ') está pendente/vencido há *' + atraso + ' dia(s)*.',
+            'Por favor, acesse o link abaixo e realize o check-list do veículo hoje mesmo:\n🔗 ' + LINK_CHECKLIST,
+            'Qualquer dúvida ou caso o veículo esteja com alguma avaria ou necessidade de manutenção, me avise por aqui!\nObrigado pela colaboração! 🚚📦'
+          ];
+        } else if (tipoAviso === 'oleo' || tipoAviso === 'oleo_vencido' || tipoAviso === 'oleo_proximo') {
+          var kmInfo = extra.diffKm ? '(previsão de troca em ' + fmtKm(extra.diffKm) + ')' : '';
+          partes = [
+            'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
+            'Estamos acompanhando a quilometragem do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ') e identificamos que está no momento da *troca de óleo e revisão preventiva* ' + kmInfo + '.',
+            'Por favor, nos informe o KM atual do painel e verifique a disponibilidade para realizarmos a troca de óleo na oficina.',
+            'Aproveite também para atualizar o check-list mensal pelo link:\n🔗 ' + LINK_CHECKLIST,
+            'Conto com seu retorno! Um abraço e boa rota! 🚚🔧'
+          ];
+        } else {
+          partes = [
+            'Olá, *' + mot + '*! Tudo bem? Aqui é o *Hendreo* da *Gomex Distribuidora*.',
+            'Passando para lembrar que está na data de renovação do *check-list mensal* do seu veículo (*' + p + '*' + (veic ? ' - ' + veic : '') + ').',
+            'É bem rápido, basta acessar o link e registrar a vistoria com as fotos:\n🔗 ' + LINK_CHECKLIST,
+            'Obrigado pela dedicação e boa rota! 🚚📦'
+          ];
+        }
+
+        if ($('wppTextoMensagem')) {
+          $('wppTextoMensagem').textContent = partes.join('\n\n');
+        }
+
+        var btnLbl = $('btnCopiarTextoWppLabel');
+        if (btnLbl) btnLbl.textContent = 'Copiar Texto Pronto';
+
+        $('modalCopiarWhatsApp').classList.add('open');
+      }
+      window.abrirModalCopiarWhatsApp = abrirModalCopiarWhatsApp;
+
+      function fecharModalCopiarWhatsApp() {
+        $('modalCopiarWhatsApp').classList.remove('open');
+      }
+      window.fecharModalCopiarWhatsApp = fecharModalCopiarWhatsApp; {
+        $('modalCopiarWhatsApp').classList.remove('open');
+      }
+      window.fecharModalCopiarWhatsApp = fecharModalCopiarWhatsApp;
+
+      async function executarCopiaTextoWhatsApp() {
+        const el = $('wppTextoMensagem');
+        if (!el) return;
+        const texto = el.textContent || '';
+        if (!texto) return;
+
+        let copiou = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(texto);
+            copiou = true;
+          } catch (e) { }
+        }
+
+        if (!copiou) {
+          const ta = document.createElement('textarea');
+          ta.value = texto;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            copiou = true;
+          } catch (e) { }
+          document.body.removeChild(ta);
+        }
+
+        const btnLbl = $('btnCopiarTextoWppLabel');
+        if (btnLbl) {
+          btnLbl.textContent = '✓ Texto Copiado!';
+          setTimeout(() => {
+            if (btnLbl) btnLbl.textContent = 'Copiar Texto Pronto';
+          }, 2400);
+        }
+
+        toast('Texto pronto copiado! Abra o WhatsApp do motorista e pressione Ctrl + V para colar.');
+      }
+      window.executarCopiaTextoWhatsApp = executarCopiaTextoWhatsApp;
+
+      // ==============================================================================
+      // CADASTRO FIXO DA FROTA (VEÍCULOS, MOTORISTAS TITULARES, ÓLEO & REVISÃO)
+      // ==============================================================================
+      function inicializarVeiculosFrotaPadraoSeVazio() {
+        if (Array.isArray(gastosState.veiculos) && gastosState.veiculos.length > 0) return;
+
+        // Auto-seed inteligente a partir das vistorias reais existentes no painel
+        const mapa = new Map();
+        (state.all || []).forEach(x => {
+          if (x.status === 'inativo') return;
+          const p = (x.placa || '').toUpperCase().trim();
+          if (!p) return;
+          if (!mapa.has(p)) {
+            mapa.set(p, {
+              placa: p,
+              modelo: x.veiculo === 'Outro' ? (x.veiculo_outro || 'Van') : (x.veiculo || 'Kombi'),
+              motorista: x.motorista || '',
+              rota: x.rota || '',
+              km: x.km || null
+            });
+          } else {
+            const cur = mapa.get(p);
+            if (x.km && (!cur.km || Number(x.km) > Number(cur.km))) cur.km = x.km;
+            if (x.motorista && !cur.motorista) cur.motorista = x.motorista;
+            if (x.rota && !cur.rota) cur.rota = x.rota;
+          }
+        });
+
+        if (mapa.size > 0) {
+          gastosState.veiculos = Array.from(mapa.values()).map((v, i) => ({
+            id: 'veic_' + (Date.now() + i),
+            placa: v.placa,
+            modelo: v.modelo,
+            ano: '',
+            motorista: v.motorista,
+            rota: v.rota,
+            km_inicial: v.km || 0,
+            meta_oleo_km: 10000,
+            obs: 'Cadastro inicial sincronizado das vistorias',
+            ativo: true,
+            created_at: isoLocal(new Date())
+          }));
+          salvarGastosLocalStorage();
+        }
+      }
+
+      function renderFrotaCadView() {
+        const tbody = $('cadFrotaTable')?.querySelector('tbody');
+        if (!tbody) return;
+
+        inicializarVeiculosFrotaPadraoSeVazio();
+
+        const lista = Array.isArray(gastosState.veiculos) ? gastosState.veiculos : [];
+        const ativos = lista.filter(v => v.ativo !== false);
+
+        const q = ($('cadFiltroBusca')?.value || '').toLowerCase().trim();
+        const fStatus = $('cadFiltroStatus')?.value || 'todos';
+
+        if ($('btnLimparFiltrosCad')) {
+          $('btnLimparFiltrosCad').hidden = !(q || fStatus !== 'todos');
+        }
+
+        // Indicadores do topo
+        let vistVencCount = 0;
+        let oleoAlertaCount = 0;
+
+        const itensCalculados = lista.map(v => {
+          const pNorm = (v.placa || '').toUpperCase().trim();
+          const vistorias = (state.all || [])
+            .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+            .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
+          const recVist = vistorias[0] || null;
+
+          const stOleo = calcularStatusOleoPorKm(pNorm);
+          if (stOleo.status === 'vencido' || stOleo.status === 'proximo') oleoAlertaCount++;
+
+          let cicloMensal = null;
+          let vistStatus = 'sem_vistoria';
+          if (recVist && recVist.data) {
+            cicloMensal = calcularCicloVistoriaMensal(recVist.data);
+            vistStatus = cicloMensal.status;
+            if (vistStatus === 'vencida') vistVencCount++;
+          }
+
+          // Custo por KM
+          const lancs = (gastosState.lancamentos || []).filter(g => (g.placa || '').toUpperCase().trim() === pNorm);
+          const somaPecas = lancs.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
+          let somaOS = 0;
+          vistorias.forEach(x => {
+            const m = getManutencaoData(x);
+            if (m && m.custo) {
+              const c = parseFloat(String(m.custo).replace(/\./g, '').replace(',', '.'));
+              if (!isNaN(c)) somaOS += c;
+            }
+          });
+          const totalGasto = somaPecas + somaOS;
+
+          let kmMax = null;
+          let kmMin = null;
+          vistorias.forEach(x => {
+            if (x.km && !isNaN(Number(x.km))) {
+              const k = Number(x.km);
+              if (kmMax === null || k > kmMax) kmMax = k;
+              if (kmMin === null || k < kmMin) kmMin = k;
+            }
+          });
+          const kmRodados = (kmMax !== null && kmMin !== null && kmMax >= kmMin) ? (kmMax - kmMin) : 0;
+          const custoPorKm = (kmRodados > 0 && totalGasto > 0) ? (totalGasto / kmRodados) : 0;
+
+          return {
+            ...v,
+            recVist,
+            vistoriasCount: vistorias.length,
+            cicloMensal,
+            vistStatus,
+            stOleo,
+            totalGasto,
+            kmRodados,
+            custoPorKm
+          };
+        });
+
+        if ($('cadStatTotal')) $('cadStatTotal').textContent = lista.length;
+        if ($('cadStatAtivos')) $('cadStatAtivos').textContent = ativos.length;
+        if ($('cadStatVistoriaVenc')) $('cadStatVistoriaVenc').textContent = vistVencCount;
+        if ($('cadStatOleoAlerta')) $('cadStatOleoAlerta').textContent = oleoAlertaCount;
+
+        // Filtragem
+        const filtrados = itensCalculados.filter(item => {
+          if (fStatus === 'em_dia' && item.vistStatus !== 'em_dia') return false;
+          if (fStatus === 'atencao_vistoria' && item.vistStatus !== 'vencida' && item.vistStatus !== 'proxima') return false;
+          if (fStatus === 'alerta_oleo' && item.stOleo.status !== 'vencido' && item.stOleo.status !== 'proximo') return false;
+          if (fStatus === 'sem_vistoria' && item.vistStatus !== 'sem_vistoria') return false;
+
+          if (q) {
+            const hay = ((item.placa || '') + ' ' + (item.modelo || '') + ' ' + (item.motorista || '') + ' ' + (item.rota || '') + ' ' + (item.obs || '')).toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        if (!filtrados.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="empty">' +
+            '<div class="empty-icon-wrap">' + icon('truck') + '</div>' +
+            '<h2>Nenhum veículo encontrado na frota</h2>' +
+            '<p>Cadastre seus veículos com placa, modelo e motorista titular para gerenciar vistorias e troca de óleo.</p>' +
+            '<div class="empty-action">' +
+            '<button type="button" class="btn btn-primary" onclick="abrirModalCadastrarVeiculo()">' +
+            icon('plus') + ' <span>Cadastrar Primeiro Veículo</span>' +
+            '</button>' +
+            '</div>' +
+            '</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = filtrados.map(v => {
+          let vistoriaBadge = '';
+          let tipoAvisoWpp = 'vistoria_mensal';
+          let atrasoDias = 0;
+
+          if (v.vistStatus === 'sem_vistoria') {
+            vistoriaBadge = '<span class="status-badge bad" style="font-weight:700">⚠️ Sem Vistoria Feita</span>';
+            tipoAvisoWpp = 'vistoria_vencida';
+            atrasoDias = 30;
+          } else if (v.vistStatus === 'vencida') {
+            const at = Math.abs(v.cicloMensal.diasParaVencer);
+            vistoriaBadge = '<span class="status-badge bad">📅 Vencida há ' + at + 'd</span>';
+            tipoAvisoWpp = 'vistoria_vencida';
+            atrasoDias = at;
+          } else if (v.vistStatus === 'proxima') {
+            vistoriaBadge = '<span class="status-badge warn">⏰ Vence em ' + v.cicloMensal.diasParaVencer + 'd</span>';
+            tipoAvisoWpp = 'vistoria_mensal';
+          } else {
+            vistoriaBadge = '<span class="status-badge ok">✓ Em dia (Próx: ' + v.cicloMensal.dataProximaFmt + ')</span>';
+          }
+
+          if (v.stOleo.status === 'vencido') tipoAvisoWpp = 'oleo_vencido';
+
+          const custoKmLabel = v.custoPorKm > 0
+            ? 'R$ ' + v.custoPorKm.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '/km'
+            : (v.totalGasto > 0 ? fmtMoeda(v.totalGasto) : '—');
+
+          const kmExib = v.stOleo.kmAtual ? fmtKm(v.stOleo.kmAtual) : (v.km_inicial ? fmtKm(v.km_inicial) : '—');
+
+          return '<tr>' +
+            '<td>' +
+            '<div class="stack">' +
+            '<button type="button" class="plate" onclick="abrirHistoricoVeiculo(\'' + esc(v.placa) + '\')" title="Ver prontuário do veículo">' + esc(v.placa) + '</button>' +
+            '<span class="t2">' + esc(v.modelo || 'Veículo') + (v.ano ? ' (' + esc(v.ano) + ')' : '') + '</span>' +
+            '</div>' +
+            '</td>' +
+            '<td>' +
+            '<div class="stack">' +
+            '<span class="t1" style="font-weight:700">' + esc(v.motorista || 'Sem motorista titular') + '</span>' +
+            '<span class="t2">' + (v.recVist ? 'Última vistoria: ' + formatarData(v.recVist.data) : 'Nenhum check-list') + '</span>' +
+            '</div>' +
+            '</td>' +
+            '<td><span class="badge-km" style="background:var(--accent-tint);color:var(--accent-hi)">' + esc(v.rota || '—') + '</span></td>' +
+            '<td><strong>' + kmExib + '</strong></td>' +
+            '<td>' + vistoriaBadge + '</td>' +
+            '<td>' + v.stOleo.badgeHtml + '</td>' +
+            '<td><span class="custo-km-pill">' + custoKmLabel + '</span></td>' +
+            '<td style="text-align:right">' +
+            '<div style="display:inline-flex;gap:4px">' +
+            '<button type="button" class="btn btn-ghost btn-whatsapp-copy" style="height:26px;padding:0 7px;font-size:11px" onclick="abrirModalCopiarWhatsApp(\'' + esc(v.motorista) + '\', \'' + esc(v.placa) + '\', \'' + tipoAvisoWpp + '\', { atraso: ' + atrasoDias + ', diffKm: ' + (v.stOleo.diffKm || 0) + ' })" title="Copiar texto pronto para cobrar motorista no WhatsApp">' +
+            '<svg class="i" style="width:12px;height:12px"><use href="#i-whatsapp" /></svg> <span>Cobrar</span>' +
+            '</button>' +
+            '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px" onclick="abrirHistoricoVeiculo(\'' + esc(v.placa) + '\')" title="Ver prontuário da placa">' +
+            icon('clock') +
+            '</button>' +
+            '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px;color:var(--accent-hi)" onclick="abrirModalCadastrarVeiculo(\'' + esc(v.id) + '\')" title="Editar dados do veículo">' +
+            icon('edit') +
+            '</button>' +
+            '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px;color:var(--bad)" onclick="excluirCadastroVeiculo(\'' + esc(v.id) + '\')" title="Remover da frota">' +
+            icon('trash') +
+            '</button>' +
+            '</div>' +
+            '</td>' +
+            '</tr>';
+        }).join('');
+      }
+      window.renderFrotaCadView = renderFrotaCadView;
+
+      function limparFiltrosCad() {
+        if ($('cadFiltroBusca')) $('cadFiltroBusca').value = '';
+        if ($('cadFiltroStatus')) $('cadFiltroStatus').value = 'todos';
+        renderFrotaCadView();
+      }
+      window.limparFiltrosCad = limparFiltrosCad;
+
+      function abrirModalCadastrarVeiculo(id = '') {
+        const v = id ? (gastosState.veiculos || []).find(x => String(x.id) === String(id)) : null;
+
+        $('cadVeiculoEditId').value = v ? v.id : '';
+        $('modalCadastrarVeiculoTitulo').textContent = v ? ('Editar Veículo · Placa ' + (v.placa || '')) : 'Cadastrar Novo Veículo na Frota';
+        $('btnSalvarCadVeiculoLabel').textContent = v ? 'Atualizar Veículo' : 'Salvar Veículo';
+
+        $('cadInputPlaca').value = v ? (v.placa || '') : '';
+        $('cadInputPlaca').disabled = Boolean(v); // Placa não deve ser alterada em edição
+        $('cadInputModelo').value = v ? (v.modelo || '') : '';
+        $('cadInputAno').value = v ? (v.ano || '') : '';
+        $('cadInputMotorista').value = v ? (v.motorista || '') : '';
+        $('cadInputRota').value = v ? (v.rota || '') : '';
+        $('cadInputKm').value = v ? (v.km_inicial || '') : '';
+        $('cadInputMetaOleo').value = v ? (v.meta_oleo_km || 10000) : 10000;
+        $('cadInputObs').value = v ? (v.obs || '') : '';
+
+        $('modalCadastrarVeiculo').classList.add('open');
+      }
+      window.abrirModalCadastrarVeiculo = abrirModalCadastrarVeiculo;
+
+      function fecharModalCadastrarVeiculo() {
+        $('modalCadastrarVeiculo').classList.remove('open');
+      }
+      window.fecharModalCadastrarVeiculo = fecharModalCadastrarVeiculo;
+
+      async function salvarCadastroVeiculo() {
+        const placa = ($('cadInputPlaca').value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+        if (!placa) {
+          toast('Informe a placa do veículo.', 'error');
+          $('cadInputPlaca').focus();
+          return;
+        }
+
+        const editId = $('cadVeiculoEditId').value;
+        const modelo = ($('cadInputModelo').value || '').trim() || 'Kombi';
+        const ano = ($('cadInputAno').value || '').trim();
+        const motorista = ($('cadInputMotorista').value || '').trim();
+        const rota = ($('cadInputRota').value || '').trim();
+        const km_inicial = Number($('cadInputKm').value) || 0;
+        const meta_oleo_km = Number($('cadInputMetaOleo').value) || 10000;
+        const obs = ($('cadInputObs').value || '').trim();
+
+        if (!Array.isArray(gastosState.veiculos)) gastosState.veiculos = [];
+
+        if (editId) {
+          const idx = gastosState.veiculos.findIndex(x => String(x.id) === String(editId));
+          if (idx !== -1) {
+            gastosState.veiculos[idx] = {
+              ...gastosState.veiculos[idx],
+              modelo,
+              ano,
+              motorista,
+              rota,
+              km_inicial,
+              meta_oleo_km,
+              obs
+            };
+          }
+        } else {
+          // Checar se a placa já existe
+          const jaExiste = gastosState.veiculos.some(x => (x.placa || '').toUpperCase().trim() === placa);
+          if (jaExiste) {
+            toast('A placa ' + placa + ' já está cadastrada na frota.', 'error');
+            return;
+          }
+          gastosState.veiculos.push({
+            id: 'veic_' + Date.now(),
+            placa,
+            modelo,
+            ano,
+            motorista,
+            rota,
+            km_inicial,
+            meta_oleo_km,
+            obs,
+            ativo: true,
+            created_at: isoLocal(new Date())
+          });
+        }
+
+        const btn = $('btnSalvarCadVeiculo');
+        if (btn) btn.disabled = true;
+
+        try {
+          await sincronizarGastosComServidor('push');
+          fecharModalCadastrarVeiculo();
+          renderFrotaCadView();
+          renderSummary();
+          toast(editId ? 'Veículo atualizado no cadastro!' : 'Veículo ' + placa + ' cadastrado com sucesso!');
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+      window.salvarCadastroVeiculo = salvarCadastroVeiculo;
+
+      async function excluirCadastroVeiculo(id) {
+        const v = (gastosState.veiculos || []).find(x => String(x.id) === String(id));
+        if (!v) return;
+        if (!confirm('Deseja remover o veículo de placa ' + v.placa + ' (' + (v.modelo || 'Veículo') + ') do cadastro fixo da frota?')) return;
+
+        gastosState.veiculos = (gastosState.veiculos || []).filter(x => String(x.id) !== String(id));
+        await sincronizarGastosComServidor('push');
+        renderFrotaCadView();
+        renderSummary();
+        toast('Veículo ' + v.placa + ' removido do cadastro.');
+      }
+      window.excluirCadastroVeiculo = excluirCadastroVeiculo;
 
       // ==============================================================================
       // EXPORTAÇÃO CSV E RELATÓRIO PDF EXECUTIVO DE CUSTOS, PEÇAS & INSUMOS (DE X ATÉ Y)
