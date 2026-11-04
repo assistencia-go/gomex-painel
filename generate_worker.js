@@ -71,6 +71,106 @@ export default {
       });
     }
 
+    // 1.5 ROTA DE CUSTOS, PEÇAS E INSUMOS DA FROTA (/api/frota-gastos)
+    if (url.pathname === '/api/frota-gastos') {
+      const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\\/+$/, '');
+      const supabaseKey = getSupabaseKey(env);
+
+      if (request.method === 'GET') {
+        try {
+          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1)&select=*\`, {
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': \`Bearer \${supabaseKey}\`,
+              'Content-Type': 'application/json'
+            }
+          });
+          const rows = await res.json();
+          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] };
+          if (Array.isArray(rows)) {
+            for (const row of rows) {
+              if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
+                try { out.produtos = JSON.parse(row.descricao); } catch (e) {}
+              }
+              if (row.id === 'frota_lancamentos_gastos_v1' && row.descricao) {
+                try { out.lancamentos = JSON.parse(row.descricao); } catch (e) {}
+              }
+              if (row.id === 'frota_historico_manutencoes_v1' && row.descricao) {
+                try { out.historico_manutencoes = JSON.parse(row.descricao); } catch (e) {}
+              }
+              if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
+                try { out.galeria = JSON.parse(row.descricao); } catch (e) {}
+              }
+            }
+          }
+          return new Response(JSON.stringify(out), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          });
+        }
+      }
+
+      if (request.method === 'POST' || request.method === 'PATCH') {
+        try {
+          const payload = await request.json();
+          const rowsToUpsert = [];
+          if (Array.isArray(payload.produtos)) {
+            rowsToUpsert.push({
+              id: 'frota_catalogo_produtos_v1',
+              valor: payload.produtos.length,
+              descricao: JSON.stringify(payload.produtos)
+            });
+          }
+          if (Array.isArray(payload.lancamentos)) {
+            const totalInvestido = payload.lancamentos.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
+            rowsToUpsert.push({
+              id: 'frota_lancamentos_gastos_v1',
+              valor: Number(totalInvestido.toFixed(2)),
+              descricao: JSON.stringify(payload.lancamentos)
+            });
+          }
+          if (payload.historico_manutencoes && typeof payload.historico_manutencoes === 'object') {
+            rowsToUpsert.push({
+              id: 'frota_historico_manutencoes_v1',
+              valor: Object.keys(payload.historico_manutencoes).length,
+              descricao: JSON.stringify(payload.historico_manutencoes)
+            });
+          }
+          if (Array.isArray(payload.galeria)) {
+            rowsToUpsert.push({
+              id: 'frota_galeria_veiculos_v1',
+              valor: payload.galeria.length,
+              descricao: JSON.stringify(payload.galeria)
+            });
+          }
+          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros\`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': \`Bearer \${supabaseKey}\`,
+              'Content-Type': 'application/json',
+              'Prefer': 'resolution=merge-duplicates,return=representation'
+            },
+            body: JSON.stringify(rowsToUpsert)
+          });
+          return new Response(JSON.stringify({ ok: true, synced: res.ok }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ ok: false, error: err.message }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          });
+        }
+      }
+    }
+
     // 2. ROTA DE CHECKLISTS (GET, PATCH & POST)
     if (url.pathname === '/api/checklists') {
       const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\\/+$/, '');
