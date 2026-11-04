@@ -85,6 +85,19 @@ const server = http.createServer((req, res) => {
     res.end(JSON.stringify({ error: 'URL inválida' }));
     return;
   }
+
+  // Sanitização de Segurança: Redireciona removendo credenciais da URL se alguém acessar com parâmetros no link
+  if (parsedUrl.searchParams.has('username') || parsedUrl.searchParams.has('password') || parsedUrl.searchParams.has('user') || parsedUrl.searchParams.has('pass')) {
+    parsedUrl.searchParams.delete('username');
+    parsedUrl.searchParams.delete('password');
+    parsedUrl.searchParams.delete('user');
+    parsedUrl.searchParams.delete('pass');
+    const redirectTarget = parsedUrl.pathname + (parsedUrl.search ? parsedUrl.search : '');
+    res.writeHead(302, { 'Location': redirectTarget });
+    res.end();
+    return;
+  }
+
   const pathname = parsedUrl.pathname;
 
   // API para Catálogo de Produtos/Peças, Lançamentos de Gastos, Histórico de Manutenção e Galeria (/api/frota-gastos)
