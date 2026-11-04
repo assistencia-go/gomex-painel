@@ -48,6 +48,16 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Sanitização de Segurança: Redireciona removendo credenciais da URL se alguém acessar com parâmetros no link
+    if (url.searchParams.has('username') || url.searchParams.has('password') || url.searchParams.has('user') || url.searchParams.has('pass')) {
+      const cleanUrl = new URL(request.url);
+      cleanUrl.searchParams.delete('username');
+      cleanUrl.searchParams.delete('password');
+      cleanUrl.searchParams.delete('user');
+      cleanUrl.searchParams.delete('pass');
+      return Response.redirect(cleanUrl.toString(), 302);
+    }
+
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
