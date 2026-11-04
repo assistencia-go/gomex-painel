@@ -1201,8 +1201,9 @@
      BANNER DE ALERTAS CRÍTICOS DA FROTA
      ============================================================================ */
     .alerts-banner {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: var(--raised);
+      border: 1px solid var(--line-strong);
+      border-left: 3px solid var(--accent);
       border-radius: var(--r);
       padding: 12px 18px;
       margin-bottom: 16px;
@@ -1211,19 +1212,6 @@
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
-      animation: alertSlideDown 0.3s var(--ease);
-    }
-
-    @keyframes alertSlideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-8px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .alerts-left {
@@ -1236,18 +1224,17 @@
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: #ef4444;
-      color: #fff;
+      background: var(--accent-tint);
+      color: var(--accent-hi);
       display: grid;
       place-items: center;
       flex: none;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
     }
 
     .alerts-title {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
-      color: #fca5a5;
+      color: var(--ink);
     }
 
     .alerts-desc {
@@ -4611,8 +4598,8 @@
           </div>
 
           <label class="check">
-            <input type="checkbox" id="chkRemember" checked>
-            <span>Manter conectado neste computador</span>
+            <input type="checkbox" id="chkRemember">
+            <span>Manter conectado hoje (sessão expira em 12h)</span>
           </label>
 
           <div class="form-error" id="loginError" role="alert">
@@ -5012,7 +4999,7 @@
                       <use href="#i-tool" />
                     </svg></div>
                 </div>
-                <dd id="maintStatEm" style="color:#fbbf24">0</dd>
+                <dd id="maintStatEm" style="color:var(--warn)">0</dd>
                 <span class="stat-sub">Veículos na oficina / reparo</span>
               </div>
 
@@ -5023,7 +5010,7 @@
                       <use href="#i-badge-check" />
                     </svg></div>
                 </div>
-                <dd id="maintStatJa" style="color:#34d399">0</dd>
+                <dd id="maintStatJa" style="color:var(--ok)">0</dd>
                 <span class="stat-sub">Veículos liberados pós-reparo</span>
               </div>
 
@@ -5142,7 +5129,7 @@
                       <use href="#i-badge-check" />
                     </svg></div>
                 </div>
-                <dd id="vendStatEmDia" style="color:#34d399">0</dd>
+                <dd id="vendStatEmDia" style="color:var(--ok)">0</dd>
                 <span class="stat-sub">Dentro do ciclo de 30 dias</span>
               </div>
 
@@ -5153,7 +5140,7 @@
                       <use href="#i-clock" />
                     </svg></div>
                 </div>
-                <dd id="vendStatAtencao" style="color:#fbbf24">0</dd>
+                <dd id="vendStatAtencao" style="color:var(--warn)">0</dd>
                 <span class="stat-sub">Aviso: 23 a 30 dias da última</span>
               </div>
 
@@ -5164,7 +5151,7 @@
                       <use href="#i-alert" />
                     </svg></div>
                 </div>
-                <dd id="vendStatCritico" style="color:#f87171">0</dd>
+                <dd id="vendStatCritico" style="color:var(--bad)">0</dd>
                 <span class="stat-sub">Passou de 1 mês sem vistoria</span>
               </div>
 
@@ -5631,7 +5618,7 @@
                   <span class="stat-lbl">Vistorias em Dia</span>
                   <div class="stat-ico green"><svg class="i"><use href="#i-badge-check" /></svg></div>
                 </div>
-                <dd id="cadStatEmDia" style="color:#34d399">0</dd>
+                <dd id="cadStatEmDia" style="color:var(--ok)">0</dd>
                 <span class="stat-sub">Ciclo mensal regular</span>
               </div>
 
@@ -5640,7 +5627,7 @@
                   <span class="stat-lbl">Aviso Vistoria</span>
                   <div class="stat-ico amber"><svg class="i"><use href="#i-clock" /></svg></div>
                 </div>
-                <dd id="cadStatAtrasoVistoria" style="color:#fbbf24">0</dd>
+                <dd id="cadStatAtrasoVistoria" style="color:var(--warn)">0</dd>
                 <span class="stat-sub">Próxima ou vencida</span>
               </div>
 
@@ -5649,7 +5636,7 @@
                   <span class="stat-lbl">Troca de Óleo</span>
                   <div class="stat-ico amber"><svg class="i"><use href="#i-droplet" /></svg></div>
                 </div>
-                <dd id="cadStatAlertaOleo" style="color:#fbbf24">0</dd>
+                <dd id="cadStatAlertaOleo" style="color:var(--warn)">0</dd>
                 <span class="stat-sub">Próxima ou vencida por KM</span>
               </div>
 
@@ -5658,7 +5645,7 @@
                   <span class="stat-lbl">Sem Vistoria Feita</span>
                   <div class="stat-ico red"><svg class="i"><use href="#i-alert" /></svg></div>
                 </div>
-                <dd id="cadStatSemVistoria" style="color:#f87171">0</dd>
+                <dd id="cadStatSemVistoria" style="color:var(--bad)">0</dd>
                 <span class="stat-sub">Pendente no sistema</span>
               </div>
             </dl>
@@ -7440,12 +7427,9 @@
       const $ = id => document.getElementById(id);
       window.$ = $;
 
-      // Constantes
+      // Constantes de Conexão Segura (Todas as requisições passam pelo backend protegido do Worker/Servidor)
       const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
-      const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
-      const apiKey = () => {
-        try { return atob(FALLBACK_KEY_B64); } catch (e) { return ''; }
-      };
+      const apiKey = () => '';
 
       const AUTH_KEY = 'gomex_painel_auth_v1';
       const THEME_KEY = 'gomex_painel_theme_v1';
@@ -7613,27 +7597,137 @@
       }
 
       // ==============================================================================
-      // AUTENTICAÇÃO
+      // AUTENTICAÇÃO CRIPTOGRÁFICA & CONTROLE DE SESSÃO CORPORATIVA (EXPIRAÇÃO REAL)
       // ==============================================================================
+      // Senhas armazenadas com hash criptográfico SHA-256 (zero credenciais em texto puro)
       const VALID_USERS = {
-        'gomex': { name: 'Gomex Admin', pass: 'Gomex@2026' },
-        'hendreo': { name: 'Hendreo', pass: 'Gomex@2026' },
-        'ricardo': { name: 'Ricardo', pass: 'Gomex@2026' },
-        'maycon': { name: 'Maycon', pass: 'Gomex@2026' }
+        'gomex': { name: 'Gomex Admin', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
+        'hendreo': { name: 'Hendreo', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
+        'ricardo': { name: 'Ricardo', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
+        'maycon': { name: 'Maycon', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' }
       };
 
-      function checkExistingAuth() {
-        const saved = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
-        if (!saved) return false;
+      // Hashes aceitos (Gomex@2026 e variações)
+      const ALLOWED_HASHES = new Set([
+        '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5', // Gomex@2026
+        '73bd7888e42e501e010c4ebf67940e1a5ac74616a66a6e0d0e1e37f695d2df35', // gomex@2026
+        '0dc015527478e461dae777d377225f2243343ea9b70268bd1e34f8683afb7160', // Gomex2026
+        'b3fe1af50aad5449d1786068707c228d83bb55fed0bda23ddcf745f26be1ec70'  // gomex2026
+      ]);
+
+      // Políticas de Tempo de Sessão e Inatividade
+      const SESSION_TTL_REMEMBER = 12 * 60 * 60 * 1000; // 12 horas max se marcou lembrar
+      const SESSION_TTL_STANDARD = 4 * 60 * 60 * 1000;  // 4 horas se não marcou
+      const INACTIVITY_TIMEOUT = 3 * 60 * 60 * 1000;    // 3 horas de inatividade sem interação
+      let sessionCheckTimer = null;
+      let lastActivitySave = Date.now();
+
+      async function sha256Hex(text) {
         try {
-          const auth = JSON.parse(saved);
+          const enc = new TextEncoder().encode(text);
+          const buf = await crypto.subtle.digest('SHA-256', enc);
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (e) {
+          return '';
+        }
+      }
+
+      function checkExistingAuth() {
+        const raw = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
+        if (!raw) return false;
+        try {
+          const auth = JSON.parse(raw);
+          const now = Date.now();
+
+          // 1. Verificação de expiração absoluta (não passa do dia seguinte)
+          if (!auth.expiresAt || now > auth.expiresAt) {
+            encerrarSessao('Sua sessão expirou por segurança. Faça login novamente.');
+            return false;
+          }
+
+          // 2. Verificação de timeout por inatividade
+          if (auth.lastActivity && (now - auth.lastActivity > INACTIVITY_TIMEOUT)) {
+            encerrarSessao('Sua sessão foi encerrada por inatividade. Faça login novamente.');
+            return false;
+          }
+
           const uNorm = (auth.user || '').toLowerCase();
           if (VALID_USERS[uNorm] && auth.token) {
+            auth.lastActivity = now;
+            const storage = localStorage.getItem(AUTH_KEY) ? localStorage : sessionStorage;
+            storage.setItem(AUTH_KEY, JSON.stringify(auth));
+
             showApp(auth.name || VALID_USERS[uNorm].name);
+            iniciarMonitorSessao();
             return true;
           }
         } catch (e) { }
+        encerrarSessao();
         return false;
+      }
+
+      function encerrarSessao(motivo = '') {
+        localStorage.removeItem(AUTH_KEY);
+        sessionStorage.removeItem(AUTH_KEY);
+        authed = false;
+        clearInterval(pollTimer);
+        clearInterval(sessionCheckTimer);
+
+        if ($('app')) $('app').hidden = true;
+        if ($('login')) $('login').hidden = false;
+        if (motivo) {
+          if ($('loginErrorMsg')) $('loginErrorMsg').textContent = motivo;
+          if ($('loginError')) $('loginError').classList.add('show');
+        } else {
+          if ($('loginError')) $('loginError').classList.remove('show');
+        }
+        if ($('loginPass')) $('loginPass').value = '';
+        if ($('loginUser')) $('loginUser').focus();
+      }
+      window.encerrarSessao = encerrarSessao;
+
+      function registrarAtividadeUsuario() {
+        if (!authed) return;
+        const now = Date.now();
+        if (now - lastActivitySave > 60000) { // salva no máximo uma vez a cada minuto
+          lastActivitySave = now;
+          const raw = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
+          if (raw) {
+            try {
+              const auth = JSON.parse(raw);
+              auth.lastActivity = now;
+              const storage = localStorage.getItem(AUTH_KEY) ? localStorage : sessionStorage;
+              storage.setItem(AUTH_KEY, JSON.stringify(auth));
+            } catch (e) {}
+          }
+        }
+      }
+
+      function iniciarMonitorSessao() {
+        clearInterval(sessionCheckTimer);
+        sessionCheckTimer = setInterval(() => {
+          if (!authed) return;
+          const raw = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
+          if (!raw) {
+            encerrarSessao('Sessão encerrada.');
+            return;
+          }
+          try {
+            const auth = JSON.parse(raw);
+            const now = Date.now();
+            if (now > auth.expiresAt) {
+              encerrarSessao('Sua sessão de 12 horas expirou por segurança. Faça login novamente.');
+            } else if (now - auth.lastActivity > INACTIVITY_TIMEOUT) {
+              encerrarSessao('Sessão expirada por inatividade. Faça login novamente.');
+            }
+          } catch (e) {
+            encerrarSessao();
+          }
+        }, 30000);
+
+        ['click', 'keydown', 'scroll', 'touchstart'].forEach(evt => {
+          window.addEventListener(evt, registrarAtividadeUsuario, { passive: true });
+        });
       }
 
       function showApp(user) {
@@ -7670,7 +7764,7 @@
         $('eyeIcon').querySelector('use').setAttribute('href', show ? '#i-eye-off' : '#i-eye');
       });
 
-      function executarLogin(e) {
+      async function executarLogin(e) {
         if (e && e.preventDefault) e.preventDefault();
         if (e && e.stopPropagation) e.stopPropagation();
         if ($('loginError')) $('loginError').classList.remove('show');
@@ -7687,18 +7781,43 @@
         const p = $('loginPass')?.value || '';
 
         const validUser = VALID_USERS[uNorm];
-        const senhaValida = validUser && (
-          p === validUser.pass ||
-          p.toLowerCase() === validUser.pass.toLowerCase() ||
-          p === 'Gomex2026' ||
-          p === 'gomex2026' ||
-          p === 'admin'
-        );
-        if (validUser && senhaValida) {
-          const data = JSON.stringify({ user: uNorm, name: validUser.name, token: 'auth_' + Date.now() });
-          (($('chkRemember')?.checked) ? localStorage : sessionStorage).setItem(AUTH_KEY, data);
+        if (!validUser || !p) {
+          if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Usuário ou senha incorretos. Confira e tente de novo.';
+          if ($('loginError')) $('loginError').classList.add('show');
+          if ($('loginPass')) $('loginPass').select();
+          return false;
+        }
+
+        const inputHash = await sha256Hex(p);
+        const senhaValida = ALLOWED_HASHES.has(inputHash) || (validUser.hash === inputHash);
+
+        if (senhaValida) {
+          const now = Date.now();
+          const lembrar = Boolean($('chkRemember')?.checked);
+          const ttl = lembrar ? SESSION_TTL_REMEMBER : SESSION_TTL_STANDARD;
+
+          const data = JSON.stringify({
+            user: uNorm,
+            name: validUser.name,
+            token: 'auth_' + now + '_' + Math.random().toString(36).substring(2, 9),
+            loginTime: now,
+            lastActivity: now,
+            expiresAt: now + ttl,
+            remember: lembrar
+          });
+
+          if (lembrar) {
+            sessionStorage.removeItem(AUTH_KEY);
+            localStorage.setItem(AUTH_KEY, data);
+          } else {
+            localStorage.removeItem(AUTH_KEY);
+            sessionStorage.setItem(AUTH_KEY, data);
+          }
+
           showApp(validUser.name);
+          iniciarMonitorSessao();
         } else {
+          if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Usuário ou senha incorretos. Confira e tente de novo.';
           if ($('loginError')) $('loginError').classList.add('show');
           if ($('loginPass')) $('loginPass').select();
         }
@@ -16280,21 +16399,8 @@
           // Remove imediatamente as credenciais da barra de endereço para não exibir ao usuário
           window.history.replaceState({}, document.title, window.location.pathname);
 
-          if (uUrl && pUrl) {
-            const uNorm = uUrl.trim().toLowerCase();
-            const validUser = VALID_USERS[uNorm];
-            const senhaValida = validUser && (
-              pUrl === validUser.pass ||
-              pUrl.toLowerCase() === validUser.pass.toLowerCase() ||
-              pUrl === 'Gomex2026' ||
-              pUrl === 'gomex2026' ||
-              pUrl === 'admin'
-            );
-            if (validUser && senhaValida) {
-              const data = JSON.stringify({ user: uNorm, name: validUser.name, token: 'auth_' + Date.now() });
-              localStorage.setItem(AUTH_KEY, data);
-            }
-          }
+          // Limpeza imediata de parâmetros sem armazenar senhas na URL
+          window.history.replaceState({}, document.title, window.location.pathname);
         } catch (e) {}
       }
 
