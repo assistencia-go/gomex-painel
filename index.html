@@ -3167,6 +3167,13 @@
       border-style: solid;
     }
 
+    .cat-prod-form-grid {
+      display: grid;
+      grid-template-columns: 88px minmax(240px, 1.8fr) 200px 145px 130px auto;
+      gap: 12px;
+      align-items: end;
+    }
+
     .edit-grid-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -3777,6 +3784,168 @@
       #sectionVistoriasView .grid td.c-nok {
         display: none;
       }
+
+      
+      /* ==============================================================================
+       MODAL DE CATÁLOGO DE PRODUTOS 100% RESPONSIVO (SEM ARRASTAR PARA O LADO)
+       ============================================================================== */
+      #modalCatalogoProdutos .modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 94dvh !important;
+        margin: 0 !important;
+        border-radius: 14px !important;
+      }
+
+      #modalCatalogoProdutos .modal-head {
+        padding: 14px 16px !important;
+      }
+
+      #modalCatalogoProdutos .modal-body {
+        padding: 14px 16px !important;
+        max-height: 78dvh !important;
+        overflow-x: hidden !important;
+        display: grid !important;
+        gap: 14px !important;
+      }
+
+      .cat-prod-form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .cat-prod-form-grid > div {
+        width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .cat-prod-form-grid .btn {
+        width: 100% !important;
+        height: 42px !important;
+        justify-content: center !important;
+        margin-top: 4px !important;
+      }
+
+      #modalCatalogoProdutos .table-wrap {
+        overflow-x: hidden !important;
+        border: none !important;
+        max-height: 48vh !important;
+      }
+
+      #modalCatalogoProdutos table.grid thead {
+        display: none !important;
+      }
+
+      #modalCatalogoProdutos table.grid,
+      #modalCatalogoProdutos table.grid tbody {
+        display: block !important;
+        width: 100% !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody tr {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 12px 14px !important;
+        margin-bottom: 10px !important;
+        background: var(--raised) !important;
+        border: 1px solid var(--line-strong) !important;
+        border-radius: var(--r) !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody td {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        text-align: left !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(1)::before {
+        content: "Código:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(2) {
+        padding-bottom: 6px !important;
+        border-bottom: 1px solid var(--line) !important;
+        font-size: 13.5px !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(3)::before {
+        content: "Categoria:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(4)::before {
+        content: "Unidade:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(5)::before {
+        content: "Preço Base:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(6)::before {
+        content: "Usos na Frota:";
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--ink-3);
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(7) {
+        padding-top: 8px !important;
+        border-top: 1px dashed var(--line) !important;
+        justify-content: flex-end !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(7) > div {
+        display: flex !important;
+        gap: 8px !important;
+        width: 100% !important;
+        justify-content: flex-end !important;
+      }
+
+      #modalCatalogoProdutos table.grid tbody td:nth-child(7) .btn-icon {
+        width: 36px !important;
+        height: 36px !important;
+        background: var(--bg) !important;
+        border: 1px solid var(--line-strong) !important;
+        border-radius: 8px !important;
+      }
+
+      #modalCatalogoProdutos .modal-foot {
+        padding: 12px 16px !important;
+        display: flex !important;
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
+      }
+
+      #modalCatalogoProdutos .modal-foot .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        height: 40px !important;
+      }
+
 
       /* Correção Universal de Estados Vazios no Mobile (Estrutura Vertical Perfeita) */
       .empty,
@@ -7745,9 +7914,7 @@
           </div>
           <input type="hidden" id="catProdEditId" value="">
 
-          <div
-            style="display:grid;grid-template-columns:88px minmax(240px, 1.8fr) 215px 160px 135px auto;gap:12px;align-items:end"
-            class="edit-grid-2">
+          <div class="cat-prod-form-grid">
             <div>
               <label for="catProdCodigo" class="gasto-field-lbl" style="font-size:12px">Código *</label>
               <input type="text" id="catProdCodigo" class="input" placeholder="20"
