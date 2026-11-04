@@ -391,6 +391,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🚀 Painel Executivo Gomex Frota rodando em: http://localhost:${PORT}`);
-  console.log(`🔒 Acesso administrativo isolado (User: gomex)`);
+  console.log(`[START] Painel Executivo Gomex Frota rodando em: http://localhost:${PORT}`);
+  console.log(`[AUTH] Acesso administrativo isolado (User: gomex)`);
 });
