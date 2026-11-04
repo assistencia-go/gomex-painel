@@ -1,52 +1,122 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <!-- Gradiente de Fundo Executivo Obsidian Dark -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#141419"/>
-      <stop offset="45%" stop-color="#181822"/>
-      <stop offset="100%" stop-color="#232332"/>
+    <radialGradient id="bgRadial" cx="50%" cy="38%" r="65%" fx="50%" fy="30%">
+      <stop offset="0%" stop-color="#222330"/>
+      <stop offset="55%" stop-color="#15161c"/>
+      <stop offset="100%" stop-color="#0c0d11"/>
+    </radialGradient>
+
+    <!-- Gradiente de Borda Metálica Coral / Bronze -->
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9a85" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#ed8570" stop-opacity="0.35"/>
+      <stop offset="80%" stop-color="#3b201a" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ff7a5e" stop-opacity="0.7"/>
     </linearGradient>
 
-    <!-- Gradiente de Borda Coral Gomex -->
-    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ed8570" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#ed8570" stop-opacity="0.12"/>
-    </linearGradient>
-
-    <!-- Gradiente do Caminhão e Elementos -->
-    <linearGradient id="coralGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Gradiente do Símbolo Principal do Caminhão -->
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="60%" stop-color="#fed7aa"/>
+      <stop offset="40%" stop-color="#fff1ee"/>
+      <stop offset="85%" stop-color="#fed7ce"/>
       <stop offset="100%" stop-color="#ed8570"/>
     </linearGradient>
 
-    <!-- Sombra e Brilho do Ícone -->
-    <filter id="pwaGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000000" flood-opacity="0.5"/>
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#ed8570" flood-opacity="0.25"/>
+    <!-- Gradiente Coral Neon para Detalhes e Faróis -->
+    <linearGradient id="neonCoral" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff9a85"/>
+      <stop offset="100%" stop-color="#ed8570"/>
+    </linearGradient>
+
+    <!-- Gradiente Escudo de Auditoria -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ed8570" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ed8570" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Sombra e Brilho de Alta Resolução -->
+    <filter id="truckShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000000" flood-opacity="0.75"/>
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#ed8570" flood-opacity="0.35"/>
+    </filter>
+
+    <filter id="rimGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#ed8570" flood-opacity="0.4"/>
     </filter>
   </defs>
 
-  <!-- Fundo do Ícone de Aplicativo (Squircle Moderno PWA / Android / iOS) -->
-  <rect width="512" height="512" rx="116" fill="url(#bgGrad)"/>
-  <rect x="12" y="12" width="488" height="488" rx="104" fill="none" stroke="url(#borderGrad)" stroke-width="5"/>
+  <!-- Fundo Squircle Suave PWA (Seguro para máscara circular no Android e cantos no iOS/Windows) -->
+  <rect width="512" height="512" rx="116" fill="url(#bgRadial)"/>
+  
+  <!-- Borda de Precisão com Brilho Superior -->
+  <rect x="14" y="14" width="484" height="484" rx="104" fill="none" stroke="url(#rimGrad)" stroke-width="4.5" filter="url(#rimGlow)"/>
 
-  <!-- Emblema Central: Caminhão da Frota Gomex com Linhas de Precisão Executiva -->
-  <g transform="translate(86, 82) scale(14.2)" filter="url(#pwaGlow)">
-    <!-- Carroceria e Cabine -->
-    <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" fill="none" stroke="url(#coralGrad)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M15 18H9" stroke="url(#coralGrad)" stroke-width="2.1" stroke-linecap="round"/>
-    <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" fill="none" stroke="url(#coralGrad)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Malha de Fundo Sutil de Alta Tecnologia (Linhas de Precisão) -->
+  <g opacity="0.06" stroke="#ffffff" stroke-width="1.2">
+    <line x1="80" y1="120" x2="432" y2="120"/>
+    <line x1="80" y1="256" x2="432" y2="256"/>
+    <line x1="80" y1="392" x2="432" y2="392"/>
+    <line x1="168" y1="80" x2="168" y2="432"/>
+    <line x1="344" y1="80" x2="344" y2="432"/>
+  </g>
+
+  <!-- Escudo Central de Segurança & Frota no Fundo do Ícone -->
+  <path d="M256 128 L356 168 V266 C356 332 256 376 256 376 C256 376 156 332 156 266 V168 Z" 
+        fill="url(#shieldGrad)" stroke="url(#neonCoral)" stroke-width="2" stroke-opacity="0.35" stroke-dasharray="6 4"/>
+
+  <!-- Grupo Principal do Caminhão e Prontuário Executivo -->
+  <g filter="url(#truckShadow)">
     
-    <!-- Janela da Cabine com reflexo sutil -->
-    <path d="M14 8h3.2l2.4 3H14V8z" fill="rgba(237, 133, 112, 0.28)" stroke="none"/>
+    <!-- Silhueta da Carroceria / Baú (Gomex Carga Segura) -->
+    <path d="M116 196 C116 182 126 172 140 172 H272 C282 172 290 180 290 190 V314 C290 320 286 324 280 324 H126 C120 324 116 320 116 314 Z" 
+          fill="#171821" stroke="url(#bodyGrad)" stroke-width="6.5" stroke-linejoin="round"/>
 
-    <!-- Rodas Reforçadas -->
-    <circle cx="7" cy="18.5" r="2.8" fill="#16161c" stroke="url(#coralGrad)" stroke-width="1.8"/>
-    <circle cx="7" cy="18.5" r="1.2" fill="#ed8570"/>
+    <!-- Detalhes do Baú: Frisos Aerodinâmicos Horizontais -->
+    <line x1="140" y1="214" x2="266" y2="214" stroke="url(#neonCoral)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+    <line x1="140" y1="242" x2="246" y2="242" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.45"/>
+    <line x1="140" y1="270" x2="266" y2="270" stroke="url(#neonCoral)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
 
-    <circle cx="17" cy="18.5" r="2.8" fill="#16161c" stroke="url(#coralGrad)" stroke-width="1.8"/>
-    <circle cx="17" cy="18.5" r="1.2" fill="#ed8570"/>
+    <!-- Cabine Dianteira com Design Aerodinâmico Moderno -->
+    <path d="M290 216 H342 C354 216 364 224 370 234 L392 272 C395 277 396 283 396 288 V316 C396 321 392 324 388 324 H290 V216 Z" 
+          fill="#171821" stroke="url(#bodyGrad)" stroke-width="6.5" stroke-linejoin="round"/>
+
+    <!-- Para-brisa / Janela da Cabine com Reflexo Translúcido Coral -->
+    <path d="M302 230 H338 C344 230 350 234 354 240 L368 266 C370 270 368 274 364 274 H302 V230 Z" 
+          fill="url(#neonCoral)" fill-opacity="0.32" stroke="url(#neonCoral)" stroke-width="2"/>
+
+    <!-- Farol Dianteiro de LED Gomex -->
+    <path d="M386 294 L396 294 L394 306 L384 306 Z" fill="#ffffff" filter="url(#rimGlow)"/>
+
+    <!-- Linha de Chassi / Base -->
+    <line x1="104" y1="324" x2="408" y2="324" stroke="url(#bodyGrad)" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Rodas Reforçadas Traseiras e Dianteiras -->
+    <!-- Roda Traseira 1 -->
+    <g transform="translate(162, 324)">
+      <circle cx="0" cy="0" r="28" fill="#0d0e12" stroke="url(#bodyGrad)" stroke-width="5"/>
+      <circle cx="0" cy="0" r="16" fill="#1b1c24" stroke="url(#neonCoral)" stroke-width="3"/>
+      <circle cx="0" cy="0" r="7" fill="#ffffff"/>
+    </g>
+
+    <!-- Roda Traseira 2 -->
+    <g transform="translate(226, 324)">
+      <circle cx="0" cy="0" r="28" fill="#0d0e12" stroke="url(#bodyGrad)" stroke-width="5"/>
+      <circle cx="0" cy="0" r="16" fill="#1b1c24" stroke="url(#neonCoral)" stroke-width="3"/>
+      <circle cx="0" cy="0" r="7" fill="#ffffff"/>
+    </g>
+
+    <!-- Roda Dianteira -->
+    <g transform="translate(352, 324)">
+      <circle cx="0" cy="0" r="28" fill="#0d0e12" stroke="url(#bodyGrad)" stroke-width="5"/>
+      <circle cx="0" cy="0" r="16" fill="#1b1c24" stroke="url(#neonCoral)" stroke-width="3"/>
+      <circle cx="0" cy="0" r="7" fill="#ffffff"/>
+    </g>
+
+    <!-- Selo de Verificação / Checkmark de Vistoria Oficial no Topo da Cabine -->
+    <g transform="translate(256, 128) scale(1.15)">
+      <circle cx="0" cy="0" r="18" fill="#ed8570"/>
+      <path d="M-6 0 L-2 4 L7 -5" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
   </g>
 </svg>
-
