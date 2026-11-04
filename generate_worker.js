@@ -11,6 +11,18 @@ if (!fs.existsSync(publicDir)) {
 }
 fs.writeFileSync(path.join(publicDir, 'index.html'), htmlContent, 'utf8');
 
+const manifestPath = path.join(__dirname, 'manifest.json');
+const manifestContent = fs.existsSync(manifestPath) ? fs.readFileSync(manifestPath, 'utf8') : '{}';
+fs.writeFileSync(path.join(publicDir, 'manifest.json'), manifestContent, 'utf8');
+
+const swPath = path.join(__dirname, 'sw.js');
+const swContent = fs.existsSync(swPath) ? fs.readFileSync(swPath, 'utf8') : '';
+fs.writeFileSync(path.join(publicDir, 'sw.js'), swContent, 'utf8');
+
+const iconPath = path.join(__dirname, 'icon.svg');
+const iconContent = fs.existsSync(iconPath) ? fs.readFileSync(iconPath, 'utf8') : '';
+fs.writeFileSync(path.join(publicDir, 'icon.svg'), iconContent, 'utf8');
+
 const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
 
 const workerCode = `// ==============================================================================
@@ -74,6 +86,28 @@ export default {
     // Atalhos amigáveis e redirecionamentos
     if (url.pathname === '/checklist' || url.pathname === '/check-list') {
       return Response.redirect('https://gomex-checklist.gomexassistencia2026.workers.dev/', 302);
+    }
+
+    // 0. ATENDIMENTO DE ASSETS DO PWA (MANIFEST, SERVICE WORKER E ÍCONE)
+    if (url.pathname === '/manifest.json') {
+      return new Response(EMBEDDED_MANIFEST, {
+        status: 200,
+        headers: { 'Content-Type': 'application/manifest+json; charset=utf-8', 'Cache-Control': 'public, max-age=3600', ...corsHeaders }
+      });
+    }
+
+    if (url.pathname === '/sw.js') {
+      return new Response(EMBEDDED_SW, {
+        status: 200,
+        headers: { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-cache', 'Service-Worker-Allowed': '/', ...corsHeaders }
+      });
+    }
+
+    if (url.pathname === '/icon.svg') {
+      return new Response(EMBEDDED_ICON, {
+        status: 200,
+        headers: { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=86400', ...corsHeaders }
+      });
     }
 
     // 1. ROTA HEALTH CHECK
