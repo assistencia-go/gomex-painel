@@ -1,36 +1,31 @@
-# Painel Executivo de Gestão de Frota · Gomex Distribuidora
+# Painel Executivo de Gestao de Frota - Gomex Distribuidora
 
-Sistema administrativo e operacional para acompanhamento em tempo real de vistorias veiculares, liberação de veículos e emissão de relatórios oficiais da frota Gomex.
-
----
-
-## 🔒 Acesso Restrito & Autenticação
-O acesso a este painel é 100% isolado dos motoristas e restrito aos gestores:
-- **Usuários**: `hendreo` ou `gomex`
-- **Senha**: `Gomex@2026`
+Sistema administrativo e operacional para acompanhamento em tempo real de vistorias veiculares, liberacao de veiculos, custos, manutencao preventiva e emissao de relatorios oficiais da frota Gomex.
 
 ---
 
-## 🚀 Funcionalidades Principais
-- **Dashboard de Métricas & KPIs**: Total de vistorias, veículos liberados, ressalvas e bloqueios em tempo real.
-- **Filtros Inteligentes**: Busca rápida por placa, motorista, número de vistoria, modelo de veículo e período.
-- **Visualização Detalhada (Inspector)**:
-  - Dados completos da inspeção e condutor.
-  - Mapa gráfico da carroceria com os pontos exatos de avaria marcados.
-  - Tabela de calibragem e estado dos pneus.
-  - Assinaturas digitais coletadas.
-- **Módulo & Aba de Manutenção da Frota**:
-  - Aba dedicada no detalhe do veículo para registrar se está **Em Manutenção** ou **Já foi para Manutenção**.
-  - Registro de oficina, tipo de serviço, data de entrada/retorno, custo e observações detalhadas.
-  - Histórico de manutenções por veículo/placa e visualização consolidada em painel geral.
-- **Reemissão de 2ª Via do PDF Oficial**: Geração instantânea do PDF oficial em 1 página A4 padronizado.
-- **Exportação de Dados**: Download em CSV compatível com Microsoft Excel.
-- **Conexão Direta com Supabase**: Sincronização ao vivo com o banco de dados oficial.
+## Seguranca & Controle de Acesso
+O acesso ao painel e restrito a equipe administrativa e gestores autorizados:
+- Autenticacao com validacao criptografica via hash SHA-256.
+- Politica estrita de expiracao de sessao por tempo decorrido e por inatividade.
+- Sem vazamento de credenciais ou chaves secretas no codigo do cliente.
+- Higienizacao automatica de URLs com remocao imediata de parametros confidenciais.
 
 ---
 
-## 💻 Executando Localmente
+## Funcionalidades Principais
+- Dashboard de Metricas & KPIs: Total de vistorias, veiculos liberados, ressalvas e bloqueios em tempo real.
+- Cadastro e Prontuario Completo da Frota: Gestao de veiculos ativos, motoristas titulares, rotas e controle preventivo de troca de oleo.
+- Filtros Inteligentes & SPA Routing: Navegacao rapida com URLs semanticas (/vistoria, /frota, /manutencao, /custos, /galeria, /vendedores).
+- Gestao de Custos, Pecas e Insumos: Lancamento detalhado de gastos com preenchimento preditivo por codigo/nome de produto.
+- Modulo de Manutencao: Controle preventivo e corretivo por placa com registro de oficinas e prazos.
+- Reemissao de 2a Via do PDF Oficial: Geracao de relatorio de vistoria padronizado.
+- Exportacao em CSV: Download compativel com planilhas Excel.
+
+---
+
+## Executando Localmente
 ```bash
 node server.js
 ```
-Acesse em: `http://localhost:3001`
+Acesse em: http://localhost:3001
