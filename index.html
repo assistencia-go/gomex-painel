@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#16161b" id="metaThemeColor">
   <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
@@ -260,8 +260,19 @@
       background: transparent;
     }
 
-    html {
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden !important;
+      position: relative;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
       -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      overscroll-behavior-x: none;
     }
 
     body {
@@ -274,6 +285,7 @@
       -webkit-font-smoothing: antialiased;
       font-variant-numeric: tabular-nums;
       transition: background-color 200ms ease, color 200ms ease;
+      overscroll-behavior-y: contain;
     }
 
     body.lock {
@@ -5296,6 +5308,215 @@
       border-color: #e2e8f0;
       color: #334155;
     }
+
+    /* ============================================================================
+       SISTEMA RESPONSIVO MOBILE-FIRST PARA MODAIS & FORMULÁRIOS (APP NATIVO)
+       ============================================================================ */
+    .ocr-form-grid-2 {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .ocr-form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .ocr-time-card {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .ocr-hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .ocr-label-with-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 18px;
+    }
+
+    .btn-agora {
+      height: 22px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-hi);
+      background: var(--panel);
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s ease;
+    }
+
+    .btn-agora:hover {
+      background: var(--hover);
+      border-color: var(--accent);
+    }
+
+    .ocr-calc-box {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .ocr-rel-kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Regras Mobile Específicas: Aparência e Toque 100% de Aplicativo Nativo */
+    @media (max-width: 680px) {
+      /* Trava horizontal e sensibilidade ao toque */
+      html, body {
+        overflow-x: hidden !important;
+        position: relative;
+        touch-action: pan-y !important;
+      }
+
+      /* Todos os inputs/selects ficam com 16px para não acionar zoom automático */
+      input, select, textarea, .input, .select {
+        font-size: 16px !important;
+      }
+
+      /* Modais viram folhas no fundo da tela (estilo gaveta/sheet ou card ajustado) */
+      .modal-overlay {
+        padding: 8px 6px !important;
+        align-items: flex-end !important;
+        place-items: initial !important;
+        overflow-x: hidden !important;
+      }
+
+      .modal-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 93dvh !important;
+        margin: 0 !important;
+        border-radius: 16px 16px 6px 6px !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+      }
+
+      .modal-head {
+        padding: 12px 14px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .modal-head h3 {
+        font-size: 15px !important;
+      }
+
+      .modal-body {
+        padding: 12px 14px !important;
+        overflow-x: hidden !important;
+        max-height: 75dvh !important;
+        gap: 12px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
+      }
+
+      .modal-body > * {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .modal-body .input,
+      .modal-body select,
+      .modal-body .select,
+      .modal-body textarea {
+        font-size: 16px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
+
+      .modal-foot {
+        padding: 10px 14px !important;
+        flex-direction: column-reverse !important;
+        gap: 8px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .modal-foot .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        height: 46px !important;
+        font-size: 14.5px !important;
+        font-weight: 700 !important;
+      }
+
+      /* Form grids viram coluna única vertical */
+      .ocr-form-grid-2 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+
+      .ocr-hours-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        width: 100% !important;
+      }
+
+      .ocr-rel-kpis-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+      }
+
+      #modalRelatorioOcorrencias .modal-foot {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      #modalRelatorioOcorrencias .modal-foot > div {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 8px !important;
+      }
+
+      #modalRelatorioOcorrencias .modal-foot .btn {
+        width: 100% !important;
+        height: 44px !important;
+      }
+    }
   </style>
 </head>
 
@@ -7635,40 +7856,40 @@
         <input type="hidden" id="ocrEditId" value="">
 
         <!-- Linha 1: Vendedor e Rota (OBRIGATÓRIOS) -->
-        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:12px">
-          <div>
+        <div class="ocr-form-grid-2">
+          <div class="ocr-form-field">
             <label for="ocrInputVendedor" class="gasto-field-lbl" style="color:var(--ink)">
               Vendedor / Motorista <span style="color:var(--bad)">*</span>
             </label>
             <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
-              placeholder="Nome do vendedor titular" style="height:40px;font-weight:600"
+              placeholder="Nome do vendedor titular" style="font-weight:600"
               oninput="aoDigitarVendedorOcorrencia(this.value)">
           </div>
 
-          <div>
+          <div class="ocr-form-field">
             <label for="ocrInputRota" class="gasto-field-lbl" style="color:var(--ink)">
               Rota do Vendedor <span style="color:var(--bad)">*</span>
             </label>
             <input type="text" id="ocrInputRota" class="input"
-              placeholder="Ex: 217, 240, 222..." style="height:40px;font-weight:600">
+              placeholder="Ex: 217, 240, 222..." style="font-weight:600">
           </div>
         </div>
 
         <!-- Linha 2: Veículo/Placa e Tipo/Motivo do Problema -->
-        <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:12px">
-          <div>
+        <div class="ocr-form-grid-2">
+          <div class="ocr-form-field">
             <label for="ocrInputVeiculo" class="gasto-field-lbl">
               Veículo / Placa
             </label>
             <input type="text" id="ocrInputVeiculo" list="datalistPlacasFrota" class="input"
-              placeholder="Ex: ARS6B73" style="height:40px">
+              placeholder="Ex: ARS6B73">
           </div>
 
-          <div>
+          <div class="ocr-form-field">
             <label for="ocrSelectTipo" class="gasto-field-lbl" style="color:var(--ink)">
               Motivo da Parada / Ocorrência <span style="color:var(--bad)">*</span>
             </label>
-            <select id="ocrSelectTipo" class="input" style="height:40px;font-weight:600">
+            <select id="ocrSelectTipo" class="input" style="font-weight:600">
               <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
               <option value="Quebra Mecânica">Quebra Mecânica / Motor</option>
               <option value="Problema Elétrico / Bateria">Pane Elétrica / Bateria</option>
@@ -7683,37 +7904,34 @@
         </div>
 
         <!-- Linha 3: Data e Horários (Início e Fim / Retorno) -->
-        <div style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:12px">
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-            <div>
-              <label for="ocrInputData" class="gasto-field-lbl">Data</label>
-              <input type="date" id="ocrInputData" class="input" style="height:38px">
-            </div>
+        <div class="ocr-time-card">
+          <div class="ocr-form-field">
+            <label for="ocrInputData" class="gasto-field-lbl">Data da Ocorrência</label>
+            <input type="date" id="ocrInputData" class="input">
+          </div>
 
-            <div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+          <div class="ocr-hours-grid">
+            <div class="ocr-form-field">
+              <div class="ocr-label-with-btn">
                 <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
-                <button type="button" class="btn btn-ghost" onclick="definirHoraAgora('ocrInputHoraInicio')"
-                  style="height:20px;padding:0 6px;font-size:10.5px;color:var(--accent-hi)">Agora</button>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraInicio')">Agora</button>
               </div>
-              <input type="time" id="ocrInputHoraInicio" class="input" style="height:38px;font-weight:700"
+              <input type="time" id="ocrInputHoraInicio" class="input" style="font-weight:700"
                 oninput="atualizarCalculoDuracaoModal()">
             </div>
 
-            <div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+            <div class="ocr-form-field">
+              <div class="ocr-label-with-btn">
                 <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno</label>
-                <button type="button" class="btn btn-ghost" onclick="definirHoraAgora('ocrInputHoraFim')"
-                  style="height:20px;padding:0 6px;font-size:10.5px;color:var(--accent-hi)">Agora</button>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraFim')">Agora</button>
               </div>
-              <input type="time" id="ocrInputHoraFim" class="input" style="height:38px;font-weight:700"
-                placeholder="Vazio = Em aberto" oninput="atualizarCalculoDuracaoModal()">
+              <input type="time" id="ocrInputHoraFim" class="input" style="font-weight:700"
+                placeholder="--:--" oninput="atualizarCalculoDuracaoModal()">
             </div>
           </div>
 
           <!-- Indicador visual em tempo real de duração calculada -->
-          <div id="ocrBoxCalculoDuracao"
-            style="background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px">
+          <div id="ocrBoxCalculoDuracao" class="ocr-calc-box">
             <span style="color:var(--ink-3);display:flex;align-items:center;gap:6px">
               <svg class="i" style="width:15px;height:15px"><use href="#i-clock" /></svg>
               <span>Controle de Tempo:</span>
@@ -7723,32 +7941,32 @@
         </div>
 
         <!-- Linha 4: Status da Parada & Custo -->
-        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px">
-          <div>
+        <div class="ocr-form-grid-2">
+          <div class="ocr-form-field">
             <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação da Parada</label>
-            <select id="ocrSelectStatus" class="input" style="height:40px;font-weight:700"
+            <select id="ocrSelectStatus" class="input" style="font-weight:700"
               onchange="aoMudarStatusOcorrencia(this.value)">
               <option value="aberto">Em Aberto (Vendedor Parado)</option>
               <option value="finalizado">Finalizada (Vendedor Liberado)</option>
             </select>
           </div>
 
-          <div>
+          <div class="ocr-form-field">
             <label for="ocrInputCusto" class="gasto-field-lbl">Custo / Despesa (R$)</label>
             <input type="number" id="ocrInputCusto" step="0.01" min="0" class="input"
-              placeholder="0,00" style="height:40px">
+              placeholder="0,00">
           </div>
         </div>
 
         <!-- Linha 5: Local da Parada -->
-        <div>
+        <div class="ocr-form-field">
           <label for="ocrInputLocal" class="gasto-field-lbl">Local / Oficina / Borracharia</label>
           <input type="text" id="ocrInputLocal" class="input"
-            placeholder="Ex: Borracharia do Zé - BR-153 Km 8, Posto Trevo..." style="height:40px">
+            placeholder="Ex: Borracharia do Zé - BR-153 Km 8, Posto Trevo...">
         </div>
 
         <!-- Linha 6: Descrição do Problema / Detalhes -->
-        <div>
+        <div class="ocr-form-field">
           <label for="ocrInputDescricao" class="gasto-field-lbl">Descrição dos Fatos / O que aconteceu</label>
           <textarea id="ocrInputDescricao" class="input" rows="3"
             placeholder="Detalhes do problema, o que causou a pausa, tempo previsto, serviços executados..."
@@ -7756,11 +7974,9 @@
         </div>
 
         <!-- Linha 7: Responsável pelo registro -->
-        <div style="display:grid;grid-template-columns:1fr;gap:10px">
-          <div>
-            <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Responsável da Frota)</label>
-            <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo" style="height:38px">
-          </div>
+        <div class="ocr-form-field">
+          <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Responsável da Frota)</label>
+          <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo">
         </div>
       </div>
 
@@ -7849,36 +8065,36 @@
         </div>
 
         <!-- Linha de Datas: Data Início (X) até Data Fim (Y) -->
-        <div style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div>
+        <div class="ocr-form-grid-2" style="background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px">
+          <div class="ocr-form-field">
             <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">
               Data Inicial (De) *
             </label>
-            <input type="date" id="ocrRelDataInicio" class="input" style="height:40px;font-weight:700"
+            <input type="date" id="ocrRelDataInicio" class="input" style="height:42px;font-weight:700"
               onchange="atualizarPreviaRelatorioOcr()">
           </div>
 
-          <div>
+          <div class="ocr-form-field">
             <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">
               Data Final (Até) *
             </label>
-            <input type="date" id="ocrRelDataFim" class="input" style="height:40px;font-weight:700"
+            <input type="date" id="ocrRelDataFim" class="input" style="height:42px;font-weight:700"
               onchange="atualizarPreviaRelatorioOcr()">
           </div>
         </div>
 
         <!-- Filtros Adicionais: Vendedor e Situação -->
-        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:12px">
-          <div>
+        <div class="ocr-form-grid-2">
+          <div class="ocr-form-field">
             <label for="ocrRelVendedor" class="gasto-field-lbl">Filtrar por Vendedor / Motorista</label>
-            <select id="ocrRelVendedor" class="input" style="height:38px" onchange="atualizarPreviaRelatorioOcr()">
+            <select id="ocrRelVendedor" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
               <option value="">Todos os vendedores</option>
             </select>
           </div>
 
-          <div>
+          <div class="ocr-form-field">
             <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
-            <select id="ocrRelStatus" class="input" style="height:38px" onchange="atualizarPreviaRelatorioOcr()">
+            <select id="ocrRelStatus" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
               <option value="">Todas as situações</option>
               <option value="finalizado">Apenas Finalizadas</option>
               <option value="aberto">Apenas Em Aberto (Parados)</option>
@@ -7887,7 +8103,7 @@
         </div>
 
         <!-- Painel de Resumo / KPIs da Prévia -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px">
+        <div class="ocr-rel-kpis-grid">
           <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
             <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Ocorrências</span>
             <div id="ocrRelTotalOcr" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
