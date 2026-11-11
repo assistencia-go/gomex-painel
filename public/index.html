@@ -7776,42 +7776,41 @@
   </div>
 
   <!-- ========================================================================== -->
-  <!-- MODAL: CONFIRMAR EXCLUSÃO DE OCORRÊNCIA (CUSTOM IN-APP MODAL) -->
+  <!-- MODAL GLOBAL DE CONFIRMAÇÃO (CUSTOM IN-APP MODAL PARA TODOS OS BOTÕES) -->
   <!-- ========================================================================== -->
-  <div class="modal-overlay" id="modalConfirmarExclusaoOcorrencia">
+  <div class="modal-overlay" id="modalConfirmacaoGlobal" style="z-index:99999">
     <div class="modal-card" style="max-width:440px;width:95%">
       <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
         <div style="display:flex;align-items:center;gap:10px">
-          <div
-            style="width:36px;height:36px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
-            <svg class="i" style="width:20px;height:20px"><use href="#i-trash" /></svg>
+          <div id="modalConfirmacaoGlobalIcoWrapper"
+            style="width:38px;height:38px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
+            <svg class="i" id="modalConfirmacaoGlobalIco" style="width:20px;height:20px"><use id="modalConfirmacaoGlobalIcoUse" href="#i-trash" /></svg>
           </div>
           <div>
-            <h3 style="font-size:16px;font-weight:700">Excluir Ocorrência</h3>
-            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Confirmação de segurança</p>
+            <h3 id="modalConfirmacaoGlobalTitulo" style="font-size:16px;font-weight:700">Confirmação</h3>
+            <p id="modalConfirmacaoGlobalSubtitulo" style="font-size:12px;color:var(--ink-3);margin-top:2px">Ação de segurança</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalConfirmarExclusaoOcorrencia()">
+        <button type="button" class="btn btn-ghost btn-icon" onclick="responderConfirmacaoGlobal(false)">
           <svg class="i"><use href="#i-x" /></svg>
         </button>
       </header>
 
       <div class="modal-body" style="padding:20px;display:grid;gap:14px">
-        <input type="hidden" id="ocrIdParaExcluir" value="">
-        <p style="font-size:13.5px;color:var(--ink);line-height:1.5" id="ocrTextoConfirmacaoExclusao">
-          Deseja realmente excluir esta ocorrência?
+        <p style="font-size:13.5px;color:var(--ink);line-height:1.5" id="modalConfirmacaoGlobalTexto">
+          Deseja realmente continuar?
         </p>
-        <div style="padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-3)">
-          Esta exclusão removerá o registro e recalculará os tempos de pausa da frota.
+        <div id="modalConfirmacaoGlobalAviso" style="padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-3)">
+          Esta operação não poderá ser desfeita.
         </div>
       </div>
 
       <footer style="padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:var(--panel-2)">
-        <button type="button" class="btn btn-ghost" onclick="fecharModalConfirmarExclusaoOcorrencia()">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnConfirmarExclusaoOcr"
-          style="background:#dc2626;border-color:#b91c1c" onclick="executarExclusaoOcorrenciaConfirmada()">
-          <svg class="i"><use href="#i-trash" /></svg>
-          <span>Excluir Ocorrência</span>
+        <button type="button" class="btn btn-ghost" onclick="responderConfirmacaoGlobal(false)" id="btnModalConfirmacaoGlobalCancelar">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnModalConfirmacaoGlobalConfirmar"
+          style="background:#dc2626;border-color:#b91c1c" onclick="responderConfirmacaoGlobal(true)">
+          <svg class="i" id="modalConfirmacaoGlobalBtnIco"><use id="modalConfirmacaoGlobalBtnIcoUse" href="#i-trash" /></svg>
+          <span id="modalConfirmacaoGlobalBtnTexto">Confirmar</span>
         </button>
       </footer>
     </div>
@@ -9210,6 +9209,117 @@
       }
 
       // ==============================================================================
+      // MODAL GLOBAL DE CONFIRMAÇÃO EXECUTIVA (SEM POP-UPS NATIVOS DO NAVEGADOR)
+      // ==============================================================================
+      let resolverConfirmacaoGlobal = null;
+
+      function abrirConfirmacaoGlobal({
+        titulo = 'Confirmação',
+        subtitulo = 'Confirmação de segurança',
+        mensagem = 'Deseja realmente continuar com esta ação?',
+        aviso = 'Esta operação não poderá ser desfeita.',
+        textoConfirmar = 'Confirmar',
+        textoCancelar = 'Cancelar',
+        variante = 'perigo', // 'perigo' | 'alerta' | 'padrao'
+        icone = 'trash'
+      } = {}) {
+        return new Promise((resolve) => {
+          resolverConfirmacaoGlobal = resolve;
+          const modal = $('modalConfirmacaoGlobal');
+          if (!modal) {
+            resolve(true);
+            return;
+          }
+
+          if ($('modalConfirmacaoGlobalTitulo')) $('modalConfirmacaoGlobalTitulo').textContent = titulo;
+          if ($('modalConfirmacaoGlobalSubtitulo')) $('modalConfirmacaoGlobalSubtitulo').textContent = subtitulo;
+          if ($('modalConfirmacaoGlobalTexto')) $('modalConfirmacaoGlobalTexto').innerHTML = mensagem;
+
+          const elAviso = $('modalConfirmacaoGlobalAviso');
+          if (elAviso) {
+            if (aviso) {
+              elAviso.style.display = 'block';
+              elAviso.innerHTML = aviso;
+            } else {
+              elAviso.style.display = 'none';
+            }
+          }
+
+          const txtBtn = $('modalConfirmacaoGlobalBtnTexto');
+          if (txtBtn) txtBtn.textContent = textoConfirmar;
+
+          const btnCancelar = $('btnModalConfirmacaoGlobalCancelar');
+          if (btnCancelar) btnCancelar.textContent = textoCancelar;
+
+          const icoId = icone.startsWith('i-') ? icone : ('i-' + icone);
+          if ($('modalConfirmacaoGlobalIcoUse')) $('modalConfirmacaoGlobalIcoUse').setAttribute('href', '#' + icoId);
+          if ($('modalConfirmacaoGlobalBtnIcoUse')) $('modalConfirmacaoGlobalBtnIcoUse').setAttribute('href', '#' + icoId);
+
+          const icoWrapper = $('modalConfirmacaoGlobalIcoWrapper');
+          const btnConfirmar = $('btnModalConfirmacaoGlobalConfirmar');
+
+          if (variante === 'perigo') {
+            if (icoWrapper) {
+              icoWrapper.style.background = 'rgba(250, 138, 138, 0.15)';
+              icoWrapper.style.color = 'var(--bad)';
+            }
+            if (btnConfirmar) {
+              btnConfirmar.style.background = '#dc2626';
+              btnConfirmar.style.borderColor = '#b91c1c';
+              btnConfirmar.style.color = '#ffffff';
+            }
+          } else if (variante === 'alerta') {
+            if (icoWrapper) {
+              icoWrapper.style.background = 'rgba(254, 240, 138, 0.2)';
+              icoWrapper.style.color = 'var(--warn)';
+            }
+            if (btnConfirmar) {
+              btnConfirmar.style.background = '#d97706';
+              btnConfirmar.style.borderColor = '#b45309';
+              btnConfirmar.style.color = '#ffffff';
+            }
+          } else {
+            if (icoWrapper) {
+              icoWrapper.style.background = 'rgba(99, 102, 241, 0.15)';
+              icoWrapper.style.color = 'var(--accent-hi)';
+            }
+            if (btnConfirmar) {
+              btnConfirmar.style.background = 'var(--accent-hi)';
+              btnConfirmar.style.borderColor = 'var(--accent-hi)';
+              btnConfirmar.style.color = '#ffffff';
+            }
+          }
+
+          modal.classList.add('open');
+        });
+      }
+      window.abrirConfirmacaoGlobal = abrirConfirmacaoGlobal;
+
+      function responderConfirmacaoGlobal(resultado) {
+        const modal = $('modalConfirmacaoGlobal');
+        if (modal) modal.classList.remove('open');
+        if (typeof resolverConfirmacaoGlobal === 'function') {
+          const fn = resolverConfirmacaoGlobal;
+          resolverConfirmacaoGlobal = null;
+          fn(Boolean(resultado));
+        }
+      }
+      window.responderConfirmacaoGlobal = responderConfirmacaoGlobal;
+
+      // Atalho de clique fora do modal e tecla ESC
+      document.addEventListener('click', e => {
+        const modal = $('modalConfirmacaoGlobal');
+        if (modal && modal.classList.contains('open') && e.target === modal) {
+          responderConfirmacaoGlobal(false);
+        }
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && $('modalConfirmacaoGlobal')?.classList.contains('open')) {
+          responderConfirmacaoGlobal(false);
+        }
+      });
+
+      // ==============================================================================
       // AUTENTICAÇÃO CRIPTOGRÁFICA & CONTROLE DE SESSÃO CORPORATIVA (EXPIRAÇÃO REAL)
       // ==============================================================================
       // Senhas armazenadas com hash criptográfico SHA-256 (zero credenciais em texto puro)
@@ -9442,12 +9552,21 @@
         $('frmLogin').addEventListener('submit', e => executarLogin(e));
       }
 
-      $('btnLogout').addEventListener('click', () => {
-        if (confirm('Sair do painel executivo?')) {
-          localStorage.removeItem(AUTH_KEY);
-          sessionStorage.removeItem(AUTH_KEY);
-          window.location.href = '/';
-        }
+      $('btnLogout').addEventListener('click', async () => {
+        const ok = await abrirConfirmacaoGlobal({
+          titulo: 'Sair do Painel',
+          subtitulo: 'Encerrar sessão de trabalho',
+          mensagem: 'Deseja realmente sair do Painel Executivo da Frota Gomex?',
+          aviso: 'Sua sessão administrativa será encerrada neste navegador.',
+          textoConfirmar: 'Sair do Painel',
+          variante: 'perigo',
+          icone: 'logout'
+        });
+        if (!ok) return;
+
+        localStorage.removeItem(AUTH_KEY);
+        sessionStorage.removeItem(AUTH_KEY);
+        window.location.href = '/';
       });
 
       // ==============================================================================
@@ -12090,7 +12209,16 @@
 
       async function reativarVistoria(it) {
         if (!it) return;
-        if (!confirm(`Deseja reativar a Vistoria Nº ${it.numero || ''} (${(it.placa || '').toUpperCase()}) para a lista operacional ativa?`)) return;
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Reativar Vistoria',
+          subtitulo: 'Retornar vistoria para a frota ativa',
+          mensagem: `Deseja reativar a Vistoria <strong>Nº ${esc(it.numero || '')}</strong> (${esc((it.placa || '').toUpperCase())}) para a lista operacional ativa?`,
+          aviso: 'O status será alterado para concluído e registrado no histórico com carimbo da data e hora atual.',
+          textoConfirmar: 'Reativar Vistoria',
+          variante: 'padrao',
+          icone: 'check'
+        });
+        if (!confirmado) return;
 
         const d = new Date();
         const usuario = ($('userNameLabel') && $('userNameLabel').textContent) || 'gomex';
@@ -16099,7 +16227,16 @@
       async function excluirLancamentoGasto(id) {
         const g = gastosState.lancamentos.find(x => String(x.id) === String(id));
         if (!g) return;
-        if (!confirm(`Deseja excluir o lançamento "${g.produto_nome}" (${fmtMoeda(g.valor_total)}) da placa ${g.placa}?`)) return;
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Excluir Lançamento de Gasto',
+          subtitulo: 'Remoção de despesa / peça',
+          mensagem: `Deseja realmente excluir o lançamento <strong>"${esc(g.produto_nome)}"</strong> (${fmtMoeda(g.valor_total)}) da placa <strong>${esc(g.placa)}</strong>?`,
+          aviso: 'Este lançamento será excluído do banco de dados e os totais financeiros serão recalculados.',
+          textoConfirmar: 'Excluir Gasto',
+          variante: 'perigo',
+          icone: 'trash'
+        });
+        if (!confirmado) return;
         gastosState.lancamentos = gastosState.lancamentos.filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
         renderGastosView();
@@ -16193,7 +16330,16 @@
       async function excluirProdutoCatalogo(id) {
         const p = gastosState.produtos.find(x => String(x.id) === String(id));
         if (!p) return;
-        if (!confirm(`Remover "[${p.codigo || ''}] ${p.nome}" do catálogo de produtos?`)) return;
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Remover Produto do Catálogo',
+          subtitulo: 'Catálogo de peças & insumos',
+          mensagem: `Deseja remover <strong>"[${esc(p.codigo || '')}] ${esc(p.nome)}"</strong> do catálogo fixo de produtos?`,
+          aviso: 'Os lançamentos já registrados no histórico não serão afetados.',
+          textoConfirmar: 'Remover Produto',
+          variante: 'perigo',
+          icone: 'trash'
+        });
+        if (!confirmado) return;
         gastosState.produtos = gastosState.produtos.filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
         renderTabelaCatalogoProdutos();
@@ -16678,7 +16824,16 @@
       async function excluirFotoGaleria(id) {
         const f = (gastosState.galeria || []).find(x => String(x.id) === String(id));
         if (!f) return;
-        if (!confirm(`Deseja excluir esta foto do veículo ${f.placa} (Motorista: ${f.motorista})?`)) return;
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Excluir Foto da Galeria',
+          subtitulo: 'Registro visual do veículo',
+          mensagem: `Deseja realmente excluir esta foto do veículo <strong>${esc(f.placa)}</strong> (Motorista: <strong>${esc(f.motorista)}</strong>)?`,
+          aviso: 'A foto será removida permanentemente da galeria da frota.',
+          textoConfirmar: 'Excluir Foto',
+          variante: 'perigo',
+          icone: 'trash'
+        });
+        if (!confirmado) return;
         gastosState.galeria = (gastosState.galeria || []).filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
         renderGaleriaView();
@@ -17273,7 +17428,16 @@
       async function excluirCadastroVeiculo(id) {
         const v = (gastosState.veiculos || []).find(x => String(x.id) === String(id));
         if (!v) return;
-        if (!confirm('Deseja remover o veículo de placa ' + v.placa + ' (' + (v.modelo || 'Veículo') + ') do cadastro fixo da frota?')) return;
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Remover Veículo da Frota',
+          subtitulo: 'Cadastro fixo da frota Gomex',
+          mensagem: `Deseja realmente remover o veículo de placa <strong>${esc(v.placa)}</strong> (${esc(v.modelo || 'Veículo')}) do cadastro fixo da frota?`,
+          aviso: 'Esta operação removerá o veículo das listas ativas de monitoramento da frota.',
+          textoConfirmar: 'Remover Veículo',
+          variante: 'perigo',
+          icone: 'trash'
+        });
+        if (!confirmado) return;
 
         gastosState.veiculos = (gastosState.veiculos || []).filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
@@ -17547,48 +17711,31 @@
       }
       window.finalizarPausaRapida = finalizarPausaRapida;
 
-      function excluirOcorrencia(id) {
+      async function excluirOcorrencia(id) {
         const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
         if (!ocr) return;
 
-        if ($('ocrIdParaExcluir')) $('ocrIdParaExcluir').value = ocr.id;
-        if ($('ocrTextoConfirmacaoExclusao')) {
-          $('ocrTextoConfirmacaoExclusao').innerHTML = 'Deseja realmente excluir a ocorrência de <strong>' + esc(ocr.vendedor) + '</strong> (Rota <strong>' + esc(ocr.rota) + '</strong>)?';
-        }
-        if ($('modalConfirmarExclusaoOcorrencia')) $('modalConfirmarExclusaoOcorrencia').classList.add('open');
-      }
-      window.excluirOcorrencia = excluirOcorrencia;
-
-      function fecharModalConfirmarExclusaoOcorrencia() {
-        if ($('modalConfirmarExclusaoOcorrencia')) $('modalConfirmarExclusaoOcorrencia').classList.remove('open');
-      }
-      window.fecharModalConfirmarExclusaoOcorrencia = fecharModalConfirmarExclusaoOcorrencia;
-
-      if ($('modalConfirmarExclusaoOcorrencia')) {
-        $('modalConfirmarExclusaoOcorrencia').addEventListener('click', e => {
-          if (e.target === $('modalConfirmarExclusaoOcorrencia')) fecharModalConfirmarExclusaoOcorrencia();
+        const confirmado = await abrirConfirmacaoGlobal({
+          titulo: 'Excluir Ocorrência',
+          subtitulo: 'Confirmação de segurança',
+          mensagem: `Deseja realmente excluir a ocorrência de <strong>${esc(ocr.vendedor)}</strong> (Rota <strong>${esc(ocr.rota)}</strong>)?`,
+          aviso: 'Esta exclusão removerá o registro e recalculará os tempos de pausa da frota.',
+          textoConfirmar: 'Excluir Ocorrência',
+          variante: 'perigo',
+          icone: 'trash'
         });
-      }
-
-      async function executarExclusaoOcorrenciaConfirmada() {
-        const id = ($('ocrIdParaExcluir')?.value || '').trim();
-        if (!id) return;
-        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
-        const btn = $('btnConfirmarExclusaoOcr');
-        if (btn) btn.disabled = true;
+        if (!confirmado) return;
 
         gastosState.ocorrencias = (gastosState.ocorrencias || []).filter(x => String(x.id) !== String(id));
-        fecharModalConfirmarExclusaoOcorrencia();
-
         try {
           await sincronizarGastosComServidor('push');
           renderOcorrenciasView();
           toast('Ocorrência de ' + (ocr ? ocr.vendedor : '') + ' excluída com sucesso.');
-        } finally {
-          if (btn) btn.disabled = false;
+        } catch (e) {
+          toast('Erro ao excluir ocorrência no servidor.', 'error');
         }
       }
-      window.executarExclusaoOcorrenciaConfirmada = executarExclusaoOcorrenciaConfirmada;
+      window.excluirOcorrencia = excluirOcorrencia;
 
       // ==============================================================================
       // RELATÓRIO DE OCORRÊNCIAS & CONTROLE DE PAUSAS (X ATÉ Y)
