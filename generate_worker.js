@@ -373,7 +373,7 @@ export default {
 
       if (request.method === 'GET') {
         try {
-          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1)&select=*\`, {
+          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1)&select=*\`, {
             headers: {
               'apikey': supabaseKey,
               'Authorization': \`Bearer \${supabaseKey}\`,
@@ -381,7 +381,7 @@ export default {
             }
           });
           const rows = await res.json();
-          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [] };
+          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [] };
           if (Array.isArray(rows)) {
             for (const row of rows) {
               if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
@@ -399,6 +399,9 @@ export default {
               if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
                 try { out.veiculos = JSON.parse(row.descricao); } catch (e) {}
               }
+              if (row.id === 'frota_ocorrencias_v1' && row.descricao) {
+                try { out.ocorrencias = JSON.parse(row.descricao); } catch (e) {}
+              }
             }
           }
           return new Response(JSON.stringify(out), {
@@ -406,7 +409,7 @@ export default {
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         } catch (err) {
-          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [] }), {
+          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [] }), {
             status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
           });
@@ -451,6 +454,13 @@ export default {
               id: 'frota_cadastro_veiculos_v1',
               valor: payload.veiculos.length,
               descricao: JSON.stringify(payload.veiculos)
+            });
+          }
+          if (Array.isArray(payload.ocorrencias)) {
+            rowsToUpsert.push({
+              id: 'frota_ocorrencias_v1',
+              valor: payload.ocorrencias.length,
+              descricao: JSON.stringify(payload.ocorrencias)
             });
           }
           const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros\`, {
