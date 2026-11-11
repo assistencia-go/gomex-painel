@@ -6936,7 +6936,7 @@
 
             <div class="board-foot">
               <span id="galeriaFooterInfo">0 fotos exibidas</span>
-              <span style="font-size:12px;color:var(--ink-3)">Sincronizado com o Banco de Dados Supabase</span>
+              <span style="font-size:12px;color:var(--ink-3)">Sincronizado</span>
             </div>
           </section>
         </div>
@@ -7184,7 +7184,7 @@
               <button type="button" class="btn btn-primary" id="btnSalvarParecer" onclick="salvarDecisaoGestor()">
                 <svg class="i">
                   <use href="#i-check" />
-                </svg> Salvar Parecer no Supabase
+                </svg> Salvar Parecer
               </button>
             </div>
           </div>
@@ -7572,7 +7572,7 @@
             <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" onclick="salvarEdicaoVistoria(true)">
               <svg class="i">
                 <use href="#i-check" />
-              </svg> Salvar Alterações no Supabase
+              </svg> Salvar Alterações
             </button>
           </div>
         </div>
@@ -10819,7 +10819,7 @@
         const parecer = $('drParecerInput').value.trim();
         const btn = $('btnSalvarParecer');
         btn.disabled = true;
-        btn.textContent = 'Salvando no Supabase...';
+        btn.textContent = 'Salvando...';
 
         // Preservar tags de auditoria e manutenção existentes no registro
         const tagsExtras = (state.sel.obs || '').match(/\[(INATIVADO|REATIVADO|MANUTENCAO)[^\]]+\]/gi) || [];
@@ -10839,12 +10839,12 @@
           $('drNotesSec').hidden = !Boolean(partes.textoLivre || partes.manutencao || partes.auditoria.length);
           $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
           renderAll();
-          toast(synced ? 'Parecer e situação salvos no banco de dados!' : 'Parecer salvo localmente (sincronizará automaticamente)!');
+          toast('Parecer e situação salvos com sucesso!');
         } catch (err) {
           toast('Erro ao salvar: ' + err.message, 'error');
         } finally {
           btn.disabled = false;
-          btn.innerHTML = icon('check') + ' Salvar Parecer no Supabase';
+          btn.innerHTML = icon('check') + ' Salvar Parecer';
         }
       }
       window.salvarDecisaoGestor = salvarDecisaoGestor;
@@ -11079,7 +11079,7 @@
         const btn = fromDrawer ? $('btnSalvarDrEdicao') : $('btnSalvarEdicaoVistoria');
         if (btn) {
           btn.disabled = true;
-          btn.textContent = 'Salvando no Supabase...';
+          btn.textContent = 'Salvando...';
         }
 
         const rota = $(pfx + 'Rota').value.trim() || null;
@@ -11129,17 +11129,14 @@
             switchDrTab('vistoria');
           }
 
-          toast(synced
-            ? 'Vistoria Nº ' + (itOriginal.numero || '') + ' salva no banco de dados com sucesso!'
-            : 'Vistoria Nº ' + (itOriginal.numero || '') + ' salva localmente (sincronizará automaticamente)!'
-          );
+          toast('Vistoria Nº ' + (itOriginal.numero || '') + ' salva com sucesso!');
         } catch (err) {
           console.error('Erro ao salvar edição:', err);
-          toast('Erro ao atualizar no banco de dados. Tente novamente.', 'error');
+          toast('Erro ao atualizar. Tente novamente.', 'error');
         } finally {
           if (btn) {
             btn.disabled = false;
-            btn.innerHTML = icon('check') + (fromDrawer ? ' Salvar Alterações no Supabase' : ' Salvar Alterações');
+            btn.innerHTML = icon('check') + ' Salvar Alterações';
           }
         }
       }
@@ -11330,7 +11327,7 @@
           $('drNotes').innerHTML = obsLinhas.map(l => '<div style="margin-bottom:4px;line-height:1.45">' + esc(l) + '</div>').join('');
           renderAll();
           renderManutencaoViewGeral();
-          toast(synced ? 'Observações de manutenção salvas no banco de dados!' : 'Observações salvas localmente (sincronizará automaticamente)!');
+          toast('Observações de manutenção salvas com sucesso!');
         } catch (err) {
           toast('Gravado com sucesso localmente!', 'check');
           renderAll();
@@ -16167,7 +16164,7 @@
         toggleCadastroRapidoProdutoInline(false);
         renderItensDraftNoModalGasto();
         renderGastosView();
-        toast('Produto [' + codigo + '] "' + nome + '" cadastrado e salvo no Supabase!');
+        toast('Produto [' + codigo + '] "' + nome + '" cadastrado com sucesso!');
       }
       window.salvarProdutoRapidoInline = salvarProdutoRapidoInline;
 
@@ -16431,7 +16428,7 @@
           titulo: 'Excluir Lançamento de Gasto',
           subtitulo: 'Remoção de despesa / peça',
           mensagem: `Deseja realmente excluir o lançamento <strong>"${esc(g.produto_nome)}"</strong> (${fmtMoeda(g.valor_total)}) da placa <strong>${esc(g.placa)}</strong>?`,
-          aviso: 'Este lançamento será excluído do banco de dados e os totais financeiros serão recalculados.',
+          aviso: 'Este lançamento será excluído e os totais financeiros serão recalculados.',
           textoConfirmar: 'Excluir Gasto',
           variante: 'perigo',
           icone: 'trash'
@@ -16440,7 +16437,7 @@
         gastosState.lancamentos = gastosState.lancamentos.filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
         renderGastosView();
-        toast('Lançamento excluído do banco de dados.');
+        toast('Lançamento excluído com sucesso.');
       }
       window.excluirLancamentoGasto = excluirLancamentoGasto;
 
@@ -17932,7 +17929,7 @@
           renderOcorrenciasView();
           toast('Ocorrência de ' + (ocr ? ocr.vendedor : '') + ' excluída com sucesso.');
         } catch (e) {
-          toast('Erro ao excluir ocorrência no servidor.', 'error');
+          toast('Erro ao excluir ocorrência. Tente novamente.', 'error');
         }
       }
       window.excluirOcorrencia = excluirOcorrencia;
