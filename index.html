@@ -5094,6 +5094,208 @@
       color: var(--accent-hi);
       border-color: var(--accent);
     }
+
+    /* ============================================================================
+       MÓDULO: OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA (MOBILE-FIRST)
+       ============================================================================ */
+    .ocr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 680px) {
+      .ocr-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .ocr-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color .15s ease, box-shadow .15s ease;
+      position: relative;
+    }
+
+    .ocr-card:hover {
+      border-color: var(--line-strong);
+    }
+
+    .ocr-card.em-aberto {
+      border-left: 4px solid var(--bad);
+      background: linear-gradient(180deg, rgba(250, 138, 138, 0.06) 0%, var(--panel) 100%);
+    }
+
+    .ocr-card.finalizada {
+      border-left: 4px solid var(--ok);
+    }
+
+    .ocr-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ocr-vendedor-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge-status-pausa {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .badge-status-pausa.aberto {
+      background: var(--bad-tint);
+      color: var(--bad);
+      border: 1px solid rgba(250, 138, 138, 0.4);
+    }
+
+    .badge-status-pausa.finalizado {
+      background: var(--ok-tint);
+      color: var(--ok);
+      border: 1px solid rgba(61, 220, 151, 0.35);
+    }
+
+    .ocr-tipo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--raised);
+      color: var(--ink-2);
+      border: 1px solid var(--line);
+    }
+
+    .ocr-time-box {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .ocr-time-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ocr-time-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .ocr-time-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .ocr-duracao-highlight {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .ocr-duracao-highlight.aberto {
+      background: rgba(242, 184, 75, 0.15);
+      color: var(--warn);
+      border: 1px solid rgba(242, 184, 75, 0.3);
+    }
+
+    .ocr-duracao-highlight.finalizado {
+      background: var(--ok-tint);
+      color: var(--ok);
+      border: 1px solid rgba(61, 220, 151, 0.3);
+    }
+
+    .ocr-detail-text {
+      font-size: 13px;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    .ocr-actions-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .ocr-actions-row .btn {
+      flex: 1;
+      min-height: 38px;
+      justify-content: center;
+      font-size: 12px;
+      padding: 0 10px;
+    }
+
+    @keyframes ocrPulseDot {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    .pulse-dot-red {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--bad);
+      display: inline-block;
+      animation: ocrPulseDot 1.6s infinite ease-in-out;
+    }
+
+    body.theme-light .ocr-card {
+      background: #ffffff;
+      border-color: #e2e8f0;
+    }
+    body.theme-light .ocr-time-box {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+    }
+    body.theme-light .ocr-tipo-badge {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #334155;
+    }
   </style>
 </head>
 
@@ -5474,6 +5676,12 @@
           <svg class="i">
             <use href="#i-tool" />
           </svg><span>Manutenção</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewOcorrencias" onclick="alternarVisaoPrincipal('ocorrencias')"
+          title="Ocorrências & Pausas da Frota">
+          <svg class="i">
+            <use href="#i-alert" />
+          </svg><span>Ocorrências</span>
         </button>
         <button type="button" class="sb-item" id="btnViewGastos" onclick="alternarVisaoPrincipal('gastos')"
           title="Custos, Peças & Óleo por Veículo">
@@ -5930,6 +6138,109 @@
               </table>
             </div>
           </section>
+        </div>
+
+        <!-- ====================================================================== -->
+        <!-- VISÃO: OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA -->
+        <!-- ====================================================================== -->
+        <div id="sectionOcorrenciasView" hidden>
+          <!-- Resumo de Ocorrências e Pausas -->
+          <section class="summary" aria-label="Resumo das ocorrências e pausas">
+            <dl class="summary-grid">
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Parados Agora</span>
+                  <div class="stat-ico red"><span class="pulse-dot-red"></span></div>
+                </div>
+                <dd id="ocrStatParadosAgora">0</dd>
+                <span class="stat-sub" id="ocrStatParadosSub">Vendedores em pausa</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Tempo Total Parado</span>
+                  <div class="stat-ico yellow"><svg class="i"><use href="#i-clock" /></svg></div>
+                </div>
+                <dd id="ocrStatTempoHoje">0 min</dd>
+                <span class="stat-sub">Soma de toda a frota hoje</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Ocorrências Hoje</span>
+                  <div class="stat-ico blue"><svg class="i"><use href="#i-alert" /></svg></div>
+                </div>
+                <dd id="ocrStatOcrHoje">0</dd>
+                <span class="stat-sub" id="ocrStatOcrHojeSub">Registros no dia</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Pausas Concluídas</span>
+                  <div class="stat-ico green"><svg class="i"><use href="#i-check" /></svg></div>
+                </div>
+                <dd id="ocrStatConcluidasHoje">0</dd>
+                <span class="stat-sub">Liberados p/ rota</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Barra de Ações & Filtros da Visão de Ocorrências -->
+          <div class="gastos-period-bar" style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1">
+              <button type="button" class="btn btn-primary" onclick="abrirModalOcorrencia()"
+                title="Registrar nova ocorrência ou parada de vendedor"
+                style="height:42px;padding:0 18px;font-size:13.5px;font-weight:700">
+                <svg class="i"><use href="#i-plus" /></svg>
+                <span>Nova Ocorrência / Registrar Parada</span>
+              </button>
+
+              <button type="button" class="btn" onclick="abrirModalRelatorioOcorrencias()"
+                title="Gerar relatório de ocorrências por período (de data X até Y)"
+                style="height:42px;padding:0 16px;font-size:13px;font-weight:700">
+                <svg class="i"><use href="#i-file-text" /></svg>
+                <span>Relatório por Período</span>
+              </button>
+
+              <button type="button" class="btn" onclick="sincronizarGastosComServidor('pull')"
+                title="Atualizar lista de ocorrências" style="height:42px;padding:0 14px">
+                <svg class="i"><use href="#i-refresh" /></svg>
+                <span class="btn-lbl-mob-hide">Atualizar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros Rápidos (Pills Mobile-Friendly) & Campo de Busca -->
+          <section class="card" style="margin-bottom:16px;padding:14px 16px">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;overflow-x:auto;padding-bottom:2px">
+                <button type="button" class="filter-tab active" id="btnOcrFiltroTodos" onclick="filtrarOcorrencias('todos')">
+                  Todos <span class="tab-badge" id="badgeOcrFiltroTodos">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" onclick="filtrarOcorrencias('aberto')">
+                  <span class="pulse-dot-red" style="margin-right:2px"></span> Parados Agora <span class="tab-badge" id="badgeOcrFiltroAbertos">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
+                  Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" onclick="filtrarOcorrencias('finalizado')">
+                  Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
+                </button>
+              </div>
+
+              <div class="search-box" style="width:100%">
+                <svg class="i"><use href="#i-search" /></svg>
+                <input type="search" id="ocrInputBusca" class="search-input"
+                  placeholder="Buscar ocorrência por vendedor, rota, placa, motivo ou oficina..."
+                  oninput="buscarOcorrencias(this.value)">
+              </div>
+            </div>
+          </section>
+
+          <!-- Grid de Cards de Ocorrências (Mobile & Desktop) -->
+          <div id="ocrListaCards" class="ocr-grid">
+            <!-- Renderizado dinamicamente por renderOcorrenciasView() -->
+          </div>
         </div>
 
         <!-- ====================================================================== -->
@@ -7293,6 +7604,347 @@
           </svg>
           <span id="btnCopiarTextoWppLabel">Copiar Mensagem</span>
         </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: REGISTRAR / EDITAR OCORRÊNCIA E PAUSA DE VENDEDOR -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalOcorrencia">
+    <div class="modal-card" style="max-width:640px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:38px;height:38px;border-radius:8px;background:rgba(237, 133, 112, 0.15);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:22px;height:22px">
+              <use href="#i-alert" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="ocrModalTitle">Nova Ocorrência / Pausa de Frota</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de tempo parado, motivo da parada e retorno do vendedor</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalOcorrencia()">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
+        <input type="hidden" id="ocrEditId" value="">
+
+        <!-- Linha 1: Vendedor e Rota (OBRIGATÓRIOS) -->
+        <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:12px">
+          <div>
+            <label for="ocrInputVendedor" class="gasto-field-lbl" style="color:var(--ink)">
+              Vendedor / Motorista <span style="color:var(--bad)">*</span>
+            </label>
+            <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
+              placeholder="Nome do vendedor titular" style="height:40px;font-weight:600"
+              oninput="aoDigitarVendedorOcorrencia(this.value)">
+          </div>
+
+          <div>
+            <label for="ocrInputRota" class="gasto-field-lbl" style="color:var(--ink)">
+              Rota do Vendedor <span style="color:var(--bad)">*</span>
+            </label>
+            <input type="text" id="ocrInputRota" class="input"
+              placeholder="Ex: 217, 240, 222..." style="height:40px;font-weight:600">
+          </div>
+        </div>
+
+        <!-- Linha 2: Veículo/Placa e Tipo/Motivo do Problema -->
+        <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:12px">
+          <div>
+            <label for="ocrInputVeiculo" class="gasto-field-lbl">
+              Veículo / Placa
+            </label>
+            <input type="text" id="ocrInputVeiculo" list="datalistPlacasFrota" class="input"
+              placeholder="Ex: ARS6B73" style="height:40px">
+          </div>
+
+          <div>
+            <label for="ocrSelectTipo" class="gasto-field-lbl" style="color:var(--ink)">
+              Motivo da Parada / Ocorrência <span style="color:var(--bad)">*</span>
+            </label>
+            <select id="ocrSelectTipo" class="input" style="height:40px;font-weight:600">
+              <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
+              <option value="Quebra Mecânica">Quebra Mecânica / Motor</option>
+              <option value="Problema Elétrico / Bateria">Pane Elétrica / Bateria</option>
+              <option value="Manutenção Rápida / Troca de Peça">Manutenção Rápida / Reparo</option>
+              <option value="Troca de Óleo / Filtro">Troca de Óleo em Rota</option>
+              <option value="Guincho / Socorro na Pista">Guincho / Socorro na Pista</option>
+              <option value="Acidente / Colisão">Acidente / Colisão</option>
+              <option value="Fiscalização / Trânsito">Fiscalização / Trânsito</option>
+              <option value="Outro Imprevisto">Outro Imprevisto</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Linha 3: Data e Horários (Início e Fim / Retorno) -->
+        <div style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <div>
+              <label for="ocrInputData" class="gasto-field-lbl">Data</label>
+              <input type="date" id="ocrInputData" class="input" style="height:38px">
+            </div>
+
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+                <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
+                <button type="button" class="btn btn-ghost" onclick="definirHoraAgora('ocrInputHoraInicio')"
+                  style="height:20px;padding:0 6px;font-size:10.5px;color:var(--accent-hi)">Agora</button>
+              </div>
+              <input type="time" id="ocrInputHoraInicio" class="input" style="height:38px;font-weight:700"
+                oninput="atualizarCalculoDuracaoModal()">
+            </div>
+
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+                <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno</label>
+                <button type="button" class="btn btn-ghost" onclick="definirHoraAgora('ocrInputHoraFim')"
+                  style="height:20px;padding:0 6px;font-size:10.5px;color:var(--accent-hi)">Agora</button>
+              </div>
+              <input type="time" id="ocrInputHoraFim" class="input" style="height:38px;font-weight:700"
+                placeholder="Vazio = Em aberto" oninput="atualizarCalculoDuracaoModal()">
+            </div>
+          </div>
+
+          <!-- Indicador visual em tempo real de duração calculada -->
+          <div id="ocrBoxCalculoDuracao"
+            style="background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;font-size:12.5px">
+            <span style="color:var(--ink-3);display:flex;align-items:center;gap:6px">
+              <svg class="i" style="width:15px;height:15px"><use href="#i-clock" /></svg>
+              <span>Controle de Tempo:</span>
+            </span>
+            <span id="ocrTextoCalculoDuracao" style="font-weight:800;color:var(--warn)">Vendedor Parado (Em Aberto)</span>
+          </div>
+        </div>
+
+        <!-- Linha 4: Status da Parada & Custo -->
+        <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:12px">
+          <div>
+            <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação da Parada</label>
+            <select id="ocrSelectStatus" class="input" style="height:40px;font-weight:700"
+              onchange="aoMudarStatusOcorrencia(this.value)">
+              <option value="aberto">Em Aberto (Vendedor Parado)</option>
+              <option value="finalizado">Finalizada (Vendedor Liberado)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ocrInputCusto" class="gasto-field-lbl">Custo / Despesa (R$)</label>
+            <input type="number" id="ocrInputCusto" step="0.01" min="0" class="input"
+              placeholder="0,00" style="height:40px">
+          </div>
+        </div>
+
+        <!-- Linha 5: Local da Parada -->
+        <div>
+          <label for="ocrInputLocal" class="gasto-field-lbl">Local / Oficina / Borracharia</label>
+          <input type="text" id="ocrInputLocal" class="input"
+            placeholder="Ex: Borracharia do Zé - BR-153 Km 8, Posto Trevo..." style="height:40px">
+        </div>
+
+        <!-- Linha 6: Descrição do Problema / Detalhes -->
+        <div>
+          <label for="ocrInputDescricao" class="gasto-field-lbl">Descrição dos Fatos / O que aconteceu</label>
+          <textarea id="ocrInputDescricao" class="input" rows="3"
+            placeholder="Detalhes do problema, o que causou a pausa, tempo previsto, serviços executados..."
+            style="resize:vertical;font-family:inherit"></textarea>
+        </div>
+
+        <!-- Linha 7: Responsável pelo registro -->
+        <div style="display:grid;grid-template-columns:1fr;gap:10px">
+          <div>
+            <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Responsável da Frota)</label>
+            <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo" style="height:38px">
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-foot">
+        <button type="button" class="btn" onclick="fecharModalOcorrencia()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarOcorrencia" onclick="salvarOcorrencia()"
+          style="min-width:140px">
+          <svg class="i"><use href="#i-check" /></svg>
+          <span id="lblBtnSalvarOcorrencia">Salvar Ocorrência</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: CONFIRMAR EXCLUSÃO DE OCORRÊNCIA (CUSTOM IN-APP MODAL) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalConfirmarExclusaoOcorrencia">
+    <div class="modal-card" style="max-width:440px;width:95%">
+      <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:36px;height:36px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
+            <svg class="i" style="width:20px;height:20px"><use href="#i-trash" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Excluir Ocorrência</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Confirmação de segurança</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalConfirmarExclusaoOcorrencia()">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:20px;display:grid;gap:14px">
+        <input type="hidden" id="ocrIdParaExcluir" value="">
+        <p style="font-size:13.5px;color:var(--ink);line-height:1.5" id="ocrTextoConfirmacaoExclusao">
+          Deseja realmente excluir esta ocorrência?
+        </p>
+        <div style="padding:10px 14px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;font-size:12px;color:var(--ink-3)">
+          Esta exclusão removerá o registro e recalculará os tempos de pausa da frota.
+        </div>
+      </div>
+
+      <footer style="padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:var(--panel-2)">
+        <button type="button" class="btn btn-ghost" onclick="fecharModalConfirmarExclusaoOcorrencia()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmarExclusaoOcr"
+          style="background:#dc2626;border-color:#b91c1c" onclick="executarExclusaoOcorrenciaConfirmada()">
+          <svg class="i"><use href="#i-trash" /></svg>
+          <span>Excluir Ocorrência</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: RELATÓRIO DE OCORRÊNCIAS & PAUSAS POR PERÍODO (X ATÉ Y) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalRelatorioOcorrencias">
+    <div class="modal-card" style="max-width:760px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:38px;height:38px;border-radius:8px;background:rgba(237, 133, 112, 0.15);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:22px;height:22px"><use href="#i-file-text" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Relatório de Ocorrências & Pausas da Frota</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Filtre por período (de data X até Y) para auditar tempos e emitir relatórios</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioOcorrencias()">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:78vh;overflow-y:auto">
+        <!-- Seleção Rápida de Período -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:700;color:var(--ink-3);margin-right:4px">Período:</span>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" onclick="aplicarPeriodoRelatorioOcr('hoje')">Hoje</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" onclick="aplicarPeriodoRelatorioOcr('7d')">Últimos 7 dias</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" onclick="aplicarPeriodoRelatorioOcr('15d')">Últimos 15 dias</button>
+          <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" onclick="aplicarPeriodoRelatorioOcr('mes')">Mês Atual</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" onclick="aplicarPeriodoRelatorioOcr('tudo')">Todo o Histórico</button>
+        </div>
+
+        <!-- Linha de Datas: Data Início (X) até Data Fim (Y) -->
+        <div style="background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">
+              Data Inicial (De) *
+            </label>
+            <input type="date" id="ocrRelDataInicio" class="input" style="height:40px;font-weight:700"
+              onchange="atualizarPreviaRelatorioOcr()">
+          </div>
+
+          <div>
+            <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">
+              Data Final (Até) *
+            </label>
+            <input type="date" id="ocrRelDataFim" class="input" style="height:40px;font-weight:700"
+              onchange="atualizarPreviaRelatorioOcr()">
+          </div>
+        </div>
+
+        <!-- Filtros Adicionais: Vendedor e Situação -->
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:12px">
+          <div>
+            <label for="ocrRelVendedor" class="gasto-field-lbl">Filtrar por Vendedor / Motorista</label>
+            <select id="ocrRelVendedor" class="input" style="height:38px" onchange="atualizarPreviaRelatorioOcr()">
+              <option value="">Todos os vendedores</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
+            <select id="ocrRelStatus" class="input" style="height:38px" onchange="atualizarPreviaRelatorioOcr()">
+              <option value="">Todas as situações</option>
+              <option value="finalizado">Apenas Finalizadas</option>
+              <option value="aberto">Apenas Em Aberto (Parados)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Painel de Resumo / KPIs da Prévia -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px">
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Ocorrências</span>
+            <div id="ocrRelTotalOcr" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Total Parado</span>
+            <div id="ocrRelTempoTotal" style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px">0 min</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Média por Pausa</span>
+            <div id="ocrRelTempoMedio" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0 min</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Total Despesas</span>
+            <div id="ocrRelCustoTotal" style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px">R$ 0,00</div>
+          </div>
+        </div>
+
+        <!-- Prévia das Ocorrências Selecionadas -->
+        <div>
+          <div style="font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+            <span>Prévia dos Registros no Período</span>
+            <span id="ocrRelContadorPrevia" style="font-size:11.5px;color:var(--ink-3);font-weight:500">0 encontrados</span>
+          </div>
+
+          <div id="ocrRelListaPrevia" style="max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);padding:4px">
+            <!-- Preenchido via atualizarPreviaRelatorioOcr() -->
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorioOcorrencias()">Fechar</button>
+
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn" onclick="copiarResumoRelatorioWhatsApp()"
+            title="Copiar resumo consolidado para WhatsApp" style="color:#25d366">
+            <svg class="i"><use href="#i-whatsapp" /></svg>
+            <span>Resumo WhatsApp</span>
+          </button>
+
+          <button type="button" class="btn" onclick="exportarCsvOcorrencias()"
+            title="Download em planilha Excel (CSV)">
+            <svg class="i"><use href="#i-download" /></svg>
+            <span>Planilha Excel (CSV)</span>
+          </button>
+
+          <button type="button" class="btn btn-primary" onclick="gerarPdfRelatorioOcorrencias()"
+            title="Gerar e imprimir relatório PDF oficial">
+            <svg class="i"><use href="#i-printer" /></svg>
+            <span>Gerar PDF Oficial</span>
+          </button>
+        </div>
       </footer>
     </div>
   </div>
@@ -10377,6 +11029,7 @@
       const ROUTE_MAP = {
         'vistorias': '/vistoria',
         'manutencao': '/manutencao',
+        'ocorrencias': '/ocorrencias',
         'gastos': '/custos',
         'galeria': '/galeria',
         'vendedores': '/vendedores',
@@ -10386,6 +11039,7 @@
       const ROUTE_TITLES = {
         'vistorias': 'Vistorias da frota · Gomex Frota',
         'manutencao': 'Manutenção & Oficina · Gomex Frota',
+        'ocorrencias': 'Ocorrências & Pausas da Frota · Gomex Frota',
         'gastos': 'Custos, Peças & Insumos · Gomex Frota',
         'galeria': 'Galeria de Fotos · Gomex Frota',
         'vendedores': 'Vendedores & Custódia · Gomex Frota',
@@ -10399,6 +11053,10 @@
         '/manutencao': 'manutencao',
         '/manuntecao': 'manutencao',
         '/manut': 'manutencao',
+        '/ocorrencias': 'ocorrencias',
+        '/ocorrencia': 'ocorrencias',
+        '/pausas': 'ocorrencias',
+        '/pausa': 'ocorrencias',
         '/custos': 'gastos',
         '/pecas': 'gastos',
         '/gastos': 'gastos',
@@ -10425,6 +11083,7 @@
         state.visaoAtual = visao;
         const isVistorias = visao === 'vistorias';
         const isManut = visao === 'manutencao';
+        const isOcorrencias = visao === 'ocorrencias';
         const isGastos = visao === 'gastos';
         const isGaleria = visao === 'galeria';
         const isVend = visao === 'vendedores';
@@ -10443,6 +11102,7 @@
 
         const btnVist = $('btnViewVistorias');
         const btnManut = $('btnViewManut');
+        const btnOcr = $('btnViewOcorrencias');
         const btnGastos = $('btnViewGastos');
         const btnGaleria = $('btnViewGaleria');
         const btnVend = $('btnViewVendedores');
@@ -10450,6 +11110,7 @@
 
         const secVist = $('sectionVistoriasView');
         const secManut = $('sectionManutView');
+        const secOcr = $('sectionOcorrenciasView');
         const secGastos = $('sectionGastosView');
         const secGaleria = $('sectionGaleriaView');
         const secVend = $('sectionVendedoresView');
@@ -10457,6 +11118,7 @@
 
         if (btnVist) btnVist.classList.toggle('active', isVistorias);
         if (btnManut) btnManut.classList.toggle('active', isManut);
+        if (btnOcr) btnOcr.classList.toggle('active', isOcorrencias);
         if (btnGastos) btnGastos.classList.toggle('active', isGastos);
         if (btnGaleria) btnGaleria.classList.toggle('active', isGaleria);
         if (btnVend) btnVend.classList.toggle('active', isVend);
@@ -10464,6 +11126,7 @@
 
         if (secVist) secVist.hidden = !isVistorias;
         if (secManut) secManut.hidden = !isManut;
+        if (secOcr) secOcr.hidden = !isOcorrencias;
         if (secGastos) secGastos.hidden = !isGastos;
         if (secGaleria) secGaleria.hidden = !isGaleria;
         if (secVend) secVend.hidden = !isVend;
@@ -10475,6 +11138,9 @@
           if (isFrotaCad) {
             titleEl.textContent = 'Frota & Veículos Cadastrados';
             subEl.textContent = 'Cadastro fixo da frota, motoristas titulares, ciclo mensal de vistoria e controle preventivo de troca de óleo.';
+          } else if (isOcorrencias) {
+            titleEl.textContent = 'Ocorrências & Controle de Pausas';
+            subEl.textContent = 'Registro de problemas do dia a dia (pneu furado, quebras mecânicas) e acompanhamento em tempo real das paradas dos vendedores.';
           } else if (isGastos) {
             titleEl.textContent = 'Custos, Peças & Insumos da Frota';
             subEl.textContent = 'Controle de peças, litros de óleo e gastos por placa, motorista e período com emissão de relatórios.';
@@ -10495,6 +11161,8 @@
 
         if (isManut) {
           renderManutencaoViewGeral();
+        } else if (isOcorrencias) {
+          if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
         } else if (isGastos) {
           if (typeof renderGastosView === 'function') renderGastosView();
         } else if (isGaleria) {
@@ -11717,6 +12385,7 @@
       const GALERIA_VEICULOS_KEY = 'gomex_frota_galeria_veiculos_v1';
       const HIST_MANUT_ALL_KEY = 'gomex_frota_historico_manutencoes_v1';
       const FROTA_VEICULOS_KEY = 'gomex_frota_cadastro_veiculos_v1';
+      const OCORRENCIAS_FROTA_KEY = 'gomex_frota_ocorrencias_v1';
 
       const VEICULOS_PADRAO_FROTA = [
         {
@@ -13774,6 +14443,7 @@
         historico_manutencoes: {},
         galeria: [],
         veiculos: [],
+        ocorrencias: [],
         aba: 'lancamentos',
         periodoQuick: 'todos',
         dataInicio: '',
@@ -13887,6 +14557,14 @@
             if (Array.isArray(parsedV)) gastosState.veiculos = parsedV;
           }
         } catch (e) { }
+
+        try {
+          const rawO = localStorage.getItem(OCORRENCIAS_FROTA_KEY);
+          if (rawO) {
+            const parsedO = JSON.parse(rawO);
+            if (Array.isArray(parsedO)) gastosState.ocorrencias = parsedO;
+          }
+        } catch (e) { }
       }
 
       function salvarGastosLocalStorage() {
@@ -13897,6 +14575,7 @@
           localStorage.setItem(HIST_MANUT_ALL_KEY, JSON.stringify(gastosState.historico_manutencoes || {}));
           localStorage.setItem(GALERIA_VEICULOS_KEY, JSON.stringify(gastosState.galeria || []));
           localStorage.setItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
+          localStorage.setItem(OCORRENCIAS_FROTA_KEY, JSON.stringify(gastosState.ocorrencias || []));
         } catch (e) { }
       }
 
@@ -13928,11 +14607,16 @@
                 gastosState.veiculos = data.veiculos;
                 mudou = true;
               }
+              if (Array.isArray(data.ocorrencias) && (data.ocorrencias.length || !gastosState.ocorrencias.length)) {
+                gastosState.ocorrencias = data.ocorrencias;
+                mudou = true;
+              }
               if (mudou) {
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
+                if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
               }
               return true;
             }
@@ -13940,7 +14624,7 @@
 
           // Fallback direto no Supabase (tabela parametros)
           try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1)&select=*', {
+            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1)&select=*', {
               headers: authHeaders(),
               cache: 'no-store'
             });
@@ -13968,11 +14652,16 @@
                     const vc = JSON.parse(row.descricao);
                     if (Array.isArray(vc)) gastosState.veiculos = vc;
                   }
+                  if (row.id === 'frota_ocorrencias_v1' && row.descricao) {
+                    const oc = JSON.parse(row.descricao);
+                    if (Array.isArray(oc)) gastosState.ocorrencias = oc;
+                  }
                 }
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
+                if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
               }
             }
           } catch (e) { }
@@ -13990,7 +14679,8 @@
               lancamentos: gastosState.lancamentos,
               historico_manutencoes: gastosState.historico_manutencoes,
               galeria: gastosState.galeria,
-              veiculos: gastosState.veiculos
+              veiculos: gastosState.veiculos,
+              ocorrencias: gastosState.ocorrencias
             })
           });
           if (res.ok) return true;
@@ -14024,6 +14714,11 @@
               id: 'frota_cadastro_veiculos_v1',
               valor: (gastosState.veiculos || []).length,
               descricao: JSON.stringify(gastosState.veiculos || [])
+            },
+            {
+              id: 'frota_ocorrencias_v1',
+              valor: (gastosState.ocorrencias || []).length,
+              descricao: JSON.stringify(gastosState.ocorrencias || [])
             }
           ];
           await fetch(SUPABASE_URL + '/rest/v1/parametros', {
@@ -16587,6 +17282,1023 @@
         toast('Veículo ' + v.placa + ' removido do cadastro.');
       }
       window.excluirCadastroVeiculo = excluirCadastroVeiculo;
+
+      // ==============================================================================
+      // MÓDULO: OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA (MOBILE-FIRST)
+      // ==============================================================================
+      const ocorrenciasState = {
+        filtro: 'todos',
+        busca: ''
+      };
+
+      function calcularDuracaoMinutos(horaIni, horaFim) {
+        if (!horaIni || !horaFim) return 0;
+        const [h1, m1] = horaIni.split(':').map(Number);
+        const [h2, m2] = horaFim.split(':').map(Number);
+        if (isNaN(h1) || isNaN(m1) || isNaN(h2) || isNaN(m2)) return 0;
+        let total1 = h1 * 60 + m1;
+        let total2 = h2 * 60 + m2;
+        if (total2 < total1) total2 += 24 * 60; // virada de meia-noite
+        return Math.max(0, total2 - total1);
+      }
+
+      function formatarMinutosAmigavel(minutos) {
+        const m = Number(minutos) || 0;
+        if (m <= 0) return '0 min';
+        if (m < 60) return m + ' min';
+        const h = Math.floor(m / 60);
+        const rest = m % 60;
+        return rest > 0 ? (h + 'h ' + rest + 'min') : (h + 'h');
+      }
+
+      function formatarHoraAtual() {
+        const now = new Date();
+        return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+      }
+
+      function formatarDataHoje() {
+        const now = new Date();
+        return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      }
+
+      function definirHoraAgora(inputId) {
+        const el = $(inputId);
+        if (el) {
+          el.value = formatarHoraAtual();
+          atualizarCalculoDuracaoModal();
+        }
+      }
+      window.definirHoraAgora = definirHoraAgora;
+
+      function aoMudarStatusOcorrencia(status) {
+        const horaFimEl = $('ocrInputHoraFim');
+        if (status === 'finalizado') {
+          if (horaFimEl && !horaFimEl.value) {
+            horaFimEl.value = formatarHoraAtual();
+          }
+        } else if (status === 'aberto') {
+          if (horaFimEl) {
+            horaFimEl.value = '';
+          }
+        }
+        atualizarCalculoDuracaoModal();
+      }
+      window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
+
+      function aoDigitarVendedorOcorrencia(nome) {
+        if ($('ocrInputVendedor')) $('ocrInputVendedor').style.borderColor = '';
+        const term = (nome || '').trim().toLowerCase();
+        if (!term) return;
+        const v = (gastosState.veiculos || []).find(x => (x.motorista || '').trim().toLowerCase() === term)
+          || (gastosState.veiculos || []).find(x => (x.motorista || '').trim().toLowerCase().includes(term));
+        if (v) {
+          if ($('ocrInputRota') && !$('ocrInputRota').value && v.rota) {
+            $('ocrInputRota').value = v.rota;
+          }
+          if ($('ocrInputVeiculo') && !$('ocrInputVeiculo').value && v.placa) {
+            $('ocrInputVeiculo').value = v.placa;
+          }
+        }
+      }
+      window.aoDigitarVendedorOcorrencia = aoDigitarVendedorOcorrencia;
+
+      function atualizarCalculoDuracaoModal() {
+        const ini = ($('ocrInputHoraInicio')?.value || '').trim();
+        const fim = ($('ocrInputHoraFim')?.value || '').trim();
+        const status = $('ocrSelectStatus')?.value || 'aberto';
+        const txtEl = $('ocrTextoCalculoDuracao');
+        if (!txtEl) return;
+
+        if (ini && fim) {
+          const dur = calcularDuracaoMinutos(ini, fim);
+          txtEl.innerHTML = 'Duração da pausa: <b style="color:var(--ok)">' + formatarMinutosAmigavel(dur) + '</b>';
+          if ($('ocrSelectStatus') && status === 'aberto') {
+            $('ocrSelectStatus').value = 'finalizado';
+          }
+        } else if (ini) {
+          txtEl.innerHTML = 'Pausa iniciada às <b>' + esc(ini) + '</b> · <span style="color:var(--warn)">Vendedor Parado</span>';
+        } else {
+          txtEl.textContent = 'Informe os horários para controle';
+        }
+      }
+      window.atualizarCalculoDuracaoModal = atualizarCalculoDuracaoModal;
+
+      function abrirModalOcorrencia(id = '') {
+        popularDatalistEPlacasNoModalGasto();
+        const ocr = id ? (gastosState.ocorrencias || []).find(x => String(x.id) === String(id)) : null;
+
+        if ($('ocrEditId')) $('ocrEditId').value = ocr ? ocr.id : '';
+        if ($('ocrModalTitle')) $('ocrModalTitle').textContent = ocr ? ('Editar Ocorrência · ' + (ocr.vendedor || 'Frota')) : 'Nova Ocorrência / Registrar Parada';
+        if ($('lblBtnSalvarOcorrencia')) $('lblBtnSalvarOcorrencia').textContent = ocr ? 'Atualizar Ocorrência' : 'Salvar Ocorrência';
+
+        if ($('ocrInputVendedor')) {
+          $('ocrInputVendedor').value = ocr ? (ocr.vendedor || '') : '';
+          $('ocrInputVendedor').style.borderColor = '';
+        }
+        if ($('ocrInputRota')) {
+          $('ocrInputRota').value = ocr ? (ocr.rota || '') : '';
+          $('ocrInputRota').style.borderColor = '';
+        }
+        if ($('ocrInputVeiculo')) $('ocrInputVeiculo').value = ocr ? (ocr.veiculo || ocr.placa || '') : '';
+        if ($('ocrSelectTipo')) $('ocrSelectTipo').value = ocr ? (ocr.tipo || 'Pneu Furado / Borracharia') : 'Pneu Furado / Borracharia';
+        if ($('ocrInputData')) $('ocrInputData').value = ocr ? (ocr.data || formatarDataHoje()) : formatarDataHoje();
+        if ($('ocrInputHoraInicio')) $('ocrInputHoraInicio').value = ocr ? (ocr.hora_inicio || formatarHoraAtual()) : formatarHoraAtual();
+        if ($('ocrInputHoraFim')) $('ocrInputHoraFim').value = ocr ? (ocr.hora_fim || '') : '';
+        if ($('ocrSelectStatus')) $('ocrSelectStatus').value = ocr ? (ocr.status || 'aberto') : 'aberto';
+        if ($('ocrInputLocal')) $('ocrInputLocal').value = ocr ? (ocr.local || '') : '';
+        if ($('ocrInputDescricao')) $('ocrInputDescricao').value = ocr ? (ocr.descricao || '') : '';
+        if ($('ocrInputCusto')) $('ocrInputCusto').value = (ocr && ocr.custo) ? ocr.custo : '';
+        if ($('ocrInputResponsavel')) $('ocrInputResponsavel').value = ocr ? (ocr.responsavel || 'Hendreo') : 'Hendreo';
+
+        atualizarCalculoDuracaoModal();
+        if ($('modalOcorrencia')) $('modalOcorrencia').classList.add('open');
+        setTimeout(() => { if ($('ocrInputVendedor')) $('ocrInputVendedor').focus(); }, 120);
+      }
+      window.abrirModalOcorrencia = abrirModalOcorrencia;
+
+      function fecharModalOcorrencia() {
+        if ($('modalOcorrencia')) $('modalOcorrencia').classList.remove('open');
+      }
+      window.fecharModalOcorrencia = fecharModalOcorrencia;
+
+      if ($('modalOcorrencia')) {
+        $('modalOcorrencia').addEventListener('click', e => {
+          if (e.target === $('modalOcorrencia')) fecharModalOcorrencia();
+        });
+      }
+
+      async function salvarOcorrencia() {
+        const vendedor = ($('ocrInputVendedor')?.value || '').trim();
+        if (!vendedor) {
+          if ($('ocrInputVendedor')) {
+            $('ocrInputVendedor').style.borderColor = 'var(--bad)';
+            $('ocrInputVendedor').focus();
+          }
+          toast('O nome do vendedor é obrigatório para abrir a ocorrência!', 'error');
+          return;
+        }
+
+        const rota = ($('ocrInputRota')?.value || '').trim();
+        if (!rota) {
+          if ($('ocrInputRota')) {
+            $('ocrInputRota').style.borderColor = 'var(--bad)';
+            $('ocrInputRota').focus();
+          }
+          toast('A rota do vendedor é obrigatória!', 'error');
+          return;
+        }
+
+        const editId = ($('ocrEditId')?.value || '').trim();
+        const data = ($('ocrInputData')?.value || '').trim() || formatarDataHoje();
+        const horaInicio = ($('ocrInputHoraInicio')?.value || '').trim() || formatarHoraAtual();
+        const horaFim = ($('ocrInputHoraFim')?.value || '').trim();
+        const tipo = $('ocrSelectTipo')?.value || 'Pneu Furado / Borracharia';
+        const veiculo = ($('ocrInputVeiculo')?.value || '').trim().toUpperCase();
+        const local = ($('ocrInputLocal')?.value || '').trim();
+        const descricao = ($('ocrInputDescricao')?.value || '').trim();
+        const custo = parseFloat($('ocrInputCusto')?.value) || 0;
+        const responsavel = ($('ocrInputResponsavel')?.value || '').trim() || 'Hendreo';
+        let status = $('ocrSelectStatus')?.value || 'aberto';
+
+        if (horaFim && status === 'aberto') {
+          status = 'finalizado';
+        }
+
+        const duracaoMinutos = (horaInicio && horaFim)
+          ? calcularDuracaoMinutos(horaInicio, horaFim)
+          : 0;
+
+        const btn = $('btnSalvarOcorrencia');
+        if (btn) btn.disabled = true;
+
+        if (!Array.isArray(gastosState.ocorrencias)) {
+          gastosState.ocorrencias = [];
+        }
+
+        if (editId) {
+          const idx = gastosState.ocorrencias.findIndex(x => String(x.id) === String(editId));
+          if (idx >= 0) {
+            gastosState.ocorrencias[idx] = {
+              ...gastosState.ocorrencias[idx],
+              vendedor,
+              rota,
+              veiculo,
+              placa: veiculo.replace(/[^A-Z0-9]/g, '').slice(0, 7),
+              tipo,
+              data,
+              hora_inicio: horaInicio,
+              hora_fim: horaFim,
+              duracao_minutos: duracaoMinutos,
+              status,
+              local,
+              descricao,
+              custo,
+              responsavel,
+              atualizado_em: new Date().toISOString()
+            };
+          }
+        } else {
+          const nova = {
+            id: 'ocr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+            vendedor,
+            rota,
+            veiculo,
+            placa: veiculo.replace(/[^A-Z0-9]/g, '').slice(0, 7),
+            tipo,
+            data,
+            hora_inicio: horaInicio,
+            hora_fim: horaFim,
+            duracao_minutos: duracaoMinutos,
+            status,
+            local,
+            descricao,
+            custo,
+            responsavel,
+            criado_em: new Date().toISOString(),
+            atualizado_em: new Date().toISOString()
+          };
+          gastosState.ocorrencias.unshift(nova);
+        }
+
+        try {
+          await sincronizarGastosComServidor('push');
+          fecharModalOcorrencia();
+          renderOcorrenciasView();
+          toast(editId ? ('Ocorrência de ' + vendedor + ' atualizada!') : ('Ocorrência registrada para ' + vendedor + ' (Rota ' + rota + ')!'));
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+      window.salvarOcorrencia = salvarOcorrencia;
+
+      async function finalizarPausaRapida(id) {
+        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
+        if (!ocr) return;
+
+        const horaAgora = formatarHoraAtual();
+        ocr.hora_fim = horaAgora;
+        ocr.status = 'finalizado';
+        ocr.duracao_minutos = calcularDuracaoMinutos(ocr.hora_inicio || horaAgora, horaAgora);
+        ocr.atualizado_em = new Date().toISOString();
+
+        await sincronizarGastosComServidor('push');
+        renderOcorrenciasView();
+        toast('Pausa de ' + ocr.vendedor + ' finalizada! Duração: ' + formatarMinutosAmigavel(ocr.duracao_minutos));
+      }
+      window.finalizarPausaRapida = finalizarPausaRapida;
+
+      function excluirOcorrencia(id) {
+        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
+        if (!ocr) return;
+
+        if ($('ocrIdParaExcluir')) $('ocrIdParaExcluir').value = ocr.id;
+        if ($('ocrTextoConfirmacaoExclusao')) {
+          $('ocrTextoConfirmacaoExclusao').innerHTML = 'Deseja realmente excluir a ocorrência de <strong>' + esc(ocr.vendedor) + '</strong> (Rota <strong>' + esc(ocr.rota) + '</strong>)?';
+        }
+        if ($('modalConfirmarExclusaoOcorrencia')) $('modalConfirmarExclusaoOcorrencia').classList.add('open');
+      }
+      window.excluirOcorrencia = excluirOcorrencia;
+
+      function fecharModalConfirmarExclusaoOcorrencia() {
+        if ($('modalConfirmarExclusaoOcorrencia')) $('modalConfirmarExclusaoOcorrencia').classList.remove('open');
+      }
+      window.fecharModalConfirmarExclusaoOcorrencia = fecharModalConfirmarExclusaoOcorrencia;
+
+      if ($('modalConfirmarExclusaoOcorrencia')) {
+        $('modalConfirmarExclusaoOcorrencia').addEventListener('click', e => {
+          if (e.target === $('modalConfirmarExclusaoOcorrencia')) fecharModalConfirmarExclusaoOcorrencia();
+        });
+      }
+
+      async function executarExclusaoOcorrenciaConfirmada() {
+        const id = ($('ocrIdParaExcluir')?.value || '').trim();
+        if (!id) return;
+        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
+        const btn = $('btnConfirmarExclusaoOcr');
+        if (btn) btn.disabled = true;
+
+        gastosState.ocorrencias = (gastosState.ocorrencias || []).filter(x => String(x.id) !== String(id));
+        fecharModalConfirmarExclusaoOcorrencia();
+
+        try {
+          await sincronizarGastosComServidor('push');
+          renderOcorrenciasView();
+          toast('Ocorrência de ' + (ocr ? ocr.vendedor : '') + ' excluída com sucesso.');
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      }
+      window.executarExclusaoOcorrenciaConfirmada = executarExclusaoOcorrenciaConfirmada;
+
+      // ==============================================================================
+      // RELATÓRIO DE OCORRÊNCIAS & CONTROLE DE PAUSAS (X ATÉ Y)
+      // ==============================================================================
+      function abrirModalRelatorioOcorrencias() {
+        const selVend = $('ocrRelVendedor');
+        if (selVend) {
+          const mots = obterTodosMotoristasConhecidos();
+          selVend.innerHTML = '<option value="">Todos os vendedores</option>' +
+            mots.map(m => '<option value="' + esc(m) + '">' + esc(m) + '</option>').join('');
+        }
+
+        aplicarPeriodoRelatorioOcr('mes');
+
+        if ($('modalRelatorioOcorrencias')) $('modalRelatorioOcorrencias').classList.add('open');
+      }
+      window.abrirModalRelatorioOcorrencias = abrirModalRelatorioOcorrencias;
+
+      function fecharModalRelatorioOcorrencias() {
+        if ($('modalRelatorioOcorrencias')) $('modalRelatorioOcorrencias').classList.remove('open');
+      }
+      window.fecharModalRelatorioOcorrencias = fecharModalRelatorioOcorrencias;
+
+      if ($('modalRelatorioOcorrencias')) {
+        $('modalRelatorioOcorrencias').addEventListener('click', e => {
+          if (e.target === $('modalRelatorioOcorrencias')) fecharModalRelatorioOcorrencias();
+        });
+      }
+
+      function aplicarPeriodoRelatorioOcr(tipo) {
+        ['Hoje', '7d', '15d', 'Mes', 'Tudo'].forEach(t => {
+          const btn = $('btnRelPeriodo' + t);
+          if (btn) btn.classList.remove('active');
+        });
+
+        const now = new Date();
+        const fmtD = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+
+        let dtIni = '';
+        let dtFim = fmtD(now);
+
+        if (tipo === 'hoje') {
+          dtIni = fmtD(now);
+          if ($('btnRelPeriodoHoje')) $('btnRelPeriodoHoje').classList.add('active');
+        } else if (tipo === '7d') {
+          const d7 = new Date();
+          d7.setDate(d7.getDate() - 6);
+          dtIni = fmtD(d7);
+          if ($('btnRelPeriodo7d')) $('btnRelPeriodo7d').classList.add('active');
+        } else if (tipo === '15d') {
+          const d15 = new Date();
+          d15.setDate(d15.getDate() - 14);
+          dtIni = fmtD(d15);
+          if ($('btnRelPeriodo15d')) $('btnRelPeriodo15d').classList.add('active');
+        } else if (tipo === 'mes') {
+          const primeiroDia = new Date(now.getFullYear(), now.getMonth(), 1);
+          dtIni = fmtD(primeiroDia);
+          if ($('btnRelPeriodoMes')) $('btnRelPeriodoMes').classList.add('active');
+        } else if (tipo === 'tudo') {
+          dtIni = '2020-01-01';
+          dtFim = '2030-12-31';
+          if ($('btnRelPeriodoTudo')) $('btnRelPeriodoTudo').classList.add('active');
+        }
+
+        if ($('ocrRelDataInicio')) $('ocrRelDataInicio').value = dtIni;
+        if ($('ocrRelDataFim')) $('ocrRelDataFim').value = dtFim;
+
+        atualizarPreviaRelatorioOcr();
+      }
+      window.aplicarPeriodoRelatorioOcr = aplicarPeriodoRelatorioOcr;
+
+      function obterOcorrenciasFiltradasRelatorio() {
+        const todas = Array.isArray(gastosState.ocorrencias) ? gastosState.ocorrencias : [];
+        const dtIni = ($('ocrRelDataInicio')?.value || '').trim();
+        const dtFim = ($('ocrRelDataFim')?.value || '').trim();
+        const vend = ($('ocrRelVendedor')?.value || '').trim().toLowerCase();
+        const status = ($('ocrRelStatus')?.value || '').trim();
+
+        return todas.filter(item => {
+          const dt = (item.data || '').slice(0, 10);
+          if (dtIni && dt < dtIni) return false;
+          if (dtFim && dt > dtFim) return false;
+          if (vend && !(item.vendedor || '').toLowerCase().includes(vend)) return false;
+          if (status && item.status !== status) return false;
+          return true;
+        });
+      }
+
+      function atualizarPreviaRelatorioOcr() {
+        const lista = obterOcorrenciasFiltradasRelatorio();
+        const horaAgora = formatarHoraAtual();
+
+        let totalMinutos = 0;
+        let totalCusto = 0;
+
+        lista.forEach(x => {
+          totalCusto += Number(x.custo) || 0;
+          if (x.status === 'finalizado') {
+            totalMinutos += Number(x.duracao_minutos) || 0;
+          } else if (x.status === 'aberto') {
+            totalMinutos += calcularDuracaoMinutos(x.hora_inicio, horaAgora);
+          }
+        });
+
+        const mediaMinutos = lista.length > 0 ? Math.round(totalMinutos / lista.length) : 0;
+
+        if ($('ocrRelTotalOcr')) $('ocrRelTotalOcr').textContent = lista.length;
+        if ($('ocrRelTempoTotal')) $('ocrRelTempoTotal').textContent = formatarMinutosAmigavel(totalMinutos);
+        if ($('ocrRelTempoMedio')) $('ocrRelTempoMedio').textContent = formatarMinutosAmigavel(mediaMinutos);
+        if ($('ocrRelCustoTotal')) $('ocrRelCustoTotal').textContent = fmtMoeda(totalCusto);
+        if ($('ocrRelContadorPrevia')) $('ocrRelContadorPrevia').textContent = lista.length + ' ocorrência(s) encontrada(s)';
+
+        const container = $('ocrRelListaPrevia');
+        if (!container) return;
+
+        if (!lista.length) {
+          container.innerHTML = `
+            <div style="text-align:center;padding:24px 12px;color:var(--ink-3);font-size:13px">
+              Nenhuma ocorrência encontrada para o período selecionado.
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = `
+          <table style="width:100%;border-collapse:collapse;font-size:12px;text-align:left">
+            <thead>
+              <tr style="border-bottom:1px solid var(--line);background:var(--panel);color:var(--ink-3);font-weight:700">
+                <th style="padding:8px 10px">Data</th>
+                <th style="padding:8px 10px">Vendedor / Rota</th>
+                <th style="padding:8px 10px">Motivo</th>
+                <th style="padding:8px 10px">Horário</th>
+                <th style="padding:8px 10px">Duração</th>
+                <th style="padding:8px 10px">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${lista.map((x, idx) => `
+                <tr style="border-bottom:1px solid var(--line);${idx % 2 === 0 ? 'background:transparent' : 'background:rgba(255,255,255,0.02)'}">
+                  <td style="padding:8px 10px;white-space:nowrap">${formatarData(x.data)}</td>
+                  <td style="padding:8px 10px;font-weight:600;color:var(--ink)">
+                    ${esc(x.vendedor)} <span class="badge-rota" style="font-size:10px;padding:1px 5px">Rota ${esc(x.rota)}</span>
+                  </td>
+                  <td style="padding:8px 10px;color:var(--ink-2)">${esc(x.tipo || 'Ocorrência')}</td>
+                  <td style="padding:8px 10px;white-space:nowrap;color:var(--ink-3)">${esc(x.hora_inicio || '--:--')} às ${esc(x.hora_fim || '--:--')}</td>
+                  <td style="padding:8px 10px;font-weight:700;color:${x.status === 'aberto' ? 'var(--warn)' : 'var(--ok)'}">
+                    ${x.status === 'aberto' ? 'Em aberto' : formatarMinutosAmigavel(x.duracao_minutos)}
+                  </td>
+                  <td style="padding:8px 10px">
+                    <span style="font-size:11px;font-weight:700;color:${x.status === 'aberto' ? 'var(--bad)' : 'var(--ok)'}">
+                      ${x.status === 'aberto' ? 'Em Pausa' : 'Liberado'}
+                    </span>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+      window.atualizarPreviaRelatorioOcr = atualizarPreviaRelatorioOcr;
+
+      function exportarCsvOcorrencias() {
+        const lista = obterOcorrenciasFiltradasRelatorio();
+        if (!lista.length) {
+          toast('Nenhuma ocorrência encontrada para exportar no período.', 'error');
+          return;
+        }
+
+        const csvCell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+        const headers = [
+          'Data',
+          'Hora Inicio',
+          'Hora Fim',
+          'Duracao (min)',
+          'Duracao Formatada',
+          'Vendedor',
+          'Rota',
+          'Veiculo',
+          'Placa',
+          'Motivo / Problema',
+          'Local',
+          'Custo (R$)',
+          'Status',
+          'Registrado por',
+          'Descricao / Servico'
+        ];
+
+        const rows = lista.map(x => [
+          formatarData(x.data),
+          x.hora_inicio || '',
+          x.hora_fim || '',
+          String(x.duracao_minutos || 0),
+          formatarMinutosAmigavel(x.duracao_minutos),
+          x.vendedor || '',
+          x.rota || '',
+          x.veiculo || '',
+          x.placa || '',
+          x.tipo || '',
+          x.local || '',
+          Number(x.custo || 0).toFixed(2).replace('.', ','),
+          x.status === 'aberto' ? 'Em Aberto / Parado' : 'Finalizada / Liberado',
+          x.responsavel || '',
+          x.descricao || ''
+        ].map(csvCell).join(';'));
+
+        const csv = '\uFEFF' + [headers.map(csvCell).join(';'), ...rows].join('\r\n');
+        const dtIni = ($('ocrRelDataInicio')?.value || 'inicio').replace(/-/g, '');
+        const dtFim = ($('ocrRelDataFim')?.value || 'fim').replace(/-/g, '');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Gomex_Ocorrencias_Frota_${dtIni}_a_${dtFim}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast(`${lista.length} ocorrência(s) exportada(s) para Excel (CSV)!`);
+      }
+      window.exportarCsvOcorrencias = exportarCsvOcorrencias;
+
+      function gerarPdfRelatorioOcorrencias() {
+        const lista = obterOcorrenciasFiltradasRelatorio();
+        if (!lista.length) {
+          toast('Nenhuma ocorrência encontrada para gerar relatório PDF.', 'error');
+          return;
+        }
+
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+
+          const M = 10;
+          const W = 277;
+          const ROXO = [30, 42, 120];
+          const CINZA = [90, 95, 110];
+          const LINHA = [210, 215, 225];
+
+          const fonte = (tam, estilo = 'normal', cor = [20, 20, 30]) => {
+            doc.setFont('helvetica', estilo);
+            doc.setFontSize(tam);
+            doc.setTextColor(...cor);
+          };
+
+          const corta = (txt, maxW) => {
+            const l = doc.splitTextToSize(String(txt || ''), maxW);
+            return l[0] || '';
+          };
+
+          const dtIni = $('ocrRelDataInicio')?.value ? formatarData($('ocrRelDataInicio').value) : 'Início';
+          const dtFim = $('ocrRelDataFim')?.value ? formatarData($('ocrRelDataFim').value) : 'Hoje';
+
+          let totalMinutos = 0;
+          let totalCusto = 0;
+          lista.forEach(x => {
+            totalMinutos += Number(x.duracao_minutos) || 0;
+            totalCusto += Number(x.custo) || 0;
+          });
+
+          // Cabeçalho Oficial
+          fonte(14, 'bold', ROXO);
+          doc.text('GOMEX DISTRIBUIDORA DE ALIMENTOS', M, 14);
+
+          fonte(10, 'bold', [30, 30, 40]);
+          doc.text('RELATÓRIO EXECUTIVO DE OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA', M, 20);
+
+          fonte(8.5, 'normal', CINZA);
+          const agoraStr = new Date().toLocaleString('pt-BR');
+          doc.text(`Período analisado: De ${dtIni} até ${dtFim}  ·  Emitido em: ${agoraStr} por Hendreo`, M, 25);
+
+          // Card de Indicadores no Topo
+          doc.setFillColor(245, 247, 250);
+          doc.setDrawColor(...LINHA);
+          doc.roundedRect(M, 28, W, 14, 2, 2, 'FD');
+
+          fonte(8, 'bold', CINZA);
+          doc.text('TOTAL DE OCORRÊNCIAS', M + 8, 33);
+          doc.text('TEMPO TOTAL PARADO', M + 70, 33);
+          doc.text('MÉDIA POR PARADA', M + 140, 33);
+          doc.text('TOTAL DE DESPESAS', M + 210, 33);
+
+          fonte(10.5, 'bold', ROXO);
+          doc.text(String(lista.length), M + 8, 39);
+          doc.text(formatarMinutosAmigavel(totalMinutos), M + 70, 39);
+          doc.text(formatarMinutosAmigavel(lista.length ? Math.round(totalMinutos / lista.length) : 0), M + 140, 39);
+          doc.text(fmtMoeda(totalCusto), M + 210, 39);
+
+          // Tabela de Ocorrências
+          let y = 48;
+          const colW = [22, 18, 18, 20, 52, 26, 42, 40, 22, 17];
+          const headers = ['DATA', 'INÍCIO', 'FIM', 'DURAÇÃO', 'VENDEDOR / ROTA', 'PLACA / VEÍC', 'MOTIVO / PROBLEMA', 'LOCAL', 'CUSTO', 'STATUS'];
+
+          const desenharCabecalho = () => {
+            doc.setFillColor(30, 42, 120);
+            doc.rect(M, y, W, 7, 'F');
+            fonte(7.5, 'bold', [255, 255, 255]);
+            let xOff = M;
+            headers.forEach((h, i) => {
+              doc.text(h, xOff + 2, y + 4.8);
+              xOff += colW[i];
+            });
+            y += 7;
+          };
+
+          desenharCabecalho();
+
+          lista.forEach((item, idx) => {
+            if (y > 185) {
+              doc.addPage('a4', 'landscape');
+              y = 15;
+              desenharCabecalho();
+            }
+
+            if (idx % 2 === 1) {
+              doc.setFillColor(248, 250, 252);
+              doc.rect(M, y, W, 6.5, 'F');
+            }
+
+            doc.setDrawColor(230, 235, 245);
+            doc.line(M, y + 6.5, M + W, y + 6.5);
+
+            fonte(7.2, 'normal', [30, 35, 45]);
+            let xOff = M;
+
+            doc.text(formatarData(item.data), xOff + 2, y + 4.5); xOff += colW[0];
+            doc.text(item.hora_inicio || '--:--', xOff + 2, y + 4.5); xOff += colW[1];
+            doc.text(item.hora_fim || '--:--', xOff + 2, y + 4.5); xOff += colW[2];
+
+            fonte(7.2, 'bold', item.status === 'aberto' ? [180, 80, 10] : [20, 120, 60]);
+            doc.text(item.status === 'aberto' ? 'Em aberto' : formatarMinutosAmigavel(item.duracao_minutos), xOff + 2, y + 4.5); xOff += colW[3];
+
+            fonte(7.2, 'bold', [20, 20, 30]);
+            doc.text(corta(`${item.vendedor || ''} (Rota ${item.rota || ''})`, colW[4] - 3), xOff + 2, y + 4.5); xOff += colW[4];
+
+            fonte(7.2, 'normal', [40, 45, 55]);
+            doc.text(corta(item.veiculo || item.placa || '—', colW[5] - 3), xOff + 2, y + 4.5); xOff += colW[5];
+            doc.text(corta(item.tipo || 'Ocorrência', colW[6] - 3), xOff + 2, y + 4.5); xOff += colW[6];
+            doc.text(corta(item.local || '—', colW[7] - 3), xOff + 2, y + 4.5); xOff += colW[7];
+
+            doc.text(item.custo ? fmtMoeda(item.custo) : '—', xOff + 2, y + 4.5); xOff += colW[8];
+
+            fonte(7.2, 'bold', item.status === 'aberto' ? [185, 28, 28] : [21, 128, 61]);
+            doc.text(item.status === 'aberto' ? 'Em Pausa' : 'Liberado', xOff + 2, y + 4.5);
+
+            y += 6.5;
+          });
+
+          // Rodapé do PDF
+          const paginas = doc.internal.getNumberOfPages();
+          for (let p = 1; p <= paginas; p++) {
+            doc.setPage(p);
+            fonte(7, 'normal', CINZA);
+            doc.text(`Gomex Distribuidora · Página ${p} de ${paginas}`, M, 202);
+            doc.text('Relatório emitido para auditoria interna da frota', M + W - 60, 202);
+          }
+
+          const blobUrl = doc.output('bloburl');
+          window.open(blobUrl, '_blank');
+          toast('Relatório PDF oficial gerado com sucesso!');
+        } catch (err) {
+          console.error(err);
+          toast('Erro ao gerar relatório PDF: ' + err.message, 'error');
+        }
+      }
+      window.gerarPdfRelatorioOcorrencias = gerarPdfRelatorioOcorrencias;
+
+      async function copiarResumoRelatorioWhatsApp() {
+        const lista = obterOcorrenciasFiltradasRelatorio();
+        if (!lista.length) {
+          toast('Nenhuma ocorrência encontrada para o resumo.', 'error');
+          return;
+        }
+
+        const dtIni = $('ocrRelDataInicio')?.value ? formatarData($('ocrRelDataInicio').value) : 'Início';
+        const dtFim = $('ocrRelDataFim')?.value ? formatarData($('ocrRelDataFim').value) : 'Hoje';
+
+        let totalMinutos = 0;
+        let totalCusto = 0;
+        const porVendedor = new Map();
+
+        lista.forEach(x => {
+          totalMinutos += Number(x.duracao_minutos) || 0;
+          totalCusto += Number(x.custo) || 0;
+          const k = `${x.vendedor || 'Outro'} (Rota ${x.rota || '—'})`;
+          if (!porVendedor.has(k)) porVendedor.set(k, { count: 0, minutos: 0, custo: 0 });
+          const item = porVendedor.get(k);
+          item.count++;
+          item.minutos += Number(x.duracao_minutos) || 0;
+          item.custo += Number(x.custo) || 0;
+        });
+
+        const linhasVend = Array.from(porVendedor.entries()).map(([k, v]) =>
+          `• ${k}: ${v.count} pausa(s) · Total: ${formatarMinutosAmigavel(v.minutos)}${v.custo > 0 ? ' · ' + fmtMoeda(v.custo) : ''}`
+        );
+
+        const msg = [
+          '*RELATÓRIO CONSOLIDADO DE PAUSAS DA FROTA · GOMEX*',
+          `*Período:* De ${dtIni} até ${dtFim}`,
+          '',
+          `*Total de Ocorrências:* ${lista.length}`,
+          `*Tempo Total Parado:* ${formatarMinutosAmigavel(totalMinutos)}`,
+          `*Média por Parada:* ${formatarMinutosAmigavel(lista.length ? Math.round(totalMinutos / lista.length) : 0)}`,
+          totalCusto > 0 ? `*Total de Despesas:* ${fmtMoeda(totalCusto)}` : '',
+          '',
+          '*Detalhamento por Vendedor:*',
+          ...linhasVend,
+          '',
+          '*Responsável:* Hendreo'
+        ].filter(Boolean).join('\n');
+
+        let copiou = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(msg);
+            copiou = true;
+          } catch (e) {}
+        }
+        if (!copiou) {
+          const ta = document.createElement('textarea');
+          ta.value = msg;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); copiou = true; } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        toast('Resumo consolidado copiado para o WhatsApp!');
+      }
+      window.copiarResumoRelatorioWhatsApp = copiarResumoRelatorioWhatsApp;
+
+      async function copiarOcorrenciaWhatsApp(id) {
+        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
+        if (!ocr) return;
+
+        const isAberto = ocr.status === 'aberto';
+        const horaAgora = formatarHoraAtual();
+        const duracaoTexto = isAberto
+          ? ('Em andamento (início às ' + (ocr.hora_inicio || '--:--') + ' - parado há ' + formatarMinutosAmigavel(calcularDuracaoMinutos(ocr.hora_inicio, horaAgora)) + ')')
+          : ((ocr.hora_inicio || '') + ' às ' + (ocr.hora_fim || '') + ' (Duração: ' + formatarMinutosAmigavel(ocr.duracao_minutos) + ')');
+
+        const msg = [
+          '*OCORRÊNCIA DE FROTA · GOMEX DISTRIBUIDORA*',
+          '',
+          '*Vendedor:* ' + (ocr.vendedor || 'Não informado'),
+          '*Rota:* ' + (ocr.rota || 'Não informada'),
+          ocr.veiculo ? ('*Veículo:* ' + ocr.veiculo) : '',
+          '*Problema:* ' + (ocr.tipo || 'Ocorrência operacional'),
+          '*Horário da Pausa:* ' + duracaoTexto,
+          '*Status:* ' + (isAberto ? 'Em Aberto / Vendedor Parado' : 'Pausa Finalizada / Vendedor Liberado'),
+          ocr.local ? ('*Local:* ' + ocr.local) : '',
+          ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
+          ocr.custo ? ('*Custo:* ' + fmtMoeda(ocr.custo)) : '',
+          '*Anotado por:* ' + (ocr.responsavel || 'Hendreo')
+        ].filter(Boolean).join('\n');
+
+        let copiou = false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(msg);
+            copiou = true;
+          } catch (e) {}
+        }
+        if (!copiou) {
+          const ta = document.createElement('textarea');
+          ta.value = msg;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); copiou = true; } catch (e) {}
+          document.body.removeChild(ta);
+        }
+        toast('Mensagem formatada copiada para o WhatsApp!');
+      }
+      window.copiarOcorrenciaWhatsApp = copiarOcorrenciaWhatsApp;
+
+      function filtrarOcorrencias(filtro) {
+        ocorrenciasState.filtro = filtro;
+        ['Todos', 'Abertos', 'Hoje', 'Finalizados'].forEach(tab => {
+          const btn = $('btnOcrFiltro' + tab);
+          if (btn) btn.classList.remove('active');
+        });
+        if (filtro === 'aberto' && $('btnOcrFiltroAbertos')) $('btnOcrFiltroAbertos').classList.add('active');
+        else if (filtro === 'hoje' && $('btnOcrFiltroHoje')) $('btnOcrFiltroHoje').classList.add('active');
+        else if (filtro === 'finalizado' && $('btnOcrFiltroFinalizados')) $('btnOcrFiltroFinalizados').classList.add('active');
+        else if ($('btnOcrFiltroTodos')) $('btnOcrFiltroTodos').classList.add('active');
+        renderOcorrenciasView();
+      }
+      window.filtrarOcorrencias = filtrarOcorrencias;
+
+      function buscarOcorrencias(val) {
+        ocorrenciasState.busca = (val || '').trim().toLowerCase();
+        renderOcorrenciasView();
+      }
+      window.buscarOcorrencias = buscarOcorrencias;
+
+      function renderOcorrenciasView() {
+        const todas = Array.isArray(gastosState.ocorrencias) ? gastosState.ocorrencias : [];
+        const hojeStr = formatarDataHoje();
+        const horaAgora = formatarHoraAtual();
+
+        const paradosAgora = todas.filter(x => x.status === 'aberto');
+        const deHoje = todas.filter(x => (x.data || '').startsWith(hojeStr));
+        const concluidasHoje = deHoje.filter(x => x.status === 'finalizado');
+        const tempoHojeMinutos = deHoje.reduce((acc, x) => {
+          if (x.status === 'finalizado') return acc + (Number(x.duracao_minutos) || 0);
+          if (x.status === 'aberto') return acc + calcularDuracaoMinutos(x.hora_inicio, horaAgora);
+          return acc;
+        }, 0);
+
+        if ($('ocrStatParadosAgora')) $('ocrStatParadosAgora').textContent = paradosAgora.length;
+        if ($('ocrStatTempoHoje')) $('ocrStatTempoHoje').textContent = formatarMinutosAmigavel(tempoHojeMinutos);
+        if ($('ocrStatOcrHoje')) $('ocrStatOcrHoje').textContent = deHoje.length;
+        if ($('ocrStatConcluidasHoje')) $('ocrStatConcluidasHoje').textContent = concluidasHoje.length;
+
+        if ($('badgeOcrFiltroTodos')) $('badgeOcrFiltroTodos').textContent = todas.length;
+        if ($('badgeOcrFiltroAbertos')) $('badgeOcrFiltroAbertos').textContent = paradosAgora.length;
+        if ($('badgeOcrFiltroHoje')) $('badgeOcrFiltroHoje').textContent = deHoje.length;
+        if ($('badgeOcrFiltroFinalizados')) $('badgeOcrFiltroFinalizados').textContent = todas.filter(x => x.status === 'finalizado').length;
+
+        let lista = [...todas];
+
+        if (ocorrenciasState.filtro === 'aberto') {
+          lista = lista.filter(x => x.status === 'aberto');
+        } else if (ocorrenciasState.filtro === 'hoje') {
+          lista = lista.filter(x => (x.data || '').startsWith(hojeStr));
+        } else if (ocorrenciasState.filtro === 'finalizado') {
+          lista = lista.filter(x => x.status === 'finalizado');
+        }
+
+        if (ocorrenciasState.busca) {
+          const b = ocorrenciasState.busca;
+          lista = lista.filter(x =>
+            (x.vendedor || '').toLowerCase().includes(b) ||
+            (x.rota || '').toLowerCase().includes(b) ||
+            (x.veiculo || '').toLowerCase().includes(b) ||
+            (x.placa || '').toLowerCase().includes(b) ||
+            (x.tipo || '').toLowerCase().includes(b) ||
+            (x.local || '').toLowerCase().includes(b) ||
+            (x.descricao || '').toLowerCase().includes(b)
+          );
+        }
+
+        lista.sort((a, b) => {
+          if (a.status === 'aberto' && b.status !== 'aberto') return -1;
+          if (a.status !== 'aberto' && b.status === 'aberto') return 1;
+          const dtA = (a.data || '') + ' ' + (a.hora_inicio || '');
+          const dtB = (b.data || '') + ' ' + (b.hora_inicio || '');
+          return dtB.localeCompare(dtA);
+        });
+
+        const container = $('ocrListaCards');
+        if (!container) return;
+
+        if (!lista.length) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:52px 20px;background:var(--panel);border:1px dashed var(--line-strong);border-radius:var(--r);color:var(--ink-3)">
+              <div style="width:48px;height:48px;border-radius:50%;background:var(--raised);display:grid;place-items:center;margin:0 auto 12px;color:var(--accent-hi)">
+                <svg class="i" style="width:24px;height:24px"><use href="#i-check" /></svg>
+              </div>
+              <h4 style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma ocorrência encontrada</h4>
+              <p style="font-size:13px;max-width:380px;margin:0 auto 18px">
+                ${ocorrenciasState.busca ? 'Nenhum registro confere com a busca digitada.' : 'Toda a frota está rodando normalmente sem pausas pendentes registradas.'}
+              </p>
+              <button type="button" class="btn btn-primary" onclick="abrirModalOcorrencia()" style="margin:0 auto">
+                <svg class="i"><use href="#i-plus" /></svg>
+                <span>Registrar Nova Ocorrência</span>
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = lista.map(item => {
+          const isAberto = item.status === 'aberto';
+          const isHoje = (item.data || '').startsWith(hojeStr);
+
+          let tempoPausaHtml = '';
+          if (isAberto) {
+            const minParado = calcularDuracaoMinutos(item.hora_inicio, horaAgora);
+            tempoPausaHtml = `
+              <div class="ocr-duracao-highlight aberto">
+                <span class="pulse-dot-red"></span>
+                <span>Parado há ${formatarMinutosAmigavel(minParado)}</span>
+              </div>
+            `;
+          } else {
+            tempoPausaHtml = `
+              <div class="ocr-duracao-highlight finalizado">
+                <svg class="i" style="width:14px;height:14px"><use href="#i-check" /></svg>
+                <span>Pausa: ${formatarMinutosAmigavel(item.duracao_minutos)}</span>
+              </div>
+            `;
+          }
+
+          let iconeTipo = 'i-alert';
+          if ((item.tipo || '').includes('Pneu')) iconeTipo = 'i-tool';
+          else if ((item.tipo || '').includes('Óleo')) iconeTipo = 'i-droplet';
+          else if ((item.tipo || '').includes('Mecânica') || (item.tipo || '').includes('Manutenção')) iconeTipo = 'i-tool';
+
+          return `
+            <div class="ocr-card ${isAberto ? 'em-aberto' : 'finalizada'}">
+              <div class="ocr-card-head">
+                <div>
+                  <div class="ocr-vendedor-title">
+                    <span>${esc(item.vendedor)}</span>
+                    <span class="badge-rota">Rota ${esc(item.rota)}</span>
+                    ${item.veiculo ? `<span class="badge-km" style="font-size:11px">${esc(item.veiculo)}</span>` : ''}
+                  </div>
+                  <div style="font-size:11.5px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:6px">
+                    <span>${formatarData(item.data)}</span>
+                    <span>·</span>
+                    <span>Registrado por: <b>${esc(item.responsavel || 'Hendreo')}</b></span>
+                  </div>
+                </div>
+
+                <div>
+                  ${isAberto
+                    ? `<span class="badge-status-pausa aberto"><span class="pulse-dot-red"></span> EM PAUSA</span>`
+                    : `<span class="badge-status-pausa finalizado"><svg class="i" style="width:12px;height:12px"><use href="#i-check" /></svg> LIBERADO</span>`
+                  }
+                </div>
+              </div>
+
+              <!-- Motivo do Problema -->
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+                <div class="ocr-tipo-badge">
+                  <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#${iconeTipo}" /></svg>
+                  <span>${esc(item.tipo || 'Ocorrência')}</span>
+                </div>
+                ${tempoPausaHtml}
+              </div>
+
+              <!-- Box de Horários e Duração -->
+              <div class="ocr-time-box">
+                <div class="ocr-time-item">
+                  <span class="ocr-time-lbl">Início da Pausa</span>
+                  <span class="ocr-time-val">${esc(item.hora_inicio || '--:--')}</span>
+                </div>
+                <div class="ocr-time-item">
+                  <span class="ocr-time-lbl">Retorno / Fim</span>
+                  <span class="ocr-time-val" style="color:${isAberto ? 'var(--warn)' : 'var(--ink)'}">
+                    ${isAberto ? 'Em atendimento' : esc(item.hora_fim || '--:--')}
+                  </span>
+                </div>
+                <div class="ocr-time-item">
+                  <span class="ocr-time-lbl">Tempo Utilizado</span>
+                  <span class="ocr-time-val" style="color:${isAberto ? 'var(--bad)' : 'var(--ok)'}">
+                    ${isAberto ? (calcularDuracaoMinutos(item.hora_inicio, horaAgora) + ' min até agora') : formatarMinutosAmigavel(item.duracao_minutos)}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Detalhes, Local e Custo -->
+              ${item.local ? `
+                <div style="font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px">
+                  <span style="color:var(--accent-hi);font-weight:700">Local:</span>
+                  <span>${esc(item.local)}</span>
+                </div>
+              ` : ''}
+
+              ${item.descricao ? `
+                <div class="ocr-detail-text">
+                  <span style="color:var(--ink-3);font-weight:600">Motivo/Serviço:</span> ${esc(item.descricao)}
+                </div>
+              ` : ''}
+
+              ${item.custo ? `
+                <div style="font-size:12.5px;font-weight:700;color:var(--ok)">
+                  Despesa / Custo: ${fmtMoeda(item.custo)}
+                </div>
+              ` : ''}
+
+              <!-- Ações Rápidas (Mobile First) -->
+              <div class="ocr-actions-row">
+                ${isAberto ? `
+                  <button type="button" class="btn btn-primary" onclick="finalizarPausaRapida('${esc(item.id)}')"
+                    title="Finalizar pausa com a hora atual" style="background:#15803d;border-color:#15803d">
+                    <svg class="i"><use href="#i-check" /></svg>
+                    <span>Finalizar Pausa</span>
+                  </button>
+                ` : ''}
+
+                <button type="button" class="btn btn-ghost" onclick="copiarOcorrenciaWhatsApp('${esc(item.id)}')"
+                  title="Copiar mensagem pronta para WhatsApp" style="color:#25d366">
+                  <svg class="i"><use href="#i-whatsapp" /></svg>
+                  <span>WhatsApp</span>
+                </button>
+
+                <button type="button" class="btn btn-ghost" onclick="abrirModalOcorrencia('${esc(item.id)}')"
+                  title="Editar ocorrência">
+                  <svg class="i"><use href="#i-edit" /></svg>
+                  <span>Editar</span>
+                </button>
+
+                <button type="button" class="btn btn-ghost btn-icon" onclick="excluirOcorrencia('${esc(item.id)}')"
+                  title="Excluir ocorrência" style="flex:0 0 36px;color:var(--bad)">
+                  <svg class="i"><use href="#i-trash" /></svg>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      window.renderOcorrenciasView = renderOcorrenciasView;
+
+      setInterval(() => {
+        if (state.visaoAtual === 'ocorrencias' && typeof renderOcorrenciasView === 'function') {
+          renderOcorrenciasView();
+        }
+      }, 30000);
 
       // ==============================================================================
       // EXPORTAÇÃO CSV E RELATÓRIO PDF EXECUTIVO DE CUSTOS, PEÇAS & INSUMOS (DE X ATÉ Y)
