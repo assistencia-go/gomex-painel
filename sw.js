@@ -2,7 +2,7 @@
 // GOMEX DISTRIBUIDORA · SERVICE WORKER PWA (PAINEL EXECUTIVO)
 // ==============================================================================
 
-const CACHE_NAME = 'gomex-painel-pwa-v1.2';
+const CACHE_NAME = 'gomex-painel-pwa-v1.3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
