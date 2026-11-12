@@ -203,11 +203,12 @@ function lerGastosLocais() {
         historico_manutencoes: parsed.historico_manutencoes && typeof parsed.historico_manutencoes === 'object' ? parsed.historico_manutencoes : {},
         galeria: Array.isArray(parsed.galeria) ? parsed.galeria : [],
         veiculos: Array.isArray(parsed.veiculos) ? parsed.veiculos : [],
-        ocorrencias: Array.isArray(parsed.ocorrencias) ? parsed.ocorrencias : []
+        ocorrencias: Array.isArray(parsed.ocorrencias) ? parsed.ocorrencias : [],
+        agendamentos: Array.isArray(parsed.agendamentos) ? parsed.agendamentos : []
       };
     }
   } catch (e) {}
-  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [] };
+  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [] };
 }
 
 function salvarGastosLocais(data) {
@@ -353,7 +354,7 @@ const server = http.createServer((req, res) => {
   if (pathname === '/api/frota-gastos') {
     if (req.method === 'GET') {
       const localData = lerGastosLocais();
-      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1)&select=*', SUPABASE_URL);
+      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1)&select=*', SUPABASE_URL);
       const options = {
         method: 'GET',
         headers: {
@@ -396,6 +397,10 @@ const server = http.createServer((req, res) => {
                   const ocr = JSON.parse(row.descricao);
                   if (Array.isArray(ocr)) out.ocorrencias = ocr;
                 }
+                if (row.id === 'frota_agendamentos_servicos_v1' && row.descricao) {
+                  const ag = JSON.parse(row.descricao);
+                  if (Array.isArray(ag)) out.agendamentos = ag;
+                }
               }
               salvarGastosLocais(out);
             }
@@ -431,6 +436,7 @@ const server = http.createServer((req, res) => {
           if (Array.isArray(payload.galeria)) current.galeria = payload.galeria;
           if (Array.isArray(payload.veiculos)) current.veiculos = payload.veiculos;
           if (Array.isArray(payload.ocorrencias)) current.ocorrencias = payload.ocorrencias;
+          if (Array.isArray(payload.agendamentos)) current.agendamentos = payload.agendamentos;
           salvarGastosLocais(current);
 
           const rowsToUpsert = [];
@@ -475,6 +481,13 @@ const server = http.createServer((req, res) => {
               id: 'frota_ocorrencias_v1',
               valor: current.ocorrencias.length,
               descricao: JSON.stringify(current.ocorrencias)
+            });
+          }
+          if (Array.isArray(current.agendamentos)) {
+            rowsToUpsert.push({
+              id: 'frota_agendamentos_servicos_v1',
+              valor: current.agendamentos.length,
+              descricao: JSON.stringify(current.agendamentos)
             });
           }
 
