@@ -52,10 +52,20 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Navegação de páginas (rotas SPA como /vistoria, /frota, etc.): Network first, fallback para /index.html em cache
+  // Navegação de páginas (rotas SPA como /vistoria, /frota, etc.): Network first com atualização de cache, fallback para cache
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
+        .then(networkRes => {
+          if (networkRes && networkRes.status === 200) {
+            const resClone = networkRes.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(req, resClone);
+              cache.put('/index.html', networkRes.clone());
+            });
+          }
+          return networkRes;
+        })
         .catch(() => {
           return caches.match('/index.html') || caches.match('/');
         })
