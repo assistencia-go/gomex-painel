@@ -7,6 +7,7 @@
 import fs from 'fs';
 import path from 'path';
 import vm from 'vm';
+import crypto from 'crypto';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
@@ -149,9 +150,149 @@ for (const file of jsFilesToCheck) {
 }
 
 // ------------------------------------------------------------------------------
-// TESTE 3: COMPILAÇÃO E VALIDAÇÃO OFICIAL CLOUDFLARE (WRANGLER DRY-RUN)
+// TESTE 3: SIMULAÇÃO E TESTE DE EXECUÇÃO EM TEMPO DE EXECUÇÃO (HEADLESS SMOKE TEST)
 // ------------------------------------------------------------------------------
-console.log(`\n${COLORS.bold}--- 3. Validando Compilação Cloudflare Wrangler ---${COLORS.reset}`);
+console.log(`\n${COLORS.bold}--- 3. Executando Simulação Headless (Smoke Test de Login & Telas) ---${COLORS.reset}`);
+try {
+  const indexContent = fs.readFileSync(indexPath, 'utf8');
+  const scriptMatch = indexContent.match(/<script(?![^>]*src=)[^>]*>([\s\S]*?)<\/script>/i);
+  if (!scriptMatch) {
+    throw new Error('Script não encontrado para simulação!');
+  }
+
+  const scriptCode = scriptMatch[1];
+  const domElements = {
+    login: { hidden: false },
+    app: { hidden: true },
+    userNameLabel: { textContent: '' },
+    loginUser: { value: 'gomex', focus: () => {}, select: () => {} },
+    loginPass: { value: 'Gomex@2026', focus: () => {}, select: () => {} },
+    loginError: { classList: { add: () => {}, remove: () => {} } },
+    loginErrorMsg: { textContent: '' },
+    chkRemember: { checked: true },
+    pageMainTitle: { textContent: '' },
+    pageMainSubtitle: { textContent: '' },
+    sync: { dataset: {}, textContent: '' },
+    tbl: { innerHTML: '', querySelectorAll: () => [] },
+    btnViewAdmin: { style: {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewVistorias: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewManut: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewOcorrencias: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewGastos: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewGaleria: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewVendedores: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    btnViewFrotaCad: { style: {}, removeAttribute: () => {}, setAttribute: () => {}, classList: { toggle: () => {}, add: () => {}, remove: () => {} } },
+    sectionVistoriasView: { hidden: false },
+    sectionManutView: { hidden: true },
+    sectionOcorrenciasView: { hidden: true },
+    sectionGastosView: { hidden: true },
+    sectionGaleriaView: { hidden: true },
+    sectionVendedoresView: { hidden: true },
+    sectionFrotaCadView: { hidden: true },
+    sectionAdminPermissoesView: { hidden: true },
+    adminUsersContainer: { innerHTML: '' },
+    totalUsuariosAdminBadge: { textContent: '' },
+    totalModulosAdminBadge: { textContent: '' },
+    totalPermissoesAtivasBadge: { textContent: '' }
+  };
+
+  const storageMap = {};
+  const mockStorage = {
+    getItem: (k) => storageMap[k] || null,
+    setItem: (k, v) => { storageMap[k] = String(v); },
+    removeItem: (k) => { delete storageMap[k]; }
+  };
+
+  const createDummyEl = () => ({
+    style: {},
+    classList: { add: () => {}, remove: () => {}, toggle: () => {} },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    querySelector: () => ({ setAttribute: () => {}, textContent: '' }),
+    querySelectorAll: () => [],
+    setAttribute: () => {},
+    removeAttribute: () => {},
+    focus: () => {},
+    select: () => {},
+    dataset: {},
+    innerHTML: '',
+    textContent: ''
+  });
+
+  const sandbox = {
+    console: { log: () => {}, error: () => {}, warn: () => {}, info: () => {} },
+    setTimeout: (fn) => {},
+    setInterval: (fn) => 123,
+    clearInterval: () => {},
+    clearTimeout: () => {},
+    window: {},
+    document: {
+      title: 'Gomex Frota',
+      hidden: false,
+      body: { classList: { add: () => {}, remove: () => {} }, appendChild: () => {} },
+      getElementById: (id) => domElements[id] || createDummyEl(),
+      querySelector: () => createDummyEl(),
+      querySelectorAll: () => [],
+      addEventListener: () => {},
+      createElement: () => createDummyEl()
+    },
+    navigator: { userAgent: 'Enterprise-Smoke-Test' },
+    location: { pathname: '/', search: '' },
+    localStorage: mockStorage,
+    sessionStorage: mockStorage,
+    crypto: {
+      subtle: {
+        digest: async (algo, data) => crypto.createHash('sha256').update(data).digest()
+      }
+    },
+    fetch: async () => ({ ok: true, json: async () => ({}) }),
+    TextEncoder
+  };
+
+  sandbox.window = sandbox;
+  sandbox.addEventListener = () => {};
+  sandbox.removeEventListener = () => {};
+  sandbox.window.location = sandbox.location;
+  sandbox.window.localStorage = mockStorage;
+  sandbox.window.sessionStorage = mockStorage;
+  sandbox.window.document = sandbox.document;
+
+  vm.createContext(sandbox);
+  vm.runInContext(scriptCode, sandbox);
+  logPass('Inicialização do script no runtime concluída com zero exceções.');
+
+  // Testar execução de login
+  await sandbox.executarLogin({ preventDefault: () => {}, stopPropagation: () => {} });
+  if (domElements.login.hidden !== true || domElements.app.hidden !== false) {
+    throw new Error('Falha no fluxo de login: telas não transitaram corretamente!');
+  }
+  logPass('Fluxo de login validado: autenticação e transição para o app funcionando.');
+
+  // Testar transição de todas as 9 telas do sistema
+  const telas = ['vistorias', 'manutencao', 'ocorrencias', 'agendamentos', 'gastos', 'galeria', 'vendedores', 'frotacad', 'admin'];
+  for (const t of telas) {
+    sandbox.alternarVisaoPrincipal(t, false);
+  }
+  logPass('Todas as 9 telas foram navegadas e alternadas sem nenhum erro de referência ou tipo.');
+
+  // Testar barreira de segurança para usuário comum
+  sandbox.window.state.currentUser = 'hendreo';
+  sandbox.alternarVisaoPrincipal('admin', false);
+  if (sandbox.window.state.visaoAtual === 'admin') {
+    throw new Error('Falha de segurança crítica: usuário comum conseguiu acessar a tela admin!');
+  }
+  logPass('Barreira de segurança contra acessos não autorizados validada com sucesso.');
+
+} catch (err) {
+  logFail(`Falha no Smoke Test de tempo de execução: ${err.message}`);
+  console.error(err.stack || err);
+  hasError = true;
+}
+
+// ------------------------------------------------------------------------------
+// TESTE 4: COMPILAÇÃO E VALIDAÇÃO OFICIAL CLOUDFLARE (WRANGLER DRY-RUN)
+// ------------------------------------------------------------------------------
+console.log(`\n${COLORS.bold}--- 4. Validando Compilação Cloudflare Wrangler ---${COLORS.reset}`);
 try {
   const wranglerOutput = execSync('npx wrangler deploy --dry-run', {
     cwd: __dirname,
