@@ -4,9 +4,27 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v1.6.0-stable` (12/11/2026)
-* **Tag Oficial no GitHub:** [`v1.6.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.6.0-stable)
+## 📌 Versão Atual: `v1.7.0-stable` (12/11/2026)
+* **Tag Oficial no GitHub:** [`v1.7.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.7.0-stable)
 * **Status:** Produção Estável (Cloudflare Workers)
+* **Principais Entregas:**
+  - **Controle Granular de Permissões de Edição & Gravação:** Permite que o administrador `gomex` decida quem pode alterar dados ou apenas consultar:
+    1. `editar_vistorias`: Edição de parecer de gestor, alteração de checklists e inativação/reativação de laudos.
+    2. `editar_ocorrencias`: Criação de novas pausas/ocorrências, edição e exclusão de registros.
+    3. `editar_manutencao`: Alteração de status de oficina e salvamento de observações mecânicas.
+    4. `editar_gastos`: Lançamento e exclusão de custos, peças e insumos.
+    5. `editar_frotacad`: Cadastro e edição de veículos fixos da frota.
+  - **Modo Seguro "Somente Leitura" por Padrão:** Supervisores comuns operam em modo seguro de consulta, com botões de criação, edição e exclusão ocultados e bloqueados por interceptores no código com avisos toast explicativos.
+  - **Botões Rápidos no Admin:** Atalhos com 1 clique ("🔒 Somente Leitura" e "✏️ Liberar Edições") dentro do painel `/admin` para configuração imediata por operador.
+  - **Resolução de Deploy na Cloudflare:** Remoção do arquivo duplicado `wrangler.json`, unificando a esteira no `wrangler.toml` oficial sem conflitos no `npx wrangler deploy`.
+
+---
+
+## 📌 Versões Anteriores
+
+### `v1.6.0-stable` (12/11/2026)
+* **Tag Oficial no GitHub:** [`v1.6.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.6.0-stable)
+* **Status:** Versão Arquivada
 * **Principais Entregas:**
   - **Painel Administrativo Master de Permissões (`/admin`):** Módulo central de controle de acessos restrito 100% ao login master `gomex`. Usuários comuns (`hendreo`, `ricardo`, `eliase`, `alisson 101`, `alisson 103`, `maycon`, etc.) não têm visualização nem acesso a esta área.
   - **Bloqueio Estrito de Telas por Usuário:** Controle individual por chave liga/desliga sobre as 7 telas da plataforma: Vistorias/Checklist, Manutenções, Ocorrências/Pausas, Custos & Peças, Galeria de Fotos, Vendedores e Cadastro de Frota.
