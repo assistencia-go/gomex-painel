@@ -473,11 +473,6 @@ export default {
               descricao: JSON.stringify(payload.agendamentos)
             });
           }
-              id: 'frota_ocorrencias_v1',
-              valor: payload.ocorrencias.length,
-              descricao: JSON.stringify(payload.ocorrencias)
-            });
-          }
           const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros\`, {
             method: 'POST',
             headers: {
