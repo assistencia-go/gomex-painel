@@ -354,7 +354,7 @@ const server = http.createServer((req, res) => {
   if (pathname === '/api/frota-gastos') {
     if (req.method === 'GET') {
       const localData = lerGastosLocais();
-      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1)&select=*', SUPABASE_URL);
+      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_permissoes_usuarios_v1)&select=*', SUPABASE_URL);
       const options = {
         method: 'GET',
         headers: {
@@ -401,6 +401,9 @@ const server = http.createServer((req, res) => {
                   const ag = JSON.parse(row.descricao);
                   if (Array.isArray(ag)) out.agendamentos = ag;
                 }
+                if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
+                  try { out.permissoes = JSON.parse(row.descricao); } catch (e) {}
+                }
               }
               salvarGastosLocais(out);
             }
@@ -437,6 +440,7 @@ const server = http.createServer((req, res) => {
           if (Array.isArray(payload.veiculos)) current.veiculos = payload.veiculos;
           if (Array.isArray(payload.ocorrencias)) current.ocorrencias = payload.ocorrencias;
           if (Array.isArray(payload.agendamentos)) current.agendamentos = payload.agendamentos;
+          if (payload.permissoes && typeof payload.permissoes === 'object') current.permissoes = payload.permissoes;
           salvarGastosLocais(current);
 
           const rowsToUpsert = [];
@@ -488,6 +492,13 @@ const server = http.createServer((req, res) => {
               id: 'frota_agendamentos_servicos_v1',
               valor: current.agendamentos.length,
               descricao: JSON.stringify(current.agendamentos)
+            });
+          }
+          if (current.permissoes && typeof current.permissoes === 'object') {
+            rowsToUpsert.push({
+              id: 'frota_permissoes_usuarios_v1',
+              valor: Object.keys(current.permissoes).length,
+              descricao: JSON.stringify(current.permissoes)
             });
           }
 
