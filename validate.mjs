@@ -6,6 +6,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import vm from 'vm';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
@@ -101,6 +102,18 @@ if (!fs.existsSync(indexPath)) {
     hasError = true;
   } else {
     logPass('Todas as rotas, tabelas e regras de negócio presentes no script.');
+  }
+
+  // Validação da Sintaxe do Script interno do index.html (AST Parsing)
+  const scriptMatch = indexContent.match(/<script(?![^>]*src=)[^>]*>([\s\S]*?)<\/script>/i);
+  if (scriptMatch) {
+    try {
+      new vm.Script(scriptMatch[1]);
+      logPass('Sintaxe JavaScript interna do index.html 100% válida (AST sem erros).');
+    } catch (err) {
+      logFail(`ERRO DE SINTAXE no <script> do index.html: ${err.message}`);
+      hasError = true;
+    }
   }
 }
 
