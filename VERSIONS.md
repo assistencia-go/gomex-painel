@@ -4,9 +4,23 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v1.5.0-stable` (12/11/2026)
-* **Tag Oficial no GitHub:** [`v1.5.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.5.0-stable)
+## 📌 Versão Atual: `v1.6.0-stable` (12/11/2026)
+* **Tag Oficial no GitHub:** [`v1.6.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.6.0-stable)
 * **Status:** Produção Estável (Cloudflare Workers)
+* **Principais Entregas:**
+  - **Painel Administrativo Master de Permissões (`/admin`):** Módulo central de controle de acessos restrito 100% ao login master `gomex`. Usuários comuns (`hendreo`, `ricardo`, `eliase`, `alisson 101`, `alisson 103`, `maycon`, etc.) não têm visualização nem acesso a esta área.
+  - **Bloqueio Estrito de Telas por Usuário:** Controle individual por chave liga/desliga sobre as 7 telas da plataforma: Vistorias/Checklist, Manutenções, Ocorrências/Pausas, Custos & Peças, Galeria de Fotos, Vendedores e Cadastro de Frota.
+  - **Segurança de Roteamento Duplo:** Acesso bloqueado tanto nos menus de navegação (barra lateral desktop e dock inferior mobile) quanto na digitação direta de rotas na URL do navegador, redirecionando o usuário para sua tela autorizada com aviso seguro.
+  - **Sincronização Nuvem e Local (Supabase & LocalStorage):** As permissões definidas pelo Administrador são salvas instantaneamente no banco de dados e sincronizadas em todos os computadores e celulares conectados.
+  - **Gestão de Usuários e Senhas Seguras:** Possibilidade de adicionar novos operadores e alterar senhas com criptografia SHA-256 imediata.
+
+---
+
+## 📌 Versões Anteriores
+
+### `v1.5.0-stable` (12/11/2026)
+* **Tag Oficial no GitHub:** [`v1.5.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.5.0-stable)
+* **Status:** Versão Arquivada
 * **Commit:** `480436d` / `1e7fe24`
 * **Principais Entregas:**
   - **Validação Automática Pré-Deploy (`validate.mjs`):** Barreira de segurança obrigatória que testa sintaxe JS, integridade estrutural do HTML e compatibilidade Cloudflare Wrangler antes de qualquer envio.
@@ -41,3 +55,4 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 2. **Pelo GitHub (Código-Fonte):**
    - Acesse a aba [Tags / Releases](https://github.com/assistencia-go/gomex-painel/tags).
    - Clique em **`v1.5.0-stable`** para baixar o `.zip` ou visualizar o código congelado daquele exato momento.
+
