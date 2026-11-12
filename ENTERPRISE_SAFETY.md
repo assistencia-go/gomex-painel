@@ -50,3 +50,4 @@ node validate.mjs
 
 * **Versões Fixas e Marcadas (Git Release Tags):**  
   Versões aprovadas são marcadas com tags imutáveis (ex: `v1.5.0-stable`). Em caso de auditoria ou necessidade de restauração, a tag permanece 100% gravada no repositório.
+
