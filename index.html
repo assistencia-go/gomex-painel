@@ -28,30 +28,30 @@
      DESIGN TOKENS — IDENTIDADE VISUAL GOMEX (PRETO OBSIDIAN & ROSA SALMÃO)
      ============================================================================ */
     :root {
-      color-scheme: dark;
+      color-scheme: light;
 
-      --bg: #09090b;
-      --panel: #121215;
-      --panel-2: #0d0d10;
-      --raised: #1a1a1f;
-      --hover: #17171c;
-      --line: #24242b;
-      --line-strong: #32323c;
+      --bg: #f3f4f8;
+      --panel: #ffffff;
+      --panel-2: #f8fafc;
+      --raised: #eef2f7;
+      --hover: #f1f5f9;
+      --line: #e2e8f0;
+      --line-strong: #cbd5e1;
 
-      --ink: #f5f2ed;
-      --ink-2: #cfc9c2;
-      --ink-3: #9e9890;
+      --ink: #111827;
+      --ink-2: #334155;
+      --ink-3: #64748b;
 
-      --accent: #ed8570;
-      --accent-hi: #f49b89;
-      --accent-tint: rgba(237, 133, 112, 0.15);
+      --accent: #2563eb;
+      --accent-hi: #1d4ed8;
+      --accent-tint: rgba(37, 99, 235, 0.12);
 
-      --ok: #3ddc97;
-      --ok-tint: rgba(61, 220, 151, 0.12);
-      --warn: #f2b84b;
-      --warn-tint: rgba(242, 184, 75, 0.13);
-      --bad: #fa8a8a;
-      --bad-tint: rgba(248, 120, 120, 0.13);
+      --ok: #16a34a;
+      --ok-tint: rgba(22, 163, 74, 0.12);
+      --warn: #d97706;
+      --warn-tint: rgba(217, 119, 6, 0.12);
+      --bad: #dc2626;
+      --bad-tint: rgba(220, 38, 38, 0.12);
 
       --r-sm: 6px;
       --r: 10px;
@@ -5137,6 +5137,18 @@
       border-left: 4px solid var(--ok);
     }
 
+    .ocr-card.agendada {
+      border-left: 4px solid #6366f1;
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.06) 0%, var(--panel) 100%);
+    }
+
+    .ocr-card.atrasada {
+      border-left: 4px solid var(--bad);
+      border-color: rgba(239, 68, 68, 0.55);
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.16);
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, var(--panel) 100%);
+    }
+
     .ocr-card-head {
       display: flex;
       align-items: flex-start;
@@ -5177,6 +5189,25 @@
       background: var(--ok-tint);
       color: var(--ok);
       border: 1px solid rgba(61, 220, 151, 0.35);
+    }
+
+    .badge-status-pausa.agendado {
+      background: rgba(99, 102, 241, 0.15);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+    }
+
+    .badge-status-pausa.atrasado {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      font-weight: 800;
+    }
+
+    .badge-status-pausa.no-prazo {
+      background: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.35);
     }
 
     .ocr-tipo-badge {
@@ -5243,6 +5274,25 @@
       background: var(--ok-tint);
       color: var(--ok);
       border: 1px solid rgba(61, 220, 151, 0.3);
+    }
+
+    .ocr-duracao-highlight.agendado {
+      background: rgba(99, 102, 241, 0.12);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .ocr-duracao-highlight.atrasado {
+      background: rgba(239, 68, 68, 0.14);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      font-weight: 800;
+    }
+
+    .ocr-duracao-highlight.no-prazo {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .ocr-detail-text {
@@ -5501,14 +5551,335 @@
         height: 44px !important;
       }
     }
+
+    /* ============================================================================
+       SUBNAV BAR — NAVEGAÇÃO INTEGRADA (OCORRÊNCIAS & AGENDAMENTOS)
+       ============================================================================ */
+    .frota-subnav-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 5px;
+      margin-bottom: 16px;
+      width: fit-content;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    @media (max-width: 680px) {
+      .frota-subnav-bar {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .frota-subnav-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink-3);
+      background: transparent;
+      border: none;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      transition: all .15s ease;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .frota-subnav-btn:hover {
+      color: var(--ink);
+      background: var(--raised);
+    }
+    .frota-subnav-btn.active {
+      color: var(--ink);
+      background: var(--panel);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      font-weight: 700;
+    }
+    .frota-subnav-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: var(--bad);
+      color: #110c0a;
+      animation: pulseAtraso 2s infinite ease-in-out;
+    }
+
+    /* ============================================================================
+       AGENDAMENTOS DE SERVIÇOS — GRID, CARDS E TEMPO MÉDIO
+       ============================================================================ */
+    .agend-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 680px) {
+      .agend-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+    .agend-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+      position: relative;
+    }
+    .agend-card:hover {
+      border-color: var(--line-strong);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    }
+    .agend-card.atrasado {
+      border: 1.5px solid var(--bad);
+      background: linear-gradient(180deg, rgba(250, 138, 138, 0.08) 0%, var(--panel) 100%);
+      box-shadow: 0 0 15px rgba(250, 138, 138, 0.15);
+    }
+    .agend-card.em-andamento {
+      border-left: 4px solid var(--warn);
+    }
+    .agend-card.concluido {
+      border-left: 4px solid var(--ok);
+      opacity: 0.92;
+    }
+    .agend-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .agend-vendedor-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .badge-tempo-aviso {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .badge-tempo-aviso.atrasado {
+      background: rgba(250, 138, 138, 0.2);
+      color: var(--bad);
+      border: 1px solid var(--bad);
+      animation: pulseAtraso 2s infinite ease-in-out;
+    }
+    .badge-tempo-aviso.no-prazo {
+      background: rgba(61, 220, 151, 0.16);
+      color: var(--ok);
+      border: 1px solid rgba(61, 220, 151, 0.3);
+    }
+    .badge-tempo-aviso.agendado {
+      background: rgba(99, 102, 241, 0.16);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+    .badge-tempo-aviso.concluido {
+      background: rgba(61, 220, 151, 0.15);
+      color: var(--ok);
+    }
+    @keyframes pulseAtraso {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.78; transform: scale(0.98); }
+    }
+    .banner-alerta-tempo-estourado {
+      background: linear-gradient(135deg, rgba(250, 138, 138, 0.18) 0%, rgba(250, 138, 138, 0.06) 100%);
+      border: 1px solid var(--bad);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-size: 13.5px;
+    }
+    .tempo-progress-wrap {
+      width: 100%;
+      height: 7px;
+      background: var(--raised);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 4px 0 2px;
+      border: 1px solid var(--line);
+    }
+    .tempo-progress-bar {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .3s ease;
+    }
+    .tempo-progress-bar.no-prazo {
+      background: linear-gradient(90deg, #3ddc97, #60a5fa);
+    }
+    .tempo-progress-bar.atrasado {
+      background: var(--bad);
+      box-shadow: 0 0 8px var(--bad);
+    }
+
+    /* ============================================================================
+       MODAL PLAY STORE MOBILE-FIRST (ANDROID APP FEEL)
+       ============================================================================ */
+    @media (max-width: 768px) {
+      #modalOcorrencia.modal-overlay,
+      .modal-overlay:has(.playstore-sheet) {
+        align-items: flex-end !important;
+        padding: 0 !important;
+      }
+      #modalOcorrencia .modal-card,
+      .modal-card.playstore-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-radius: 26px 26px 0 0 !important;
+        max-height: 92vh !important;
+        height: auto !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        animation: slideUpMobile .28s var(--ease) !important;
+      }
+    }
+    @keyframes slideUpMobile {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .playstore-handle {
+      display: none;
+      width: 44px;
+      height: 5px;
+      background: var(--line-strong);
+      border-radius: 99px;
+      margin: 10px auto 4px;
+    }
+    @media (max-width: 768px) {
+      .playstore-handle {
+        display: block;
+      }
+    }
+    .playstore-block {
+      background: var(--raised);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .playstore-block-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-hi);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .chip-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-2);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all .15s ease;
+      touch-action: manipulation;
+    }
+    .chip-btn:hover {
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+    .chip-btn:active {
+      transform: scale(0.96);
+    }
+    .chip-btn.active {
+      background: var(--accent-tint);
+      border-color: var(--accent-hi);
+      color: var(--ink);
+      font-weight: 700;
+      box-shadow: 0 0 0 1px var(--accent-hi);
+    }
+    .playstore-calc-preview {
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-agora-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--raised);
+      border: 1px solid var(--line);
+      color: var(--accent-hi);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-agora-pill:hover {
+      border-color: var(--accent);
+    }
+    .btn-agora-pill:active {
+      transform: scale(0.95);
+    }
   </style>
 </head>
 
-<body>
+<body class="theme-light">
 
   <!-- Ícones SVG (traço único, 1.75) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <defs>
+      <symbol id="i-calendar-clock" viewBox="0 0 24 24">
+        <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <circle cx="18" cy="18" r="4" />
+        <polyline points="18 16.5 18 18 19 19" />
+      </symbol>
+      <symbol id="i-stopwatch" viewBox="0 0 24 24">
+        <circle cx="12" cy="14" r="8" />
+        <line x1="12" y1="2" x2="12" y2="5" />
+        <line x1="10" y1="2" x2="14" y2="2" />
+        <polyline points="12 10 12 14 15 15" />
+      </symbol>
       <symbol id="i-camera" viewBox="0 0 24 24">
         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
         <circle cx="12" cy="13" r="4" />
@@ -5959,11 +6330,9 @@
           </button>
 
           <!-- Alternador Modo Claro / Escuro -->
-          <button type="button" class="btn btn-ghost btn-icon" id="btnThemeToggle" title="Alternar Modo Claro / Escuro"
-            aria-label="Alternar tema">
-            <svg class="i" id="icoTheme">
-              <use href="#i-sun" />
-            </svg>
+          <!-- Modo Escuro desativado conforme solicitado: tema exclusivamente claro -->
+          <button type="button" class="btn btn-ghost btn-icon" id="btnThemeToggle" title="Modo Claro Ativo" aria-label="Modo Claro" style="display:none !important">
+            <svg class="i" id="icoTheme"><use href="#i-sun" /></svg>
           </button>
 
           <!-- Botão Sair Dedicado para Mobile no Topo -->
@@ -6387,8 +6756,28 @@
                 <dd id="ocrStatConcluidasHoje">0</dd>
                 <span class="stat-sub">Liberados p/ rota</span>
               </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Agendadas</span>
+                  <div class="stat-ico" style="background:rgba(99,102,241,0.15);color:#6366f1"><svg class="i"><use href="#i-calendar-clock" /></svg></div>
+                </div>
+                <dd id="ocrStatAgendadas">0</dd>
+                <span class="stat-sub">Serviços futuros</span>
+              </div>
             </dl>
           </section>
+
+          <!-- Banner Chamativo se houver tempo médio estourado -->
+          <div id="ocrAlertaAtrasosBanner" class="banner-alerta-tempo-estourado" style="display:none">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="pulse-dot-red" style="width:12px;height:12px"></span>
+              <span id="ocrAlertaAtrasosTexto" style="font-weight:700">Atenção: existem ocorrências com o tempo médio ultrapassado!</span>
+            </div>
+            <button type="button" class="btn btn-sm" onclick="filtrarOcorrencias('atrasado')" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700">
+              Ver Atrasadas
+            </button>
+          </div>
 
           <!-- Barra de Ações & Filtros da Visão de Ocorrências -->
           <div class="gastos-period-bar" style="margin-bottom:14px">
@@ -6424,6 +6813,12 @@
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" onclick="filtrarOcorrencias('aberto')">
                   <span class="pulse-dot-red" style="margin-right:2px"></span> Parados Agora <span class="tab-badge" id="badgeOcrFiltroAbertos">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAgendadas" onclick="filtrarOcorrencias('agendado')">
+                  Agendadas <span class="tab-badge" id="badgeOcrFiltroAgendadas" style="background:rgba(99,102,241,0.25);color:#a5b4fc">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAtrasados" onclick="filtrarOcorrencias('atrasado')">
+                  Tempo Excedido <span class="tab-badge" id="badgeOcrFiltroAtrasados" style="background:rgba(239,68,68,0.25);color:#fca5a5">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
                   Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
@@ -7814,160 +8209,228 @@
   </div>
 
   <!-- ========================================================================== -->
-  <!-- MODAL: REGISTRAR / EDITAR OCORRÊNCIA E PAUSA DE VENDEDOR -->
+  <!-- MODAL: REGISTRAR / EDITAR OCORRÊNCIA & AGENDAR SERVIÇO (PLAY STORE MOBILE-FIRST) -->
   <!-- ========================================================================== -->
   <div class="modal-overlay" id="modalOcorrencia">
-    <div class="modal-card" style="max-width:640px;width:95%">
-      <header class="modal-head">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div
-            style="width:38px;height:38px;border-radius:8px;background:rgba(237, 133, 112, 0.15);color:var(--accent-hi);display:grid;place-items:center">
-            <svg class="i" style="width:22px;height:22px">
-              <use href="#i-alert" />
-            </svg>
+    <div class="modal-card playstore-sheet" style="max-width:660px;width:95%">
+      <div class="playstore-handle"></div>
+
+      <header class="modal-head" style="padding:16px 20px 12px;border-bottom:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);color:#fff;display:grid;place-items:center;box-shadow:0 4px 14px rgba(234,88,12,0.35);flex-shrink:0">
+            <svg class="i" style="width:22px;height:22px"><use href="#i-alert" /></svg>
           </div>
           <div>
-            <h3 style="font-size:16px;font-weight:700" id="ocrModalTitle">Nova Ocorrência / Pausa de Frota</h3>
-            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de tempo parado, motivo da parada e retorno do vendedor</p>
+            <h3 style="font-size:16.5px;font-weight:800;color:var(--ink);letter-spacing:-0.01em" id="ocrModalTitle">Nova Ocorrência / Agendar Serviço</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de tempo parado, serviço programado e tempo médio da frota</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalOcorrencia()">
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalOcorrencia()" title="Fechar">
           <svg class="i"><use href="#i-x" /></svg>
         </button>
       </header>
 
-      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
+      <div class="modal-body" style="padding:16px 18px;display:grid;gap:13px;max-height:78vh;overflow-y:auto">
         <input type="hidden" id="ocrEditId" value="">
 
-        <!-- Linha 1: Vendedor e Rota (OBRIGATÓRIOS) -->
-        <div class="ocr-form-grid-2">
-          <div class="ocr-form-field">
-            <label for="ocrInputVendedor" class="gasto-field-lbl" style="color:var(--ink)">
-              Vendedor / Motorista <span style="color:var(--bad)">*</span>
-            </label>
-            <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
-              placeholder="Nome do vendedor titular" style="font-weight:600"
-              oninput="aoDigitarVendedorOcorrencia(this.value)">
+        <!-- Bloco 1: Vendedor, Rota e Veículo -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-user" /></svg>
+            <span>Vendedor & Identificação</span>
           </div>
 
-          <div class="ocr-form-field">
-            <label for="ocrInputRota" class="gasto-field-lbl" style="color:var(--ink)">
-              Rota do Vendedor <span style="color:var(--bad)">*</span>
-            </label>
-            <input type="text" id="ocrInputRota" class="input"
-              placeholder="Ex: 217, 240, 222..." style="font-weight:600">
-          </div>
-        </div>
+          <div class="ocr-form-grid-2">
+            <div class="ocr-form-field">
+              <label for="ocrInputVendedor" class="gasto-field-lbl" style="color:var(--ink)">
+                Vendedor / Motorista <span style="color:var(--bad)">*</span>
+              </label>
+              <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
+                placeholder="Nome do vendedor titular" style="font-weight:600"
+                oninput="aoDigitarVendedorOcorrencia(this.value)">
+            </div>
 
-        <!-- Linha 2: Veículo/Placa e Tipo/Motivo do Problema -->
-        <div class="ocr-form-grid-2">
+            <div class="ocr-form-field">
+              <label for="ocrInputRota" class="gasto-field-lbl" style="color:var(--ink)">
+                Rota do Vendedor <span style="color:var(--bad)">*</span>
+              </label>
+              <input type="text" id="ocrInputRota" class="input"
+                placeholder="Ex: 218, 240, 222..." style="font-weight:600">
+            </div>
+          </div>
+
           <div class="ocr-form-field">
             <label for="ocrInputVeiculo" class="gasto-field-lbl">
               Veículo / Placa
             </label>
             <input type="text" id="ocrInputVeiculo" list="datalistPlacasFrota" class="input"
-              placeholder="Ex: ARS6B73">
+              placeholder="Ex: AYR7G87">
+          </div>
+        </div>
+
+        <!-- Bloco 2: Motivo / Serviço com Chips Rápidos estilo Play Store -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-tool" /></svg>
+            <span>Motivo da Parada / Serviço</span>
           </div>
 
           <div class="ocr-form-field">
             <label for="ocrSelectTipo" class="gasto-field-lbl" style="color:var(--ink)">
-              Motivo da Parada / Ocorrência <span style="color:var(--bad)">*</span>
+              Tipo de Ocorrência / Categoria <span style="color:var(--bad)">*</span>
             </label>
-            <select id="ocrSelectTipo" class="input" style="font-weight:600">
+            <select id="ocrSelectTipo" class="input" style="font-weight:600" onchange="aoMudarTipoOcorrencia(this.value)">
               <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
+              <option value="Manutenção Rápida / Troca de Peça">Manutenção Rápida / Troca de Peça</option>
               <option value="Quebra Mecânica">Quebra Mecânica / Motor</option>
               <option value="Problema Elétrico / Bateria">Pane Elétrica / Bateria</option>
-              <option value="Manutenção Rápida / Troca de Peça">Manutenção Rápida / Reparo</option>
               <option value="Troca de Óleo / Filtro">Troca de Óleo em Rota</option>
+              <option value="Reparo no Banco">Reparo no Banco do Motorista</option>
+              <option value="Revisão Preventiva">Revisão Preventiva</option>
               <option value="Guincho / Socorro na Pista">Guincho / Socorro na Pista</option>
               <option value="Acidente / Colisão">Acidente / Colisão</option>
               <option value="Fiscalização / Trânsito">Fiscalização / Trânsito</option>
               <option value="Outro Imprevisto">Outro Imprevisto</option>
             </select>
           </div>
+
+          <!-- Chips de Acesso Rápido com Toque Único -->
+          <div class="ocr-form-field">
+            <label class="gasto-field-lbl" style="font-size:11.5px;color:var(--ink-3)">Toque rápido para preencher serviço e tempo sugerido:</label>
+            <div class="chips-grid" id="ocrChipsServicosRapidos">
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Pneu Furado / Borracharia', 'Pneu Furado / Borracharia', 30)">Pneu Furado</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Troca de Óleo em Rota', 'Troca de Óleo / Filtro', 45)">Troca de Óleo</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Freios e Pastilhas', 'Manutenção Rápida / Troca de Peça', 90)">Freios</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Reparo no Banco do Motorista', 'Reparo no Banco', 90)">Reparo Banco</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Mecânica / Motor', 'Quebra Mecânica', 120)"> Mecânica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Bateria / Elétrica', 'Problema Elétrico / Bateria', 60)"> Elétrica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Revisão Preventiva', 'Revisão Preventiva', 120)">Revisão</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Guincho / Socorro', 'Guincho / Socorro na Pista', 90)">Guincho</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Outro Imprevisto', 'Outro Imprevisto', 60)">Outro</button>
+            </div>
+          </div>
         </div>
 
-        <!-- Linha 3: Data e Horários (Início e Fim / Retorno) -->
-        <div class="ocr-time-card">
+        <!-- Bloco 3: Data, Horários e Tempo Médio (Controle Inteligente) -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-clock" /></svg>
+            <span>Data, Horários & Tempo Médio</span>
+          </div>
+
           <div class="ocr-form-field">
-            <label for="ocrInputData" class="gasto-field-lbl">Data da Ocorrência</label>
-            <input type="date" id="ocrInputData" class="input">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <label for="ocrInputData" class="gasto-field-lbl" style="margin:0">Data do Serviço / Ocorrência</label>
+              <span id="ocrDataHintBadge" style="font-size:11px;font-weight:700;color:var(--accent-hi)"></span>
+            </div>
+            <input type="date" id="ocrInputData" class="input" style="font-weight:700" onchange="aoMudarDataOuHoraOcorrencia()">
           </div>
 
           <div class="ocr-hours-grid">
             <div class="ocr-form-field">
               <div class="ocr-label-with-btn">
                 <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
-                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraInicio')">Agora</button>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraInicio'); aoMudarDataOuHoraOcorrencia()">Agora</button>
               </div>
               <input type="time" id="ocrInputHoraInicio" class="input" style="font-weight:700"
-                oninput="atualizarCalculoDuracaoModal()">
+                oninput="aoMudarDataOuHoraOcorrencia()">
             </div>
 
             <div class="ocr-form-field">
               <div class="ocr-label-with-btn">
-                <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno</label>
-                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraFim')">Agora</button>
+                <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno / Fim</label>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraFim'); aoMudarDataOuHoraOcorrencia()">Agora</button>
               </div>
               <input type="time" id="ocrInputHoraFim" class="input" style="font-weight:700"
-                placeholder="--:--" oninput="atualizarCalculoDuracaoModal()">
+                placeholder="--:--" oninput="aoMudarDataOuHoraOcorrencia()">
             </div>
           </div>
 
-          <!-- Indicador visual em tempo real de duração calculada -->
-          <div id="ocrBoxCalculoDuracao" class="ocr-calc-box">
-            <span style="color:var(--ink-3);display:flex;align-items:center;gap:6px">
-              <svg class="i" style="width:15px;height:15px"><use href="#i-clock" /></svg>
-              <span>Controle de Tempo:</span>
-            </span>
-            <span id="ocrTextoCalculoDuracao" style="font-weight:800;color:var(--warn)">Vendedor Parado (Em Aberto)</span>
-          </div>
-        </div>
-
-        <!-- Linha 4: Status da Parada & Custo -->
-        <div class="ocr-form-grid-2">
+          <!-- Campo de Tempo Médio com Chips de Duração -->
           <div class="ocr-form-field">
-            <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação da Parada</label>
-            <select id="ocrSelectStatus" class="input" style="font-weight:700"
-              onchange="aoMudarStatusOcorrencia(this.value)">
-              <option value="aberto">Em Aberto (Vendedor Parado)</option>
-              <option value="finalizado">Finalizada (Vendedor Liberado)</option>
-            </select>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <label for="ocrInputTempoMedio" class="gasto-field-lbl" style="color:var(--ink);margin:0">
+                Tempo Médio Estimado (Minutos) <span style="color:var(--bad)">*</span>
+              </label>
+              <span id="ocrTempoMedioFormatado" style="font-size:12px;font-weight:800;color:var(--accent-hi)">1h (60 min)</span>
+            </div>
+            <input type="number" id="ocrInputTempoMedio" min="5" step="5" class="input"
+              placeholder="Ex: 60" value="60" style="font-weight:700"
+              oninput="aoDigitarTempoMedioOcorrencia(this.value)">
+
+            <div class="chips-grid" id="ocrChipsTempoMedio" style="margin-top:6px">
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(15)">15m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(30)">30m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(45)">45m</button>
+              <button type="button" class="chip-btn active" onclick="selecionarChipTempoMedioOcorrencia(60)">1h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(90)">1h 30m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(120)">2h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(180)">3h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(240)">4h</button>
+            </div>
+          </div>
+
+          <!-- Indicador visual em tempo real de previsão e status do tempo -->
+          <div id="ocrBoxCalculoDuracao" class="playstore-calc-preview">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg class="i" style="width:16px;height:16px;color:var(--accent-hi)"><use href="#i-clock" /></svg>
+              <span id="ocrTextoCalculoDuracao" style="font-size:12.5px;font-weight:700;color:var(--ink)">Previsão de término</span>
+            </div>
+            <div id="ocrBadgeCalculoDuracao">
+              <span class="badge-status-pausa aberto">Em Aberto</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 4: Situação, Local, Despesa e Detalhes -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-file-text" /></svg>
+            <span>Situação, Local & Custo</span>
+          </div>
+
+          <div class="ocr-form-grid-2">
+            <div class="ocr-form-field">
+              <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação</label>
+              <select id="ocrSelectStatus" class="input" style="font-weight:700"
+                onchange="aoMudarStatusOcorrencia(this.value)">
+                <option value="agendado">Agendada (Serviço Programado / Futuro)</option>
+                <option value="aberto">Em Aberto (Vendedor Parado / Em Atendimento)</option>
+                <option value="finalizado">Finalizada (Vendedor Liberado)</option>
+              </select>
+            </div>
+
+            <div class="ocr-form-field">
+              <label for="ocrInputCusto" class="gasto-field-lbl">Custo / Despesa (R$)</label>
+              <input type="number" id="ocrInputCusto" step="0.01" min="0" class="input"
+                placeholder="0,00" style="font-weight:700">
+            </div>
           </div>
 
           <div class="ocr-form-field">
-            <label for="ocrInputCusto" class="gasto-field-lbl">Custo / Despesa (R$)</label>
-            <input type="number" id="ocrInputCusto" step="0.01" min="0" class="input"
-              placeholder="0,00">
+            <label for="ocrInputLocal" class="gasto-field-lbl">Local / Oficina / Borracharia</label>
+            <input type="text" id="ocrInputLocal" class="input"
+              placeholder="Ex: Borracharia do Zé, Concessionária, Auto Elétrica...">
           </div>
-        </div>
 
-        <!-- Linha 5: Local da Parada -->
-        <div class="ocr-form-field">
-          <label for="ocrInputLocal" class="gasto-field-lbl">Local / Oficina / Borracharia</label>
-          <input type="text" id="ocrInputLocal" class="input"
-            placeholder="Ex: Borracharia do Zé - BR-153 Km 8, Posto Trevo...">
-        </div>
+          <div class="ocr-form-field">
+            <label for="ocrInputDescricao" class="gasto-field-lbl">Descrição / Detalhes do Serviço</label>
+            <textarea id="ocrInputDescricao" class="input" rows="3"
+              placeholder="Ex: Reparo no banco do motorista. Vendedor orientado a usar veículo reserva no período..."
+              style="resize:vertical;font-family:inherit"></textarea>
+          </div>
 
-        <!-- Linha 6: Descrição do Problema / Detalhes -->
-        <div class="ocr-form-field">
-          <label for="ocrInputDescricao" class="gasto-field-lbl">Descrição dos Fatos / O que aconteceu</label>
-          <textarea id="ocrInputDescricao" class="input" rows="3"
-            placeholder="Detalhes do problema, o que causou a pausa, tempo previsto, serviços executados..."
-            style="resize:vertical;font-family:inherit"></textarea>
-        </div>
-
-        <!-- Linha 7: Responsável pelo registro -->
-        <div class="ocr-form-field">
-          <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Responsável da Frota)</label>
-          <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo">
+          <div class="ocr-form-field">
+            <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Supervisor)</label>
+            <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo" style="font-weight:600">
+          </div>
         </div>
       </div>
 
-      <footer class="modal-foot">
+      <footer class="modal-foot" style="padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)">
         <button type="button" class="btn" onclick="fecharModalOcorrencia()">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSalvarOcorrencia" onclick="salvarOcorrencia()"
-          style="min-width:140px">
+          style="min-width:160px;height:46px;font-size:14px;font-weight:800;border-radius:12px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);border-color:#ea580c">
           <svg class="i"><use href="#i-check" /></svg>
           <span id="lblBtnSalvarOcorrencia">Salvar Ocorrência</span>
         </button>
@@ -9298,25 +9761,18 @@
       // TEMA E SONS
       // ==============================================================================
       function aplicarTema(t) {
-        state.theme = t;
-        localStorage.setItem(THEME_KEY, t);
-        if (t === 'light') {
-          document.body.classList.add('theme-light');
-          $('icoTheme').querySelector('use').setAttribute('href', '#i-moon');
-          $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Escuro');
-          $('metaThemeColor').setAttribute('content', '#1e2a78');
-        } else {
-          document.body.classList.remove('theme-light');
+        state.theme = 'light';
+        try { localStorage.setItem(THEME_KEY, 'light'); } catch (e) {}
+        document.body.classList.add('theme-light');
+        if ($('icoTheme') && $('icoTheme').querySelector('use')) {
           $('icoTheme').querySelector('use').setAttribute('href', '#i-sun');
-          $('btnThemeToggle').setAttribute('title', 'Mudar para Modo Claro');
-          $('metaThemeColor').setAttribute('content', '#09090b');
         }
+        if ($('btnThemeToggle')) {
+          $('btnThemeToggle').style.display = 'none';
+        }
+        if ($('metaThemeColor')) $('metaThemeColor').setAttribute('content', '#1e2a78');
       }
-      aplicarTema(state.theme);
-
-      $('btnThemeToggle').addEventListener('click', () => {
-        aplicarTema(state.theme === 'dark' ? 'light' : 'dark');
-      });
+      aplicarTema('light');
 
       function aplicarSom(habilitado) {
         state.sound = habilitado;
@@ -9524,10 +9980,84 @@
       // ==============================================================================
       // Senhas armazenadas com hash criptográfico SHA-256 (zero credenciais em texto puro)
       const VALID_USERS = {
-        'gomex': { name: 'Gomex Admin', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
-        'hendreo': { name: 'Hendreo', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
-        'ricardo': { name: 'Ricardo', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' },
-        'maycon': { name: 'Maycon', hash: '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5' }
+        'gomex': {
+          name: 'Gomex Admin',
+          hashes: [
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5', // Gomex@2026
+            '73bd7888e42e501e010c4ebf67940e1a5ac74616a66a6e0d0e1e37f695d2df35'
+          ]
+        },
+        'hendreo': {
+          name: 'Hendreo',
+          hashes: [
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5',
+            '73bd7888e42e501e010c4ebf67940e1a5ac74616a66a6e0d0e1e37f695d2df35'
+          ]
+        },
+        'ricardo': {
+          name: 'Ricardo',
+          hashes: [
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5',
+            '73bd7888e42e501e010c4ebf67940e1a5ac74616a66a6e0d0e1e37f695d2df35'
+          ]
+        },
+        'eliase': {
+          name: 'Eliase',
+          hashes: [
+            'f6d44afb1aba205de327c6c6c696dacee102b8ade99afe251e147627b49b2e22', // SUP102
+            '3dd35b751e696097610134d592c1384e5cb1abbd9dd581c5c03b57aaf3525d27', // sup102
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'  // Gomex@2026
+          ]
+        },
+        'elias': {
+          name: 'Eliase',
+          hashes: [
+            'f6d44afb1aba205de327c6c6c696dacee102b8ade99afe251e147627b49b2e22',
+            '3dd35b751e696097610134d592c1384e5cb1abbd9dd581c5c03b57aaf3525d27',
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'
+          ]
+        },
+        'alisson 101': {
+          name: 'Alisson 101',
+          hashes: [
+            '328afd64d314812fe70a38c64dd5fb70cdeec57c273142adfd7202b0eb0c1676', // SUP101
+            '869bef23177070fa46a081f2a72c0770c0d36e991fe1aa91f65958a36c819cf4', // sup101
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'  // Gomex@2026
+          ]
+        },
+        'alisson101': {
+          name: 'Alisson 101',
+          hashes: [
+            '328afd64d314812fe70a38c64dd5fb70cdeec57c273142adfd7202b0eb0c1676',
+            '869bef23177070fa46a081f2a72c0770c0d36e991fe1aa91f65958a36c819cf4',
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'
+          ]
+        },
+        'alisson 103': {
+          name: 'Alisson 103',
+          hashes: [
+            '09fc833b63aa195a7a94f2b8d3d3be1ff70d9e6f4d8dc4e658247b4b9c426ba1', // SUP103
+            'b59a01acd5388633ba276cf1a5be9012f749cabf70fce587a9ec6c0de10653ea', // sup103
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'  // Gomex@2026
+          ]
+        },
+        'alisson103': {
+          name: 'Alisson 103',
+          hashes: [
+            '09fc833b63aa195a7a94f2b8d3d3be1ff70d9e6f4d8dc4e658247b4b9c426ba1',
+            'b59a01acd5388633ba276cf1a5be9012f749cabf70fce587a9ec6c0de10653ea',
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'
+          ]
+        },
+        'maycon': {
+          name: 'Maycon (Gerência)',
+          hashes: [
+            '7c81ce621afd25285cc114f95dad5dbb667ab059b6525dc1d3b8b8431508b920', // GERENCIA@2026
+            '21d45cafa0b769d88c5d6a82b7970b9cf9adc417e04d4f183c666a61d4740b90', // gerencia@2026
+            '5528fa53c9f0c60a66d00f34c5bafb6a5d183fcec6de1db36c8b780c4ccbaa63', // Gerencia@2026
+            '0ac684cb9147cfd8ba5613aab86d0c36b24c9b77dd20b0332eec9a0159d69cc5'  // Gomex@2026
+          ]
+        }
       };
 
       // Hashes aceitos (Gomex@2026 e variações)
@@ -9574,13 +10104,15 @@
             return false;
           }
 
-          const uNorm = (auth.user || '').toLowerCase();
-          if (VALID_USERS[uNorm] && auth.token) {
+          const uRaw = (auth.user || '').toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+          const uNoSpace = uRaw.replace(/\s+/g, '');
+          const existingUser = VALID_USERS[uRaw] || VALID_USERS[uNoSpace];
+          if (existingUser && auth.token) {
             auth.lastActivity = now;
             const storage = localStorage.getItem(AUTH_KEY) ? localStorage : sessionStorage;
             storage.setItem(AUTH_KEY, JSON.stringify(auth));
 
-            showApp(auth.name || VALID_USERS[uNorm].name);
+            showApp(auth.name || existingUser.name);
             iniciarMonitorSessao();
             return true;
           }
@@ -9700,10 +10232,11 @@
         }
 
         const u = ($('loginUser')?.value || '').trim();
-        const uNorm = u.toLowerCase();
+        const uNorm = u.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
+        const uNormNoSpace = uNorm.replace(/\s+/g, '');
         const p = $('loginPass')?.value || '';
 
-        const validUser = VALID_USERS[uNorm];
+        const validUser = VALID_USERS[uNorm] || VALID_USERS[uNormNoSpace];
         if (!validUser || !p) {
           if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Usuário ou senha incorretos. Confira e tente de novo.';
           if ($('loginError')) $('loginError').classList.add('show');
@@ -9712,7 +10245,9 @@
         }
 
         const inputHash = await sha256Hex(p);
-        const senhaValida = ALLOWED_HASHES.has(inputHash) || (validUser.hash === inputHash);
+        const senhaValida = (validUser.hashes && validUser.hashes.includes(inputHash)) ||
+                            (validUser.hash && validUser.hash === inputHash) ||
+                            ALLOWED_HASHES.has(inputHash);
 
         if (senhaValida) {
           const now = Date.now();
@@ -11346,6 +11881,7 @@
         'vistorias': '/vistoria',
         'manutencao': '/manutencao',
         'ocorrencias': '/ocorrencias',
+        'agendamentos': '/agendamentos',
         'gastos': '/custos',
         'galeria': '/galeria',
         'vendedores': '/vendedores',
@@ -11356,6 +11892,7 @@
         'vistorias': 'Vistorias da frota · Gomex Frota',
         'manutencao': 'Manutenção & Oficina · Gomex Frota',
         'ocorrencias': 'Ocorrências & Pausas da Frota · Gomex Frota',
+        'agendamentos': 'Agendamento de Serviços · Gomex Frota',
         'gastos': 'Custos, Peças & Insumos · Gomex Frota',
         'galeria': 'Galeria de Fotos · Gomex Frota',
         'vendedores': 'Vendedores & Custódia · Gomex Frota',
@@ -11373,6 +11910,10 @@
         '/ocorrencia': 'ocorrencias',
         '/pausas': 'ocorrencias',
         '/pausa': 'ocorrencias',
+        '/agendamentos': 'agendamentos',
+        '/agendamento': 'agendamentos',
+        '/servicos': 'agendamentos',
+        '/servico': 'agendamentos',
         '/custos': 'gastos',
         '/pecas': 'gastos',
         '/gastos': 'gastos',
@@ -11396,6 +11937,11 @@
       window.obterVisaoPorCaminho = obterVisaoPorCaminho;
 
       function alternarVisaoPrincipal(visao, atualizarUrl = true) {
+        if (visao === 'agendamentos') {
+          filtrarOcorrencias('agendado');
+          return alternarVisaoPrincipal('ocorrencias', atualizarUrl);
+        }
+
         state.visaoAtual = visao;
         const isVistorias = visao === 'vistorias';
         const isManut = visao === 'manutencao';
@@ -11455,8 +12001,8 @@
             titleEl.textContent = 'Frota & Veículos Cadastrados';
             subEl.textContent = 'Cadastro fixo da frota, motoristas titulares, ciclo mensal de vistoria e controle preventivo de troca de óleo.';
           } else if (isOcorrencias) {
-            titleEl.textContent = 'Ocorrências & Controle de Pausas';
-            subEl.textContent = 'Registro de problemas do dia a dia (pneu furado, quebras mecânicas) e acompanhamento em tempo real das paradas dos vendedores.';
+            titleEl.textContent = 'Ocorrências & Serviços da Frota';
+            subEl.textContent = 'Registro de problemas do dia a dia, serviços agendados, monitoramento dinâmico de tempo médio e paradas de vendedores.';
           } else if (isGastos) {
             titleEl.textContent = 'Custos, Peças & Insumos da Frota';
             subEl.textContent = 'Controle de peças, litros de óleo e gastos por placa, motorista e período com emissão de relatórios.';
@@ -11479,6 +12025,8 @@
           renderManutencaoViewGeral();
         } else if (isOcorrencias) {
           if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
+        } else if (isAgendamentos) {
+          if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
         } else if (isGastos) {
           if (typeof renderGastosView === 'function') renderGastosView();
         } else if (isGaleria) {
@@ -12711,6 +13259,7 @@
       const HIST_MANUT_ALL_KEY = 'gomex_frota_historico_manutencoes_v1';
       const FROTA_VEICULOS_KEY = 'gomex_frota_cadastro_veiculos_v1';
       const OCORRENCIAS_FROTA_KEY = 'gomex_frota_ocorrencias_v1';
+      const AGENDAMENTOS_FROTA_KEY = 'gomex_frota_agendamentos_v1';
 
       const VEICULOS_PADRAO_FROTA = [
         {
@@ -14769,6 +15318,7 @@
         galeria: [],
         veiculos: [],
         ocorrencias: [],
+        agendamentos: [],
         aba: 'lancamentos',
         periodoQuick: 'todos',
         dataInicio: '',
@@ -14890,6 +15440,14 @@
             if (Array.isArray(parsedO)) gastosState.ocorrencias = parsedO;
           }
         } catch (e) { }
+
+        try {
+          const rawAg = localStorage.getItem(AGENDAMENTOS_FROTA_KEY);
+          if (rawAg) {
+            const parsedAg = JSON.parse(rawAg);
+            if (Array.isArray(parsedAg)) gastosState.agendamentos = parsedAg;
+          }
+        } catch (e) { }
       }
 
       function salvarGastosLocalStorage() {
@@ -14901,6 +15459,7 @@
           localStorage.setItem(GALERIA_VEICULOS_KEY, JSON.stringify(gastosState.galeria || []));
           localStorage.setItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
           localStorage.setItem(OCORRENCIAS_FROTA_KEY, JSON.stringify(gastosState.ocorrencias || []));
+          localStorage.setItem(AGENDAMENTOS_FROTA_KEY, JSON.stringify(gastosState.agendamentos || []));
         } catch (e) { }
       }
 
@@ -14936,12 +15495,17 @@
                 gastosState.ocorrencias = data.ocorrencias;
                 mudou = true;
               }
+              if (Array.isArray(data.agendamentos) && (data.agendamentos.length || !gastosState.agendamentos.length)) {
+                gastosState.agendamentos = data.agendamentos;
+                mudou = true;
+              }
               if (mudou) {
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
                 if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
+                if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
               }
               return true;
             }
@@ -14949,7 +15513,7 @@
 
           // Fallback direto no Supabase (tabela parametros)
           try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1)&select=*', {
+            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1)&select=*', {
               headers: authHeaders(),
               cache: 'no-store'
             });
@@ -14981,12 +15545,17 @@
                     const oc = JSON.parse(row.descricao);
                     if (Array.isArray(oc)) gastosState.ocorrencias = oc;
                   }
+                  if (row.id === 'frota_agendamentos_servicos_v1' && row.descricao) {
+                    const ag = JSON.parse(row.descricao);
+                    if (Array.isArray(ag)) gastosState.agendamentos = ag;
+                  }
                 }
                 salvarGastosLocalStorage();
                 renderGastosView();
                 if (typeof renderGaleriaView === 'function') renderGaleriaView();
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
                 if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
+                if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
               }
             }
           } catch (e) { }
@@ -15005,7 +15574,8 @@
               historico_manutencoes: gastosState.historico_manutencoes,
               galeria: gastosState.galeria,
               veiculos: gastosState.veiculos,
-              ocorrencias: gastosState.ocorrencias
+              ocorrencias: gastosState.ocorrencias,
+              agendamentos: gastosState.agendamentos
             })
           });
           if (res.ok) return true;
@@ -15044,6 +15614,11 @@
               id: 'frota_ocorrencias_v1',
               valor: (gastosState.ocorrencias || []).length,
               descricao: JSON.stringify(gastosState.ocorrencias || [])
+            },
+            {
+              id: 'frota_agendamentos_servicos_v1',
+              valor: (gastosState.agendamentos || []).length,
+              descricao: JSON.stringify(gastosState.agendamentos || [])
             }
           ];
           await fetch(SUPABASE_URL + '/rest/v1/parametros', {
@@ -17691,13 +18266,140 @@
       }
       window.definirHoraAgora = definirHoraAgora;
 
+      function aoMudarTipoOcorrencia(tipo) {
+        if (!tipo) return;
+        let tempoSug = 60;
+        if (tipo.includes('Pneu')) tempoSug = 30;
+        else if (tipo.includes('Óleo')) tempoSug = 45;
+        else if (tipo.includes('Freio') || tipo.includes('Pastilha') || tipo.includes('Banco')) tempoSug = 90;
+        else if (tipo.includes('Mecânica') || tipo.includes('Revisão')) tempoSug = 120;
+        else if (tipo.includes('Bateria') || tipo.includes('Elétrica')) tempoSug = 60;
+        else if (tipo.includes('Guincho')) tempoSug = 90;
+
+        selecionarChipTempoMedioOcorrencia(tempoSug);
+        atualizarCalculoDuracaoModal();
+      }
+      window.aoMudarTipoOcorrencia = aoMudarTipoOcorrencia;
+
+      function selecionarChipMotivoOcorrencia(rotulo, valorSelect, tempoSugeridoMin = 60) {
+        if ($('ocrSelectTipo')) {
+          $('ocrSelectTipo').value = valorSelect;
+        }
+        const container = $('ocrChipsServicosRapidos');
+        if (container) {
+          const btns = container.querySelectorAll('.chip-btn');
+          btns.forEach(b => {
+            b.classList.toggle('active', b.textContent.trim() === rotulo.trim() || b.textContent.includes(rotulo.split(' ')[1] || ''));
+          });
+        }
+        if ($('ocrInputDescricao') && !$('ocrInputDescricao').value.trim()) {
+          $('ocrInputDescricao').value = rotulo;
+        }
+        selecionarChipTempoMedioOcorrencia(tempoSugeridoMin);
+        atualizarCalculoDuracaoModal();
+      }
+      window.selecionarChipMotivoOcorrencia = selecionarChipMotivoOcorrencia;
+
+      function selecionarChipTempoMedioOcorrencia(minutos) {
+        const m = parseInt(minutos, 10) || 60;
+        if ($('ocrInputTempoMedio')) {
+          $('ocrInputTempoMedio').value = m;
+        }
+        const container = $('ocrChipsTempoMedio');
+        if (container) {
+          const btns = container.querySelectorAll('.chip-btn');
+          btns.forEach(b => {
+            const txt = b.textContent.trim();
+            const coincide = (m === 15 && txt === '15m') ||
+              (m === 30 && txt === '30m') ||
+              (m === 45 && txt === '45m') ||
+              (m === 60 && txt.startsWith('1h') && !txt.includes('30')) ||
+              (m === 90 && txt.startsWith('1h 30')) ||
+              (m === 120 && txt.startsWith('2h')) ||
+              (m === 180 && txt.startsWith('3h')) ||
+              (m === 240 && txt.startsWith('4h'));
+            b.classList.toggle('active', coincide);
+          });
+        }
+        if ($('ocrTempoMedioFormatado')) {
+          $('ocrTempoMedioFormatado').textContent = formatarMinutosAmigavel(m);
+        }
+        atualizarCalculoDuracaoModal();
+      }
+      window.selecionarChipTempoMedioOcorrencia = selecionarChipTempoMedioOcorrencia;
+
+      function aoDigitarTempoMedioOcorrencia(val) {
+        const m = parseInt(val, 10) || 0;
+        if ($('ocrTempoMedioFormatado')) {
+          $('ocrTempoMedioFormatado').textContent = m > 0 ? formatarMinutosAmigavel(m) : 'Informe os minutos';
+        }
+        const container = $('ocrChipsTempoMedio');
+        if (container) {
+          const btns = container.querySelectorAll('.chip-btn');
+          btns.forEach(b => {
+            const txt = b.textContent.trim();
+            const coincide = (m === 15 && txt === '15m') ||
+              (m === 30 && txt === '30m') ||
+              (m === 45 && txt === '45m') ||
+              (m === 60 && txt.startsWith('1h') && !txt.includes('30')) ||
+              (m === 90 && txt.startsWith('1h 30')) ||
+              (m === 120 && txt.startsWith('2h')) ||
+              (m === 180 && txt.startsWith('3h')) ||
+              (m === 240 && txt.startsWith('4h'));
+            b.classList.toggle('active', coincide);
+          });
+        }
+        atualizarCalculoDuracaoModal();
+      }
+      window.aoDigitarTempoMedioOcorrencia = aoDigitarTempoMedioOcorrencia;
+
+      function aoMudarDataOuHoraOcorrencia() {
+        const hojeStr = formatarDataHoje();
+        const agoraMs = Date.now();
+        const dt = ($('ocrInputData')?.value || hojeStr).trim();
+        const hr = ($('ocrInputHoraInicio')?.value || formatarHoraAtual()).trim();
+
+        const hintBadge = $('ocrDataHintBadge');
+        const ts = extrairTimestampOcorrencia(dt, hr);
+
+        const isFutura = dt > hojeStr;
+        const isHojeFuturo = (dt === hojeStr && ts && ts > agoraMs);
+
+        if (hintBadge) {
+          if (isFutura) {
+            hintBadge.textContent = 'Serviço Futuro (Agendado)';
+            hintBadge.style.color = '#6366f1';
+          } else if (isHojeFuturo) {
+            hintBadge.textContent = 'Hoje mais tarde (Agendado)';
+            hintBadge.style.color = '#6366f1';
+          } else {
+            hintBadge.textContent = 'Em andamento / Agora';
+            hintBadge.style.color = 'var(--accent-hi)';
+          }
+        }
+
+        const selStatus = $('ocrSelectStatus');
+        const horaFim = ($('ocrInputHoraFim')?.value || '').trim();
+
+        if (selStatus && !horaFim) {
+          if (isFutura || isHojeFuturo) {
+            selStatus.value = 'agendado';
+          } else if (selStatus.value === 'agendado') {
+            selStatus.value = 'aberto';
+          }
+        }
+
+        atualizarCalculoDuracaoModal();
+      }
+      window.aoMudarDataOuHoraOcorrencia = aoMudarDataOuHoraOcorrencia;
+
       function aoMudarStatusOcorrencia(status) {
         const horaFimEl = $('ocrInputHoraFim');
         if (status === 'finalizado') {
           if (horaFimEl && !horaFimEl.value) {
             horaFimEl.value = formatarHoraAtual();
           }
-        } else if (status === 'aberto') {
+        } else if (status === 'aberto' || status === 'agendado') {
           if (horaFimEl) {
             horaFimEl.value = '';
           }
@@ -17724,22 +18426,47 @@
       window.aoDigitarVendedorOcorrencia = aoDigitarVendedorOcorrencia;
 
       function atualizarCalculoDuracaoModal() {
-        const ini = ($('ocrInputHoraInicio')?.value || '').trim();
+        const dt = ($('ocrInputData')?.value || formatarDataHoje()).trim();
+        const ini = ($('ocrInputHoraInicio')?.value || formatarHoraAtual()).trim();
         const fim = ($('ocrInputHoraFim')?.value || '').trim();
+        const tempoMedio = parseInt($('ocrInputTempoMedio')?.value, 10) || 60;
         const status = $('ocrSelectStatus')?.value || 'aberto';
-        const txtEl = $('ocrTextoCalculoDuracao');
-        if (!txtEl) return;
 
-        if (ini && fim) {
-          const dur = calcularDuracaoMinutos(ini, fim);
-          txtEl.innerHTML = 'Duração da pausa: <b style="color:var(--ok)">' + formatarMinutosAmigavel(dur) + '</b>';
-          if ($('ocrSelectStatus') && status === 'aberto') {
-            $('ocrSelectStatus').value = 'finalizado';
+        const txtEl = $('ocrTextoCalculoDuracao');
+        const badgeEl = $('ocrBadgeCalculoDuracao');
+        if (!txtEl && !badgeEl) return;
+
+        const info = calcularStatusTempoOcorrencia({
+          data: dt,
+          hora_inicio: ini,
+          hora_fim: fim,
+          duracao_minutos: (ini && fim) ? calcularDuracaoMinutos(ini, fim) : 0,
+          tempo_medio_minutos: tempoMedio,
+          status: status
+        });
+
+        if (txtEl) {
+          if (info.isFinalizado) {
+            txtEl.innerHTML = 'Pausa finalizada · Duração total: <b style="color:var(--ok)">' + formatarMinutosAmigavel(info.tempoDecorridoMin) + '</b>';
+          } else if (info.isAgendadoFuturo) {
+            txtEl.innerHTML = 'Agendado para <b style="color:#6366f1">' + formatarData(dt) + ' às ' + ini + '</b> · Término previsto às <b>' + info.horaFimPrevista + '</b>';
+          } else if (info.isAtrasado) {
+            txtEl.innerHTML = '<span style="color:var(--bad)">Tempo Médio Excedido em +' + formatarMinutosAmigavel(info.tempoExcedidoMin) + '! Término previsto era ' + info.horaFimPrevista + '</span>';
+          } else {
+            txtEl.innerHTML = 'Em andamento · Restam <b>' + formatarMinutosAmigavel(info.tempoRestanteMin) + '</b> (Término previsto: <b>' + info.horaFimPrevista + '</b>)';
           }
-        } else if (ini) {
-          txtEl.innerHTML = 'Pausa iniciada às <b>' + esc(ini) + '</b> · <span style="color:var(--warn)">Vendedor Parado</span>';
-        } else {
-          txtEl.textContent = 'Informe os horários para controle';
+        }
+
+        if (badgeEl) {
+          if (info.isFinalizado) {
+            badgeEl.innerHTML = '<span class="badge-status-pausa finalizado"><svg class="i" style="width:12px;height:12px"><use href="#i-check" /></svg> Concluído</span>';
+          } else if (info.isAgendadoFuturo) {
+            badgeEl.innerHTML = '<span class="badge-status-pausa agendado">Agendada (Sem contagem)</span>';
+          } else if (info.isAtrasado) {
+            badgeEl.innerHTML = '<span class="badge-status-pausa atrasado"><span class="pulse-dot-red"></span> ' + esc(info.badgeTexto) + '</span>';
+          } else {
+            badgeEl.innerHTML = '<span class="badge-status-pausa no-prazo">' + esc(info.badgeTexto) + '</span>';
+          }
         }
       }
       window.atualizarCalculoDuracaoModal = atualizarCalculoDuracaoModal;
@@ -17749,8 +18476,8 @@
         const ocr = id ? (gastosState.ocorrencias || []).find(x => String(x.id) === String(id)) : null;
 
         if ($('ocrEditId')) $('ocrEditId').value = ocr ? ocr.id : '';
-        if ($('ocrModalTitle')) $('ocrModalTitle').textContent = ocr ? ('Editar Ocorrência · ' + (ocr.vendedor || 'Frota')) : 'Nova Ocorrência / Registrar Parada';
-        if ($('lblBtnSalvarOcorrencia')) $('lblBtnSalvarOcorrencia').textContent = ocr ? 'Atualizar Ocorrência' : 'Salvar Ocorrência';
+        if ($('ocrModalTitle')) $('ocrModalTitle').textContent = ocr ? ('Editar Ocorrência · ' + (ocr.vendedor || 'Frota')) : 'Nova Ocorrência / Agendar Serviço';
+        if ($('lblBtnSalvarOcorrencia')) $('lblBtnSalvarOcorrencia').textContent = ocr ? 'Atualizar Registro' : 'Salvar Ocorrência';
 
         if ($('ocrInputVendedor')) {
           $('ocrInputVendedor').value = ocr ? (ocr.vendedor || '') : '';
@@ -17765,13 +18492,23 @@
         if ($('ocrInputData')) $('ocrInputData').value = ocr ? (ocr.data || formatarDataHoje()) : formatarDataHoje();
         if ($('ocrInputHoraInicio')) $('ocrInputHoraInicio').value = ocr ? (ocr.hora_inicio || formatarHoraAtual()) : formatarHoraAtual();
         if ($('ocrInputHoraFim')) $('ocrInputHoraFim').value = ocr ? (ocr.hora_fim || '') : '';
-        if ($('ocrSelectStatus')) $('ocrSelectStatus').value = ocr ? (ocr.status || 'aberto') : 'aberto';
+
+        const tempoMedio = ocr ? (parseInt(ocr.tempo_medio_minutos, 10) || 60) : 60;
+        selecionarChipTempoMedioOcorrencia(tempoMedio);
+
+        if ($('ocrSelectStatus')) {
+          if (ocr) {
+            $('ocrSelectStatus').value = ocr.status || 'aberto';
+          } else {
+            $('ocrSelectStatus').value = 'aberto';
+          }
+        }
         if ($('ocrInputLocal')) $('ocrInputLocal').value = ocr ? (ocr.local || '') : '';
         if ($('ocrInputDescricao')) $('ocrInputDescricao').value = ocr ? (ocr.descricao || '') : '';
-        if ($('ocrInputCusto')) $('ocrInputCusto').value = (ocr && ocr.custo) ? ocr.custo : '';
+        if ($('ocrInputCusto')) $('ocrInputCusto').value = (ocr && ocr.custo !== undefined) ? ocr.custo : '';
         if ($('ocrInputResponsavel')) $('ocrInputResponsavel').value = ocr ? (ocr.responsavel || 'Hendreo') : 'Hendreo';
 
-        atualizarCalculoDuracaoModal();
+        aoMudarDataOuHoraOcorrencia();
         if ($('modalOcorrencia')) $('modalOcorrencia').classList.add('open');
         setTimeout(() => { if ($('ocrInputVendedor')) $('ocrInputVendedor').focus(); }, 120);
       }
@@ -17795,7 +18532,7 @@
             $('ocrInputVendedor').style.borderColor = 'var(--bad)';
             $('ocrInputVendedor').focus();
           }
-          toast('O nome do vendedor é obrigatório para abrir a ocorrência!', 'error');
+          toast('O nome do vendedor é obrigatório para registrar a ocorrência!', 'error');
           return;
         }
 
@@ -17813,6 +18550,7 @@
         const data = ($('ocrInputData')?.value || '').trim() || formatarDataHoje();
         const horaInicio = ($('ocrInputHoraInicio')?.value || '').trim() || formatarHoraAtual();
         const horaFim = ($('ocrInputHoraFim')?.value || '').trim();
+        const tempoMedioMin = parseInt($('ocrInputTempoMedio')?.value, 10) || 60;
         const tipo = $('ocrSelectTipo')?.value || 'Pneu Furado / Borracharia';
         const veiculo = ($('ocrInputVeiculo')?.value || '').trim().toUpperCase();
         const local = ($('ocrInputLocal')?.value || '').trim();
@@ -17821,8 +18559,17 @@
         const responsavel = ($('ocrInputResponsavel')?.value || '').trim() || 'Hendreo';
         let status = $('ocrSelectStatus')?.value || 'aberto';
 
-        if (horaFim && status === 'aberto') {
+        // Auto-detecção de agendamento se for data futura e não estiver finalizado
+        const hojeStr = formatarDataHoje();
+        const agoraMs = Date.now();
+        const tsInicio = extrairTimestampOcorrencia(data, horaInicio);
+        const isDataFutura = data > hojeStr;
+        const isHorarioFuturoHoje = data === hojeStr && tsInicio && tsInicio > agoraMs;
+
+        if (horaFim) {
           status = 'finalizado';
+        } else if (isDataFutura || isHorarioFuturoHoje) {
+          status = 'agendado';
         }
 
         const duracaoMinutos = (horaInicio && horaFim)
@@ -17850,6 +18597,7 @@
               hora_inicio: horaInicio,
               hora_fim: horaFim,
               duracao_minutos: duracaoMinutos,
+              tempo_medio_minutos: tempoMedioMin,
               status,
               local,
               descricao,
@@ -17870,6 +18618,7 @@
             hora_inicio: horaInicio,
             hora_fim: horaFim,
             duracao_minutos: duracaoMinutos,
+            tempo_medio_minutos: tempoMedioMin,
             status,
             local,
             descricao,
@@ -17885,12 +18634,28 @@
           await sincronizarGastosComServidor('push');
           fecharModalOcorrencia();
           renderOcorrenciasView();
-          toast(editId ? ('Ocorrência de ' + vendedor + ' atualizada!') : ('Ocorrência registrada para ' + vendedor + ' (Rota ' + rota + ')!'));
+          toast(editId ? ('Registro de ' + vendedor + ' atualizado!') : ((status === 'agendado' ? 'Serviço agendado' : 'Ocorrência registrada') + ' para ' + vendedor + ' (Rota ' + rota + ')!'));
         } finally {
           if (btn) btn.disabled = false;
         }
       }
       window.salvarOcorrencia = salvarOcorrencia;
+
+      async function iniciarOcorrenciaAgendadaRapida(id) {
+        const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
+        if (!ocr) return;
+
+        ocr.status = 'aberto';
+        ocr.data = formatarDataHoje();
+        ocr.hora_inicio = formatarHoraAtual();
+        ocr.hora_fim = '';
+        ocr.atualizado_em = new Date().toISOString();
+
+        await sincronizarGastosComServidor('push');
+        renderOcorrenciasView();
+        toast('Serviço de ' + ocr.vendedor + ' iniciado agora às ' + ocr.hora_inicio + '! Tempo médio correndo.');
+      }
+      window.iniciarOcorrenciaAgendadaRapida = iniciarOcorrenciaAgendadaRapida;
 
       async function finalizarPausaRapida(id) {
         const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
@@ -17929,6 +18694,7 @@
           renderOcorrenciasView();
           toast('Ocorrência de ' + (ocr ? ocr.vendedor : '') + ' excluída com sucesso.');
         } catch (e) {
+          console.error(e);
           toast('Erro ao excluir ocorrência. Tente novamente.', 'error');
         }
       }
@@ -18362,30 +19128,214 @@
       }
       window.copiarResumoRelatorioWhatsApp = copiarResumoRelatorioWhatsApp;
 
+      // ==============================================================================
+      // MÓDULO: CONTROLE DE TEMPO & STATUS DE OCORRÊNCIAS / AGENDAMENTOS
+      // ==============================================================================
+      function extrairTimestampOcorrencia(dataStr, horaStr) {
+        if (!dataStr) return null;
+        const partesD = String(dataStr).slice(0, 10).split('-').map(Number);
+        if (partesD.length < 3 || isNaN(partesD[0])) return null;
+        const ano = partesD[0];
+        const mes = partesD[1] - 1;
+        const dia = partesD[2];
+        let hora = 8, min = 0;
+        if (horaStr) {
+          const partesH = String(horaStr).slice(0, 5).split(':').map(Number);
+          if (!isNaN(partesH[0])) hora = partesH[0];
+          if (!isNaN(partesH[1])) min = partesH[1];
+        }
+        return new Date(ano, mes, dia, hora, min, 0, 0).getTime();
+      }
+      window.extrairTimestampOcorrencia = extrairTimestampOcorrencia;
+
+      function calcularStatusTempoOcorrencia(item, agoraMs = Date.now()) {
+        const hojeStr = formatarDataHoje();
+        const dt = (item.data || hojeStr).slice(0, 10);
+        const hrIni = (item.hora_inicio || '08:00').slice(0, 5);
+        const tempoMedioMin = parseInt(item.tempo_medio_minutos, 10) || 60;
+        const status = item.status || 'aberto';
+
+        const inicioMs = extrairTimestampOcorrencia(dt, hrIni) || agoraMs;
+        const fimPrevistoMs = inicioMs + (tempoMedioMin * 60000);
+        const fimPrevistoDate = new Date(fimPrevistoMs);
+        const horaFimPrevista = String(fimPrevistoDate.getHours()).padStart(2, '0') + ':' + String(fimPrevistoDate.getMinutes()).padStart(2, '0');
+
+        // 1. Caso Finalizado / Liberado
+        if (status === 'finalizado') {
+          let duracaoRealMin = Number(item.duracao_minutos) || 0;
+          if (!duracaoRealMin && item.hora_fim) {
+            duracaoRealMin = calcularDuracaoMinutos(hrIni, item.hora_fim);
+          }
+          const ultrapassou = tempoMedioMin > 0 && duracaoRealMin > tempoMedioMin;
+          const excedidoMin = ultrapassou ? (duracaoRealMin - tempoMedioMin) : 0;
+
+          return {
+            status: 'finalizado',
+            isAgendadoFuturo: false,
+            isAberto: false,
+            isFinalizado: true,
+            isAtrasado: false,
+            finalizadoComAtraso: ultrapassou,
+            tempoDecorridoMin: duracaoRealMin,
+            tempoExcedidoMin: excedidoMin,
+            tempoMedioMin,
+            horaInicio: hrIni,
+            horaFimPrevista,
+            badgeClass: 'finalizado',
+            badgeTexto: 'LIBERADO',
+            duracaoTexto: 'Pausa: ' + formatarMinutosAmigavel(duracaoRealMin),
+            statusMensagem: ultrapassou ? ('Concluído com ' + formatarMinutosAmigavel(excedidoMin) + ' de atraso') : 'Concluído no prazo'
+          };
+        }
+
+        // 2. Verificação de Agendamento Futuro
+        // Critério: status === 'agendado' OU data > hoje OU (data === hoje e inicioMs > agoraMs)
+        const isDataFutura = dt > hojeStr;
+        const isHorarioFuturoHoje = dt === hojeStr && inicioMs > agoraMs;
+        const isAgendadoFuturo = status === 'agendado' || isDataFutura || isHorarioFuturoHoje;
+
+        if (isAgendadoFuturo) {
+          let textoQuando = '';
+          if (isDataFutura) {
+            const amanha = new Date(agoraMs + 86400000);
+            const amanhaStr = isoLocal(amanha).slice(0, 10);
+            if (dt === amanhaStr) {
+              textoQuando = 'Amanhã às ' + hrIni;
+            } else {
+              textoQuando = formatarData(dt) + ' às ' + hrIni;
+            }
+          } else {
+            const diffMin = Math.ceil((inicioMs - agoraMs) / 60000);
+            textoQuando = diffMin > 60 ? ('Hoje às ' + hrIni) : ('Em ' + diffMin + ' min');
+          }
+
+          return {
+            status: 'agendado',
+            isAgendadoFuturo: true,
+            isAberto: false,
+            isFinalizado: false,
+            isAtrasado: false,
+            tempoDecorridoMin: 0,
+            tempoMedioMin,
+            horaInicio: hrIni,
+            horaFimPrevista,
+            progressoPct: 0,
+            badgeClass: 'agendado',
+            badgeTexto: 'AGENDADA (' + textoQuando + ')',
+            duracaoTexto: 'Aguardando início',
+            statusMensagem: 'Serviço programado para ' + textoQuando + ' · Previsão término às ' + horaFimPrevista
+          };
+        }
+
+        // 3. Caso Aberto / Em Andamento (Vendedor Parado ou na Oficina)
+        const decorridoMin = Math.max(0, Math.floor((agoraMs - inicioMs) / 60000));
+        const ultrapassou = agoraMs > fimPrevistoMs;
+        const excedidoMin = ultrapassou ? Math.floor((agoraMs - fimPrevistoMs) / 60000) : 0;
+        const restanteMin = ultrapassou ? 0 : Math.ceil((fimPrevistoMs - agoraMs) / 60000);
+        const progressoPct = Math.min(100, Math.round((decorridoMin / (tempoMedioMin || 1)) * 100));
+
+        if (ultrapassou) {
+          return {
+            status: 'aberto',
+            isAgendadoFuturo: false,
+            isAberto: true,
+            isFinalizado: false,
+            isAtrasado: true,
+            tempoDecorridoMin: decorridoMin,
+            tempoExcedidoMin: excedidoMin,
+            tempoMedioMin,
+            horaInicio: hrIni,
+            horaFimPrevista,
+            progressoPct: 100,
+            badgeClass: 'atrasado',
+            badgeTexto: 'TEMPO EXCEDIDO (+' + formatarMinutosAmigavel(excedidoMin) + ')',
+            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoMin),
+            statusMensagem: 'TEMPO MÉDIO ULTRAPASSADO em +' + formatarMinutosAmigavel(excedidoMin) + '! Previsão era ' + horaFimPrevista
+          };
+        } else {
+          return {
+            status: 'aberto',
+            isAgendadoFuturo: false,
+            isAberto: true,
+            isFinalizado: false,
+            isAtrasado: false,
+            tempoDecorridoMin: decorridoMin,
+            tempoRestanteMin: restanteMin,
+            tempoMedioMin,
+            horaInicio: hrIni,
+            horaFimPrevista,
+            progressoPct: progressoPct,
+            badgeClass: 'no-prazo',
+            badgeTexto: 'No Prazo (Restam ' + formatarMinutosAmigavel(restanteMin) + ')',
+            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoMin),
+            statusMensagem: 'Em atendimento · Restam ' + formatarMinutosAmigavel(restanteMin) + ' (Término previsto: ' + horaFimPrevista + ')'
+          };
+        }
+      }
+      window.calcularStatusTempoOcorrencia = calcularStatusTempoOcorrencia;
+
       async function copiarOcorrenciaWhatsApp(id) {
         const ocr = (gastosState.ocorrencias || []).find(x => String(x.id) === String(id));
         if (!ocr) return;
 
-        const isAberto = ocr.status === 'aberto';
-        const horaAgora = formatarHoraAtual();
-        const duracaoTexto = isAberto
-          ? ('Em andamento (início às ' + (ocr.hora_inicio || '--:--') + ' - parado há ' + formatarMinutosAmigavel(calcularDuracaoMinutos(ocr.hora_inicio, horaAgora)) + ')')
-          : ((ocr.hora_inicio || '') + ' às ' + (ocr.hora_fim || '') + ' (Duração: ' + formatarMinutosAmigavel(ocr.duracao_minutos) + ')');
+        const info = calcularStatusTempoOcorrencia(ocr);
+        const dataFmt = formatarData(ocr.data);
 
-        const msg = [
-          '*OCORRÊNCIA DE FROTA · GOMEX DISTRIBUIDORA*',
-          '',
-          '*Vendedor:* ' + (ocr.vendedor || 'Não informado'),
-          '*Rota:* ' + (ocr.rota || 'Não informada'),
-          ocr.veiculo ? ('*Veículo:* ' + ocr.veiculo) : '',
-          '*Problema:* ' + (ocr.tipo || 'Ocorrência operacional'),
-          '*Horário da Pausa:* ' + duracaoTexto,
-          '*Status:* ' + (isAberto ? 'Em Aberto / Vendedor Parado' : 'Pausa Finalizada / Vendedor Liberado'),
-          ocr.local ? ('*Local:* ' + ocr.local) : '',
-          ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
-          ocr.custo ? ('*Custo:* ' + fmtMoeda(ocr.custo)) : '',
-          '*Anotado por:* ' + (ocr.responsavel || 'Hendreo')
-        ].filter(Boolean).join('\n');
+        let msg = '';
+        if (info.isAgendadoFuturo) {
+          msg = [
+            '*GOMEX DISTRIBUIDORA · SERVIÇO AGENDADO DE FROTA*',
+            '',
+            '*Veículo:* ' + (ocr.veiculo || ocr.placa || 'Frota Gomex'),
+            '*Rota:* ' + (ocr.rota || '—'),
+            '*Vendedor / Motorista:* ' + (ocr.vendedor || '—'),
+            '*Serviço / Motivo:* ' + (ocr.tipo || 'Manutenção'),
+            '*Data / Início:* ' + dataFmt + ' às ' + (ocr.hora_inicio || '--:--'),
+            '*Tempo Médio Previsto:* ' + formatarMinutosAmigavel(info.tempoMedioMin) + ' (Término previsto: ' + info.horaFimPrevista + ')',
+            ocr.local ? ('*Local / Oficina:* ' + ocr.local) : '',
+            ocr.custo ? ('*Valor / Despesa:* ' + fmtMoeda(ocr.custo)) : '',
+            ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
+            '',
+            '*SITUAÇÃO:* AGENDADA (Aguardando início)',
+            '_Supervisor da Frota: ' + (ocr.responsavel || 'Hendreo') + '_'
+          ].filter(Boolean).join('\n');
+        } else if (info.isFinalizado) {
+          msg = [
+            '*GOMEX DISTRIBUIDORA · OCORRÊNCIA CONCLUÍDA*',
+            '',
+            '*Veículo:* ' + (ocr.veiculo || ocr.placa || 'Frota Gomex'),
+            '*Rota:* ' + (ocr.rota || '—'),
+            '*Vendedor / Motorista:* ' + (ocr.vendedor || '—'),
+            '*Motivo / Serviço:* ' + (ocr.tipo || 'Ocorrência'),
+            '*Horário:* ' + dataFmt + ' (' + (ocr.hora_inicio || '--:--') + ' às ' + (ocr.hora_fim || '--:--') + ')',
+            '*Duração Total:* ' + formatarMinutosAmigavel(info.tempoDecorridoMin),
+            ocr.local ? ('*Local:* ' + ocr.local) : '',
+            ocr.custo ? ('*Custo:* ' + fmtMoeda(ocr.custo)) : '',
+            ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
+            '',
+            '*STATUS:* VENDEDOR LIBERADO / RETORNO À ROTA',
+            '_Supervisor da Frota: ' + (ocr.responsavel || 'Hendreo') + '_'
+          ].filter(Boolean).join('\n');
+        } else {
+          msg = [
+            '*GOMEX DISTRIBUIDORA · OCORRÊNCIA EM ANDAMENTO (PAUSA)*',
+            '',
+            '*Veículo:* ' + (ocr.veiculo || ocr.placa || 'Frota Gomex'),
+            '*Rota:* ' + (ocr.rota || '—'),
+            '*Vendedor / Motorista:* ' + (ocr.vendedor || '—'),
+            '*Motivo / Problema:* ' + (ocr.tipo || 'Pausa operacional'),
+            '*Início da Parada:* ' + dataFmt + ' às ' + (ocr.hora_inicio || '--:--'),
+            '*Tempo Parado até Agora:* ' + formatarMinutosAmigavel(info.tempoDecorridoMin),
+            '*Tempo Médio Previsto:* ' + formatarMinutosAmigavel(info.tempoMedioMin) + ' (Previsão: ' + info.horaFimPrevista + ')',
+            info.isAtrasado ? ('*ALERTA: TEMPO MÉDIO EXCEDIDO EM +' + formatarMinutosAmigavel(info.tempoExcedidoMin) + '!*') : ('*Situação:* No prazo (Restam ' + formatarMinutosAmigavel(info.tempoRestanteMin) + ')'),
+            ocr.local ? ('*Local:* ' + ocr.local) : '',
+            ocr.custo ? ('*Custo Previsto:* ' + fmtMoeda(ocr.custo)) : '',
+            ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
+            '',
+            '*STATUS:* VENDEDOR EM ATENDIMENTO / PARADO',
+            '_Supervisor da Frota: ' + (ocr.responsavel || 'Hendreo') + '_'
+          ].filter(Boolean).join('\n');
+        }
 
         let copiou = false;
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -18404,17 +19354,19 @@
           try { document.execCommand('copy'); copiou = true; } catch (e) {}
           document.body.removeChild(ta);
         }
-        toast('Mensagem formatada copiada para o WhatsApp!');
+        toast('Mensagem de ' + (ocr.vendedor || 'frota') + ' copiada para o WhatsApp!');
       }
       window.copiarOcorrenciaWhatsApp = copiarOcorrenciaWhatsApp;
 
       function filtrarOcorrencias(filtro) {
         ocorrenciasState.filtro = filtro;
-        ['Todos', 'Abertos', 'Hoje', 'Finalizados'].forEach(tab => {
+        ['Todos', 'Abertos', 'Agendadas', 'Atrasados', 'Hoje', 'Finalizados'].forEach(tab => {
           const btn = $('btnOcrFiltro' + tab);
           if (btn) btn.classList.remove('active');
         });
         if (filtro === 'aberto' && $('btnOcrFiltroAbertos')) $('btnOcrFiltroAbertos').classList.add('active');
+        else if (filtro === 'agendado' && $('btnOcrFiltroAgendadas')) $('btnOcrFiltroAgendadas').classList.add('active');
+        else if (filtro === 'atrasado' && $('btnOcrFiltroAtrasados')) $('btnOcrFiltroAtrasados').classList.add('active');
         else if (filtro === 'hoje' && $('btnOcrFiltroHoje')) $('btnOcrFiltroHoje').classList.add('active');
         else if (filtro === 'finalizado' && $('btnOcrFiltroFinalizados')) $('btnOcrFiltroFinalizados').classList.add('active');
         else if ($('btnOcrFiltroTodos')) $('btnOcrFiltroTodos').classList.add('active');
@@ -18431,55 +19383,92 @@
       function renderOcorrenciasView() {
         const todas = Array.isArray(gastosState.ocorrencias) ? gastosState.ocorrencias : [];
         const hojeStr = formatarDataHoje();
-        const horaAgora = formatarHoraAtual();
+        const agoraMs = Date.now();
 
-        const paradosAgora = todas.filter(x => x.status === 'aberto');
-        const deHoje = todas.filter(x => (x.data || '').startsWith(hojeStr));
-        const concluidasHoje = deHoje.filter(x => x.status === 'finalizado');
-        const tempoHojeMinutos = deHoje.reduce((acc, x) => {
-          if (x.status === 'finalizado') return acc + (Number(x.duracao_minutos) || 0);
-          if (x.status === 'aberto') return acc + calcularDuracaoMinutos(x.hora_inicio, horaAgora);
-          return acc;
+        // Processar status com cálculo preciso de data e horário
+        const processadas = todas.map(item => {
+          const info = calcularStatusTempoOcorrencia(item, agoraMs);
+          return { item, info };
+        });
+
+        // Contagens precisas: apenas quem está aberto e NÃO é futuro conta como "Parados Agora"
+        const paradosAgora = processadas.filter(p => p.info.isAberto);
+        const agendadas = processadas.filter(p => p.info.isAgendadoFuturo);
+        const atrasadas = processadas.filter(p => p.info.isAtrasado);
+        const deHoje = processadas.filter(p => (p.item.data || '').startsWith(hojeStr));
+        const concluidasHoje = deHoje.filter(p => p.item.status === 'finalizado');
+
+        const tempoHojeMinutos = deHoje.reduce((acc, p) => {
+          return acc + (p.info.tempoDecorridoMin || 0);
         }, 0);
 
+        // Atualização dos KPIs no topo
         if ($('ocrStatParadosAgora')) $('ocrStatParadosAgora').textContent = paradosAgora.length;
+        if ($('ocrStatAgendadas')) $('ocrStatAgendadas').textContent = agendadas.length;
         if ($('ocrStatTempoHoje')) $('ocrStatTempoHoje').textContent = formatarMinutosAmigavel(tempoHojeMinutos);
         if ($('ocrStatOcrHoje')) $('ocrStatOcrHoje').textContent = deHoje.length;
         if ($('ocrStatConcluidasHoje')) $('ocrStatConcluidasHoje').textContent = concluidasHoje.length;
 
+        // Atualização dos Badges das Abas de Filtros
         if ($('badgeOcrFiltroTodos')) $('badgeOcrFiltroTodos').textContent = todas.length;
         if ($('badgeOcrFiltroAbertos')) $('badgeOcrFiltroAbertos').textContent = paradosAgora.length;
+        if ($('badgeOcrFiltroAgendadas')) $('badgeOcrFiltroAgendadas').textContent = agendadas.length;
+        if ($('badgeOcrFiltroAtrasados')) $('badgeOcrFiltroAtrasados').textContent = atrasadas.length;
         if ($('badgeOcrFiltroHoje')) $('badgeOcrFiltroHoje').textContent = deHoje.length;
         if ($('badgeOcrFiltroFinalizados')) $('badgeOcrFiltroFinalizados').textContent = todas.filter(x => x.status === 'finalizado').length;
 
-        let lista = [...todas];
-
-        if (ocorrenciasState.filtro === 'aberto') {
-          lista = lista.filter(x => x.status === 'aberto');
-        } else if (ocorrenciasState.filtro === 'hoje') {
-          lista = lista.filter(x => (x.data || '').startsWith(hojeStr));
-        } else if (ocorrenciasState.filtro === 'finalizado') {
-          lista = lista.filter(x => x.status === 'finalizado');
+        // Banner chamativo de tempo médio excedido
+        const bannerAtraso = $('ocrAlertaAtrasosBanner');
+        const textoBanner = $('ocrAlertaAtrasosTexto');
+        if (bannerAtraso) {
+          if (atrasadas.length > 0) {
+            bannerAtraso.style.display = 'flex';
+            if (textoBanner) {
+              textoBanner.innerHTML = 'Existem <b>' + atrasadas.length + ' serviço(s) / ocorrência(s) com o TEMPO MÉDIO ULTRAPASSADO</b> na frota! Verifique a situação das rotas.';
+            }
+          } else {
+            bannerAtraso.style.display = 'none';
+          }
         }
 
+        // Filtragem
+        let lista = [...processadas];
+        if (ocorrenciasState.filtro === 'aberto') {
+          lista = lista.filter(p => p.info.isAberto);
+        } else if (ocorrenciasState.filtro === 'agendado') {
+          lista = lista.filter(p => p.info.isAgendadoFuturo);
+        } else if (ocorrenciasState.filtro === 'atrasado') {
+          lista = lista.filter(p => p.info.isAtrasado);
+        } else if (ocorrenciasState.filtro === 'hoje') {
+          lista = lista.filter(p => (p.item.data || '').startsWith(hojeStr));
+        } else if (ocorrenciasState.filtro === 'finalizado') {
+          lista = lista.filter(p => p.item.status === 'finalizado');
+        }
+
+        // Busca
         if (ocorrenciasState.busca) {
           const b = ocorrenciasState.busca;
-          lista = lista.filter(x =>
-            (x.vendedor || '').toLowerCase().includes(b) ||
-            (x.rota || '').toLowerCase().includes(b) ||
-            (x.veiculo || '').toLowerCase().includes(b) ||
-            (x.placa || '').toLowerCase().includes(b) ||
-            (x.tipo || '').toLowerCase().includes(b) ||
-            (x.local || '').toLowerCase().includes(b) ||
-            (x.descricao || '').toLowerCase().includes(b)
+          lista = lista.filter(p =>
+            (p.item.vendedor || '').toLowerCase().includes(b) ||
+            (p.item.rota || '').toLowerCase().includes(b) ||
+            (p.item.veiculo || '').toLowerCase().includes(b) ||
+            (p.item.placa || '').toLowerCase().includes(b) ||
+            (p.item.tipo || '').toLowerCase().includes(b) ||
+            (p.item.local || '').toLowerCase().includes(b) ||
+            (p.item.descricao || '').toLowerCase().includes(b)
           );
         }
 
+        // Ordenação inteligente: Atrasadas primeiro, depois Abertas, depois Agendadas, depois Finalizadas
         lista.sort((a, b) => {
-          if (a.status === 'aberto' && b.status !== 'aberto') return -1;
-          if (a.status !== 'aberto' && b.status === 'aberto') return 1;
-          const dtA = (a.data || '') + ' ' + (a.hora_inicio || '');
-          const dtB = (b.data || '') + ' ' + (b.hora_inicio || '');
+          if (a.info.isAtrasado && !b.info.isAtrasado) return -1;
+          if (!a.info.isAtrasado && b.info.isAtrasado) return 1;
+          if (a.info.isAberto && !b.info.isAberto) return -1;
+          if (!a.info.isAberto && b.info.isAberto) return 1;
+          if (a.info.isAgendadoFuturo && !b.info.isAgendadoFuturo) return -1;
+          if (!a.info.isAgendadoFuturo && b.info.isAgendadoFuturo) return 1;
+          const dtA = (a.item.data || '') + ' ' + (a.item.hora_inicio || '');
+          const dtB = (b.item.data || '') + ' ' + (b.item.hora_inicio || '');
           return dtB.localeCompare(dtA);
         });
 
@@ -18494,35 +19483,56 @@
               </div>
               <h4 style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma ocorrência encontrada</h4>
               <p style="font-size:13px;max-width:380px;margin:0 auto 18px">
-                ${ocorrenciasState.busca ? 'Nenhum registro confere com a busca digitada.' : 'Toda a frota está rodando normalmente sem pausas pendentes registradas.'}
+                ${ocorrenciasState.busca ? 'Nenhum registro confere com o termo buscado.' : 'Toda a frota está rodando normalmente sem pendências neste filtro.'}
               </p>
               <button type="button" class="btn btn-primary" onclick="abrirModalOcorrencia()" style="margin:0 auto">
                 <svg class="i"><use href="#i-plus" /></svg>
-                <span>Registrar Nova Ocorrência</span>
+                <span>Registrar Ocorrência / Agendar</span>
               </button>
             </div>
           `;
           return;
         }
 
-        container.innerHTML = lista.map(item => {
-          const isAberto = item.status === 'aberto';
-          const isHoje = (item.data || '').startsWith(hojeStr);
+        container.innerHTML = lista.map(({ item, info }) => {
+          const isAberto = info.isAberto;
+          const isAgendado = info.isAgendadoFuturo;
+          const isAtrasado = info.isAtrasado;
+          const isFinalizado = info.isFinalizado;
+
+          let cardClass = 'ocr-card';
+          if (isAtrasado) cardClass += ' atrasada';
+          else if (isAgendado) cardClass += ' agendada';
+          else if (isAberto) cardClass += ' em-aberto';
+          else if (isFinalizado) cardClass += ' finalizada';
 
           let tempoPausaHtml = '';
-          if (isAberto) {
-            const minParado = calcularDuracaoMinutos(item.hora_inicio, horaAgora);
+          if (isAgendado) {
             tempoPausaHtml = `
-              <div class="ocr-duracao-highlight aberto">
+              <div class="ocr-duracao-highlight agendado">
+                <svg class="i" style="width:14px;height:14px"><use href="#i-calendar-clock" /></svg>
+                <span>${esc(info.duracaoTexto)}</span>
+              </div>
+            `;
+          } else if (isAtrasado) {
+            tempoPausaHtml = `
+              <div class="ocr-duracao-highlight atrasado">
                 <span class="pulse-dot-red"></span>
-                <span>Parado há ${formatarMinutosAmigavel(minParado)}</span>
+                <span>Parado há ${formatarMinutosAmigavel(info.tempoDecorridoMin)} (+ ${formatarMinutosAmigavel(info.tempoExcedidoMin)})</span>
+              </div>
+            `;
+          } else if (isAberto) {
+            tempoPausaHtml = `
+              <div class="ocr-duracao-highlight no-prazo">
+                <svg class="i" style="width:14px;height:14px"><use href="#i-clock" /></svg>
+                <span>Parado há ${formatarMinutosAmigavel(info.tempoDecorridoMin)}</span>
               </div>
             `;
           } else {
             tempoPausaHtml = `
               <div class="ocr-duracao-highlight finalizado">
                 <svg class="i" style="width:14px;height:14px"><use href="#i-check" /></svg>
-                <span>Pausa: ${formatarMinutosAmigavel(item.duracao_minutos)}</span>
+                <span>Pausa: ${formatarMinutosAmigavel(info.tempoDecorridoMin)}</span>
               </div>
             `;
           }
@@ -18531,9 +19541,21 @@
           if ((item.tipo || '').includes('Pneu')) iconeTipo = 'i-tool';
           else if ((item.tipo || '').includes('Óleo')) iconeTipo = 'i-droplet';
           else if ((item.tipo || '').includes('Mecânica') || (item.tipo || '').includes('Manutenção')) iconeTipo = 'i-tool';
+          else if ((item.tipo || '').includes('Banco')) iconeTipo = 'i-tool';
+
+          // Barra de progresso para serviços em andamento com tempo médio
+          let progressoHtml = '';
+          if (isAberto && info.tempoMedioMin > 0) {
+            const barClass = isAtrasado ? 'atrasado' : 'no-prazo';
+            progressoHtml = `
+              <div class="tempo-progress-wrap" title="Progresso em relação ao tempo médio estimado">
+                <div class="tempo-progress-bar ${barClass}" style="width:${info.progressoPct}%"></div>
+              </div>
+            `;
+          }
 
           return `
-            <div class="ocr-card ${isAberto ? 'em-aberto' : 'finalizada'}">
+            <div class="${cardClass}">
               <div class="ocr-card-head">
                 <div>
                   <div class="ocr-vendedor-title">
@@ -18544,19 +19566,20 @@
                   <div style="font-size:11.5px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:6px">
                     <span>${formatarData(item.data)}</span>
                     <span>·</span>
-                    <span>Registrado por: <b>${esc(item.responsavel || 'Hendreo')}</b></span>
+                    <span>Supervisor: <b>${esc(item.responsavel || 'Hendreo')}</b></span>
                   </div>
                 </div>
 
                 <div>
-                  ${isAberto
-                    ? `<span class="badge-status-pausa aberto"><span class="pulse-dot-red"></span> EM PAUSA</span>`
-                    : `<span class="badge-status-pausa finalizado"><svg class="i" style="width:12px;height:12px"><use href="#i-check" /></svg> LIBERADO</span>`
-                  }
+                  <span class="badge-status-pausa ${info.badgeClass}">
+                    ${isAtrasado ? '<span class="pulse-dot-red"></span>' : ''}
+                    ${isAberto && !isAtrasado ? '<span class="pulse-dot-red"></span>' : ''}
+                    ${esc(info.badgeTexto)}
+                  </span>
                 </div>
               </div>
 
-              <!-- Motivo do Problema -->
+              <!-- Motivo do Problema & Destaque de Tempo -->
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
                 <div class="ocr-tipo-badge">
                   <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#${iconeTipo}" /></svg>
@@ -18565,23 +19588,36 @@
                 ${tempoPausaHtml}
               </div>
 
-              <!-- Box de Horários e Duração -->
-              <div class="ocr-time-box">
-                <div class="ocr-time-item">
-                  <span class="ocr-time-lbl">Início da Pausa</span>
-                  <span class="ocr-time-val">${esc(item.hora_inicio || '--:--')}</span>
+              <!-- Box de Horários, Duração e Tempo Médio -->
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <div class="ocr-time-box">
+                  <div class="ocr-time-item">
+                    <span class="ocr-time-lbl">Início</span>
+                    <span class="ocr-time-val">${esc(item.hora_inicio || '--:--')}${isAgendado ? ' (' + formatarData(item.data) + ')' : ''}</span>
+                  </div>
+                  <div class="ocr-time-item">
+                    <span class="ocr-time-lbl">Tempo Médio</span>
+                    <span class="ocr-time-val" style="color:var(--accent-hi)">${formatarMinutosAmigavel(info.tempoMedioMin)}</span>
+                  </div>
+                  <div class="ocr-time-item">
+                    <span class="ocr-time-lbl">${isFinalizado ? 'Retorno' : 'Previsão Término'}</span>
+                    <span class="ocr-time-val" style="color:${isAtrasado ? 'var(--bad)' : (isFinalizado ? 'var(--ok)' : 'var(--ink)')}">
+                      ${isFinalizado ? esc(item.hora_fim || '--:--') : esc(info.horaFimPrevista)}
+                    </span>
+                  </div>
+                  <div class="ocr-time-item">
+                    <span class="ocr-time-lbl">Tempo Utilizado</span>
+                    <span class="ocr-time-val" style="color:${isAgendado ? '#6366f1' : (isAtrasado ? 'var(--bad)' : (isFinalizado ? 'var(--ok)' : 'var(--warn)'))}">
+                      ${isAgendado ? 'Aguardando início' : (isAberto ? (info.tempoDecorridoMin + ' min até agora') : formatarMinutosAmigavel(info.tempoDecorridoMin))}
+                    </span>
+                  </div>
                 </div>
-                <div class="ocr-time-item">
-                  <span class="ocr-time-lbl">Retorno / Fim</span>
-                  <span class="ocr-time-val" style="color:${isAberto ? 'var(--warn)' : 'var(--ink)'}">
-                    ${isAberto ? 'Em atendimento' : esc(item.hora_fim || '--:--')}
-                  </span>
-                </div>
-                <div class="ocr-time-item">
-                  <span class="ocr-time-lbl">Tempo Utilizado</span>
-                  <span class="ocr-time-val" style="color:${isAberto ? 'var(--bad)' : 'var(--ok)'}">
-                    ${isAberto ? (calcularDuracaoMinutos(item.hora_inicio, horaAgora) + ' min até agora') : formatarMinutosAmigavel(item.duracao_minutos)}
-                  </span>
+
+                ${progressoHtml}
+
+                <div style="font-size:12px;font-weight:${isAtrasado ? '700' : '500'};color:${isAtrasado ? 'var(--bad)' : 'var(--ink-3)'};margin-top:2px;display:flex;align-items:center;gap:5px">
+                  ${isAtrasado ? '<svg class="i" style="width:14px;height:14px;color:var(--bad)"><use href="#i-alert" /></svg>' : ''}
+                  <span>${esc(info.statusMensagem)}</span>
                 </div>
               </div>
 
@@ -18600,13 +19636,21 @@
               ` : ''}
 
               ${item.custo ? `
-                <div style="font-size:12.5px;font-weight:700;color:var(--ok)">
+                <div style="font-size:13px;font-weight:800;color:var(--ok)">
                   Despesa / Custo: ${fmtMoeda(item.custo)}
                 </div>
               ` : ''}
 
               <!-- Ações Rápidas (Mobile First) -->
               <div class="ocr-actions-row">
+                ${isAgendado ? `
+                  <button type="button" class="btn btn-primary" onclick="iniciarOcorrenciaAgendadaRapida('${esc(item.id)}')"
+                    title="Iniciar serviço agora" style="background:#2563eb;border-color:#2563eb">
+                    <svg class="i"><use href="#i-clock" /></svg>
+                    <span>Iniciar Agora</span>
+                  </button>
+                ` : ''}
+
                 ${isAberto ? `
                   <button type="button" class="btn btn-primary" onclick="finalizarPausaRapida('${esc(item.id)}')"
                     title="Finalizar pausa com a hora atual" style="background:#15803d;border-color:#15803d">
