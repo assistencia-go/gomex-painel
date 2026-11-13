@@ -1,0 +1,129 @@
+  <!-- ========================================================================== -->
+  <!-- LOGIN -->
+  <!-- ========================================================================== -->
+  <div class="login" id="login">
+    <!-- Painel Esquerdo com Telemetria e Apresentação Executiva -->
+    <aside class="login-brand">
+      <div class="login-brand-glow-1"></div>
+      <div class="login-brand-glow-2"></div>
+
+      <div class="login-brand-head">
+        <div class="brand">
+          <div class="brand-mark"><svg class="i">
+              <use href="#i-truck" />
+            </svg></div>
+          <div>
+            <div class="brand-name">Gomex Frota</div>
+            <div class="brand-sub">Painel Executivo</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-hero-center">
+        <div class="hero-category-tag">
+          <svg class="i" style="width:13px;height:13px;stroke-width:2.2">
+            <use href="#i-shield" />
+          </svg>
+          <span>Plataforma Integrada de Auditoria</span>
+        </div>
+        <h1 class="hero-headline">
+          Cada vistoria
+          <span class="rotator-pill">
+            <span class="word-rotator" id="wordRotator">organiza</span>
+          </span><br>
+          toda a frota.
+        </h1>
+        <p class="hero-desc">
+          Monitoramento inteligente de pneus com mapa térmico de danos, auditoria de carroceria, conformidade de
+          segurança e aprovações gerenciais em tempo real.
+        </p>
+      </div>
+
+      <div class="login-brand-foot">
+        <svg class="i">
+          <use href="#i-lock" />
+        </svg>
+        <span>Acesso Corporativo Seguro • Criptografia TLS 1.3 • Gomex Distribuidora</span>
+      </div>
+    </aside>
+
+    <!-- Painel Direito com Card Glassmórfico Elevado -->
+    <main class="login-pane">
+      <div class="login-card">
+        <div class="login-card-head">
+          <span class="login-card-badge">Acesso Corporativo</span>
+          <h1>Entrar no Painel</h1>
+          <p class="lead">Informe suas credenciais para gerenciar vistorias e aprovar a frota.</p>
+        </div>
+
+        <form class="login-form" id="frmLogin" method="POST" action="javascript:void(0);"
+          onsubmit="executarLogin(event); return false;" novalidate>
+          <div class="field">
+            <label for="loginUser">Usuário</label>
+            <div class="input-with-icon">
+              <svg class="i input-icon-left">
+                <use href="#i-user" />
+              </svg>
+              <input class="input" type="text" id="loginUser" autocomplete="off" autocapitalize="none"
+                spellcheck="false" value="" required placeholder="Usuário"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="loginPass">Senha de Acesso</label>
+            <div class="input-with-icon pwd">
+              <svg class="i input-icon-left">
+                <use href="#i-lock" />
+              </svg>
+              <input class="input" type="password" id="loginPass" autocomplete="off" required placeholder="••••••••"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
+              <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha"
+                aria-pressed="false" title="Mostrar/ocultar senha">
+                <svg class="i" id="eyeIcon">
+                  <use href="#i-eye" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="chkRemember">
+            <span>Manter conectado hoje (sessão expira em 12h)</span>
+          </label>
+
+          <div class="form-error" id="loginError" role="alert">
+            <svg class="i">
+              <use href="#i-alert" />
+            </svg>
+            <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
+          </div>
+
+          <button type="button" class="login-btn-submit" id="btnLogin" onclick="executarLogin(event)">
+            <span>Entrar no Painel</span>
+            <svg class="i" style="width:16px;height:16px;stroke-width:2.2">
+              <use href="#i-chev-right" />
+            </svg>
+          </button>
+
+          <div class="login-divider">Ou</div>
+
+          <a class="driver-companion-link" href="https://gomex-checklist.gomexassistencia2026.workers.dev/"
+            target="_blank" rel="noopener" title="Abrir aplicativo de check-list do motorista">
+            <div class="d-left">
+              <svg class="i">
+                <use href="#i-truck" />
+              </svg>
+              <span>É motorista? Abrir Vistoria</span>
+            </div>
+            <div class="d-right">
+              <span>Acessar</span>
+              <svg class="i" style="width:12px;height:12px;stroke-width:2">
+                <use href="#i-chev-right" />
+              </svg>
+            </div>
+          </a>
+        </form>
+      </div>
+    </main>
+  </div>
