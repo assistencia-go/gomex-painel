@@ -1,0 +1,49 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: VISUALIZADOR DE FOTO EM TELA CHEIA (LIGHTBOX DA GALERIA) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalVerFotoGaleria">
+    <div class="modal-card" style="max-width:860px;width:96%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="plate" id="lightboxFotoPlaca">ABC1234</span>
+          <strong style="font-size:15px;color:var(--ink)" id="lightboxFotoTitulo">Foto do Veículo</strong>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharLightboxFoto()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+      <div class="modal-body" style="padding:16px 20px;display:grid;gap:14px;max-height:80vh;overflow-y:auto">
+        <div
+          style="background:#050509;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;max-height:56vh">
+          <img id="lightboxFotoImg" src="" alt="Foto do veículo"
+            style="max-width:100%;max-height:56vh;object-fit:contain;display:block">
+        </div>
+        <div
+          style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:12px;background:var(--raised);border-radius:8px;font-size:12.5px"
+          class="edit-grid-2">
+          <div><span style="color:var(--ink-3);display:block;font-size:11px">Data da Foto</span><strong
+              id="lightboxFotoData">–</strong></div>
+          <div><span style="color:var(--ink-3);display:block;font-size:11px">Motorista</span><strong
+              id="lightboxFotoMotorista">–</strong></div>
+          <div><span style="color:var(--ink-3);display:block;font-size:11px">Categoria</span><strong
+              id="lightboxFotoCategoria">–</strong></div>
+          <div><span style="color:var(--ink-3);display:block;font-size:11px">Quilometragem</span><strong
+              id="lightboxFotoKm">–</strong></div>
+        </div>
+        <div id="lightboxFotoObsWrap"
+          style="padding:10px 14px;background:var(--panel-2);border-radius:8px;border:1px solid var(--line);font-size:13px;color:var(--ink)">
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn btn-ghost" id="btnExcluirFotoLightbox" style="color:var(--bad)"><svg class="i">
+            <use href="#i-trash" />
+          </svg><span>Excluir Foto</span></button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn" id="btnBaixarFotoLightbox"><svg class="i">
+              <use href="#i-download" />
+            </svg><span>Baixar Imagem</span></button>
+          <button type="button" class="btn btn-primary" onclick="fecharLightboxFoto()">Fechar</button>
+        </div>
+      </footer>
+    </div>
+  </div>
