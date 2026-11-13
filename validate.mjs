@@ -116,6 +116,18 @@ if (!fs.existsSync(indexPath)) {
       hasError = true;
     }
   }
+
+  // DIRETRIZ VISUAL OBRIGATÓRIA · POLÍTICA ESTRITA ZERO-EMOJI
+  // É terminantemente proibido o uso de emojis na interface da aplicação.
+  // A identidade corporativa da Gomex adota padrão sóbrio com ícones SVG nativos.
+  const emojiRegex = /\p{Extended_Pictographic}/gu;
+  const emojiMatches = indexContent.match(emojiRegex);
+  if (emojiMatches && emojiMatches.length > 0) {
+    logFail(`POLÍTICA ZERO-EMOJI VIOLADA: ${emojiMatches.length} emoji(s) detectado(s) no index.html: [${emojiMatches.slice(0, 10).join(' ')}]. O padrão corporativo da Gomex PROÍBE estritamente emojis em telas, botões, modais, mensagens e badges.`);
+    hasError = true;
+  } else {
+    logPass('Política Zero-Emoji 100% cumprida: Nenhum emoji presente no index.html (Design Corporativo Sóbrio).');
+  }
 }
 
 // ------------------------------------------------------------------------------
