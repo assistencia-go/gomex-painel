@@ -4,9 +4,36 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v1.7.0-stable` (12/11/2026)
-* **Tag Oficial no GitHub:** [`v1.7.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.7.0-stable)
+## 📌 Versão Atual: `v1.8.0-stable` (13/11/2026)
+* **Tag Oficial no GitHub:** [`v1.8.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.8.0-stable)
 * **Status:** Produção Estável (Cloudflare Workers)
+* **Principais Entregas:**
+  - **Módulo Oficial de Equipes & Supervisão da Frota:**
+    - Cadastro completo da estrutura corporativa das 3 equipes de vendas (35 vendedores oficiais):
+      1. `Equipe 101`: Supervisor 2 · Alisson Aparecido Madalena Bezerra (12 vendedores · Rotas 201 a 239).
+      2. `Equipe 102`: Supervisor 3 · Eliase Mendes de Aguiar (11 vendedores · Rotas 203 a 238).
+      3. `Equipe 103`: Supervisor 4 · Alisson Rodrigo Pereira (12 vendedores · Rotas 215 a 240).
+  - **Painel de Pendências de Vistoria por Equipe (Demanda Operacional Hendreo):**
+    - Identificação em tempo real de quem nunca realizou check-list (`🚨 NUNCA REALIZOU`) ou está com vistoria atrasada há mais de 30 dias (`🔴 VENCIDA`).
+    - Botão de filtro com 1 clique `[ 🚨 Pendentes ]` na aba Vendedores.
+  - **Cards Interativos das Equipes no Topo:**
+    - Visualização imediata do status de cada supervisor (total de vendedores, em dia e pendentes).
+    - Seleção rápida de equipe por clique no card com destaque visual.
+  - **Cobrança Rápida via WhatsApp:**
+    - Botão geral para copiar resumo de pendências de todas as equipes para o grupo de gestão.
+    - Botões específicos de cobrança por equipe e individuais por vendedor.
+  - **Filtro de Equipe na Tela Inicial de Vistorias:**
+    - Seletor `Equipe` adicionado ao lado de `Rota` na visão geral de laudos.
+  - **Auto-seleção por Login do Supervisor:**
+    - Supervisores logados (`alisson 101`, `eliase`, `alisson 103`) têm a visão filtrada automaticamente para sua respectiva equipe.
+
+---
+
+## 📌 Versões Anteriores
+
+### `v1.7.0-stable` (12/11/2026)
+* **Tag Oficial no GitHub:** [`v1.7.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.7.0-stable)
+* **Status:** Versão Arquivada
 * **Principais Entregas:**
   - **Controle Granular de Permissões de Edição & Gravação:** Permite que o administrador `gomex` decida quem pode alterar dados ou apenas consultar:
     1. `editar_vistorias`: Edição de parecer de gestor, alteração de checklists e inativação/reativação de laudos.
