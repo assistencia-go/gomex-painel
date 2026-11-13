@@ -1,0 +1,84 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: CADASTRAR / EDITAR VEÍCULO DA FROTA -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalCadastrarVeiculo">
+    <div class="modal-card" style="max-width:620px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:20px;height:20px">
+              <use href="#i-truck" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="cadVeiculoModalTitle">Cadastrar Veículo na Frota</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Adicione a placa e o motorista responsável para
+              controle e alertas</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCadastrarVeiculo()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+      <div class="modal-body" style="padding:20px;display:grid;gap:14px;max-height:76vh;overflow-y:auto">
+        <input type="hidden" id="cadVeiculoEditId">
+
+        <div class="gasto-form-grid-2">
+          <div>
+            <label for="cadInputPlaca" class="gasto-field-lbl" style="color:var(--accent-hi)">Placa do Veículo *</label>
+            <input type="text" id="cadInputPlaca" class="input" placeholder="Ex: ABC1234" maxlength="8"
+              style="height:38px;font-weight:800;text-transform:uppercase">
+          </div>
+          <div>
+            <label for="cadInputModelo" class="gasto-field-lbl">Modelo do Veículo *</label>
+            <input type="text" id="cadInputModelo" class="input" placeholder="Ex: Fiat Fiorino, Renault Master..."
+              style="height:38px;font-weight:600">
+          </div>
+        </div>
+
+        <div class="gasto-form-grid-2">
+          <div>
+            <label for="cadInputMotorista" class="gasto-field-lbl">Motorista Titular Responsável</label>
+            <input type="text" id="cadInputMotorista" list="datalistMotoristasFrota" class="input"
+              placeholder="Nome do motorista titular" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputRota" class="gasto-field-lbl">Rota Padrão do Veículo</label>
+            <input type="text" id="cadInputRota" class="input" placeholder="Ex: 217, 240, 222..." style="height:38px">
+          </div>
+        </div>
+
+        <div class="gasto-form-grid-3">
+          <div>
+            <label for="cadInputAno" class="gasto-field-lbl">Ano / Fabricação</label>
+            <input type="text" id="cadInputAno" class="input" placeholder="Ex: 2022/2023" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputKm" class="gasto-field-lbl">KM Inicial / Atual</label>
+            <input type="number" id="cadInputKm" class="input" placeholder="Ex: 85000" style="height:38px">
+          </div>
+          <div>
+            <label for="cadInputMetaOleo" class="gasto-field-lbl">Meta Troca Óleo (KM)</label>
+            <input type="number" id="cadInputMetaOleo" class="input" placeholder="Ex: 10000" value="10000"
+              style="height:38px">
+          </div>
+        </div>
+
+        <div>
+          <label for="cadInputObs" class="gasto-field-lbl">Observações / Chassi / Seguro</label>
+          <input type="text" id="cadInputObs" class="input" placeholder="Detalhes adicionais do veículo"
+            style="height:38px">
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalCadastrarVeiculo()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarCadVeiculo" onclick="salvarCadastroVeiculo()">
+          <svg class="i">
+            <use href="#i-check" />
+          </svg>
+          <span id="btnSalvarCadVeiculoLabel">Salvar Veículo</span>
+        </button>
+      </footer>
+    </div>
+  </div>
