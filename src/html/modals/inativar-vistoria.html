@@ -1,0 +1,61 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL DE INATIVAÇÃO DE VISTORIA -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalInativar">
+    <div class="modal-card" style="max-width:480px">
+      <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:34px;height:34px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
+            <svg class="i" style="stroke-width:2.2">
+              <use href="#i-archive" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="inativarModalTitle">Inativar Vistoria</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Organização do painel operacional</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalInativar()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+      <div class="modal-body" style="padding:20px;display:grid;gap:16px">
+        <div
+          style="padding:12px 14px;background:var(--bad-tint);border:1px solid rgba(248,120,120,0.28);border-radius:8px;font-size:13px;line-height:1.5;color:var(--bad)">
+          <strong>Atenção:</strong> A vistoria deixará de aparecer na lista de vistorias ativas, mantendo seu painel
+          organizado. Os dados permanecerão salvos na aba <em>"Inativas"</em>.
+        </div>
+
+        <div
+          style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px;background:var(--raised);border-radius:8px;font-size:12.5px">
+          <div><span style="color:var(--ink-3)">Veículo:</span> <strong id="inatVeicLabel">–</strong></div>
+          <div><span style="color:var(--ink-3)">Placa:</span> <strong id="inatPlacaLabel">–</strong></div>
+          <div><span style="color:var(--ink-3)">Motorista:</span> <strong id="inatMotoristaLabel">–</strong></div>
+          <div><span style="color:var(--ink-3)">Data:</span> <strong id="inatDataLabel">–</strong></div>
+        </div>
+
+        <div>
+          <label for="motivoInativacaoInput" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+            Motivo da inativação <span style="color:var(--bad)">*</span>
+          </label>
+          <textarea id="motivoInativacaoInput" class="input"
+            style="height:86px;padding:10px;resize:vertical;font-size:13px"
+            placeholder="Informe obrigatoriamente a justificativa (Ex: Vistoria lançada em duplicidade, teste de motorista, placa digitada errada...)"></textarea>
+          <div id="motivoInativacaoErro" style="color:var(--bad);font-size:12px;margin-top:4px;display:none">
+            Por favor, preencha o motivo da inativação antes de continuar.
+          </div>
+        </div>
+      </div>
+      <footer
+        style="padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:var(--panel-2)">
+        <button type="button" class="btn btn-ghost" onclick="fecharModalInativar()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnConfirmarInativacao"
+          style="background:#dc2626;border-color:#b91c1c" onclick="confirmarInativacao()">
+          <svg class="i">
+            <use href="#i-check" />
+          </svg> Confirmar Inativação
+        </button>
+      </footer>
+    </div>
+  </div>
