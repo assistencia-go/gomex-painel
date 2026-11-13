@@ -1,0 +1,73 @@
+        <!-- ========================================================================== -->
+        <!-- SEÇÃO: GESTÃO DE PERMISSÕES & USUÁRIOS (EXCLUSIVO ADMIN GOMEX) -->
+        <!-- ========================================================================== -->
+        <div id="sectionAdminPermissoesView" hidden>
+          <div class="admin-panel-head">
+            <div class="admin-panel-title-area">
+              <div class="admin-tag-exclusivo">
+                <svg class="i" style="width:14px;height:14px;stroke-width:2.5"><use href="#i-shield" /></svg>
+                <span>Área Restrita · Super Admin Gomex</span>
+              </div>
+              <h2 class="admin-view-title">Gestão de Usuários & Bloqueio de Telas</h2>
+              <p class="admin-view-subtitle">Controle de acesso granular (RBAC). Módulos desmarcados serão <strong>completamente bloqueados e ocultados</strong> do menu do respectivo usuário.</p>
+            </div>
+
+            <div class="admin-head-actions">
+              <button type="button" class="btn btn-outline" onclick="abrirModalNovoUsuario()" id="btnAdminNovoUsuario" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;">
+                <svg class="i"><use href="#i-user" /></svg>
+                <span>+ Novo Usuário</span>
+              </button>
+              <button type="button" class="btn btn-primary" onclick="salvarPermissoesUsuarios(true)" id="btnSalvarPermissoes" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
+                <svg class="i"><use href="#i-check" /></svg>
+                <span>Salvar Permissões na Nuvem</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Estatísticas do Controle de Acesso -->
+          <div class="summary-grid" style="margin-bottom:20px;">
+            <div class="stat">
+              <div class="stat-head">
+                <span class="stat-lbl">Usuários no Sistema</span>
+                <div class="stat-ico blue"><svg class="i"><use href="#i-user" /></svg></div>
+              </div>
+              <dd id="statAdminTotalUsers">0</dd>
+              <span class="stat-sub">Supervisores e Gerência</span>
+            </div>
+
+            <div class="stat">
+              <div class="stat-head">
+                <span class="stat-lbl">Módulos Gerenciáveis</span>
+                <div class="stat-ico green"><svg class="i"><use href="#i-badge-check" /></svg></div>
+              </div>
+              <dd>7 Telas</dd>
+              <span class="stat-sub">Vistorias, Ocorrências, Gastos, etc.</span>
+            </div>
+
+            <div class="stat">
+              <div class="stat-head">
+                <span class="stat-lbl">Status do Bloqueio</span>
+                <div class="stat-ico green"><svg class="i"><use href="#i-shield" /></svg></div>
+              </div>
+              <dd style="color:var(--ok);font-size:17px;font-weight:800;">Ativo & Sincronizado</dd>
+              <span class="stat-sub">Bloqueia visual e rotas diretas</span>
+            </div>
+          </div>
+
+          <!-- Filtro / Busca de Usuários -->
+          <div class="admin-filter-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="search-box" style="flex:1;min-width:240px;position:relative;">
+              <input type="text" id="adminSearchUserInput" class="input" placeholder="Buscar usuário por nome, login ou cargo..." oninput="filtrarUsuariosAdmin(this.value)" style="width:100%;height:38px;padding-left:36px;border-radius:8px;border:1px solid var(--line);">
+              <svg class="i" style="position:absolute;left:10px;top:10px;color:var(--ink-3);width:16px;height:16px;"><use href="#i-search" /></svg>
+            </div>
+            <div style="font-size:12.5px;color:var(--ink-2);" id="adminUsersCountInfo">Listando todos os usuários</div>
+          </div>
+
+          <!-- Container das Permissões por Usuário -->
+          <div id="adminUsersListContainer" class="admin-cards-container">
+            <!-- Gerado dinamicamente via renderAdminPermissoes() -->
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
