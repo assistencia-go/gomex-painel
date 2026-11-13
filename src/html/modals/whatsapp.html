@@ -1,0 +1,56 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: COPIAR MENSAGEM DE COBRANÇA PARA WHATSAPP -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalCopiarWhatsApp">
+    <div class="modal-card" style="max-width:540px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:34px;height:34px;border-radius:8px;background:rgba(37,211,102,0.18);color:#25d366;display:grid;place-items:center">
+            <svg class="i" style="width:18px;height:18px">
+              <use href="#i-whatsapp" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Copiar Mensagem para WhatsApp</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Texto pronto formatado para o Hendreo enviar ao
+              motorista</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCopiarWhatsApp()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <span style="font-size:12.5px;color:var(--ink);font-weight:700" id="wppDestinatarioInfo">Destinatário:
+            —</span>
+          <span class="plate" id="wppPlacaBadge">ABC1234</span>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:6px;display:block">
+            Mensagem Pronta para Copiar e Colar:
+          </label>
+          <div class="whatsapp-preview-box" id="wppTextoMensagem"></div>
+        </div>
+
+        <div style="font-size:11.5px;color:var(--ink-3);display:flex;align-items:center;gap:6px">
+          <svg class="i" style="width:14px;height:14px;color:#25d366">
+            <use href="#i-check" />
+          </svg>
+          <span>Clique no botão abaixo para copiar o texto pronto para colar no WhatsApp.</span>
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalCopiarWhatsApp()">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnCopiarTextoWpp" onclick="executarCopiaTextoWhatsApp()"
+          style="background:#25d366;border-color:#20ba5a;color:#0b141a;font-weight:800">
+          <svg class="i" style="width:15px;height:15px">
+            <use href="#i-copy" />
+          </svg>
+          <span id="btnCopiarTextoWppLabel">Copiar Mensagem</span>
+        </button>
+      </footer>
+    </div>
+  </div>
