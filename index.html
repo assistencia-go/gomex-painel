@@ -7122,6 +7122,14 @@
                 <option value="Outro">Outros modelos</option>
               </select>
 
+              <label class="sr-only" for="filtroEquipeVistoria">Equipe</label>
+              <select class="select" id="filtroEquipeVistoria" style="font-weight:600">
+                <option value="">Todas as equipes</option>
+                <option value="101">Eq. 101 · Alisson Bezerra</option>
+                <option value="102">Eq. 102 · Eliase Mendes</option>
+                <option value="103">Eq. 103 · Alisson Pereira</option>
+              </select>
+
               <label class="sr-only" for="filtroRota">Rota</label>
               <select class="select" id="filtroRota">
                 <option value="">Todas as rotas</option>
@@ -7438,23 +7446,103 @@
         <!-- VISÃO 3: VENDEDORES & CUSTÓDIA DA FROTA -->
         <!-- ====================================================================== -->
         <div id="sectionVendedoresView" hidden>
-          <!-- Resumo de Vendedores -->
+          <!-- CARDS DAS 3 EQUIPES OFICIAIS & SUPERVISÃO -->
+          <div class="equipes-overview-wrap" style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:0.5px">Supervisão & Equipes Gomex</span>
+                <span class="badge-count" style="background:var(--accent-tint);color:var(--accent-hi);font-weight:700;padding:2px 8px;border-radius:12px;font-size:11px">3 Equipes · 35 Vendedores Cadastrados</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <button type="button" class="btn btn-ghost" id="btnCopiarWhatsGeral" onclick="copiarCobrancaWhatsAppGeral()"
+                  style="font-size:12px;height:32px;color:var(--ok);border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);font-weight:700"
+                  title="Copiar lista consolidada de quem não fez vistoria para o WhatsApp da supervisão">
+                  <svg class="i" style="width:14px;height:14px"><use href="#i-share" /></svg>
+                  <span>Cobrar Todos os Pendentes (WhatsApp)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards das 3 Equipes -->
+            <div class="equipes-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px">
+              <!-- Equipe 101 -->
+              <div class="equipe-card" id="cardEq101" onclick="selecionarEquipeFiltro('101')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(79,70,229,0.15);color:#818cf8;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 101</span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 201 a 239</span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Bezerra</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 2 · 12 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
+                  <span>Em dia: <strong id="eq101EmDia" style="color:var(--ok)">0</strong></span>
+                  <span>Pendentes: <strong id="eq101Pendentes" style="color:var(--bad)">0</strong></span>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('101')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                </div>
+              </div>
+
+              <!-- Equipe 102 -->
+              <div class="equipe-card" id="cardEq102" onclick="selecionarEquipeFiltro('102')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(14,165,233,0.15);color:#38bdf8;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 102</span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 203 a 238</span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Eliase Mendes</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 3 · 11 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
+                  <span>Em dia: <strong id="eq102EmDia" style="color:var(--ok)">0</strong></span>
+                  <span>Pendentes: <strong id="eq102Pendentes" style="color:var(--bad)">0</strong></span>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('102')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                </div>
+              </div>
+
+              <!-- Equipe 103 -->
+              <div class="equipe-card" id="cardEq103" onclick="selecionarEquipeFiltro('103')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 103</span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 215 a 240</span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Pereira</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 4 · 12 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
+                  <span>Em dia: <strong id="eq103EmDia" style="color:var(--ok)">0</strong></span>
+                  <span>Pendentes: <strong id="eq103Pendentes" style="color:var(--bad)">0</strong></span>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('103')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumo de Métricas de Vendedores -->
           <section class="summary" aria-label="Resumo dos vendedores">
-            <dl class="summary-grid">
+            <dl class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))">
               <div class="stat">
                 <div class="stat-head">
-                  <span class="stat-lbl">Vendedores Registrados</span>
+                  <span class="stat-lbl">Vendedores Oficiais</span>
                   <div class="stat-ico blue"><svg class="i">
                       <use href="#i-user" />
                     </svg></div>
                 </div>
-                <dd id="vendStatTotal">0</dd>
-                <span class="stat-sub">Motoristas na base</span>
+                <dd id="vendStatTotal">35</dd>
+                <span class="stat-sub">3 equipes cadastradas</span>
               </div>
 
               <div class="stat">
                 <div class="stat-head">
-                  <span class="stat-lbl">Vistoria Mensal em Dia</span>
+                  <span class="stat-lbl">🚨 Pendentes de Vistoria</span>
+                  <div class="stat-ico red"><svg class="i">
+                      <use href="#i-alert" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatPendentes" style="color:var(--bad);font-weight:800">0</dd>
+                <span class="stat-sub">Sem vistoria ou atrasadas</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Vistoria em Dia</span>
                   <div class="stat-ico green"><svg class="i">
                       <use href="#i-badge-check" />
                     </svg></div>
@@ -7465,24 +7553,13 @@
 
               <div class="stat">
                 <div class="stat-head">
-                  <span class="stat-lbl">Próxima de Vencer (≤ 7d)</span>
+                  <span class="stat-lbl">Próxima de Vencer</span>
                   <div class="stat-ico amber"><svg class="i">
                       <use href="#i-clock" />
                     </svg></div>
                 </div>
                 <dd id="vendStatAtencao" style="color:var(--warn)">0</dd>
-                <span class="stat-sub">Aviso: 23 a 30 dias da última</span>
-              </div>
-
-              <div class="stat">
-                <div class="stat-head">
-                  <span class="stat-lbl">Mensal Vencida (> 30d)</span>
-                  <div class="stat-ico red"><svg class="i">
-                      <use href="#i-alert" />
-                    </svg></div>
-                </div>
-                <dd id="vendStatCritico" style="color:var(--bad)">0</dd>
-                <span class="stat-sub">Passou de 1 mês sem vistoria</span>
+                <span class="stat-sub">Aviso: 23 a 30 dias</span>
               </div>
 
               <div class="stat">
@@ -7498,29 +7575,41 @@
             </dl>
           </section>
 
-          <!-- Painel de Vendedores -->
+          <!-- Painel de Vendedores e Filtros -->
           <section class="panel">
             <div class="panel-head" style="gap:14px;flex-wrap:wrap">
               <div>
-                <h2>Gestão de Vendedores</h2>
-                <p>Monitore a pontualidade dos check-lists e o histórico de avarias na troca de veículos.</p>
+                <h2>Gestão de Vendedores & Equipes</h2>
+                <p>Acompanhe a conformidade de vistorias por supervisor e envie cobranças rápidas.</p>
               </div>
 
               <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <div class="search-wrap" style="width:260px">
+                <div class="search-wrap" style="width:230px">
                   <svg class="i">
                     <use href="#i-search" />
                   </svg>
                   <input type="text" class="input input-search" id="filtroVendBusca"
-                    placeholder="Buscar vendedor ou placa...">
+                    placeholder="Buscar vendedor, rota ou placa...">
                 </div>
 
-                <!-- Botões de Filtro -->
+                <!-- Seletor de Equipe -->
+                <select class="select" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)" style="height:32px;font-size:12px;font-weight:700">
+                  <option value="todos">Todas as Equipes (35)</option>
+                  <option value="101">Equipe 101 · Alisson Bezerra (12)</option>
+                  <option value="102">Equipe 102 · Eliase Mendes (11)</option>
+                  <option value="103">Equipe 103 · Alisson Pereira (12)</option>
+                </select>
+
+                <!-- Botões de Filtro de Situação -->
                 <div class="btn-group">
                   <button type="button" class="btn btn-ghost" id="btnFilterVendAll"
                     onclick="filtrarTabelaVendedores('todos')"
                     style="font-size:12px;height:32px;background:var(--accent-tint);color:var(--accent-hi);font-weight:700">
                     Todos
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btnFilterVendPendentes"
+                    onclick="filtrarTabelaVendedores('pendentes')" style="font-size:12px;height:32px;color:var(--bad);font-weight:700">
+                    🚨 Pendentes
                   </button>
                   <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia"
                     onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px">
@@ -7530,10 +7619,6 @@
                     onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px">
                     Atenção
                   </button>
-                  <button type="button" class="btn btn-ghost" id="btnFilterVendCritico"
-                    onclick="filtrarTabelaVendedores('critico')" style="font-size:12px;height:32px">
-                    Atrasados
-                  </button>
                 </div>
 
                 <button type="button" class="btn btn-ghost" onclick="abrirModalCustodia()"
@@ -7541,7 +7626,7 @@
                   <svg class="i" style="width:14px;height:14px">
                     <use href="#i-history" />
                   </svg>
-                  <span>Linha do Tempo de Trocas</span>
+                  <span>Linha de Trocas</span>
                 </button>
               </div>
             </div>
@@ -7551,13 +7636,12 @@
                 <thead>
                   <tr>
                     <th>Vendedor / Motorista</th>
+                    <th style="width:140px">Equipe & Rota</th>
                     <th style="width:160px">Veículo Atual</th>
+                    <th style="width:160px">Situação da Vistoria</th>
                     <th style="width:140px">Última Vistoria</th>
-                    <th style="width:160px">Pontualidade</th>
-                    <th style="width:110px">Quilometragem</th>
-                    <th style="width:120px">Carroceria</th>
-                    <th style="width:110px">Situação</th>
-                    <th style="width:190px;text-align:right">Ações</th>
+                    <th style="width:110px">KM Atual</th>
+                    <th style="width:230px;text-align:right">Ações Rápidas</th>
                   </tr>
                 </thead>
                 <tbody id="vendTableBody">
@@ -10469,7 +10553,9 @@
         decisaoAtual: null,
         visaoAtual: 'vistorias',
         filtroVend: 'todos',
+        filtroVendEquipe: 'todos',
         filtroVendBusca: '',
+        equipe: '',
         currentUser: ''
       };
       window.state = state;
@@ -10933,6 +11019,17 @@
         if ($('userNameLabel')) $('userNameLabel').textContent = displayName || state.currentUser;
         if ($('login')) $('login').hidden = true;
         if ($('app')) $('app').hidden = false;
+
+        // Auto-seleção da equipe do supervisor logado
+        if (state.currentUser.includes('101')) {
+          state.filtroVendEquipe = '101';
+        } else if (state.currentUser.includes('102') || state.currentUser.includes('elias')) {
+          state.filtroVendEquipe = '102';
+        } else if (state.currentUser.includes('103')) {
+          state.filtroVendEquipe = '103';
+        } else {
+          state.filtroVendEquipe = 'todos';
+        }
 
         // Aplica bloqueios/liberações da interface conforme as permissões do usuário
         aplicarPermissoesUi();
@@ -11770,6 +11867,11 @@
             const hayL = hay.toLowerCase();
             if (!hayL.includes(q) && !(qn && norm(hayL).includes(qn))) return false;
           }
+          if (state.equipe) {
+            const rDigits = String(it.rota || '').replace(/\D/g, '');
+            const eqItem = EQUIPES_VENDEDORES_PADRAO.find(x => x.rota === rDigits);
+            if (!eqItem || eqItem.equipe !== state.equipe) return false;
+          }
           if (state.rota === '__sem_rota__') { if (it.rota && String(it.rota).trim()) return false; }
           else if (state.rota && String(it.rota || '').trim() !== state.rota) return false;
           if (state.veic === 'Outro') { if (known.includes(it.veiculo)) return false; }
@@ -11795,6 +11897,12 @@
 
       $('filtroBusca').addEventListener('input', e => { state.q = e.target.value; onFilterChange(); });
       $('filtroVeiculo').addEventListener('change', e => { state.veic = e.target.value; onFilterChange(); });
+      if ($('filtroEquipeVistoria')) {
+        $('filtroEquipeVistoria').addEventListener('change', e => {
+          state.equipe = e.target.value;
+          onFilterChange();
+        });
+      }
       $('filtroRota').addEventListener('change', e => { state.rota = e.target.value; onFilterChange(); });
       $('filtroPeriodo').addEventListener('change', e => { state.per = e.target.value; onFilterChange(); });
       $('btnClearFilters').addEventListener('click', clearFilters);
@@ -11822,6 +11930,8 @@
         $('btnFilterAlerts').textContent = 'Filtrar Alertas';
         $('btnFilterAlerts').style.background = 'rgba(255,255,255,0.15)';
         $('filtroBusca').value = ''; $('filtroVeiculo').value = ''; $('filtroPeriodo').value = ''; $('filtroRota').value = '';
+        if ($('filtroEquipeVistoria')) $('filtroEquipeVistoria').value = '';
+        state.equipe = '';
         onFilterChange();
       }
 
@@ -13581,425 +13691,825 @@
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
       }
 
-      function getVendedoresData() {
-        const map = new Map();
-        const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
+      // ==============================================================================
+// GOMEX DISTRIBUIDORA · MÓDULO OFICIAL DE EQUIPES & GESTÃO DE VENDEDORES
+// ==============================================================================
 
-        state.all.forEach(it => {
-          if (it.status === 'inativo') return;
-          const rawNome = (it.motorista || '').trim();
-          if (!rawNome) return;
-          const nomeKey = rawNome.toLowerCase();
+const EQUIPES_INFO = {
+  '101': {
+    id: '101',
+    codigo: '101',
+    nome: 'Equipe 101 · Alisson Bezerra',
+    nomeCurto: 'Equipe 101',
+    supervisor: 'Alisson Aparecido Madalena Bezerra',
+    supervisorCurto: 'Alisson Bezerra',
+    cargo: 'Supervisor 2',
+    supLogin: 'alisson 101',
+    cor: '#4f46e5',
+    totalVendedores: 12
+  },
+  '102': {
+    id: '102',
+    codigo: '102',
+    nome: 'Equipe 102 · Eliase Mendes',
+    nomeCurto: 'Equipe 102',
+    supervisor: 'Eliase Mendes de Aguiar',
+    supervisorCurto: 'Eliase Mendes',
+    cargo: 'Supervisor 3',
+    supLogin: 'eliase',
+    cor: '#0ea5e9',
+    totalVendedores: 11
+  },
+  '103': {
+    id: '103',
+    codigo: '103',
+    nome: 'Equipe 103 · Alisson Pereira',
+    nomeCurto: 'Equipe 103',
+    supervisor: 'Alisson Rodrigo Pereira',
+    supervisorCurto: 'Alisson Pereira',
+    cargo: 'Supervisor 4',
+    supLogin: 'alisson 103',
+    cor: '#10b981',
+    totalVendedores: 12
+  }
+};
 
-          if (!map.has(nomeKey)) {
-            map.set(nomeKey, {
-              nome: rawNome,
-              vistorias: [],
-              veiculosSet: new Set()
-            });
-          }
+const EQUIPES_VENDEDORES_PADRAO = [
+  // EQUIPE 101 - SUPERVISOR 2: ALISSON APARECIDO MADALENA BEZERRA (12)
+  { rota: '201', nome: 'Eduardo Machado da Silva', equipe: '101' },
+  { rota: '202', nome: 'Alisson Felipe Machado dos Santos', equipe: '101' },
+  { rota: '204', nome: 'Natan Felipe Italiano Momesso', equipe: '101' },
+  { rota: '205', nome: 'Fabio Negrisoli', equipe: '101' },
+  { rota: '206', nome: 'Wesley Honorato dos Santos', equipe: '101' },
+  { rota: '207', nome: 'Anderson Luis de Souza', equipe: '101' },
+  { rota: '209', nome: 'Willians Ribeiro Coli', equipe: '101' },
+  { rota: '210', nome: 'Arthur Natan Valeri', equipe: '101' },
+  { rota: '212', nome: 'Charles de Souza Morais', equipe: '101' },
+  { rota: '213', nome: 'Fernando Oliva', equipe: '101' },
+  { rota: '214', nome: 'Welder Wester da Silva Santos', equipe: '101' },
+  { rota: '239', nome: 'Maycon Crespi da Silva Oliveira', equipe: '101' },
 
-          const rec = map.get(nomeKey);
-          rec.vistorias.push(it);
-          if (it.placa) rec.veiculosSet.add(it.placa.toUpperCase());
+  // EQUIPE 102 - SUPERVISOR 3: ELIASE MENDES DE AGUIAR (11)
+  { rota: '203', nome: 'Wesley Aparecido da Rosa', equipe: '102' },
+  { rota: '211', nome: 'Magno Cristiano de Lima', equipe: '102' },
+  { rota: '217', nome: 'Jakson Hahn', equipe: '102' },
+  { rota: '218', nome: 'Mairon de Arruda', equipe: '102' },
+  { rota: '221', nome: 'Giovaner Marcos Fontana', equipe: '102' },
+  { rota: '225', nome: 'Alex Francisco Puchalski', equipe: '102' },
+  { rota: '227', nome: 'Roberto Luan Barrocal Morais', equipe: '102' },
+  { rota: '230', nome: 'Eduardo Luiz de Bastiani', equipe: '102' },
+  { rota: '235', nome: 'Eliton Patrique Kasinei', equipe: '102' },
+  { rota: '236', nome: 'Leonardo Cesar Marques', equipe: '102' },
+  { rota: '238', nome: 'Felipe Tenorio Miskiw', equipe: '102' },
+
+  // EQUIPE 103 - SUPERVISOR 4: ALISSON RODRIGO PEREIRA (12)
+  { rota: '215', nome: 'Antonio Amador Ferrante', equipe: '103' },
+  { rota: '216', nome: 'Andre Stedile Mendes', equipe: '103' },
+  { rota: '219', nome: 'Eleandro Linck', equipe: '103' },
+  { rota: '220', nome: 'Tiago Zanatta', equipe: '103' },
+  { rota: '222', nome: 'Emerson Dal Pra', equipe: '103' },
+  { rota: '224', nome: 'Gabriel Vinicius Dick', equipe: '103' },
+  { rota: '226', nome: 'Rodrigo Antunes', equipe: '103' },
+  { rota: '228', nome: 'Marcelo Ramos Mikoski', equipe: '103' },
+  { rota: '229', nome: 'Leonardo Cesar Alvarenga Weirich', equipe: '103' },
+  { rota: '231', nome: 'Bruno da Conceicao Moises', equipe: '103' },
+  { rota: '233', nome: 'Gustavo Girardi Borges', equipe: '103' },
+  { rota: '240', nome: 'Jefferson Leandro Steche', equipe: '103' }
+];
+
+function normalizarTextoBusca(s) {
+  return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+}
+
+function getEquipeByRota(rota) {
+  const rDigits = String(rota || '').replace(/\D/g, '');
+  if (!rDigits) return '';
+  const item = EQUIPES_VENDEDORES_PADRAO.find(x => x.rota === rDigits);
+  return item ? item.equipe : '';
+}
+window.getEquipeByRota = getEquipeByRota;
+
+function getEquipeInfo(eqId) {
+  return EQUIPES_INFO[String(eqId)] || null;
+}
+window.getEquipeInfo = getEquipeInfo;
+
+function getVendedoresData() {
+  const masterList = EQUIPES_VENDEDORES_PADRAO.map(v => {
+    const eq = EQUIPES_INFO[v.equipe] || { supervisor: 'Não informado', supervisorCurto: 'Supervisor' };
+    return {
+      rota: v.rota,
+      nome: v.nome,
+      equipe: v.equipe,
+      supervisor: eq.supervisor,
+      supervisorCurto: eq.supervisorCurto,
+      isOficial: true,
+      vistorias: [],
+      veiculosSet: new Set()
+    };
+  });
+
+  const avulsosMap = new Map();
+
+  (state.all || []).forEach(it => {
+    if (it.status === 'inativo') return;
+    const rawNome = (it.motorista || '').trim();
+    const rotaDigits = String(it.rota || '').replace(/\D/g, '');
+
+    let matched = null;
+    if (rotaDigits) {
+      matched = masterList.find(x => x.rota === rotaDigits);
+    }
+    if (!matched && rawNome) {
+      const nomNorm = normalizarTextoBusca(rawNome);
+      matched = masterList.find(x => {
+        const vNom = normalizarTextoBusca(x.nome);
+        return vNom === nomNorm || vNom.includes(nomNorm) || nomNorm.includes(vNom);
+      });
+    }
+
+    if (matched) {
+      matched.vistorias.push(it);
+      if (it.placa) matched.veiculosSet.add(it.placa.toUpperCase().trim());
+    } else if (rawNome) {
+      const key = rawNome.toLowerCase();
+      if (!avulsosMap.has(key)) {
+        avulsosMap.set(key, {
+          rota: rotaDigits || String(it.rota || '—'),
+          nome: rawNome,
+          equipe: 'outros',
+          supervisor: 'Sem equipe fixa',
+          supervisorCurto: 'Geral',
+          isOficial: false,
+          vistorias: [],
+          veiculosSet: new Set()
         });
+      }
+      const rec = avulsosMap.get(key);
+      rec.vistorias.push(it);
+      if (it.placa) rec.veiculosSet.add(it.placa.toUpperCase().trim());
+    }
+  });
 
-        const list = [];
+  const todos = [...masterList, ...Array.from(avulsosMap.values())];
 
-        map.forEach(rec => {
-          rec.vistorias.sort((a, b) => {
-            const da = (a.data || '') + ' ' + (a.hora || '');
-            const db = (b.data || '') + ' ' + (b.hora || '');
-            if (db !== da) return db.localeCompare(da);
-            return (Number(b.id) || 0) - (Number(a.id) || 0);
-          });
+  const resultado = todos.map(rec => {
+    rec.vistorias.sort((a, b) => {
+      const da = (a.data || '') + ' ' + (a.hora || '');
+      const db = (b.data || '') + ' ' + (b.hora || '');
+      if (db !== da) return db.localeCompare(da);
+      return (Number(b.id) || 0) - (Number(a.id) || 0);
+    });
 
-          const maisRecente = rec.vistorias[0];
-          const rotaRecente = rec.vistorias.find(v => v.rota && v.rota.trim())?.rota || '';
-          const cicloMensal = maisRecente && maisRecente.data ? calcularCicloVistoriaMensal(maisRecente.data) : null;
-          const diasSemVistoria = cicloMensal ? cicloMensal.diasDecorridos : 999;
+    const totalVistorias = rec.vistorias.length;
+    const maisRecente = totalVistorias > 0 ? rec.vistorias[0] : null;
 
-          let statusPontual = 'critico';
-          if (cicloMensal) {
-            if (cicloMensal.status === 'em_dia') statusPontual = 'em_dia';
-            else if (cicloMensal.status === 'proxima') statusPontual = 'atencao';
-            else statusPontual = 'critico';
-          }
+    let statusPontual = 'sem_vistoria';
+    let cicloMensal = null;
+    let diasSemVistoria = 9999;
 
-          list.push({
-            nome: rec.nome,
-            rota: rotaRecente,
-            totalVistorias: rec.vistorias.length,
-            vistorias: rec.vistorias,
-            veiculoAtual: maisRecente ? (maisRecente.placa || '').toUpperCase() : '—',
-            modeloAtual: maisRecente ? (maisRecente.veiculo || '—') : '—',
-            dataUltima: maisRecente ? maisRecente.data : null,
-            horaUltima: maisRecente ? maisRecente.hora : null,
-            tipoUltimo: maisRecente ? maisRecente.tipo : '—',
-            diasSemVistoria,
-            cicloMensal,
-            statusPontual,
-            kmAtual: maisRecente ? maisRecente.km : null,
-            avariasRecentes: maisRecente ? avariasOf(maisRecente).length : 0,
-            pneuAlerta: maisRecente ? pneuAlert(maisRecente) : false,
-            liberacaoAtual: maisRecente ? maisRecente.liberacao : 'Liberado',
-            todosVeiculos: Array.from(rec.veiculosSet)
-          });
+    if (maisRecente && maisRecente.data) {
+      cicloMensal = calcularCicloVistoriaMensal(maisRecente.data);
+      if (cicloMensal) {
+        diasSemVistoria = cicloMensal.diasDecorridos;
+        if (cicloMensal.status === 'em_dia') statusPontual = 'em_dia';
+        else if (cicloMensal.status === 'proxima') statusPontual = 'atencao';
+        else statusPontual = 'critico';
+      } else {
+        statusPontual = 'critico';
+      }
+    }
+
+    const isPendente = statusPontual === 'sem_vistoria' || statusPontual === 'critico';
+
+    return {
+      rota: rec.rota,
+      nome: rec.nome,
+      equipe: rec.equipe,
+      supervisor: rec.supervisor,
+      supervisorCurto: rec.supervisorCurto,
+      isOficial: rec.isOficial,
+      totalVistorias,
+      vistorias: rec.vistorias,
+      veiculoAtual: maisRecente ? (maisRecente.placa || '—').toUpperCase() : '—',
+      modeloAtual: maisRecente ? (maisRecente.veiculo || '—') : '—',
+      dataUltima: maisRecente ? maisRecente.data : null,
+      horaUltima: maisRecente ? maisRecente.hora : null,
+      tipoUltimo: maisRecente ? maisRecente.tipo : '—',
+      diasSemVistoria,
+      cicloMensal,
+      statusPontual,
+      isPendente,
+      kmAtual: maisRecente ? maisRecente.km : null,
+      avariasRecentes: maisRecente ? avariasOf(maisRecente).length : 0,
+      pneuAlerta: maisRecente ? pneuAlert(maisRecente) : false,
+      liberacaoAtual: maisRecente ? (maisRecente.liberacao || 'Liberado') : 'Sem vistoria',
+      todosVeiculos: Array.from(rec.veiculosSet)
+    };
+  });
+
+  // Ordenação prioritária: Pendentes e sem vistoria primeiro, depois por atraso de dias
+  resultado.sort((a, b) => {
+    if (a.isPendente !== b.isPendente) return a.isPendente ? -1 : 1;
+    if (a.diasSemVistoria !== b.diasSemVistoria) return b.diasSemVistoria - a.diasSemVistoria;
+    return a.rota.localeCompare(b.rota, 'pt-BR', { numeric: true });
+  });
+
+  return resultado;
+}
+window.getVendedoresData = getVendedoresData;
+
+function renderVendedoresView() {
+  const tbody = $('vendTableBody');
+  if (!tbody) return;
+
+  const todos = getVendedoresData();
+
+  // 1. Atualizar métricas dos cards de cada equipe
+  ['101', '102', '103'].forEach(eqId => {
+    const daEquipe = todos.filter(v => v.equipe === eqId);
+    const emDia = daEquipe.filter(v => v.statusPontual === 'em_dia').length;
+    const pendentes = daEquipe.filter(v => v.isPendente).length;
+
+    const elEmDia = $(`eq${eqId}EmDia`);
+    const elPend = $(`eq${eqId}Pendentes`);
+    const card = $(`cardEq${eqId}`);
+
+    if (elEmDia) elEmDia.textContent = emDia;
+    if (elPend) elPend.textContent = pendentes;
+
+    if (card) {
+      const isSelected = state.filtroVendEquipe === eqId;
+      card.style.borderColor = isSelected ? 'var(--accent-hi)' : 'var(--line)';
+      card.style.background = isSelected ? 'var(--panel-2)' : 'var(--panel)';
+    }
+  });
+
+  // 2. Atualizar métricas do summary geral
+  const totalOficiais = todos.filter(v => v.isOficial).length;
+  const totalPendentes = todos.filter(v => v.isPendente).length;
+  const totalEmDia = todos.filter(v => v.statusPontual === 'em_dia').length;
+  const totalAtencao = todos.filter(v => v.statusPontual === 'atencao').length;
+  const carrosSet = new Set(todos.map(v => v.veiculoAtual).filter(p => p && p !== '—'));
+
+  if ($('vendStatTotal')) $('vendStatTotal').textContent = totalOficiais || todos.length;
+  if ($('vendStatPendentes')) $('vendStatPendentes').textContent = totalPendentes;
+  if ($('vendStatEmDia')) $('vendStatEmDia').textContent = totalEmDia;
+  if ($('vendStatAtencao')) $('vendStatAtencao').textContent = totalAtencao;
+  if ($('vendStatCarros')) $('vendStatCarros').textContent = carrosSet.size;
+
+  // 3. Atualizar estado visual do seletor de equipe
+  if ($('filtroVendEquipe') && $('filtroVendEquipe').value !== (state.filtroVendEquipe || 'todos')) {
+    $('filtroVendEquipe').value = state.filtroVendEquipe || 'todos';
+  }
+
+  // 4. Filtragem
+  const q = (state.filtroVendBusca || '').toLowerCase().trim();
+  const fEquipe = state.filtroVendEquipe || 'todos';
+  const fStatus = state.filtroVend || 'todos';
+
+  const filtrados = todos.filter(v => {
+    // Filtro de Equipe
+    if (fEquipe !== 'todos' && v.equipe !== fEquipe) return false;
+
+    // Filtro de Status
+    if (fStatus === 'pendentes') {
+      if (!v.isPendente) return false;
+    } else if (fStatus !== 'todos') {
+      if (v.statusPontual !== fStatus) return false;
+    }
+
+    // Filtro de Busca Textual
+    if (q) {
+      const hay = (v.nome + ' ' + v.veiculoAtual + ' ' + v.modeloAtual + ' ' + (v.rota || '') + ' ' + (v.supervisor || '')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+
+    return true;
+  });
+
+  if (!filtrados.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">' +
+      '<div class="empty-icon-wrap"><svg class="i"><use href="#i-user"/></svg></div>' +
+      '<h2>Nenhum vendedor encontrado para este filtro</h2>' +
+      '<p>Ajuste os filtros de equipe ou status para visualizar os demais vendedores.</p>' +
+      '</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtrados.map(v => {
+    const iniciais = getIniciaisNome(v.nome);
+    const cm = v.cicloMensal;
+    let pontualBadge = '';
+
+    if (v.statusPontual === 'sem_vistoria') {
+      pontualBadge = '<span class="badge-pontual critico" style="background:rgba(239,68,68,0.2);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);font-weight:800">' + icon('alert') + '🚨 NUNCA REALIZOU</span>';
+    } else if (v.statusPontual === 'critico') {
+      pontualBadge = '<span class="badge-pontual critico" style="background:rgba(239,68,68,0.15);color:#fca5a5;font-weight:700">' + icon('alert') + (cm ? 'Vencida (' + cm.diasDecorridos + 'd)' : 'Vistoria Vencida') + '</span>';
+    } else if (v.statusPontual === 'atencao') {
+      pontualBadge = '<span class="badge-pontual atencao" style="background:rgba(245,158,11,0.15);color:#fcd34d;font-weight:700">' + icon('clock') + (cm ? 'Vencendo em ' + cm.diasRestantes + 'd' : 'Próxima de vencer') + '</span>';
+    } else {
+      pontualBadge = '<span class="badge-pontual em-dia" style="background:rgba(16,185,129,0.15);color:#6ee7b7;font-weight:700">' + icon('check') + (cm ? 'Em dia (' + cm.diasDecorridos + 'd)' : 'Em dia') + '</span>';
+    }
+
+    let equipeBadge = '';
+    if (v.equipe === '101') {
+      equipeBadge = '<span class="badge" style="background:rgba(79,70,229,0.15);color:#818cf8;font-weight:700;font-size:10px;padding:2px 6px;border-radius:4px">Eq. 101</span>';
+    } else if (v.equipe === '102') {
+      equipeBadge = '<span class="badge" style="background:rgba(14,165,233,0.15);color:#38bdf8;font-weight:700;font-size:10px;padding:2px 6px;border-radius:4px">Eq. 102</span>';
+    } else if (v.equipe === '103') {
+      equipeBadge = '<span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;font-weight:700;font-size:10px;padding:2px 6px;border-radius:4px">Eq. 103</span>';
+    } else {
+      equipeBadge = '<span class="badge" style="background:rgba(255,255,255,0.08);color:var(--ink-3);font-size:10px;padding:2px 6px;border-radius:4px">Avulso</span>';
+    }
+
+    return '<tr style="' + (v.isPendente ? 'background:rgba(239,68,68,0.03)' : '') + '">' +
+      '<td>' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      '<div class="vend-avatar" style="' + (v.isPendente ? 'background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)' : '') + '">' + esc(iniciais) + '</div>' +
+      '<div>' +
+      '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
+      '<span style="font-size:11px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria no total' : 'vistorias no total') + '</span>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
+      '</td>' +
+      '<td>' +
+      '<div style="display:grid;gap:2px">' +
+      '<div style="display:flex;align-items:center;gap:6px">' +
+      equipeBadge +
+      '<span class="badge-rota" style="font-size:11px;font-weight:700">Rota ' + esc(v.rota) + '</span>' +
+      '</div>' +
+      '<span style="font-size:10.5px;color:var(--ink-3)">' + esc(v.supervisorCurto) + '</span>' +
+      '</div>' +
+      '</td>' +
+      '<td>' +
+      (v.veiculoAtual !== '—'
+        ? '<div class="stack">' +
+        '<button type="button" class="plate" data-act="history" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirHistoricoVeiculo(this.dataset.placa)" title="Ver histórico deste veículo">' + esc(v.veiculoAtual) + '</button>' +
+        '<span class="t2">' + esc(v.modeloAtual) + '</span>' +
+        '</div>'
+        : '<span class="muted">Sem carro atribuído</span>'
+      ) +
+      '</td>' +
+      '<td>' + pontualBadge + '</td>' +
+      '<td>' +
+      (v.dataUltima
+        ? '<span class="t1">' + formatarData(v.dataUltima) + '</span>' +
+        '<span class="t2">' + esc(v.horaUltima || '--:--') + ' (' + esc(v.tipoUltimo) + ')</span>'
+        : '<span class="muted" style="color:var(--bad);font-weight:600">Nenhum registro</span>'
+      ) +
+      '</td>' +
+      '<td>' + (v.kmAtual ? '<span class="badge-km">' + fmtKm(v.kmAtual) + '</span>' : '<span class="muted">—</span>') + '</td>' +
+      '<td style="text-align:right">' +
+      '<div style="display:inline-flex;align-items:center;gap:6px">' +
+      '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)" data-vend="' + esc(v.nome) + '" onclick="abrirModalVendedor(this.dataset.vend)" title="Ver todas as vistorias deste vendedor">' +
+      icon('user') + ' <span>Vistorias</span>' +
+      '</button>' +
+      (v.isPendente
+        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" onclick="copiarCobrancaWhatsAppVendedor(\'' + esc(v.rota) + '\')" title="Copiar mensagem de cobrança pronta para o WhatsApp deste vendedor">' +
+        '<svg class="i" style="width:13px;height:13px"><use href="#i-share"/></svg> <span>Cobrar</span>' +
+        '</button>'
+        : ''
+      ) +
+      (v.veiculoAtual !== '—'
+        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:#fbbf24" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirModalCustodia(this.dataset.placa)" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
+        icon('history') + ' <span>Custódia</span>' +
+        '</button>'
+        : ''
+      ) +
+      '</div>' +
+      '</td>' +
+      '</tr>';
+  }).join('');
+}
+window.renderVendedoresView = renderVendedoresView;
+
+function filtrarTabelaVendedores(tipo) {
+  state.filtroVend = tipo;
+  const btns = [
+    { id: 'btnFilterVendAll', ativo: tipo === 'todos' },
+    { id: 'btnFilterVendPendentes', ativo: tipo === 'pendentes' },
+    { id: 'btnFilterVendEmDia', ativo: tipo === 'em_dia' },
+    { id: 'btnFilterVendAtencao', ativo: tipo === 'atencao' }
+  ];
+
+  btns.forEach(b => {
+    const el = $(b.id);
+    if (!el) return;
+    if (b.id === 'btnFilterVendPendentes') {
+      el.style.background = b.ativo ? 'rgba(239, 68, 68, 0.25)' : 'transparent';
+      el.style.color = b.ativo ? '#ef4444' : 'var(--bad)';
+      el.style.borderColor = b.ativo ? 'rgba(239, 68, 68, 0.5)' : '';
+    } else {
+      el.style.background = b.ativo ? 'var(--accent-tint)' : 'transparent';
+      el.style.color = b.ativo ? 'var(--accent-hi)' : '';
+    }
+  });
+
+  renderVendedoresView();
+}
+window.filtrarTabelaVendedores = filtrarTabelaVendedores;
+
+function selecionarEquipeFiltro(eqId) {
+  state.filtroVendEquipe = eqId;
+  const sel = $('filtroVendEquipe');
+  if (sel) sel.value = eqId;
+  renderVendedoresView();
+}
+window.selecionarEquipeFiltro = selecionarEquipeFiltro;
+
+// Funções de Cobrança WhatsApp Formatadas e Inteligentes
+async function copiarTextoComFeedback(msg, tituloToast = 'Texto copiado!') {
+  let copiou = false;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(msg);
+      copiou = true;
+    } catch (e) {}
+  }
+  if (!copiou) {
+    const ta = document.createElement('textarea');
+    ta.value = msg;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      copiou = true;
+    } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  if (copiou) {
+    showToast(`${tituloToast} Cole no WhatsApp.`, 'ok');
+  } else {
+    showToast('Não foi possível copiar automaticamente.', 'err');
+  }
+  return copiou;
+}
+
+async function copiarCobrancaWhatsAppEquipe(eqId) {
+  const todos = getVendedoresData();
+  const eqInfo = EQUIPES_INFO[String(eqId)];
+  if (!eqInfo) return;
+
+  const daEquipe = todos.filter(v => v.equipe === String(eqId));
+  const pendentes = daEquipe.filter(v => v.isPendente);
+
+  if (!pendentes.length) {
+    showToast(`Parabéns! Todos os 12 vendedores da ${eqInfo.nomeCurto} estão com vistoria em dia!`, 'ok');
+    return;
+  }
+
+  const linhas = [
+    `*GOMEX DISTRIBUIDORA · VISTORIAS PENDENTES*`,
+    `*${eqInfo.nome}*`,
+    `*Supervisor:* ${eqInfo.supervisor}`,
+    `*Data:* ${new Date().toLocaleDateString('pt-BR')}`,
+    ``,
+    `Atenção vendedores, constam pendências de check-list para a sua equipe:`,
+    ``
+  ];
+
+  pendentes.forEach(v => {
+    const motivo = v.statusPontual === 'sem_vistoria'
+      ? '🚨 Nunca realizou vistoria'
+      : `⚠️ Vistoria vencida (${v.diasSemVistoria} dias atrás)`;
+    linhas.push(`• *Rota ${v.rota}* - ${v.nome}: _${motivo}_`);
+  });
+
+  linhas.push(``);
+  linhas.push(`Favor realizar a vistoria obrigatória agora pelo link oficial:`);
+  linhas.push(`👉 https://gomex-checklist.gomexassistencia2026.workers.dev/`);
+  linhas.push(``);
+  linhas.push(`_Mensagem emitida pelo Painel Executivo da Frota Gomex_`);
+
+  const msg = linhas.join('\n');
+  await copiarTextoComFeedback(msg, `Cobrança da ${eqInfo.nomeCurto} copiada!`);
+}
+window.copiarCobrancaWhatsAppEquipe = copiarCobrancaWhatsAppEquipe;
+
+async function copiarCobrancaWhatsAppGeral() {
+  const todos = getVendedoresData();
+  const pendentes = todos.filter(v => v.isPendente && v.isOficial);
+
+  if (!pendentes.length) {
+    showToast('Excelente! Toda a frota está 100% com vistorias em dia.', 'ok');
+    return;
+  }
+
+  const linhas = [
+    `*GOMEX DISTRIBUIDORA · RELATÓRIO DE VISTORIAS PENDENTES DA FROTA*`,
+    `*Data:* ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+    `*Total de Pendências:* ${pendentes.length} de 35 vendedores`,
+    ``
+  ];
+
+  ['101', '102', '103'].forEach(eqId => {
+    const eq = EQUIPES_INFO[eqId];
+    const pEq = pendentes.filter(v => v.equipe === eqId);
+    linhas.push(`📌 *${eq.nomeCurto} · Supervisor: ${eq.supervisorCurto}* (${pEq.length} pendentes):`);
+    if (pEq.length === 0) {
+      linhas.push(`  ✅ 100% em dia`);
+    } else {
+      pEq.forEach(v => {
+        const mot = v.statusPontual === 'sem_vistoria' ? 'Sem vistoria' : `Vencida há ${v.diasSemVistoria}d`;
+        linhas.push(`  • Rota ${v.rota} - ${v.nome} (${mot})`);
+      });
+    }
+    linhas.push(``);
+  });
+
+  linhas.push(`Supervisores, por favor cobrem o preenchimento imediato:`);
+  linhas.push(`👉 https://gomex-checklist.gomexassistencia2026.workers.dev/`);
+  linhas.push(``);
+  linhas.push(`_Gestão de Frota Gomex Distribuidora_`);
+
+  const msg = linhas.join('\n');
+  await copiarTextoComFeedback(msg, 'Lista geral de cobrança copiada!');
+}
+window.copiarCobrancaWhatsAppGeral = copiarCobrancaWhatsAppGeral;
+
+async function copiarCobrancaWhatsAppVendedor(rota) {
+  const todos = getVendedoresData();
+  const v = todos.find(x => String(x.rota) === String(rota));
+  if (!v) return;
+
+  const motivo = v.statusPontual === 'sem_vistoria'
+    ? 'identificamos que seu veículo ainda não possui o check-list de vistoria registrado no sistema.'
+    : `sua última vistoria foi realizada há ${v.diasSemVistoria} dias e está vencida.`;
+
+  const msg = [
+    `*GOMEX DISTRIBUIDORA · AVISO DE VISTORIA VEICULAR*`,
+    ``,
+    `Olá *${v.nome}* (Rota ${v.rota}),`,
+    ``,
+    `Consta em nosso sistema que ${motivo}`,
+    ``,
+    `Por questão de segurança e conservação da frota da empresa, solicitamos que realize o check-list obrigatório hoje antes de iniciar as atividades ou na primeira parada segura:`,
+    ``,
+    `👉 *Acesse o link do aplicativo:*`,
+    `https://gomex-checklist.gomexassistencia2026.workers.dev/`,
+    ``,
+    `_Gestão de Frota Gomex · Supervisão: ${v.supervisor}_`
+  ].join('\n');
+
+  await copiarTextoComFeedback(msg, `Cobrança de ${v.nome} (Rota ${v.rota}) copiada!`);
+}
+window.copiarCobrancaWhatsAppVendedor = copiarCobrancaWhatsAppVendedor;
+
+function abrirModalVendedor(nome) {
+  const todos = getVendedoresData();
+  const v = todos.find(x => x.nome.toLowerCase() === (nome || '').toLowerCase());
+  if (!v) return;
+
+  if ($('mHVendAvatar')) $('mHVendAvatar').textContent = getIniciaisNome(v.nome);
+  if ($('mHVendNome')) $('mHVendNome').textContent = v.nome;
+  if ($('mHVendSub')) {
+    $('mHVendSub').textContent = `Equipe ${v.equipe} · Supervisor: ${v.supervisor} · Rota ${v.rota}`;
+  }
+  if ($('mHVendCarro')) {
+    $('mHVendCarro').textContent = v.veiculoAtual !== '—' ? `${v.veiculoAtual} (${v.modeloAtual})` : 'Nenhum veículo vinculado';
+  }
+  if ($('mHVendUltimaData')) {
+    $('mHVendUltimaData').textContent = v.dataUltima ? `${formatarData(v.dataUltima)}${v.horaUltima ? ' às ' + v.horaUltima : ''}` : 'Nenhuma vistoria realizada';
+  }
+  if ($('mHVendTotal')) $('mHVendTotal').textContent = v.totalVistorias;
+
+  let pontualBadge = '';
+  if (v.statusPontual === 'sem_vistoria') {
+    pontualBadge = '<span class="badge-pontual critico">🚨 Nunca realizou vistoria</span>';
+  } else if (v.statusPontual === 'em_dia') {
+    pontualBadge = '<span class="badge-pontual em-dia">' + (v.cicloMensal ? 'Em dia · Próx: ' + v.cicloMensal.dataProximaFmt : 'Vistoria mensal em dia') + '</span>';
+  } else if (v.statusPontual === 'atencao') {
+    pontualBadge = '<span class="badge-pontual atencao">' + (v.cicloMensal ? v.cicloMensal.labelBadge : 'Próxima de vencer') + '</span>';
+  } else {
+    pontualBadge = '<span class="badge-pontual critico">' + (v.cicloMensal ? v.cicloMensal.labelBadge : v.diasSemVistoria + ' dias sem vistoria') + '</span>';
+  }
+  if ($('mHVendPontualidade')) $('mHVendPontualidade').innerHTML = pontualBadge;
+
+  const tbody = $('mHVendTableBody');
+  if (tbody) {
+    if (!v.vistorias.length) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--ink-3)">Este vendedor ainda não enviou nenhum check-list no sistema.</td></tr>';
+    } else {
+      tbody.innerHTML = v.vistorias.map(it => {
+        const av = avariasOf(it).length;
+        const alert = pneuAlert(it);
+        return '<tr>' +
+          '<td><span class="num">' + esc(it.numero || '—') + '</span></td>' +
+          '<td>' + formatarData(it.data) + ' ' + esc(it.hora || '') + '</td>' +
+          '<td><span class="plate" style="font-size:11px">' + esc((it.placa || '').toUpperCase()) + '</span></td>' +
+          '<td>' + tipoBadge(it.tipo) + '</td>' +
+          '<td>' + fmtKm(it.km) + '</td>' +
+          '<td>' + (av ? '<span class="txt-warn">' + av + ' marcas</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
+          '<td>' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
+          '<td>' + statusTag(it.liberacao, it.status) + '</td>' +
+          '<td style="text-align:right">' +
+          '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px" onclick="fecharModalVendedor(); openDrawer(\'' + it.id + '\', this, \'vistoria\')" title="Abrir ficha">' +
+          icon('eye') +
+          '</button>' +
+          '</td>' +
+          '</tr>';
+      }).join('');
+    }
+  }
+
+  if ($('modalHistVendedor')) $('modalHistVendedor').classList.add('open');
+}
+window.abrirModalVendedor = abrirModalVendedor;
+
+function fecharModalVendedor() {
+  if ($('modalHistVendedor')) $('modalHistVendedor').classList.remove('open');
+}
+window.fecharModalVendedor = fecharModalVendedor;
+
+function getTransicoesCustodia(placaAlvo = null) {
+  const transicoes = [];
+  const veiculos = new Map();
+
+  (state.all || []).forEach(it => {
+    if (it.status === 'inativo') return;
+    const placa = (it.placa || '').toUpperCase().trim();
+    if (!placa) return;
+    if (placaAlvo && placa !== placaAlvo.toUpperCase().trim()) return;
+
+    if (!veiculos.has(placa)) veiculos.set(placa, []);
+    veiculos.get(placa).push(it);
+  });
+
+  veiculos.forEach((list, placa) => {
+    list.sort((a, b) => {
+      const da = (a.data || '') + ' ' + (a.hora || '');
+      const db = (b.data || '') + ' ' + (b.hora || '');
+      return da.localeCompare(db);
+    });
+
+    for (let i = 0; i < list.length - 1; i++) {
+      const vAnterior = list[i];
+      const vProxima = list[i + 1];
+
+      const motA = (vAnterior.motorista || 'Não informado').trim();
+      const motB = (vProxima.motorista || 'Não informado').trim();
+
+      if (motA.toLowerCase() !== motB.toLowerCase()) {
+        const avA = avariasOf(vAnterior).length;
+        const avB = avariasOf(vProxima).length;
+        const diffAv = avB - avA;
+
+        let veredito = 'ok';
+        let vereditoTexto = 'CONFORMIDADE: O veículo foi recebido por ' + motB + ' nas mesmas condições de carroceria entregues por ' + motA + '.';
+
+        if (diffAv > 0) {
+          veredito = 'alerta';
+          vereditoTexto = 'NOVO DANO DETECTADO: O veículo foi entregue por ' + motA + ' com ' + avA + ' avaria(s) e já constam ' + avB + ' avaria(s) com ' + motB + ' (+' + diffAv + ' nova(s) avaria(s) registradas).';
+        } else if (avA > 0 && avB > 0) {
+          veredito = 'preexistente';
+          vereditoTexto = 'AVARIAS PRÉ-EXISTENTES: O veículo já possuía ' + avA + ' avaria(s) registradas antes de ' + motB + ' assumir a custódia.';
+        }
+
+        transicoes.push({
+          placa,
+          veiculo: vProxima.veiculo || vAnterior.veiculo || '—',
+          entreguePor: {
+            motorista: motA,
+            data: vAnterior.data,
+            hora: vAnterior.hora,
+            km: vAnterior.km,
+            avarias: avA,
+            liberacao: vAnterior.liberacao,
+            numero: vAnterior.numero || '—'
+          },
+          recebidoPor: {
+            motorista: motB,
+            data: vProxima.data,
+            hora: vProxima.hora,
+            km: vProxima.km,
+            avarias: avB,
+            liberacao: vProxima.liberacao,
+            numero: vProxima.numero || '—'
+          },
+          diffAv,
+          veredito,
+          vereditoTexto
         });
-
-        list.sort((a, b) => b.diasSemVistoria - a.diasSemVistoria);
-        return list;
       }
+    }
+  });
 
-      function filtrarTabelaVendedores(tipo) {
-        state.filtroVend = tipo;
-        if ($('btnFilterVendAll')) {
-          $('btnFilterVendAll').style.background = tipo === 'todos' ? 'var(--accent-tint)' : 'transparent';
-          $('btnFilterVendAll').style.color = tipo === 'todos' ? 'var(--accent-hi)' : '';
-        }
-        if ($('btnFilterVendEmDia')) $('btnFilterVendEmDia').style.background = tipo === 'em_dia' ? 'rgba(16, 185, 129, 0.2)' : 'transparent';
-        if ($('btnFilterVendAtencao')) $('btnFilterVendAtencao').style.background = tipo === 'atencao' ? 'rgba(245, 158, 11, 0.2)' : 'transparent';
-        if ($('btnFilterVendCritico')) $('btnFilterVendCritico').style.background = tipo === 'critico' ? 'rgba(239, 68, 68, 0.2)' : 'transparent';
-        renderVendedoresView();
-      }
-      window.filtrarTabelaVendedores = filtrarTabelaVendedores;
+  return transicoes;
+}
 
-      function renderVendedoresView() {
-        const tbody = $('vendTableBody');
-        if (!tbody) return;
+function abrirModalCustodia(placaPadrao = '') {
+  const sel = $('selectCustodiaPlaca');
+  if (sel) {
+    const placasUnicas = [...new Set((state.all || []).filter(it => it.status !== 'inativo' && it.placa).map(it => it.placa.toUpperCase().trim()))].sort();
+    sel.innerHTML = '<option value="">Todos os Veículos (' + placasUnicas.length + ')</option>' +
+      placasUnicas.map(p => '<option value="' + esc(p) + '" ' + (p === (placaPadrao || '').toUpperCase().trim() ? 'selected' : '') + '>' + esc(p) + '</option>').join('');
+  }
 
-        const todos = getVendedoresData();
+  renderModalCustodiaConteudo(placaPadrao);
+  if ($('modalCustodiaVeiculo')) $('modalCustodiaVeiculo').classList.add('open');
+}
+window.abrirModalCustodia = abrirModalCustodia;
 
-        const emDia = todos.filter(v => v.statusPontual === 'em_dia').length;
-        const atencao = todos.filter(v => v.statusPontual === 'atencao').length;
-        const critico = todos.filter(v => v.statusPontual === 'critico').length;
-        const carrosSet = new Set(todos.map(v => v.veiculoAtual).filter(p => p !== '—'));
+function fecharModalCustodia() {
+  if ($('modalCustodiaVeiculo')) $('modalCustodiaVeiculo').classList.remove('open');
+}
+window.fecharModalCustodia = fecharModalCustodia;
 
-        if ($('vendStatTotal')) $('vendStatTotal').textContent = todos.length;
-        if ($('vendStatEmDia')) $('vendStatEmDia').textContent = emDia;
-        if ($('vendStatAtencao')) $('vendStatAtencao').textContent = atencao;
-        if ($('vendStatCritico')) $('vendStatCritico').textContent = critico;
-        if ($('vendStatCarros')) $('vendStatCarros').textContent = carrosSet.size;
+function renderModalCustodiaConteudo(placaAlvo = '') {
+  const container = $('custodiaTransicoesContainer');
+  const badge = $('custodiaTransCountBadge');
+  if (!container) return;
 
-        const q = (state.filtroVendBusca || '').toLowerCase();
-        const filtrados = todos.filter(v => {
-          if (state.filtroVend !== 'todos' && v.statusPontual !== state.filtroVend) return false;
-          if (q) {
-            const hay = (v.nome + ' ' + v.veiculoAtual + ' ' + v.modeloAtual + ' ' + (v.rota || '')).toLowerCase();
-            if (!hay.includes(q)) return false;
-          }
-          return true;
-        });
+  const trans = getTransicoesCustodia(placaAlvo);
 
-        if (!filtrados.length) {
-          tbody.innerHTML = '<tr><td colspan="8" class="empty">' +
-            '<div class="empty-icon-wrap"><svg class="i"><use href="#i-user"/></svg></div>' +
-            '<h2>Nenhum vendedor encontrado</h2>' +
-            '<p>Tente ajustar os filtros de busca ou verifique se há vistorias registradas.</p>' +
-            '</td></tr>';
-          return;
-        }
+  if (badge) {
+    badge.textContent = trans.length ? trans.length + (trans.length === 1 ? ' transição de motorista detectada' : ' transições de motorista detectadas') : 'Nenhuma troca de vendedor registrada';
+  }
 
-        tbody.innerHTML = filtrados.map(v => {
-          const iniciais = getIniciaisNome(v.nome);
-          const cm = v.cicloMensal;
-          let pontualBadge = '';
-          if (v.statusPontual === 'em_dia') {
-            pontualBadge = '<span class="badge-pontual em-dia" title="' + esc(cm ? cm.labelBadge : '') + '">' + icon('check') + (cm ? 'Em dia · Próx: ' + cm.dataProximaFmt : 'Em dia') + '</span>';
-          } else if (v.statusPontual === 'atencao') {
-            pontualBadge = '<span class="badge-pontual atencao" title="' + esc(cm ? cm.labelBadge : '') + '">' + icon('clock') + (cm ? cm.labelCurto + ' (' + cm.dataProximaFmt + ')' : 'Próxima de vencer') + '</span>';
-          } else {
-            pontualBadge = '<span class="badge-pontual critico" title="' + esc(cm ? cm.labelBadge : '') + '">' + icon('alert') + (cm ? cm.labelCurto : 'Sem data') + '</span>';
-          }
+  if (!trans.length) {
+    container.innerHTML = '<div style="text-align:center;padding:32px 16px;background:var(--panel-2);border-radius:var(--r);border:1px dashed var(--line-strong)">' +
+      '<h4 style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma transferência de custódia encontrada</h4>' +
+      '<p style="font-size:12.5px;color:var(--ink-3);max-width:440px;margin:0 auto;line-height:1.45">' +
+      (placaAlvo
+        ? 'O veículo <strong>' + esc(placaAlvo.toUpperCase()) + '</strong> possui apenas um vendedor associado em seu histórico até o momento. Quando outro motorista realizar vistoria deste carro, o comparador de avarias aparecerá aqui automaticamente.'
+        : 'Até o momento, cada veículo da frota está operando com seu motorista titular inicial. Quando houver troca de vendedor no check-list, o comparativo Antes vs Depois será gerado aqui.') +
+      '</p>' +
+      '</div>';
+    return;
+  }
 
-          return '<tr>' +
-            '<td>' +
-            '<div style="display:flex;align-items:center;gap:10px">' +
-            '<div class="vend-avatar">' + esc(iniciais) + '</div>' +
-            '<div>' +
-            '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
-            '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">' +
-            (v.rota ? '<span class="badge-rota" style="font-size:10px">' + esc(v.rota) + '</span>' : '') +
-            '<span style="font-size:11px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</span>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-            '</td>' +
-            '<td>' +
-            (v.veiculoAtual !== '—'
-              ? '<div class="stack">' +
-              '<button type="button" class="plate" data-act="history" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirHistoricoVeiculo(this.dataset.placa)" title="Ver histórico deste veículo">' + esc(v.veiculoAtual) + '</button>' +
-              '<span class="t2">' + esc(v.modeloAtual) + '</span>' +
-              '</div>'
-              : '<span class="muted">Sem carro atribuído</span>'
-            ) +
-            '</td>' +
-            '<td>' +
-            '<span class="t1">' + formatarData(v.dataUltima) + '</span>' +
-            '<span class="t2">' + esc(v.horaUltima || '--:--') + ' (' + esc(v.tipoUltimo) + ')</span>' +
-            '</td>' +
-            '<td>' + pontualBadge + '</td>' +
-            '<td><span class="badge-km">' + fmtKm(v.kmAtual) + '</span></td>' +
-            '<td>' +
-            (v.avariasRecentes
-              ? '<span class="txt-warn font-semibold">' + v.avariasRecentes + ' ' + (v.avariasRecentes === 1 ? 'marca' : 'marcas') + '</span>'
-              : '<span class="muted">Íntegro</span>'
-            ) +
-            '</td>' +
-            '<td>' + statusTag(v.liberacaoAtual) + '</td>' +
-            '<td style="text-align:right">' +
-            '<div style="display:inline-flex;align-items:center;gap:6px">' +
-            '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:var(--accent-hi)" data-vend="' + esc(v.nome) + '" onclick="abrirModalVendedor(this.dataset.vend)" title="Ver todas as vistorias deste vendedor">' +
-            icon('user') + ' <span>Vistorias</span>' +
-            '</button>' +
-            (v.veiculoAtual !== '—'
-              ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:12px;color:#fbbf24" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirModalCustodia(this.dataset.placa)" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
-              icon('history') + ' <span>Custódia</span>' +
-              '</button>'
-              : ''
-            ) +
-            '</div>' +
-            '</td>' +
-            '</tr>';
-        }).join('');
-      }
-      window.renderVendedoresView = renderVendedoresView;
+  container.innerHTML = trans.map(t => {
+    return '<div class="panel" style="border:1px solid var(--line-strong);padding:16px;border-radius:var(--r);background:var(--panel)">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+      '<span class="plate" style="font-size:13px">' + esc(t.placa) + '</span>' +
+      '<strong style="color:var(--ink);font-size:14px">' + esc(t.veiculo) + '</strong>' +
+      '</div>' +
+      '<span style="font-size:12px;color:var(--ink-3);font-weight:600">Transferência de Custódia</span>' +
+      '</div>' +
 
-      function abrirModalVendedor(nome) {
-        const todos = getVendedoresData();
-        const v = todos.find(x => x.nome.toLowerCase() === nome.toLowerCase());
-        if (!v) return;
+      '<div class="custodia-compare-grid">' +
+      '<div class="custodia-driver-card old">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--accent-hi);text-transform:uppercase;margin-bottom:4px">' +
+      '1. Vendedor Anterior (Saída)' +
+      '</div>' +
+      '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
+      esc(t.entreguePor.motorista) +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
+      '<div>Data: <strong>' + formatarData(t.entreguePor.data) + ' às ' + esc(t.entreguePor.hora || '--:--') + '</strong></div>' +
+      '<div>Vistoria: <strong>Nº ' + esc(t.entreguePor.numero) + '</strong></div>' +
+      '<div>KM na Entrega: <strong>' + fmtKm(t.entreguePor.km) + '</strong></div>' +
+      '<div>Carroceria: <strong class="' + (t.entreguePor.avarias ? 'txt-warn' : 'txt-ok') + '">' + (t.entreguePor.avarias ? t.entreguePor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
+      '<div>Situação: <strong>' + esc(t.entreguePor.liberacao) + '</strong></div>' +
+      '</div>' +
+      '</div>' +
 
-        $('mHVendAvatar').textContent = getIniciaisNome(v.nome);
-        $('mHVendNome').textContent = v.nome;
-        $('mHVendSub').textContent = v.todosVeiculos.length ? 'Veículos operados: ' + v.todosVeiculos.join(', ') : 'Histórico de vistorias';
-        $('mHVendCarro').textContent = v.veiculoAtual + (v.modeloAtual !== '—' ? ' (' + v.modeloAtual + ')' : '');
-        $('mHVendUltimaData').textContent = formatarData(v.dataUltima) + (v.horaUltima ? ' às ' + v.horaUltima : '');
-        $('mHVendTotal').textContent = v.totalVistorias;
+      '<div class="custodia-arrow-divider">' +
+      '<svg class="i" style="width:24px;height:24px;color:var(--accent-hi)"><use href="#i-refresh"/></svg>' +
+      '<span style="font-size:11px;font-weight:700;margin-top:4px">Troca</span>' +
+      '</div>' +
 
-        let pontualBadge = '';
-        if (v.statusPontual === 'em_dia') {
-          pontualBadge = '<span class="badge-pontual em-dia">' + (v.cicloMensal ? 'Em dia · Próx: ' + v.cicloMensal.dataProximaFmt : 'Vistoria mensal em dia') + '</span>';
-        } else if (v.statusPontual === 'atencao') {
-          pontualBadge = '<span class="badge-pontual atencao">' + (v.cicloMensal ? v.cicloMensal.labelBadge : 'Próxima de vencer') + '</span>';
-        } else {
-          pontualBadge = '<span class="badge-pontual critico">' + (v.cicloMensal ? v.cicloMensal.labelBadge : v.diasSemVistoria + ' dias sem vistoria') + '</span>';
-        }
-        $('mHVendPontualidade').innerHTML = pontualBadge;
+      '<div class="custodia-driver-card new">' +
+      '<div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;margin-bottom:4px">' +
+      '2. Vendedor Atual (Entrada)' +
+      '</div>' +
+      '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
+      esc(t.recebidoPor.motorista) +
+      '</div>' +
+      '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
+      '<div>Data: <strong>' + formatarData(t.recebidoPor.data) + ' às ' + esc(t.recebidoPor.hora || '--:--') + '</strong></div>' +
+      '<div>Vistoria: <strong>Nº ' + esc(t.recebidoPor.numero) + '</strong></div>' +
+      '<div>KM no Recebimento: <strong>' + fmtKm(t.recebidoPor.km) + '</strong></div>' +
+      '<div>Carroceria: <strong class="' + (t.recebidoPor.avarias ? 'txt-bad' : 'txt-ok') + '">' + (t.recebidoPor.avarias ? t.recebidoPor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
+      '<div>Situação: <strong>' + esc(t.recebidoPor.liberacao) + '</strong></div>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
 
-        const tbody = $('mHVendTableBody');
-        tbody.innerHTML = v.vistorias.map(it => {
-          const av = avariasOf(it).length;
-          const alert = pneuAlert(it);
-          return '<tr>' +
-            '<td><span class="num">' + esc(it.numero || '—') + '</span></td>' +
-            '<td>' + formatarData(it.data) + ' ' + esc(it.hora || '') + '</td>' +
-            '<td><span class="plate" style="font-size:11px">' + esc((it.placa || '').toUpperCase()) + '</span></td>' +
-            '<td>' + tipoBadge(it.tipo) + '</td>' +
-            '<td>' + fmtKm(it.km) + '</td>' +
-            '<td>' + (av ? '<span class="txt-warn">' + av + ' marcas</span>' : '<span class="muted">Íntegro</span>') + '</td>' +
-            '<td>' + (alert ? '<span class="txt-warn">Atenção</span>' : '<span class="muted">Normal</span>') + '</td>' +
-            '<td>' + statusTag(it.liberacao, it.status) + '</td>' +
-            '<td style="text-align:right">' +
-            '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px" onclick="fecharModalVendedor(); openDrawer(\'' + it.id + '\', this, \'vistoria\')" title="Abrir ficha">' +
-            icon('eye') +
-            '</button>' +
-            '</td>' +
-            '</tr>';
-        }).join('');
+      '<div class="custodia-veredicto-box ' + t.veredito + '">' +
+      esc(t.vereditoTexto) +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+window.renderModalCustodiaConteudo = renderModalCustodiaConteudo;
 
-        $('modalHistVendedor').classList.add('open');
-      }
-      window.abrirModalVendedor = abrirModalVendedor;
+setTimeout(() => {
+  const fSearch = $('filtroVendBusca');
+  if (fSearch) {
+    fSearch.addEventListener('input', e => {
+      state.filtroVendBusca = e.target.value.toLowerCase().trim();
+      renderVendedoresView();
+    });
+  }
+}, 50);
 
-      function fecharModalVendedor() {
-        $('modalHistVendedor').classList.remove('open');
-      }
-      window.fecharModalVendedor = fecharModalVendedor;
-
-      function getTransicoesCustodia(placaAlvo = null) {
-        const transicoes = [];
-        const veiculos = new Map();
-
-        state.all.forEach(it => {
-          if (it.status === 'inativo') return;
-          const placa = (it.placa || '').toUpperCase().trim();
-          if (!placa) return;
-          if (placaAlvo && placa !== placaAlvo.toUpperCase().trim()) return;
-
-          if (!veiculos.has(placa)) veiculos.set(placa, []);
-          veiculos.get(placa).push(it);
-        });
-
-        veiculos.forEach((list, placa) => {
-          list.sort((a, b) => {
-            const da = (a.data || '') + ' ' + (a.hora || '');
-            const db = (b.data || '') + ' ' + (b.hora || '');
-            return da.localeCompare(db);
-          });
-
-          for (let i = 0; i < list.length - 1; i++) {
-            const vAnterior = list[i];
-            const vProxima = list[i + 1];
-
-            const motA = (vAnterior.motorista || 'Não informado').trim();
-            const motB = (vProxima.motorista || 'Não informado').trim();
-
-            if (motA.toLowerCase() !== motB.toLowerCase()) {
-              const avA = avariasOf(vAnterior).length;
-              const avB = avariasOf(vProxima).length;
-              const diffAv = avB - avA;
-
-              let veredito = 'ok';
-              let vereditoTexto = 'CONFORMIDADE: O veículo foi recebido por ' + motB + ' nas mesmas condições de carroceria entregues por ' + motA + '.';
-
-              if (diffAv > 0) {
-                veredito = 'alerta';
-                vereditoTexto = 'NOVO DANO DETECTADO: O veículo foi entregue por ' + motA + ' com ' + avA + ' avaria(s) e já constam ' + avB + ' avaria(s) com ' + motB + ' (+' + diffAv + ' nova(s) avaria(s) registradas).';
-              } else if (avA > 0 && avB > 0) {
-                veredito = 'preexistente';
-                vereditoTexto = 'AVARIAS PRÉ-EXISTENTES: O veículo já possuía ' + avA + ' avaria(s) registradas antes de ' + motB + ' assumir a custódia.';
-              }
-
-              transicoes.push({
-                placa,
-                veiculo: vProxima.veiculo || vAnterior.veiculo || '—',
-                entreguePor: {
-                  motorista: motA,
-                  data: vAnterior.data,
-                  hora: vAnterior.hora,
-                  km: vAnterior.km,
-                  avarias: avA,
-                  liberacao: vAnterior.liberacao,
-                  numero: vAnterior.numero || '—'
-                },
-                recebidoPor: {
-                  motorista: motB,
-                  data: vProxima.data,
-                  hora: vProxima.hora,
-                  km: vProxima.km,
-                  avarias: avB,
-                  liberacao: vProxima.liberacao,
-                  numero: vProxima.numero || '—'
-                },
-                diffAv,
-                veredito,
-                vereditoTexto
-              });
-            }
-          }
-        });
-
-        return transicoes;
-      }
-
-      function abrirModalCustodia(placaPadrao = '') {
-        const sel = $('selectCustodiaPlaca');
-        if (sel) {
-          const placasUnicas = [...new Set(state.all.filter(it => it.status !== 'inativo' && it.placa).map(it => it.placa.toUpperCase()))].sort();
-          sel.innerHTML = '<option value="">Todos os Veículos (' + placasUnicas.length + ')</option>' +
-            placasUnicas.map(p => '<option value="' + esc(p) + '" ' + (p === (placaPadrao || '').toUpperCase() ? 'selected' : '') + '>' + esc(p) + '</option>').join('');
-        }
-
-        renderModalCustodiaConteudo(placaPadrao);
-        $('modalCustodiaVeiculo').classList.add('open');
-      }
-      window.abrirModalCustodia = abrirModalCustodia;
-
-      function fecharModalCustodia() {
-        $('modalCustodiaVeiculo').classList.remove('open');
-      }
-      window.fecharModalCustodia = fecharModalCustodia;
-
-      function renderModalCustodiaConteudo(placaAlvo = '') {
-        const container = $('custodiaTransicoesContainer');
-        const badge = $('custodiaTransCountBadge');
-        if (!container) return;
-
-        const trans = getTransicoesCustodia(placaAlvo);
-
-        if (badge) {
-          badge.textContent = trans.length ? trans.length + (trans.length === 1 ? ' transição de motorista detectada' : ' transições de motorista detectadas') : 'Nenhuma troca de vendedor registrada';
-        }
-
-        if (!trans.length) {
-          container.innerHTML = '<div style="text-align:center;padding:32px 16px;background:var(--panel-2);border-radius:var(--r);border:1px dashed var(--line-strong)">' +
-            '<h4 style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px">Nenhuma transferência de custódia encontrada</h4>' +
-            '<p style="font-size:12.5px;color:var(--ink-3);max-width:440px;margin:0 auto;line-height:1.45">' +
-            (placaAlvo
-              ? 'O veículo <strong>' + esc(placaAlvo.toUpperCase()) + '</strong> possui apenas um vendedor associado em seu histórico até o momento. Quando outro motorista realizar vistoria deste carro, o comparador de avarias aparecerá aqui automaticamente.'
-              : 'Até o momento, cada veículo da frota está operando com seu motorista titular inicial. Quando houver troca de vendedor no check-list, o comparativo Antes vs Depois será gerado aqui.') +
-            '</p>' +
-            '</div>';
-          return;
-        }
-
-        container.innerHTML = trans.map(t => {
-          return '<div class="panel" style="border:1px solid var(--line-strong);padding:16px;border-radius:var(--r);background:var(--panel)">' +
-            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">' +
-            '<div style="display:flex;align-items:center;gap:10px">' +
-            '<span class="plate" style="font-size:13px">' + esc(t.placa) + '</span>' +
-            '<strong style="color:var(--ink);font-size:14px">' + esc(t.veiculo) + '</strong>' +
-            '</div>' +
-            '<span style="font-size:12px;color:var(--ink-3);font-weight:600">Transferência de Custódia</span>' +
-            '</div>' +
-
-            '<div class="custodia-compare-grid">' +
-            '<div class="custodia-driver-card old">' +
-            '<div style="font-size:11px;font-weight:700;color:var(--accent-hi);text-transform:uppercase;margin-bottom:4px">' +
-            '1. Vendedor Anterior (Saída)' +
-            '</div>' +
-            '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
-            esc(t.entreguePor.motorista) +
-            '</div>' +
-            '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
-            '<div>Data: <strong>' + formatarData(t.entreguePor.data) + ' às ' + esc(t.entreguePor.hora || '--:--') + '</strong></div>' +
-            '<div>Vistoria: <strong>Nº ' + esc(t.entreguePor.numero) + '</strong></div>' +
-            '<div>KM na Entrega: <strong>' + fmtKm(t.entreguePor.km) + '</strong></div>' +
-            '<div>Carroceria: <strong class="' + (t.entreguePor.avarias ? 'txt-warn' : 'txt-ok') + '">' + (t.entreguePor.avarias ? t.entreguePor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
-            '<div>Situação: <strong>' + esc(t.entreguePor.liberacao) + '</strong></div>' +
-            '</div>' +
-            '</div>' +
-
-            '<div class="custodia-arrow-divider">' +
-            '<svg class="i" style="width:24px;height:24px;color:var(--accent-hi)"><use href="#i-refresh"/></svg>' +
-            '<span style="font-size:11px;font-weight:700;margin-top:4px">Troca</span>' +
-            '</div>' +
-
-            '<div class="custodia-driver-card new">' +
-            '<div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;margin-bottom:4px">' +
-            '2. Vendedor Atual (Entrada)' +
-            '</div>' +
-            '<div style="font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px">' +
-            
-            '<div style="font-size:12px;color:var(--ink-2);display:grid;gap:4px">' +
-            '<div>Data: <strong>' + formatarData(t.recebidoPor.data) + ' às ' + esc(t.recebidoPor.hora || '--:--') + '</strong></div>' +
-            '<div>Vistoria: <strong>Nº ' + esc(t.recebidoPor.numero) + '</strong></div>' +
-            '<div>KM no Recebimento: <strong>' + fmtKm(t.recebidoPor.km) + '</strong></div>' +
-            '<div>Carroceria: <strong class="' + (t.recebidoPor.avarias ? 'txt-bad' : 'txt-ok') + '">' + (t.recebidoPor.avarias ? t.recebidoPor.avarias + ' marca(s)' : 'Íntegro (0 avarias)') + '</strong></div>' +
-            '<div>Situação: <strong>' + esc(t.recebidoPor.liberacao) + '</strong></div>' +
-            '</div>' +
-            '</div>' +
-            '</div>' +
-
-            '<div class="custodia-veredicto-box ' + t.veredito + '">' +
-            esc(t.vereditoTexto) +
-            '</div>' +
-            '</div>';
-        }).join('');
-      }
-      window.renderModalCustodiaConteudo = renderModalCustodiaConteudo;
-
-      setTimeout(() => {
-        const fSearch = $('filtroVendBusca');
-        if (fSearch) {
-          fSearch.addEventListener('input', e => {
-            state.filtroVendBusca = e.target.value.toLowerCase().trim();
-            renderVendedoresView();
-          });
-        }
-      }, 50);
 
       function encaminharRevisaoParaManutencao() {
         if (!state.sel) return;
