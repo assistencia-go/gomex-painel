@@ -4,9 +4,28 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v1.8.0-stable` (13/11/2026)
-* **Tag Oficial no GitHub:** [`v1.8.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.8.0-stable)
+## 📌 Versão Atual: `v1.9.0-stable` (13/11/2026)
+* **Tag Oficial no GitHub:** [`v1.9.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.9.0-stable)
 * **Status:** Produção Estável (Cloudflare Workers)
+* **Principais Entregas:**
+  - **Relatório Executivo de Vistorias por Supervisor & Vendedores:**
+    - Substituição do botão de cobrança geral na visão de Vendedores & Custódia pelo novo botão oficial `Relatório por Supervisor`.
+    - Modal interativo com visão estruturada: Supervisor > Vendedores, exibindo conformidade, contagem regressiva de dias ou atraso, ciclo mensal de 30 dias e histórico.
+    - Indicadores consolidados no topo (Total Listado, Em Dia, Próximas de Vencer, Sem Vistoria / Vencidas).
+    - Filtros por Supervisor (101, 102, 103 ou Todos), Situação e busca textual em tempo real.
+    - Emissão de Relatório Executivo em PDF agrupado por supervisor com suporte a impressão e download.
+  - **Correção Visual no Botão de Cobrança Individual:**
+    - Restabelecimento do ícone do WhatsApp no botão `Cobrar` de cada vendedor na listagem, corrigindo o identificador SVG interno.
+  - **Conformidade Pré-Deploy:**
+    - Pipeline de segurança `validate.mjs` 100% aprovado (sintaxe AST, política corporativa Zero-Emoji e simulação Cloudflare Wrangler).
+
+---
+
+## 📌 Versões Anteriores
+
+### `v1.8.0-stable` (13/11/2026)
+* **Tag Oficial no GitHub:** [`v1.8.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.8.0-stable)
+* **Status:** Versão Arquivada
 * **Principais Entregas:**
   - **Módulo Oficial de Equipes & Supervisão da Frota:**
     - Cadastro completo da estrutura corporativa das 3 equipes de vendas (35 vendedores oficiais):
@@ -14,8 +33,8 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
       2. `Equipe 102`: Supervisor 3 · Eliase Mendes de Aguiar (11 vendedores · Rotas 203 a 238).
       3. `Equipe 103`: Supervisor 4 · Alisson Rodrigo Pereira (12 vendedores · Rotas 215 a 240).
   - **Painel de Pendências de Vistoria por Equipe (Demanda Operacional Hendreo):**
-    - Identificação em tempo real de quem nunca realizou check-list (`🚨 NUNCA REALIZOU`) ou está com vistoria atrasada há mais de 30 dias (`🔴 VENCIDA`).
-    - Botão de filtro com 1 clique `[ 🚨 Pendentes ]` na aba Vendedores.
+    - Identificação em tempo real de quem nunca realizou check-list ou está com vistoria atrasada há mais de 30 dias.
+    - Botão de filtro com 1 clique `[ Pendentes ]` na aba Vendedores.
   - **Cards Interativos das Equipes no Topo:**
     - Visualização imediata do status de cada supervisor (total de vendedores, em dia e pendentes).
     - Seleção rápida de equipe por clique no card com destaque visual.
