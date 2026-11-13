@@ -1,0 +1,493 @@
+    /* ============================================================================
+     TOPBAR + PÁGINA
+     ============================================================================ */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: var(--topbar-h);
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+
+    .topbar-in {
+      max-width: 1360px;
+      height: 100%;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .topbar .brand-mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    .sync {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--ink-2);
+    }
+
+    .sync-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--ink-3);
+    }
+
+    .sync[data-state="ok"] .sync-dot {
+      background: var(--ok);
+      box-shadow: 0 0 8px var(--ok);
+    }
+
+    .sync[data-state="loading"] .sync-dot {
+      background: var(--warn);
+    }
+
+    .sync[data-state="error"] .sync-dot {
+      background: var(--bad);
+    }
+
+    .sync[data-state="error"] {
+      color: var(--bad);
+    }
+
+    .whoami {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-2);
+      padding-left: 14px;
+      border-left: 1px solid var(--line);
+      height: 24px;
+    }
+
+    .page {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px 24px 56px;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .page-head h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.2;
+    }
+
+    .page-head p {
+      color: var(--ink-3);
+      margin-top: 4px;
+      max-width: 60ch;
+    }
+
+    .head-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    /* ============================================================================
+     BANNER DE ALERTAS CRÍTICOS DA FROTA
+     ============================================================================ */
+    .alerts-banner {
+      background: var(--raised);
+      border: 1px solid var(--line-strong);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--r);
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .alerts-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alerts-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent-tint);
+      color: var(--accent-hi);
+      display: grid;
+      place-items: center;
+      flex: none;
+    }
+
+    .alerts-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .alerts-desc {
+      font-size: 12.5px;
+      color: var(--ink-2);
+    }
+
+    .alerts-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .alert-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      user-select: none;
+      transition: all 180ms ease;
+      font-family: inherit;
+    }
+
+    .alert-pill:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.2);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    .alert-pill.red {
+      color: #f87171;
+      border-color: rgba(248, 113, 113, 0.4);
+    }
+
+    .alert-pill.red.active {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+
+    .alert-pill.yellow {
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.4);
+    }
+
+    .alert-pill.yellow.active {
+      background: rgba(245, 158, 11, 0.25);
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+    }
+
+    /* Badges de Alerta Operacional nas Linhas da Tabela */
+    .badge-row-alert {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+      animation: fadeInAlert 0.2s var(--ease);
+    }
+
+    @keyframes fadeInAlert {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .badge-row-alert.yellow {
+      background: rgba(251, 191, 36, 0.16);
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: #fbbf24;
+    }
+
+    .badge-row-alert.red {
+      background: rgba(239, 68, 68, 0.16);
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      color: #f87171;
+    }
+
+    tr.row-alert-yellow td:first-child {
+      border-left: 3px solid #fbbf24 !important;
+    }
+
+    tr.row-alert-red td:first-child {
+      border-left: 3px solid #ef4444 !important;
+    }
+
+    tr.row-alert-yellow {
+      background: rgba(251, 191, 36, 0.02);
+    }
+
+    tr.row-alert-red {
+      background: rgba(239, 68, 68, 0.03);
+    }
+
+    /* Cards de Alerta Operacional dentro da Gaveta (Drawer) */
+    .dr-alert-card {
+      border-radius: var(--r);
+      padding: 13px 15px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      animation: alertSlideDown 0.25s var(--ease);
+    }
+
+    .dr-alert-card.yellow {
+      background: rgba(251, 191, 36, 0.09);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+    }
+
+    .dr-alert-card.red {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    .dr-alert-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      flex: none;
+    }
+
+    .dr-alert-card.yellow .dr-alert-icon {
+      background: rgba(251, 191, 36, 0.2);
+      color: #fbbf24;
+    }
+
+    .dr-alert-card.red .dr-alert-icon {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+
+    .dr-alert-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .dr-alert-card.yellow .dr-alert-title {
+      color: #fbbf24;
+    }
+
+    .dr-alert-card.red .dr-alert-title {
+      color: #f87171;
+    }
+
+    .dr-alert-desc {
+      font-size: 12.5px;
+      color: var(--ink-2);
+      line-height: 1.45;
+    }
+
+    .dr-alert-action-btn {
+      margin-top: 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      color: #fbbf24;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .dr-alert-action-btn:hover {
+      background: #fbbf24;
+      color: #0a0f1a;
+    }
+
+    .dr-alert-action-btn.red {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .dr-alert-action-btn.red:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .badge-rev-diff {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+
+    .badge-rev-diff.yellow {
+      background: rgba(251, 191, 36, 0.18);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.35);
+    }
+
+    .badge-rev-diff.red {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    /* ============================================================================
+     RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES
+     ============================================================================ */
+    .summary {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .stat {
+      background: var(--panel);
+      padding: 16px 18px 16px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: background-color 150ms;
+    }
+
+    .stat:hover {
+      background: var(--hover);
+    }
+
+    .stat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .stat-lbl {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-3);
+    }
+
+    .stat-ico {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: var(--raised);
+      color: var(--ink-2);
+    }
+
+    .stat-ico.blue {
+      background: rgba(237, 133, 112, 0.15);
+      color: #f49b89;
+    }
+
+    .stat-ico.emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+    }
+
+    .stat-ico.purple {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+    }
+
+    .stat-ico.green {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ade80;
+    }
+
+    .stat-ico.amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+    }
+
+    .stat dd {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-top: 2px;
+    }
+
+    .stat-sub {
+      font-size: 11.5px;
+      color: var(--ink-3);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .split {
+      display: flex;
+      height: 5px;
+      background: var(--line-strong);
+    }
+
+    .split i {
+      display: block;
+      flex-grow: 0;
+      flex-basis: 0;
+      transition: flex-grow 400ms var(--ease);
+    }
+
+    .split .s-ok {
+      background: var(--ok);
+    }
+
+    .split .s-warn {
+      background: var(--warn);
+    }
+
+    .split .s-bad {
+      background: var(--bad);
+    }
