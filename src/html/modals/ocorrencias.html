@@ -1,0 +1,229 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: REGISTRAR / EDITAR OCORRÊNCIA & AGENDAR SERVIÇO (PLAY STORE MOBILE-FIRST) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalOcorrencia">
+    <div class="modal-card playstore-sheet" style="max-width:660px;width:95%">
+      <div class="playstore-handle"></div>
+
+      <header class="modal-head" style="padding:16px 20px 12px;border-bottom:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%);color:#fff;display:grid;place-items:center;box-shadow:0 4px 14px rgba(234,88,12,0.35);flex-shrink:0">
+            <svg class="i" style="width:22px;height:22px"><use href="#i-alert" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16.5px;font-weight:800;color:var(--ink);letter-spacing:-0.01em" id="ocrModalTitle">Nova Ocorrência / Agendar Serviço</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de tempo parado, serviço programado e tempo médio da frota</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalOcorrencia()" title="Fechar">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:16px 18px;display:grid;gap:13px;max-height:78vh;overflow-y:auto">
+        <input type="hidden" id="ocrEditId" value="">
+
+        <!-- Bloco 1: Vendedor, Rota e Veículo -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-user" /></svg>
+            <span>Vendedor & Identificação</span>
+          </div>
+
+          <div class="ocr-form-grid-2">
+            <div class="ocr-form-field">
+              <label for="ocrInputVendedor" class="gasto-field-lbl" style="color:var(--ink)">
+                Vendedor / Motorista <span style="color:var(--bad)">*</span>
+              </label>
+              <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
+                placeholder="Nome do vendedor titular" style="font-weight:600"
+                oninput="aoDigitarVendedorOcorrencia(this.value)">
+            </div>
+
+            <div class="ocr-form-field">
+              <label for="ocrInputRota" class="gasto-field-lbl" style="color:var(--ink)">
+                Rota do Vendedor <span style="color:var(--bad)">*</span>
+              </label>
+              <input type="text" id="ocrInputRota" class="input"
+                placeholder="Ex: 218, 240, 222..." style="font-weight:600">
+            </div>
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrInputVeiculo" class="gasto-field-lbl">
+              Veículo / Placa
+            </label>
+            <input type="text" id="ocrInputVeiculo" list="datalistPlacasFrota" class="input"
+              placeholder="Ex: AYR7G87">
+          </div>
+        </div>
+
+        <!-- Bloco 2: Motivo / Serviço com Chips Rápidos estilo Play Store -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-tool" /></svg>
+            <span>Motivo da Parada / Serviço</span>
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrSelectTipo" class="gasto-field-lbl" style="color:var(--ink)">
+              Tipo de Ocorrência / Categoria <span style="color:var(--bad)">*</span>
+            </label>
+            <select id="ocrSelectTipo" class="input" style="font-weight:600" onchange="aoMudarTipoOcorrencia(this.value)">
+              <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
+              <option value="Manutenção Rápida / Troca de Peça">Manutenção Rápida / Troca de Peça</option>
+              <option value="Quebra Mecânica">Quebra Mecânica / Motor</option>
+              <option value="Problema Elétrico / Bateria">Pane Elétrica / Bateria</option>
+              <option value="Troca de Óleo / Filtro">Troca de Óleo em Rota</option>
+              <option value="Reparo no Banco">Reparo no Banco do Motorista</option>
+              <option value="Revisão Preventiva">Revisão Preventiva</option>
+              <option value="Guincho / Socorro na Pista">Guincho / Socorro na Pista</option>
+              <option value="Acidente / Colisão">Acidente / Colisão</option>
+              <option value="Fiscalização / Trânsito">Fiscalização / Trânsito</option>
+              <option value="Outro Imprevisto">Outro Imprevisto</option>
+            </select>
+          </div>
+
+          <!-- Chips de Acesso Rápido com Toque Único -->
+          <div class="ocr-form-field">
+            <label class="gasto-field-lbl" style="font-size:11.5px;color:var(--ink-3)">Toque rápido para preencher serviço e tempo sugerido:</label>
+            <div class="chips-grid" id="ocrChipsServicosRapidos">
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Pneu Furado / Borracharia', 'Pneu Furado / Borracharia', 30)"><svg class="i" style="width:12px;height:12px"><use href="#i-alert" /></svg> Pneu Furado</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Troca de Óleo em Rota', 'Troca de Óleo / Filtro', 45)"><svg class="i" style="width:12px;height:12px"><use href="#i-droplet" /></svg> Troca de Óleo</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Freios e Pastilhas', 'Manutenção Rápida / Troca de Peça', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Freios</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Reparo no Banco do Motorista', 'Reparo no Banco', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Reparo Banco</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Mecânica / Motor', 'Quebra Mecânica', 120)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Mecânica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Bateria / Elétrica', 'Problema Elétrico / Bateria', 60)"><svg class="i" style="width:12px;height:12px"><use href="#i-bolt" /></svg> Elétrica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Revisão Preventiva', 'Revisão Preventiva', 120)"><svg class="i" style="width:12px;height:12px"><use href="#i-calendar-clock" /></svg> Revisão</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Guincho / Socorro', 'Guincho / Socorro na Pista', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-truck" /></svg> Guincho</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Outro Imprevisto', 'Outro Imprevisto', 60)"><svg class="i" style="width:12px;height:12px"><use href="#i-file" /></svg> Outro</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 3: Data, Horários e Tempo Médio (Controle Inteligente) -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-clock" /></svg>
+            <span>Data, Horários & Tempo Médio</span>
+          </div>
+
+          <div class="ocr-form-field">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <label for="ocrInputData" class="gasto-field-lbl" style="margin:0">Data do Serviço / Ocorrência</label>
+              <span id="ocrDataHintBadge" style="font-size:11px;font-weight:700;color:var(--accent-hi)"></span>
+            </div>
+            <input type="date" id="ocrInputData" class="input" style="font-weight:700" onchange="aoMudarDataOuHoraOcorrencia()">
+          </div>
+
+          <div class="ocr-hours-grid">
+            <div class="ocr-form-field">
+              <div class="ocr-label-with-btn">
+                <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraInicio'); aoMudarDataOuHoraOcorrencia()">Agora</button>
+              </div>
+              <input type="time" id="ocrInputHoraInicio" class="input" style="font-weight:700"
+                oninput="aoMudarDataOuHoraOcorrencia()">
+            </div>
+
+            <div class="ocr-form-field">
+              <div class="ocr-label-with-btn">
+                <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno / Fim</label>
+                <button type="button" class="btn-agora" onclick="definirHoraAgora('ocrInputHoraFim'); aoMudarDataOuHoraOcorrencia()">Agora</button>
+              </div>
+              <input type="time" id="ocrInputHoraFim" class="input" style="font-weight:700"
+                placeholder="--:--" oninput="aoMudarDataOuHoraOcorrencia()">
+            </div>
+          </div>
+
+          <!-- Campo de Tempo Médio com Chips de Duração -->
+          <div class="ocr-form-field">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <label for="ocrInputTempoMedio" class="gasto-field-lbl" style="color:var(--ink);margin:0">
+                Tempo Médio Estimado (Minutos) <span style="color:var(--bad)">*</span>
+              </label>
+              <span id="ocrTempoMedioFormatado" style="font-size:12px;font-weight:800;color:var(--accent-hi)">1h (60 min)</span>
+            </div>
+            <input type="number" id="ocrInputTempoMedio" min="5" step="5" class="input"
+              placeholder="Ex: 60" value="60" style="font-weight:700"
+              oninput="aoDigitarTempoMedioOcorrencia(this.value)">
+
+            <div class="chips-grid" id="ocrChipsTempoMedio" style="margin-top:6px">
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(15)">15m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(30)">30m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(45)">45m</button>
+              <button type="button" class="chip-btn active" onclick="selecionarChipTempoMedioOcorrencia(60)">1h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(90)">1h 30m</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(120)">2h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(180)">3h</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(240)">4h</button>
+            </div>
+          </div>
+
+          <!-- Indicador visual em tempo real de previsão e status do tempo -->
+          <div id="ocrBoxCalculoDuracao" class="playstore-calc-preview">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg class="i" style="width:16px;height:16px;color:var(--accent-hi)"><use href="#i-clock" /></svg>
+              <span id="ocrTextoCalculoDuracao" style="font-size:12.5px;font-weight:700;color:var(--ink)">Previsão de término</span>
+            </div>
+            <div id="ocrBadgeCalculoDuracao">
+              <span class="badge-status-pausa aberto">Em Aberto</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 4: Situação, Local, Despesa e Detalhes -->
+        <div class="playstore-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-file-text" /></svg>
+            <span>Situação, Local & Custo</span>
+          </div>
+
+          <div class="ocr-form-grid-2">
+            <div class="ocr-form-field">
+              <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação</label>
+              <select id="ocrSelectStatus" class="input" style="font-weight:700"
+                onchange="aoMudarStatusOcorrencia(this.value)">
+                <option value="agendado">Agendada (Serviço Programado / Futuro)</option>
+                <option value="aberto">Em Aberto (Vendedor Parado / Em Atendimento)</option>
+                <option value="finalizado">Finalizada (Vendedor Liberado)</option>
+              </select>
+            </div>
+
+            <div class="ocr-form-field">
+              <label for="ocrInputCusto" class="gasto-field-lbl">Custo / Despesa (R$)</label>
+              <input type="number" id="ocrInputCusto" step="0.01" min="0" class="input"
+                placeholder="0,00" style="font-weight:700">
+            </div>
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrInputLocal" class="gasto-field-lbl">Local / Oficina / Borracharia</label>
+            <input type="text" id="ocrInputLocal" class="input"
+              placeholder="Ex: Borracharia do Zé, Concessionária, Auto Elétrica...">
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrInputDescricao" class="gasto-field-lbl">Descrição / Detalhes do Serviço</label>
+            <textarea id="ocrInputDescricao" class="input" rows="3"
+              placeholder="Ex: Reparo no banco do motorista. Vendedor orientado a usar veículo reserva no período..."
+              style="resize:vertical;font-family:inherit"></textarea>
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrInputResponsavel" class="gasto-field-lbl">Registrado por (Supervisor)</label>
+            <input type="text" id="ocrInputResponsavel" class="input" value="Hendreo" style="font-weight:600">
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)">
+        <button type="button" class="btn" onclick="fecharModalOcorrencia()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarOcorrencia" onclick="salvarOcorrencia()"
+          style="min-width:160px;height:46px;font-size:14px;font-weight:800;border-radius:12px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);border-color:#ea580c">
+          <svg class="i"><use href="#i-check" /></svg>
+          <span id="lblBtnSalvarOcorrencia">Salvar Ocorrência</span>
+        </button>
+      </footer>
+    </div>
+  </div>
