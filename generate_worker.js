@@ -69,6 +69,10 @@ const PRIV_JWK = {
   d: '-SIssqVleGqKh03BuMunJteSZYOC5XxA1RG4Q_0hbVY'
 };
 
+const EMBEDDED_MANIFEST = ${JSON.stringify(manifestContent)};
+const EMBEDDED_SW = ${JSON.stringify(swContent)};
+const EMBEDDED_ICON = ${JSON.stringify(iconContent)};
+
 let ultimoAlertaPush = {
   title: 'Gomex Frota · Sistema Conectado',
   body: 'Notificações ativadas com sucesso neste aparelho.',
@@ -609,8 +613,19 @@ export default {
       } catch (e) {}
     }
 
-    // 4. FALLBACK DIRETO: SERVIR O INDEX.HTML EMBUTIDO
-    return new Response(EMBEDDED_HTML, {
+    // 4. FALLBACK SPA: SERVIR INDEX.HTML VIA ASSETS
+    if (env && env.ASSETS && typeof env.ASSETS.fetch === 'function') {
+      try {
+        const fallbackRes = await env.ASSETS.fetch(new Request(new URL('/index.html', request.url)));
+        if (fallbackRes.status < 400) {
+          const out = new Response(fallbackRes.body, fallbackRes);
+          for (const [k, v] of Object.entries(SECURITY_HEADERS)) out.headers.set(k, v);
+          return out;
+        }
+      } catch (e) {}
+    }
+
+    return new Response('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Gomex Frota</title><meta http-equiv="refresh" content="0;url=/"></head><body>Carregando Gomex Frota...</body></html>', {
       status: 200,
       headers: {
         'Content-Type': 'text/html; charset=utf-8',
@@ -620,8 +635,6 @@ export default {
     });
   }
 };
-
-const EMBEDDED_HTML = ${JSON.stringify(htmlContent)};
 `;
 
 fs.writeFileSync(path.join(__dirname, 'worker.js'), workerCode, 'utf8');
