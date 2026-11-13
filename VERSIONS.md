@@ -26,6 +26,9 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
     - Seletor `Equipe` adicionado ao lado de `Rota` na visão geral de laudos.
   - **Auto-seleção por Login do Supervisor:**
     - Supervisores logados (`alisson 101`, `eliase`, `alisson 103`) têm a visão filtrada automaticamente para sua respectiva equipe.
+  - **Política Estrita Zero-Emoji & Bloqueio no Código:**
+    - Remoção total de emojis em botões, modais, mensagens de WhatsApp e badges.
+    - Travamento permanente no `validate.mjs` com varredura Unicode `\\p{Extended_Pictographic}`, bloqueando deploys futuros que contenham emojis.
 
 ---
 
