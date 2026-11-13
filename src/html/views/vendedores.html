@@ -1,0 +1,256 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO 3: VENDEDORES & CUSTÓDIA DA FROTA -->
+        <!-- ====================================================================== -->
+        <div id="sectionVendedoresView" hidden>
+          <!-- CARDS DAS 3 EQUIPES OFICIAIS & SUPERVISÃO -->
+          <div class="equipes-overview-wrap" style="margin-bottom:14px">
+            <div class="equipes-top-bar">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <svg class="i" style="width:16px;height:16px;color:var(--accent-hi)"><use href="#i-users" /></svg>
+                <span style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:0.5px">Supervisão & Equipes Gomex</span>
+                <span class="badge-count" style="background:var(--accent-tint);color:var(--accent-hi);font-weight:700;padding:2px 8px;border-radius:12px;font-size:11px">3 Equipes · 35 Vendedores Cadastrados</span>
+              </div>
+              <div class="equipes-top-actions">
+                <button type="button" class="btn btn-primary" id="btnAbrirRelatorioSupervisores" onclick="abrirModalRelatorioSupervisores('todos')"
+                  style="font-size:12.5px;height:36px;padding:0 16px;font-weight:700;display:inline-flex;align-items:center;gap:7px"
+                  title="Abrir Relatório de Vistorias por Supervisor (Em dia, vencidas, prazos e emissão em PDF)">
+                  <svg class="i" style="width:15px;height:15px"><use href="#i-file-text" /></svg>
+                  <span>Relatório por Supervisor</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards das 3 Equipes -->
+            <div class="equipes-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px">
+              <!-- Equipe 101 -->
+              <div class="equipe-card" id="cardEq101" onclick="selecionarEquipeFiltro('101')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(79,70,229,0.14);color:#4338ca;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 101
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 201 a 239
+                  </span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Bezerra</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 2 · 12 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq101EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq101Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq101Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('101')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 101">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('101', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 101 (Alisson Bezerra)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Equipe 102 -->
+              <div class="equipe-card" id="cardEq102" onclick="selecionarEquipeFiltro('102')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(14,165,233,0.14);color:#0369a1;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 102
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 203 a 238
+                  </span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Eliase Mendes</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 3 · 11 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq102EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq102Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq102Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('102')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 102">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('102', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 102 (Eliase Mendes)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Equipe 103 -->
+              <div class="equipe-card" id="cardEq103" onclick="selecionarEquipeFiltro('103')"
+                style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                  <span class="badge" style="background:rgba(16,185,129,0.14);color:#047857;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 103
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 215 a 240
+                  </span>
+                </div>
+                <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Pereira</div>
+                <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 4 · 12 Vendedores</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq103EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq103Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq103Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('103')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 103">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('103', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 103 (Alisson Pereira)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resumo de Métricas de Vendedores -->
+          <section class="summary" aria-label="Resumo dos vendedores">
+            <dl class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))">
+              <div class="stat" onclick="filtrarTabelaVendedores('todos')" style="cursor:pointer" title="Ver todos os vendedores">
+                <div class="stat-head">
+                  <span class="stat-lbl">Vendedores Oficiais</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-user" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatTotal">35</dd>
+                <span class="stat-sub">3 equipes cadastradas</span>
+              </div>
+
+              <div class="stat" onclick="filtrarTabelaVendedores('pendentes')" style="cursor:pointer" title="Filtrar vendedores sem vistoria ou atrasados">
+                <div class="stat-head">
+                  <span class="stat-lbl">Pendentes de Vistoria</span>
+                  <div class="stat-ico red"><svg class="i">
+                      <use href="#i-alert" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatPendentes" style="color:var(--bad);font-weight:800">0</dd>
+                <span class="stat-sub">Sem vistoria ou atrasadas</span>
+              </div>
+
+              <div class="stat" onclick="filtrarTabelaVendedores('em_dia')" style="cursor:pointer" title="Filtrar vendedores com vistoria em dia">
+                <div class="stat-head">
+                  <span class="stat-lbl">Vistoria em Dia</span>
+                  <div class="stat-ico green"><svg class="i">
+                      <use href="#i-badge-check" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatEmDia" style="color:var(--ok)">0</dd>
+                <span class="stat-sub">Dentro do ciclo de 30 dias</span>
+              </div>
+
+              <div class="stat" onclick="filtrarTabelaVendedores('atencao')" style="cursor:pointer" title="Filtrar vendedores cuja próxima vistoria vence em até 7 dias">
+                <div class="stat-head">
+                  <span class="stat-lbl">Próxima de Vencer</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-clock" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatAtencao" style="color:var(--warn)">0</dd>
+                <span class="stat-sub">Vence nos próximos 7 dias</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Carros em Custódia</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-truck" />
+                    </svg></div>
+                </div>
+                <dd id="vendStatCarros">0</dd>
+                <span class="stat-sub">Veículos alocados</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Painel de Vendedores e Filtros -->
+          <section class="panel">
+            <div class="panel-head" style="gap:14px;flex-wrap:wrap">
+              <div>
+                <h2>Gestão de Vendedores, Prazos & Supervisores</h2>
+                <p>Acompanhe quem está sem vistoria, quanto tempo falta até a próxima vistoria e emita relatórios em PDF por supervisor.</p>
+              </div>
+
+              <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <div class="search-wrap" style="width:230px">
+                  <svg class="i">
+                    <use href="#i-search" />
+                  </svg>
+                  <input type="text" class="input input-search" id="filtroVendBusca"
+                    placeholder="Buscar vendedor, rota ou placa...">
+                </div>
+
+                <!-- Seletor de Equipe -->
+                <select class="select" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)" style="height:32px;font-size:12px;font-weight:700">
+                  <option value="todos">Todas as Equipes (35)</option>
+                  <option value="101">Equipe 101 · Alisson Bezerra (12)</option>
+                  <option value="102">Equipe 102 · Eliase Mendes (11)</option>
+                  <option value="103">Equipe 103 · Alisson Pereira (12)</option>
+                </select>
+
+                <!-- Botões de Filtro de Situação -->
+                <div class="btn-group">
+                  <button type="button" class="btn btn-ghost" id="btnFilterVendAll"
+                    onclick="filtrarTabelaVendedores('todos')"
+                    style="font-size:12px;height:32px;background:var(--accent-tint);color:var(--accent-hi);font-weight:700;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg>
+                    <span>Todos</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btnFilterVendPendentes"
+                    onclick="filtrarTabelaVendedores('pendentes')" style="font-size:12px;height:32px;color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-alert" /></svg>
+                    <span>Sem Vistoria / Venc.</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia"
+                    onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg>
+                    <span>Em dia</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="btnFilterVendAtencao"
+                    onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-clock" /></svg>
+                    <span>Próx. Vencer</span>
+                  </button>
+                </div>
+
+                <button type="button" class="btn btn-ghost" onclick="abrirModalCustodia()"
+                  style="font-size:12px;height:32px;display:flex;align-items:center;gap:6px;border-color:var(--line-strong);color:var(--accent-hi)">
+                  <svg class="i" style="width:14px;height:14px">
+                    <use href="#i-history" />
+                  </svg>
+                  <span>Linha de Trocas</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="grid" id="vendTable">
+                <thead>
+                  <tr>
+                    <th>Vendedor / Motorista</th>
+                    <th style="width:145px">Supervisor & Rota</th>
+                    <th style="width:145px">Veículo & KM</th>
+                    <th style="width:155px">Situação da Vistoria</th>
+                    <th style="width:185px">Próxima Vistoria & Prazo</th>
+                    <th style="width:135px">Última Vistoria</th>
+                    <th style="width:190px;text-align:right">Ações Rápidas</th>
+                  </tr>
+                </thead>
+                <tbody id="vendTableBody">
+                  <!-- Preenchido via renderVendedoresView() -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
