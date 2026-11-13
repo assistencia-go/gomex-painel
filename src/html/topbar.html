@@ -1,0 +1,165 @@
+  <!-- ========================================================================== -->
+  <!-- APLICAÇÃO -->
+  <!-- ========================================================================== -->
+  <div id="app" hidden>
+    <!-- MENU LATERAL -->
+    <aside class="sidebar" id="sidebar" aria-label="Menu principal">
+      <div class="sb-brand">
+        <div class="brand-mark"><svg class="i">
+            <use href="#i-truck" />
+          </svg></div>
+        <div>
+          <div class="brand-name">Gomex Frota</div>
+          <div class="brand-sub">Painel executivo</div>
+        </div>
+      </div>
+
+      <nav class="sb-nav" aria-label="Seções">
+        <div class="sb-label">Menu</div>
+        <button type="button" class="sb-item active" id="btnViewVistorias" onclick="alternarVisaoPrincipal('vistorias')"
+          title="Vistorias" aria-label="Vistorias">
+          <svg class="i">
+            <use href="#i-badge-check" />
+          </svg><span>Vistorias</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewManut" onclick="alternarVisaoPrincipal('manutencao')"
+          title="Painel Manutenção">
+          <svg class="i">
+            <use href="#i-tool" />
+          </svg><span>Manutenção</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewOcorrencias" onclick="alternarVisaoPrincipal('ocorrencias')"
+          title="Ocorrências & Pausas da Frota">
+          <svg class="i">
+            <use href="#i-alert" />
+          </svg><span>Ocorrências</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewGastos" onclick="alternarVisaoPrincipal('gastos')"
+          title="Custos, Peças & Óleo por Veículo">
+          <svg class="i">
+            <use href="#i-wallet" />
+          </svg><span>Custos & Peças</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewGaleria" onclick="alternarVisaoPrincipal('galeria')"
+          title="Galeria de Fotos dos Veículos">
+          <svg class="i">
+            <use href="#i-camera" />
+          </svg><span>Galeria de Fotos</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewVendedores" onclick="alternarVisaoPrincipal('vendedores')"
+          title="Vendedores">
+          <svg class="i">
+            <use href="#i-user" />
+          </svg><span>Vendedores</span>
+        </button>
+        <button type="button" class="sb-item" id="btnViewFrotaCad" onclick="alternarVisaoPrincipal('frotacad')"
+          title="Cadastro Fixo & Prontuário da Frota">
+          <svg class="i">
+            <use href="#i-truck" />
+          </svg><span>Frota & Veículos</span>
+        </button>
+        <button type="button" class="sb-item sb-item-admin" id="btnViewAdmin" onclick="alternarVisaoPrincipal('admin')"
+          title="Gestão de Permissões (Exclusivo Admin Gomex)" style="display:none; border-top: 1px solid var(--line); margin-top: 6px; padding-top: 10px;">
+          <svg class="i" style="color:#4f46e5">
+            <use href="#i-shield" />
+          </svg><span>Permissões & Acessos</span>
+        </button>
+      </nav>
+
+      <div class="sb-foot">
+        <div class="whoami"><svg class="i">
+            <use href="#i-user" />
+          </svg><span id="userNameLabel">gomex</span></div>
+        <button type="button" class="btn btn-ghost" id="btnLogout" aria-label="Sair do painel">
+          <svg class="i">
+            <use href="#i-logout" />
+          </svg><span>Sair</span>
+        </button>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <div class="topbar-in">
+          <div class="topbar-mobile-brand">
+            <div class="brand-mark"><svg class="i">
+                <use href="#i-truck" />
+              </svg></div>
+            <div>
+              <div class="brand-name">Gomex Frota</div>
+              <span class="brand-sub-mob">Painel Executivo</span>
+            </div>
+          </div>
+          <div class="spacer"></div>
+
+          <!-- Sincronismo -->
+          <div class="sync" id="sync" data-state="loading" role="status">
+            <i class="sync-dot"></i><span id="syncText">Conectando…</span>
+          </div>
+
+          <!-- Notificações Sonoras -->
+          <button type="button" class="btn btn-ghost btn-icon" id="btnSoundToggle" title="Notificações Sonoras Ativadas"
+            aria-label="Alternar som">
+            <svg class="i" id="icoSound">
+              <use href="#i-bell" />
+            </svg>
+          </button>
+
+          <!-- Botão Instalar Aplicativo no Aparelho -->
+          <button type="button" class="btn btn-ghost btn-icon" id="btnPwaInstall" title="Instalar Aplicativo Gomex Frota" aria-label="Instalar aplicativo" hidden>
+            <svg class="i"><use href="#i-download" /></svg>
+          </button>
+
+          <!-- Alternador Modo Claro / Escuro -->
+          <!-- Modo Escuro desativado conforme solicitado: tema exclusivamente claro -->
+          <button type="button" class="btn btn-ghost btn-icon" id="btnThemeToggle" title="Modo Claro Ativo" aria-label="Modo Claro" style="display:none !important">
+            <svg class="i" id="icoTheme"><use href="#i-sun" /></svg>
+          </button>
+
+          <!-- Botão Sair Dedicado para Mobile no Topo -->
+          <button type="button" class="btn btn-ghost btn-icon topbar-mobile-logout" onclick="encerrarSessao()" title="Sair do painel" aria-label="Sair">
+            <svg class="i"><use href="#i-logout" /></svg>
+          </button>
+
+        </div>
+      </header>
+
+      <main class="page">
+        <!-- Banner de Ativação de Notificações Mobile -->
+        <div id="bannerAtivarPush" class="banner-push" style="display:none;margin-bottom:12px;padding:10px 14px;background:var(--panel-2);border:1px solid var(--accent);border-radius:10px;align-items:center;justify-content:space-between;gap:10px;box-sizing:border-box">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;flex:none">
+              <svg class="i" style="width:16px;height:16px"><use href="#i-bell" /></svg>
+            </div>
+            <div style="font-size:12px;line-height:1.35;color:var(--ink);min-width:0">
+              <strong>Ativar Alertas no Celular:</strong> Receba notificações na barra de status quando novas vistorias chegarem.
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex:none">
+            <button type="button" class="btn btn-primary" onclick="abrirModalNotificacoesPush()" style="height:30px;padding:0 10px;font-size:11.5px;font-weight:700">Ativar</button>
+            <button type="button" class="btn btn-ghost btn-icon" onclick="dispensarBannerPush()" style="height:30px;width:30px" title="Dispensar"><svg class="i"><use href="#i-x" /></svg></button>
+          </div>
+        </div>
+        <div class="page-head">
+          <div>
+            <h1 id="pageMainTitle">Vistorias da frota</h1>
+            <p id="pageMainSubtitle">Acompanhamento em tempo real, aprovação de liberação e reemissão oficial de
+              check-lists.</p>
+          </div>
+          <div class="head-actions">
+            <button type="button" class="btn" onclick="abrirModalSubirFoto()"
+              title="Subir foto do veículo enviada pelo motorista"><svg class="i">
+                <use href="#i-camera" />
+              </svg><span>Subir Foto</span></button>
+            <button type="button" class="btn btn-primary" id="btnTopLancarGasto" onclick="abrirModalLancarGasto()"
+              title="Lançar gasto, peça ou óleo em um veículo"><svg class="i">
+                <use href="#i-plus" />
+              </svg><span>Lançar Gasto / Peça</span></button>
+            <button type="button" class="btn" id="btnRefresh" title="Sincronizar agora"><svg class="i">
+                <use href="#i-refresh" />
+              </svg><span>Atualizar</span></button>
+            <button type="button" class="btn" id="btnExport" title="Download em formato CSV para Excel"><svg class="i">
+                <use href="#i-download" />
+              </svg><span>Exportar CSV</span></button>
+          </div>
+        </div>
