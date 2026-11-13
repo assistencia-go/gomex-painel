@@ -51,3 +51,14 @@ node validate.mjs
 * **Versões Fixas e Marcadas (Git Release Tags):**  
   Versões aprovadas são marcadas com tags imutáveis (ex: `v1.5.0-stable`). Em caso de auditoria ou necessidade de restauração, a tag permanece 100% gravada no repositório.
 
+---
+
+## 3. Diretriz Visual Corporativa: Política Estrita Zero-Emoji
+
+> **REGRA PERMANENTE DO PROJETO:**  
+> É terminantemente **proibido** o uso de emojis na interface da aplicação (HTML, JavaScript, CSS, botões, modais, mensagens de WhatsApp, alertas ou badges).
+
+1. **Padrão Institucional:** A identidade visual da Gomex Distribuidora segue rigoroso padrão executivo sóbrio. Todas as sinalizações visuais devem empregar exclusivamente ícones vetoriais SVG (`<svg class="i"><use href="#..." /></svg>`) ou texto institucional claro.
+2. **Bloqueio Automático Pré-Deploy:** O script `validate.mjs` executa uma varredura Unicode (`\p{Extended_Pictographic}`) no `index.html`. Caso qualquer emoji seja introduzido acidentalmente em atualizações futuras, **o teste é reprovado e o deploy é imediatamente abortado**.
+
+
