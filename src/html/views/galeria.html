@@ -1,0 +1,121 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO 5: GALERIA DE FOTOS DOS VEÍCULOS (PLACA, DATA, MOTORISTA, OBS) -->
+        <!-- ====================================================================== -->
+        <div id="sectionGaleriaView" hidden>
+          <!-- KPIs da Galeria -->
+          <section class="summary" aria-label="Resumo da galeria de fotos">
+            <dl class="summary-grid summary-grid-maint">
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Fotos na Galeria</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-camera" />
+                    </svg></div>
+                </div>
+                <dd id="galStatTotal">0</dd>
+                <span class="stat-sub">Registros fotográficos salvos</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Veículos Fotografados</span>
+                  <div class="stat-ico emerald"><svg class="i">
+                      <use href="#i-truck" />
+                    </svg></div>
+                </div>
+                <dd id="galStatPlacas" style="color:var(--ok)">0</dd>
+                <span class="stat-sub">Placas com histórico visual</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Motoristas Registrados</span>
+                  <div class="stat-ico purple"><svg class="i">
+                      <use href="#i-user" />
+                    </svg></div>
+                </div>
+                <dd id="galStatMotoristas">0</dd>
+                <span class="stat-sub">Condutores vinculados às fotos</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Último Envio</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-calendar" />
+                    </svg></div>
+                </div>
+                <dd id="galStatUltimaData" style="font-size:18px">–</dd>
+                <span class="stat-sub" id="galStatUltimaSub">Nenhuma foto enviada ainda</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Quadro Principal da Galeria -->
+          <section class="board" aria-label="Galeria de fotos por veículo">
+            <div
+              style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px">
+              <div>
+                <h2 style="font-size:15px;font-weight:700">Galeria Fotográfica dos Veículos</h2>
+                <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Suba as fotos encaminhadas pelos
+                  motoristas com placa, data da foto, qual era o motorista e observações.</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-primary" onclick="abrirModalSubirFoto()">
+                  <svg class="i">
+                    <use href="#i-camera" />
+                  </svg>
+                  <span>+ Subir Foto na Galeria</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtros da Galeria -->
+            <div class="toolbar">
+              <div class="search">
+                <svg class="i">
+                  <use href="#i-search" />
+                </svg>
+                <label for="galFiltroBusca" class="sr-only">Buscar foto</label>
+                <input class="input" type="search" id="galFiltroBusca"
+                  placeholder="Buscar por placa, motorista, descrição ou categoria..." autocomplete="off"
+                  oninput="renderGaleriaView()">
+              </div>
+
+              <select class="select" id="galFiltroPlaca" onchange="renderGaleriaView()">
+                <option value="">Todas as placas</option>
+              </select>
+
+              <select class="select" id="galFiltroMotorista" onchange="renderGaleriaView()">
+                <option value="">Todos os motoristas</option>
+              </select>
+
+              <select class="select" id="galFiltroCategoria" onchange="renderGaleriaView()">
+                <option value="">Todas as categorias</option>
+                <option value="Estado Geral / Vistoria">Estado Geral / Vistoria</option>
+                <option value="Saída / Retorno de Rota">Saída / Retorno de Rota</option>
+                <option value="Peça Trocada / Manutenção">Peça Trocada / Manutenção</option>
+                <option value="Avaria / Carroceria">Avaria / Carroceria</option>
+                <option value="Pneus / Calibragem">Pneus / Calibragem</option>
+                <option value="Painel / Hodômetro (KM)">Painel / Hodômetro (KM)</option>
+                <option value="Nota Fiscal / Comprovante">Nota Fiscal / Comprovante</option>
+                <option value="Outros">Outros</option>
+              </select>
+
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGaleria" onclick="limparFiltrosGaleria()"
+                hidden>
+                <svg class="i">
+                  <use href="#i-x" />
+                </svg>Limpar filtros
+              </button>
+            </div>
+
+            <!-- Grid de Fotos -->
+            <div id="galeriaGridContainer" class="galeria-grid"></div>
+
+            <div class="board-foot">
+              <span id="galeriaFooterInfo">0 fotos exibidas</span>
+              <span style="font-size:12px;color:var(--ink-3)">Sincronizado</span>
+            </div>
+          </section>
+        </div>
