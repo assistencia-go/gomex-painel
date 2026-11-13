@@ -3143,6 +3143,160 @@
       color: #f49b89;
     }
 
+    body.theme-light .badge-pontual.em-dia {
+      background: #ecfdf5 !important;
+      color: #047857 !important;
+      border: 1px solid #a7f3d0 !important;
+    }
+
+    body.theme-light .badge-pontual.atencao {
+      background: #fffbeb !important;
+      color: #b45309 !important;
+      border: 1px solid #fde68a !important;
+    }
+
+    body.theme-light .badge-pontual.critico {
+      background: #fef2f2 !important;
+      color: #b91c1c !important;
+      border: 1px solid #fecaca !important;
+    }
+
+    body.theme-light .custodia-veredicto-box.alerta {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    body.theme-light .custodia-veredicto-box.ok {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    body.theme-light .custodia-veredicto-box.preexistente {
+      background: #fff7ed;
+      border-color: #fed7aa;
+      color: #9a3412;
+    }
+
+    /* Ciclo de Vistoria e Acompanhamento por Supervisor */
+    .vend-ciclo-box {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 155px;
+    }
+
+    .vend-ciclo-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .vend-ciclo-sub {
+      font-size: 11px;
+      color: var(--ink-3);
+      line-height: 1.25;
+    }
+
+    .vend-ciclo-track {
+      width: 100%;
+      height: 5px;
+      background: var(--line);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .vend-ciclo-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.25s ease;
+    }
+
+    .vend-ciclo-fill.ok {
+      background: #10b981;
+    }
+
+    .vend-ciclo-fill.warn {
+      background: #f59e0b;
+    }
+
+    .vend-ciclo-fill.bad {
+      background: #ef4444;
+    }
+
+    .equipes-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .equipes-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sup-group-block {
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      background: var(--panel);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .sup-group-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .sup-group-metrics {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sup-pill-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .sup-rel-kpis {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .sup-rel-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sup-rel-kpis > div:last-child {
+        grid-column: 1 / -1;
+      }
+    }
+
     /* ============================================================================
      BADGES E EDIÇÃO DE ROTA
      ============================================================================ */
@@ -4433,49 +4587,185 @@
 
       /* Tabela de Manutenção e Vendedores em Cards Mobile */
       #sectionManutView .grid thead,
-      #vendTable thead {
+      #vendTable thead,
+      .sup-rel-table thead,
+      #modalHistVendedor .grid thead {
         display: none;
       }
 
       #sectionManutView .grid,
       #sectionManutView .grid tbody,
       #vendTable,
-      #vendTable tbody {
+      #vendTable tbody,
+      .sup-rel-table,
+      .sup-rel-table tbody,
+      #modalHistVendedor .grid,
+      #modalHistVendedor .grid tbody {
         display: block;
       }
 
       #sectionManutView .grid tr,
-      #vendTable tr {
+      #vendTable tr,
+      .sup-rel-table tr,
+      #modalHistVendedor .grid tr {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         padding: 14px;
         border-bottom: 1px solid var(--line);
       }
 
       #sectionManutView .grid td,
-      #vendTable td {
+      #vendTable td,
+      .sup-rel-table td,
+      #modalHistVendedor .grid td {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 10px;
         padding: 0;
         border: 0;
         max-width: 100% !important;
+        text-align: right !important;
+      }
+
+      #vendTable td:first-child,
+      .sup-rel-table td:first-child {
         text-align: left !important;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed var(--line);
+      }
+
+      #vendTable td[data-label]::before,
+      .sup-rel-table td[data-label]::before,
+      #modalHistVendedor .grid td[data-label]::before {
+        content: attr(data-label);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--ink-3);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        text-align: left;
+        flex-shrink: 0;
+      }
+
+      #vendTable td .vend-ciclo-box,
+      .sup-rel-table td .vend-ciclo-box {
+        align-items: flex-end;
+        text-align: right;
+        min-width: 170px;
       }
 
       #sectionManutView .grid td:last-child button,
-      #vendTable td:last-child>div {
+      #vendTable td:last-child>div,
+      .sup-rel-table td:last-child>div {
         width: 100%;
         display: flex;
         gap: 8px;
         margin-top: 4px;
       }
 
-      #vendTable td:last-child>div button {
+      #vendTable td:last-child>div button,
+      .sup-rel-table td:last-child>div button {
         flex: 1;
-        height: 34px !important;
+        height: 36px !important;
+        justify-content: center;
+      }
+
+      /* Otimização Mobile da Visão de Vendedores e Modal de Supervisores */
+      .equipes-top-bar {
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+
+      .equipes-top-actions {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .equipes-top-actions .btn {
+        width: 100%;
+        height: 40px !important;
+        justify-content: center;
+        font-size: 13px !important;
+      }
+
+      #sectionVendedoresView .equipes-cards-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      #sectionVendedoresView .panel-filters {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch !important;
+      }
+
+      #sectionVendedoresView .panel-filters .search-wrap,
+      #sectionVendedoresView .panel-filters .select,
+      #sectionVendedoresView .panel-filters > .btn {
+        width: 100% !important;
+        height: 38px !important;
+        justify-content: center;
+      }
+
+      #sectionVendedoresView .panel-filters .btn-group {
+        width: 100%;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      #sectionVendedoresView .panel-filters .btn-group .btn {
+        width: 100%;
+        justify-content: center;
+        height: 36px !important;
+      }
+
+      #modalHistVendedor .vend-hist-kpis,
+      #modalRelatorioSupervisores .sup-rel-filters-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .sup-group-head {
+        flex-direction: column;
+        align-items: stretch !important;
+        padding: 12px 14px;
+      }
+
+      .sup-group-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+      }
+
+      .sup-group-actions .btn {
+        flex: 1;
+        justify-content: center;
+        height: 36px !important;
+      }
+
+      #modalRelatorioSupervisores .modal-foot {
+        flex-direction: column-reverse !important;
+        align-items: stretch !important;
+      }
+
+      #modalRelatorioSupervisores .modal-foot > button,
+      #modalRelatorioSupervisores .modal-foot > div {
+        width: 100%;
+      }
+
+      #modalRelatorioSupervisores .modal-foot > div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #modalRelatorioSupervisores .modal-foot .btn {
+        width: 100%;
+        height: 42px !important;
+        justify-content: center;
       }
 
       /* Gaveta de Detalhes (Drawer) Otimizada para Mobile */
@@ -6683,6 +6973,37 @@
         <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
         <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
       </symbol>
+      <symbol id="i-share" viewBox="0 0 24 24">
+        <circle cx="18" cy="5" r="3" />
+        <circle cx="6" cy="12" r="3" />
+        <circle cx="18" cy="19" r="3" />
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+      </symbol>
+      <symbol id="i-users" viewBox="0 0 24 24">
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </symbol>
+      <symbol id="i-bar-chart" viewBox="0 0 24 24">
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+      </symbol>
+      <symbol id="i-filter" viewBox="0 0 24 24">
+        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+      </symbol>
+      <symbol id="i-clipboard" viewBox="0 0 24 24">
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+      </symbol>
     </defs>
   </svg>
 
@@ -7093,7 +7414,7 @@
           <!-- TABELA E CONTROLE DE FILTROS -->
           <section class="board" aria-label="Lista de vistorias">
             <div class="tabs" id="tabs">
-              <button type="button" class="tab" data-status="" aria-pressed="true">Todas <span class="cnt"
+              <button type="button" class="tab" data-status="" aria-pressed="true"><svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg>Todas <span class="cnt"
                   id="cntAll">0</span></button>
               <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i
                   class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
@@ -7264,9 +7585,13 @@
                 <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Controle de oficinas, datas de retorno,
                   custos e observações de reparo de cada veículo da frota.</p>
               </div>
-              <div style="display:flex;align-items:center;gap:8px">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
                 <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('todos')"
-                  id="btnFilterMaintAll" style="font-weight:700">Todas</button>
+                  id="btnFilterMaintAll" style="font-weight:700;display:inline-flex;align-items:center;gap:6px">
+                  <svg class="i" style="width:14px;height:14px">
+                    <use href="#i-grid" />
+                  </svg> <span>Todas</span>
+                </button>
                 <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('em')"
                   id="btnFilterMaintEm" style="color:#fbbf24;display:inline-flex;align-items:center;gap:6px">
                   <svg class="i" style="width:14px;height:14px">
@@ -7331,7 +7656,7 @@
               <div class="stat">
                 <div class="stat-head">
                   <span class="stat-lbl">Parados Agora</span>
-                  <div class="stat-ico red"><span class="pulse-dot-red"></span></div>
+                  <div class="stat-ico red"><svg class="i"><use href="#i-stopwatch" /></svg></div>
                 </div>
                 <dd id="ocrStatParadosAgora">0</dd>
                 <span class="stat-sub" id="ocrStatParadosSub">Vendedores em pausa</span>
@@ -7381,8 +7706,9 @@
               <span class="pulse-dot-red" style="width:12px;height:12px"></span>
               <span id="ocrAlertaAtrasosTexto" style="font-weight:700">Atenção: existem ocorrências com o tempo médio ultrapassado!</span>
             </div>
-            <button type="button" class="btn btn-sm" onclick="filtrarOcorrencias('atrasado')" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700">
-              Ver Atrasadas
+            <button type="button" class="btn btn-sm" onclick="filtrarOcorrencias('atrasado')" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-alert" /></svg>
+              <span>Ver Atrasadas</span>
             </button>
           </div>
 
@@ -7416,22 +7742,22 @@
             <div style="display:flex;flex-direction:column;gap:12px">
               <div class="ocr-filter-tabs-row">
                 <button type="button" class="filter-tab active" id="btnOcrFiltroTodos" onclick="filtrarOcorrencias('todos')">
-                  Todos <span class="tab-badge" id="badgeOcrFiltroTodos">0</span>
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg> Todos <span class="tab-badge" id="badgeOcrFiltroTodos">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" onclick="filtrarOcorrencias('aberto')">
                   <span class="pulse-dot-red" style="margin-right:2px"></span> Parados Agora <span class="tab-badge" id="badgeOcrFiltroAbertos">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroAgendadas" onclick="filtrarOcorrencias('agendado')">
-                  Agendadas <span class="tab-badge" id="badgeOcrFiltroAgendadas">0</span>
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-calendar-clock" /></svg> Agendadas <span class="tab-badge" id="badgeOcrFiltroAgendadas">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroAtrasados" onclick="filtrarOcorrencias('atrasado')">
-                  Tempo Excedido <span class="tab-badge" id="badgeOcrFiltroAtrasados">0</span>
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-alert" /></svg> Tempo Excedido <span class="tab-badge" id="badgeOcrFiltroAtrasados">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
-                  Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-calendar" /></svg> Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" onclick="filtrarOcorrencias('finalizado')">
-                  Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg> Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
                 </button>
               </div>
 
@@ -7456,17 +7782,18 @@
         <div id="sectionVendedoresView" hidden>
           <!-- CARDS DAS 3 EQUIPES OFICIAIS & SUPERVISÃO -->
           <div class="equipes-overview-wrap" style="margin-bottom:14px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-              <div style="display:flex;align-items:center;gap:8px">
+            <div class="equipes-top-bar">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <svg class="i" style="width:16px;height:16px;color:var(--accent-hi)"><use href="#i-users" /></svg>
                 <span style="font-size:12px;font-weight:800;color:var(--ink-2);text-transform:uppercase;letter-spacing:0.5px">Supervisão & Equipes Gomex</span>
                 <span class="badge-count" style="background:var(--accent-tint);color:var(--accent-hi);font-weight:700;padding:2px 8px;border-radius:12px;font-size:11px">3 Equipes · 35 Vendedores Cadastrados</span>
               </div>
-              <div style="display:flex;align-items:center;gap:6px">
-                <button type="button" class="btn btn-ghost" id="btnCopiarWhatsGeral" onclick="copiarCobrancaWhatsAppGeral()"
-                  style="font-size:12px;height:32px;color:var(--ok);border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.08);font-weight:700"
-                  title="Copiar lista consolidada de quem não fez vistoria para o WhatsApp da supervisão">
-                  <svg class="i" style="width:14px;height:14px"><use href="#i-share" /></svg>
-                  <span>Cobrar Todos os Pendentes (WhatsApp)</span>
+              <div class="equipes-top-actions">
+                <button type="button" class="btn btn-primary" id="btnAbrirRelatorioSupervisores" onclick="abrirModalRelatorioSupervisores('todos')"
+                  style="font-size:12.5px;height:36px;padding:0 16px;font-weight:700;display:inline-flex;align-items:center;gap:7px"
+                  title="Abrir Relatório de Vistorias por Supervisor (Em dia, vencidas, prazos e emissão em PDF)">
+                  <svg class="i" style="width:15px;height:15px"><use href="#i-file-text" /></svg>
+                  <span>Relatório por Supervisor</span>
                 </button>
               </div>
             </div>
@@ -7477,15 +7804,29 @@
               <div class="equipe-card" id="cardEq101" onclick="selecionarEquipeFiltro('101')"
                 style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                  <span class="badge" style="background:rgba(79,70,229,0.15);color:#818cf8;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 101</span>
-                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 201 a 239</span>
+                  <span class="badge" style="background:rgba(79,70,229,0.14);color:#4338ca;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 101
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 201 a 239
+                  </span>
                 </div>
                 <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Bezerra</div>
                 <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 2 · 12 Vendedores</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
-                  <span>Em dia: <strong id="eq101EmDia" style="color:var(--ok)">0</strong></span>
-                  <span>Pendentes: <strong id="eq101Pendentes" style="color:var(--bad)">0</strong></span>
-                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('101')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq101EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq101Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq101Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('101')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 101">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('101', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 101 (Alisson Bezerra)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
                 </div>
               </div>
 
@@ -7493,15 +7834,29 @@
               <div class="equipe-card" id="cardEq102" onclick="selecionarEquipeFiltro('102')"
                 style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                  <span class="badge" style="background:rgba(14,165,233,0.15);color:#38bdf8;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 102</span>
-                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 203 a 238</span>
+                  <span class="badge" style="background:rgba(14,165,233,0.14);color:#0369a1;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 102
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 203 a 238
+                  </span>
                 </div>
                 <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Eliase Mendes</div>
                 <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 3 · 11 Vendedores</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
-                  <span>Em dia: <strong id="eq102EmDia" style="color:var(--ok)">0</strong></span>
-                  <span>Pendentes: <strong id="eq102Pendentes" style="color:var(--bad)">0</strong></span>
-                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('102')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq102EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq102Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq102Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('102')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 102">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('102', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 102 (Eliase Mendes)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
                 </div>
               </div>
 
@@ -7509,15 +7864,29 @@
               <div class="equipe-card" id="cardEq103" onclick="selecionarEquipeFiltro('103')"
                 style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-                  <span class="badge" style="background:rgba(16,185,129,0.15);color:#34d399;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">EQUIPE 103</span>
-                  <span style="font-size:11px;color:var(--ink-3);font-weight:600">Rotas 215 a 240</span>
+                  <span class="badge" style="background:rgba(16,185,129,0.14);color:#047857;font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-users" /></svg> EQUIPE 103
+                  </span>
+                  <span style="font-size:11px;color:var(--ink-3);font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    <svg class="i" style="width:11px;height:11px"><use href="#i-truck" /></svg> Rotas 215 a 240
+                  </span>
                 </div>
                 <div style="font-size:15px;font-weight:800;color:var(--ink);margin-bottom:2px">Alisson Pereira</div>
                 <div style="font-size:11.5px;color:var(--ink-3);margin-bottom:10px">Supervisor 4 · 12 Vendedores</div>
-                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:12px">
-                  <span>Em dia: <strong id="eq103EmDia" style="color:var(--ok)">0</strong></span>
-                  <span>Pendentes: <strong id="eq103Pendentes" style="color:var(--bad)">0</strong></span>
-                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); copiarCobrancaWhatsAppEquipe('103')" style="height:22px;padding:0 8px;font-size:11px;color:var(--ok);font-weight:700" title="Copiar pendentes desta equipe">Copiar WhatsApp</button>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel-2);padding:8px 10px;border-radius:6px;font-size:11.5px;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--ok)"><use href="#i-check" /></svg> Em dia: <strong id="eq103EmDia" style="color:var(--ok)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--warn)"><use href="#i-clock" /></svg> Próx.: <strong id="eq103Atencao" style="color:var(--warn)">0</strong></span>
+                  <span style="display:inline-flex;align-items:center;gap:4px"><svg class="i" style="width:12px;height:12px;color:var(--bad)"><use href="#i-alert" /></svg> Pendentes: <strong id="eq103Pendentes" style="color:var(--bad)">0</strong></span>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px">
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); abrirModalRelatorioSupervisores('103')" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--accent-hi);font-weight:700;justify-content:center" title="Acompanhar vendedores da Equipe 103">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-eye" /></svg>
+                    <span>Ver Vendedores</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="event.stopPropagation(); gerarRelatorioPdfVendedoresSupervisor('103', 'todos', false)" style="flex:1;height:28px;padding:0 8px;font-size:11px;color:var(--ink);font-weight:700;justify-content:center;border-color:var(--line-strong)" title="Gerar PDF da Equipe 103 (Alisson Pereira)">
+                    <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg>
+                    <span>Relatório PDF</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -7526,7 +7895,7 @@
           <!-- Resumo de Métricas de Vendedores -->
           <section class="summary" aria-label="Resumo dos vendedores">
             <dl class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))">
-              <div class="stat">
+              <div class="stat" onclick="filtrarTabelaVendedores('todos')" style="cursor:pointer" title="Ver todos os vendedores">
                 <div class="stat-head">
                   <span class="stat-lbl">Vendedores Oficiais</span>
                   <div class="stat-ico blue"><svg class="i">
@@ -7537,7 +7906,7 @@
                 <span class="stat-sub">3 equipes cadastradas</span>
               </div>
 
-              <div class="stat">
+              <div class="stat" onclick="filtrarTabelaVendedores('pendentes')" style="cursor:pointer" title="Filtrar vendedores sem vistoria ou atrasados">
                 <div class="stat-head">
                   <span class="stat-lbl">Pendentes de Vistoria</span>
                   <div class="stat-ico red"><svg class="i">
@@ -7548,7 +7917,7 @@
                 <span class="stat-sub">Sem vistoria ou atrasadas</span>
               </div>
 
-              <div class="stat">
+              <div class="stat" onclick="filtrarTabelaVendedores('em_dia')" style="cursor:pointer" title="Filtrar vendedores com vistoria em dia">
                 <div class="stat-head">
                   <span class="stat-lbl">Vistoria em Dia</span>
                   <div class="stat-ico green"><svg class="i">
@@ -7559,7 +7928,7 @@
                 <span class="stat-sub">Dentro do ciclo de 30 dias</span>
               </div>
 
-              <div class="stat">
+              <div class="stat" onclick="filtrarTabelaVendedores('atencao')" style="cursor:pointer" title="Filtrar vendedores cuja próxima vistoria vence em até 7 dias">
                 <div class="stat-head">
                   <span class="stat-lbl">Próxima de Vencer</span>
                   <div class="stat-ico amber"><svg class="i">
@@ -7567,7 +7936,7 @@
                     </svg></div>
                 </div>
                 <dd id="vendStatAtencao" style="color:var(--warn)">0</dd>
-                <span class="stat-sub">Aviso: 23 a 30 dias</span>
+                <span class="stat-sub">Vence nos próximos 7 dias</span>
               </div>
 
               <div class="stat">
@@ -7587,8 +7956,8 @@
           <section class="panel">
             <div class="panel-head" style="gap:14px;flex-wrap:wrap">
               <div>
-                <h2>Gestão de Vendedores & Equipes</h2>
-                <p>Acompanhe a conformidade de vistorias por supervisor e envie cobranças rápidas.</p>
+                <h2>Gestão de Vendedores, Prazos & Supervisores</h2>
+                <p>Acompanhe quem está sem vistoria, quanto tempo falta até a próxima vistoria e emita relatórios em PDF por supervisor.</p>
               </div>
 
               <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -7612,20 +7981,24 @@
                 <div class="btn-group">
                   <button type="button" class="btn btn-ghost" id="btnFilterVendAll"
                     onclick="filtrarTabelaVendedores('todos')"
-                    style="font-size:12px;height:32px;background:var(--accent-tint);color:var(--accent-hi);font-weight:700">
-                    Todos
+                    style="font-size:12px;height:32px;background:var(--accent-tint);color:var(--accent-hi);font-weight:700;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg>
+                    <span>Todos</span>
                   </button>
                   <button type="button" class="btn btn-ghost" id="btnFilterVendPendentes"
-                    onclick="filtrarTabelaVendedores('pendentes')" style="font-size:12px;height:32px;color:var(--bad);font-weight:700">
-                    Pendentes
+                    onclick="filtrarTabelaVendedores('pendentes')" style="font-size:12px;height:32px;color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-alert" /></svg>
+                    <span>Sem Vistoria / Venc.</span>
                   </button>
                   <button type="button" class="btn btn-ghost" id="btnFilterVendEmDia"
-                    onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px">
-                    Em dia
+                    onclick="filtrarTabelaVendedores('em_dia')" style="font-size:12px;height:32px;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg>
+                    <span>Em dia</span>
                   </button>
                   <button type="button" class="btn btn-ghost" id="btnFilterVendAtencao"
-                    onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px">
-                    Atenção
+                    onclick="filtrarTabelaVendedores('atencao')" style="font-size:12px;height:32px;display:inline-flex;align-items:center;gap:5px">
+                    <svg class="i" style="width:13px;height:13px"><use href="#i-clock" /></svg>
+                    <span>Próx. Vencer</span>
                   </button>
                 </div>
 
@@ -7644,12 +8017,12 @@
                 <thead>
                   <tr>
                     <th>Vendedor / Motorista</th>
-                    <th style="width:140px">Equipe & Rota</th>
-                    <th style="width:160px">Veículo Atual</th>
-                    <th style="width:160px">Situação da Vistoria</th>
-                    <th style="width:140px">Última Vistoria</th>
-                    <th style="width:110px">KM Atual</th>
-                    <th style="width:230px;text-align:right">Ações Rápidas</th>
+                    <th style="width:145px">Supervisor & Rota</th>
+                    <th style="width:145px">Veículo & KM</th>
+                    <th style="width:155px">Situação da Vistoria</th>
+                    <th style="width:185px">Próxima Vistoria & Prazo</th>
+                    <th style="width:135px">Última Vistoria</th>
+                    <th style="width:190px;text-align:right">Ações Rápidas</th>
                   </tr>
                 </thead>
                 <tbody id="vendTableBody">
@@ -7793,21 +8166,21 @@
               <div class="tabs" id="gastosSubTabs" style="border-bottom:0">
                 <button type="button" class="tab" data-gtab="lancamentos" aria-pressed="true"
                   onclick="alternarAbaGastos('lancamentos')">
-                  Lançamentos Detalhados <span class="cnt" id="cntGastosLanc">0</span>
+                  <svg class="i" style="width:13px;height:13px;color:#10b981"><use href="#i-receipt" /></svg>Lançamentos Detalhados <span class="cnt" id="cntGastosLanc">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_veiculo" aria-pressed="false"
                   onclick="alternarAbaGastos('por_veiculo')">
-                  <i class="dot" style="background:var(--accent-hi)"></i>Investimento por Veículo (Placa) <span
+                  <svg class="i" style="width:13px;height:13px;color:var(--accent-hi)"><use href="#i-truck" /></svg>Investimento por Veículo (Placa) <span
                     class="cnt" id="cntGastosVeic">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_motorista" aria-pressed="false"
                   onclick="alternarAbaGastos('por_motorista')">
-                  <i class="dot" style="background:#38bdf8"></i>Por Quem Gastou (Motorista) <span class="cnt"
+                  <svg class="i" style="width:13px;height:13px;color:#38bdf8"><use href="#i-user" /></svg>Por Quem Gastou (Motorista) <span class="cnt"
                     id="cntGastosMot">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_produto" aria-pressed="false"
                   onclick="alternarAbaGastos('por_produto')">
-                  <i class="dot" style="background:#fbbf24"></i>Por Produto / Peça <span class="cnt"
+                  <svg class="i" style="width:13px;height:13px;color:#fbbf24"><use href="#i-package" /></svg>Por Produto / Peça <span class="cnt"
                     id="cntGastosProd">0</span>
                 </button>
               </div>
@@ -8267,7 +8640,7 @@
       </div>
       <div class="modal-foot" style="padding:14px 20px;display:flex;justify-content:flex-end;gap:10px;background:var(--raised);border-top:1px solid var(--line);">
         <button type="button" class="btn btn-ghost" onclick="fecharModalNovoUsuario()">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="confirmarNovoUsuario()" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;">Criar Usuário</button>
+        <button type="button" class="btn btn-primary" onclick="confirmarNovoUsuario()" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;"><svg class="i" style="width:14px;height:14px"><use href="#i-plus" /></svg> Criar Usuário</button>
       </div>
     </div>
   </div>
@@ -8293,7 +8666,7 @@
       </div>
       <div class="modal-foot" style="padding:14px 20px;display:flex;justify-content:flex-end;gap:10px;background:var(--raised);border-top:1px solid var(--line);">
         <button type="button" class="btn btn-ghost" onclick="fecharModalAlterarSenha()">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="confirmarAlteracaoSenha()" style="background:#4f46e5;border-color:#4f46e5;color:#fff;font-weight:700;">Salvar Nova Senha</button>
+        <button type="button" class="btn btn-primary" onclick="confirmarAlteracaoSenha()" style="background:#4f46e5;border-color:#4f46e5;color:#fff;font-weight:700;"><svg class="i" style="width:14px;height:14px"><use href="#i-check" /></svg> Salvar Nova Senha</button>
       </div>
     </div>
   </div>
@@ -8644,7 +9017,7 @@
             <button type="button" class="btn btn-ghost"
               style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)"
               onclick="if(state.sel){ closeDrawer(); irParaGastosDaPlaca(state.sel.placa); }">
-              Ver Extrato Completo
+              <svg class="i" style="width:12px;height:12px"><use href="#i-receipt" /></svg> Ver Extrato Completo
             </button>
           </div>
           <div class="maint-history-list" id="maintGastosPlacaList">
@@ -8828,13 +9201,6 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <button type="button" class="btn btn-ghost" id="btnHistCobrarWpp"
-            style="color:#25d366;border-color:rgba(37,211,102,0.4);font-size:11.5px;height:28px;padding:0 8px">
-            <svg class="i" style="width:13px;height:13px">
-              <use href="#i-whatsapp" />
-            </svg>
-            <span>Cobrar WhatsApp</span>
-          </button>
           <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i">
               <use href="#i-x" />
             </svg></button>
@@ -8887,7 +9253,7 @@
               <button type="button" class="btn btn-ghost"
                 style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
                 onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGastosDaPlaca(p)">
-                Ver Extrato / PDF
+                <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg> Ver Extrato / PDF
               </button>
               <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
                 onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalLancarGasto(p)">
@@ -8918,7 +9284,7 @@
               <button type="button" class="btn btn-ghost"
                 style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
                 onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGaleriaDaPlaca(p)">
-                Abrir Galeria da Placa
+                <svg class="i" style="width:12px;height:12px"><use href="#i-image" /></svg> Abrir Galeria da Placa
               </button>
               <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
                 onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalSubirFoto(p)">
@@ -8939,11 +9305,11 @@
             <h4 style="font-size:13px;font-weight:700;color:var(--ink-2);margin:0">Linha do Tempo de Vistorias:</h4>
             <div style="display:flex;gap:4px">
               <button type="button" class="timeline-filter-btn active" id="btnHistFilterAll"
-                onclick="filtrarTimelineHist('todos')">Todas</button>
+                onclick="filtrarTimelineHist('todos')"><svg class="i" style="width:11px;height:11px"><use href="#i-grid" /></svg> Todas</button>
               <button type="button" class="timeline-filter-btn" id="btnHistFilterAvarias"
-                onclick="filtrarTimelineHist('avarias')">Com Avarias</button>
+                onclick="filtrarTimelineHist('avarias')"><svg class="i" style="width:11px;height:11px"><use href="#i-alert" /></svg> Com Avarias</button>
               <button type="button" class="timeline-filter-btn" id="btnHistFilterBloq"
-                onclick="filtrarTimelineHist('bloqueadas')">Bloqueadas</button>
+                onclick="filtrarTimelineHist('bloqueadas')"><svg class="i" style="width:11px;height:11px"><use href="#i-ban" /></svg> Bloqueadas</button>
             </div>
           </div>
           <div class="hist-timeline" id="histTimeline"></div>
@@ -9110,15 +9476,15 @@
           <div class="ocr-form-field">
             <label class="gasto-field-lbl" style="font-size:11.5px;color:var(--ink-3)">Toque rápido para preencher serviço e tempo sugerido:</label>
             <div class="chips-grid" id="ocrChipsServicosRapidos">
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Pneu Furado / Borracharia', 'Pneu Furado / Borracharia', 30)">Pneu Furado</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Troca de Óleo em Rota', 'Troca de Óleo / Filtro', 45)">Troca de Óleo</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Freios e Pastilhas', 'Manutenção Rápida / Troca de Peça', 90)">Freios</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Reparo no Banco do Motorista', 'Reparo no Banco', 90)">Reparo Banco</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Mecânica / Motor', 'Quebra Mecânica', 120)"> Mecânica</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Bateria / Elétrica', 'Problema Elétrico / Bateria', 60)"> Elétrica</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Revisão Preventiva', 'Revisão Preventiva', 120)">Revisão</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Guincho / Socorro', 'Guincho / Socorro na Pista', 90)">Guincho</button>
-              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Outro Imprevisto', 'Outro Imprevisto', 60)">Outro</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Pneu Furado / Borracharia', 'Pneu Furado / Borracharia', 30)"><svg class="i" style="width:12px;height:12px"><use href="#i-alert" /></svg> Pneu Furado</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Troca de Óleo em Rota', 'Troca de Óleo / Filtro', 45)"><svg class="i" style="width:12px;height:12px"><use href="#i-droplet" /></svg> Troca de Óleo</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Freios e Pastilhas', 'Manutenção Rápida / Troca de Peça', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Freios</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Reparo no Banco do Motorista', 'Reparo no Banco', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Reparo Banco</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Mecânica / Motor', 'Quebra Mecânica', 120)"><svg class="i" style="width:12px;height:12px"><use href="#i-tool" /></svg> Mecânica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Bateria / Elétrica', 'Problema Elétrico / Bateria', 60)"><svg class="i" style="width:12px;height:12px"><use href="#i-bolt" /></svg> Elétrica</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Revisão Preventiva', 'Revisão Preventiva', 120)"><svg class="i" style="width:12px;height:12px"><use href="#i-calendar-clock" /></svg> Revisão</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Guincho / Socorro', 'Guincho / Socorro na Pista', 90)"><svg class="i" style="width:12px;height:12px"><use href="#i-truck" /></svg> Guincho</button>
+              <button type="button" class="chip-btn" onclick="selecionarChipMotivoOcorrencia('Outro Imprevisto', 'Outro Imprevisto', 60)"><svg class="i" style="width:12px;height:12px"><use href="#i-file" /></svg> Outro</button>
             </div>
           </div>
         </div>
@@ -9741,7 +10107,7 @@
   <!-- MODAL DE HISTÓRICO COMPLETO DO VENDEDOR -->
   <!-- ========================================================================== -->
   <div class="modal-overlay" id="modalHistVendedor">
-    <div class="modal-card" style="max-width:820px;width:95%">
+    <div class="modal-card" style="max-width:860px;width:95%">
       <header class="modal-head">
         <div style="display:flex;align-items:center;gap:12px">
           <div class="vend-avatar" id="mHVendAvatar" style="width:38px;height:38px;font-size:14px">GV</div>
@@ -9757,15 +10123,19 @@
       </header>
       <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
         <!-- Cards de Resumo do Vendedor -->
-        <div
-          style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;padding:12px;background:var(--raised);border-radius:8px">
+        <div class="vend-hist-kpis"
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;padding:12px;background:var(--raised);border-radius:8px;border:1px solid var(--line)">
           <div>
             <div style="font-size:11px;color:var(--ink-3);font-weight:600">Veículo Atual</div>
-            <div id="mHVendCarro" style="font-size:14px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
+            <div id="mHVendCarro" style="font-size:13.5px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
           </div>
           <div>
             <div style="font-size:11px;color:var(--ink-3);font-weight:600">Último Check-list</div>
-            <div id="mHVendUltimaData" style="font-size:13.5px;font-weight:700;color:var(--ink);margin-top:2px">–</div>
+            <div id="mHVendUltimaData" style="font-size:13px;font-weight:700;color:var(--ink);margin-top:2px">–</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Próxima Vistoria & Prazo</div>
+            <div id="mHVendProximaData" style="font-size:13px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
           </div>
           <div>
             <div style="font-size:11px;color:var(--ink-3);font-weight:600">Status Pontualidade</div>
@@ -9803,8 +10173,122 @@
           </div>
         </div>
       </div>
-      <footer class="modal-foot">
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <button type="button" class="btn" onclick="fecharModalVendedor()">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="fecharModalVendedor(); abrirModalRelatorioSupervisores('todos')">
+          <svg class="i" style="width:14px;height:14px"><use href="#i-users" /></svg>
+          <span>Painel de Vendedores por Supervisor</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- MODAL: ACOMPANHAMENTO DE VENDEDORES & RELATÓRIO PDF POR SUPERVISOR -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalRelatorioSupervisores">
+    <div class="modal-card" style="max-width:1080px;width:96%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div
+            style="width:38px;height:38px;border-radius:10px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;flex-shrink:0">
+            <svg class="i" style="width:20px;height:20px">
+              <use href="#i-users" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:800">Acompanhamento de Vendedores & Relatório por Supervisor</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de quem está sem vistoria, vencida, próxima de vencer e emissão de PDF agrupado por supervisor</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioSupervisores()" aria-label="Fechar">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:76vh;overflow-y:auto">
+        <!-- Barra de Filtros do Relatório -->
+        <div class="sup-rel-filters"
+          style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--raised);padding:12px;border-radius:10px;border:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1">
+            <div style="display:flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-users" /></svg>
+              <label for="relSupFiltroEquipe" style="font-size:12px;font-weight:700;color:var(--ink-2)">Supervisor:</label>
+            </div>
+            <select id="relSupFiltroEquipe" class="input" style="height:34px;min-width:210px;font-weight:700"
+              onchange="renderModalRelatorioSupervisores()">
+              <option value="todos">Todos os Supervisores (3 Equipes)</option>
+              <option value="101">Equipe 101 · Alisson Bezerra</option>
+              <option value="102">Equipe 102 · Eliase Mendes</option>
+              <option value="103">Equipe 103 · Alisson Pereira</option>
+            </select>
+
+            <div style="display:flex;align-items:center;gap:6px;margin-left:4px">
+              <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-filter" /></svg>
+              <label for="relSupFiltroStatus" style="font-size:12px;font-weight:700;color:var(--ink-2)">Situação:</label>
+            </div>
+            <select id="relSupFiltroStatus" class="input" style="height:34px;min-width:195px;font-weight:600"
+              onchange="renderModalRelatorioSupervisores()">
+              <option value="todos">Todos os Vendedores</option>
+              <option value="pendentes">Pendentes (Sem Vistoria + Vencidas)</option>
+              <option value="sem_vistoria">Apenas Nunca Realizaram</option>
+              <option value="critico">Apenas Vistorias Vencidas (&gt;30d)</option>
+              <option value="atencao">Próximas da Vistoria (≤ 7 dias)</option>
+              <option value="em_dia">Vistorias Em Dia</option>
+            </select>
+          </div>
+
+          <div class="input-with-icon" style="min-width:210px;flex:0 1 250px">
+            <svg class="i input-icon-left"><use href="#i-search" /></svg>
+            <input type="search" id="relSupInputBusca" class="input" style="height:34px;font-size:12.5px"
+              placeholder="Buscar vendedor, rota ou placa..." oninput="renderModalRelatorioSupervisores()">
+          </div>
+        </div>
+
+        <!-- KPIs Gerais do Acompanhamento -->
+        <div class="sup-rel-kpis">
+          <div style="padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--ink-3);text-transform:uppercase">Total Listado</div>
+            <div style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px" id="relSupKpiTotal">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--bad);text-transform:uppercase">Sem Vistoria</div>
+            <div style="font-size:18px;font-weight:800;color:var(--bad);margin-top:2px" id="relSupKpiSemVist">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.22);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--bad);text-transform:uppercase">Vistoria Vencida</div>
+            <div style="font-size:18px;font-weight:800;color:var(--bad);margin-top:2px" id="relSupKpiVencidas">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--warn);text-transform:uppercase">Próx. Vistoria (≤7d)</div>
+            <div style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px" id="relSupKpiProximas">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--ok);text-transform:uppercase">Em Dia</div>
+            <div style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px" id="relSupKpiEmDia">0</div>
+          </div>
+        </div>
+
+        <!-- Container dos Grupos por Supervisor -->
+        <div id="relSupGruposContainer" style="display:grid;gap:14px">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <button type="button" class="btn" onclick="fecharModalRelatorioSupervisores()">Fechar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, true)"
+            title="Abrir versão de impressão do relatório por supervisor">
+            <svg class="i" style="width:15px;height:15px"><use href="#i-printer" /></svg>
+            <span>Imprimir / Visualizar PDF</span>
+          </button>
+          <button type="button" class="btn btn-primary" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, false)"
+            title="Baixar arquivo PDF agrupado por supervisor">
+            <svg class="i" style="width:15px;height:15px"><use href="#i-file" /></svg>
+            <span>Baixar Relatório PDF por Supervisor</span>
+          </button>
+        </div>
       </footer>
     </div>
   </div>
@@ -11469,6 +11953,7 @@
           status,
           diasDecorridos,
           diasParaVencer,
+          diasRestantes: diasParaVencer,
           dataUltimaIso: cleanDate,
           dataProximaIso,
           dataProximaFmt,
@@ -11701,7 +12186,7 @@
           const pBlk = $('pillBloqueados');
           if (blk > 0) {
             pBlk.hidden = false;
-            pBlk.textContent = blk + ' Bloqueado(s)';
+            pBlk.innerHTML = icon('ban') + ' <span>' + blk + ' Bloqueado(s)</span>';
             pBlk.classList.toggle('active', state.alertType === 'bloqueado');
           } else {
             pBlk.hidden = true;
@@ -11711,7 +12196,7 @@
           if (pVistVenc) {
             if (vistMensalVencida > 0) {
               pVistVenc.hidden = false;
-              pVistVenc.textContent = vistMensalVencida + (vistMensalVencida === 1 ? ' Vistoria Mensal Vencida' : ' Vistorias Mensais Vencidas');
+              pVistVenc.innerHTML = icon('calendar-clock') + ' <span>' + vistMensalVencida + (vistMensalVencida === 1 ? ' Vistoria Mensal Vencida' : ' Vistorias Mensais Vencidas') + '</span>';
               pVistVenc.classList.toggle('active', state.alertType === 'vistoria_vencida');
             } else {
               pVistVenc.hidden = true;
@@ -11722,7 +12207,7 @@
           if (pVistProx) {
             if (vistMensalProxima > 0) {
               pVistProx.hidden = false;
-              pVistProx.textContent = vistMensalProxima + (vistMensalProxima === 1 ? ' Vistoria Mensal Próxima' : ' Vistorias Mensais Próximas');
+              pVistProx.innerHTML = icon('clock') + ' <span>' + vistMensalProxima + (vistMensalProxima === 1 ? ' Vistoria Mensal Próxima' : ' Vistorias Mensais Próximas') + '</span>';
               pVistProx.classList.toggle('active', state.alertType === 'vistoria_proxima');
             } else {
               pVistProx.hidden = true;
@@ -11732,7 +12217,7 @@
           const pPn = $('pillPneus');
           if (comPneuDano > 0) {
             pPn.hidden = false;
-            pPn.textContent = comPneuDano + ' Pneu c/ Dano';
+            pPn.innerHTML = icon('alert') + ' <span>' + comPneuDano + ' Pneu c/ Dano</span>';
             pPn.classList.toggle('active', state.alertType === 'pneu');
           } else {
             pPn.hidden = true;
@@ -11741,7 +12226,7 @@
           const pRev = $('pillRevisao');
           if (revisaoVencendo > 0) {
             pRev.hidden = false;
-            pRev.textContent = revisaoVencendo + ' Revisão Próxima';
+            pRev.innerHTML = icon('tool') + ' <span>' + revisaoVencendo + ' Revisão Próxima</span>';
             pRev.classList.toggle('active', state.alertType === 'revisao');
           } else {
             pRev.hidden = true;
@@ -11751,7 +12236,7 @@
           if (pOleoVenc) {
             if (oleoVencidoCount > 0) {
               pOleoVenc.hidden = false;
-              pOleoVenc.textContent = oleoVencidoCount + (oleoVencidoCount === 1 ? ' Troca de Óleo Vencida' : ' Trocas de Óleo Vencidas');
+              pOleoVenc.innerHTML = icon('droplet') + ' <span>' + oleoVencidoCount + (oleoVencidoCount === 1 ? ' Troca de Óleo Vencida' : ' Trocas de Óleo Vencidas') + '</span>';
               pOleoVenc.classList.toggle('active', state.alertType === 'oleo_vencido');
             } else {
               pOleoVenc.hidden = true;
@@ -11762,7 +12247,7 @@
           if (pOleoProx) {
             if (oleoProximoCount > 0) {
               pOleoProx.hidden = false;
-              pOleoProx.textContent = oleoProximoCount + (oleoProximoCount === 1 ? ' Troca de Óleo Próxima' : ' Trocas de Óleo Próximas');
+              pOleoProx.innerHTML = icon('droplet') + ' <span>' + oleoProximoCount + (oleoProximoCount === 1 ? ' Troca de Óleo Próxima' : ' Trocas de Óleo Próximas') + '</span>';
               pOleoProx.classList.toggle('active', state.alertType === 'oleo_proximo');
             } else {
               pOleoProx.hidden = true;
@@ -11770,7 +12255,7 @@
           }
 
           const isFiltered = Boolean(state.alertOnly || state.alertType);
-          $('btnFilterAlerts').textContent = isFiltered ? 'Exibir Todas' : 'Filtrar Alertas';
+          $('btnFilterAlerts').innerHTML = icon('filter') + ' <span>' + (isFiltered ? 'Exibir Todas' : 'Filtrar Alertas') + '</span>';
           $('btnFilterAlerts').style.background = isFiltered ? 'var(--accent)' : 'rgba(255,255,255,0.15)';
         } else {
           banner.hidden = true;
@@ -14077,7 +14562,7 @@ function renderVendedoresView() {
       '</button>' +
       (v.isPendente
         ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" onclick="copiarCobrancaWhatsAppVendedor(\'' + esc(v.rota) + '\')" title="Copiar mensagem de cobrança pronta para o WhatsApp deste vendedor">' +
-        '<svg class="i" style="width:13px;height:13px"><use href="#i-share"/></svg> <span>Cobrar</span>' +
+        '<svg class="i" style="width:13px;height:13px"><use href="#i-whatsapp"/></svg> <span>Cobrar</span>' +
         '</button>'
         : ''
       ) +
@@ -14517,6 +15002,476 @@ setTimeout(() => {
     });
   }
 }, 50);
+
+// ==============================================================================
+// GOMEX DISTRIBUIDORA · RELATÓRIO DE VISTORIAS POR SUPERVISOR & VENDEDORES
+// ==============================================================================
+
+function abrirModalRelatorioSupervisores(eqFiltro = 'todos') {
+  const m = $('modalRelatorioSupervisores');
+  if (!m) return;
+  if ($('relSupFiltroEquipe')) {
+    $('relSupFiltroEquipe').value = eqFiltro || 'todos';
+  }
+  if ($('relSupFiltroStatus')) {
+    $('relSupFiltroStatus').value = 'todos';
+  }
+  if ($('relSupInputBusca')) {
+    $('relSupInputBusca').value = '';
+  }
+  m.classList.add('open');
+  renderModalRelatorioSupervisores();
+}
+window.abrirModalRelatorioSupervisores = abrirModalRelatorioSupervisores;
+
+function fecharModalRelatorioSupervisores() {
+  const m = $('modalRelatorioSupervisores');
+  if (m) m.classList.remove('open');
+}
+window.fecharModalRelatorioSupervisores = fecharModalRelatorioSupervisores;
+
+function renderModalRelatorioSupervisores() {
+  const container = $('relSupGruposContainer');
+  if (!container) return;
+
+  const eqFiltro = $('relSupFiltroEquipe') ? $('relSupFiltroEquipe').value : 'todos';
+  const stFiltro = $('relSupFiltroStatus') ? $('relSupFiltroStatus').value : 'todos';
+  const qBusca = $('relSupInputBusca') ? normalizarTextoBusca($('relSupInputBusca').value) : '';
+
+  const todos = getVendedoresData();
+
+  const filtrados = todos.filter(v => {
+    // Filtro por Equipe / Supervisor
+    if (eqFiltro !== 'todos' && v.equipe !== eqFiltro) return false;
+
+    // Filtro por Situação da Vistoria
+    if (stFiltro === 'pendentes' && !v.isPendente) return false;
+    if (stFiltro === 'sem_vistoria' && v.statusPontual !== 'sem_vistoria') return false;
+    if (stFiltro === 'critico' && v.statusPontual !== 'critico') return false;
+    if (stFiltro === 'atencao' && v.statusPontual !== 'atencao') return false;
+    if (stFiltro === 'em_dia' && v.statusPontual !== 'em_dia') return false;
+
+    // Filtro de Busca Textual
+    if (qBusca) {
+      const hay = normalizarTextoBusca(v.nome + ' ' + v.rota + ' ' + (v.supervisor || '') + ' ' + (v.veiculoAtual || '') + ' ' + (v.modeloAtual || ''));
+      if (!hay.includes(qBusca)) return false;
+    }
+
+    return true;
+  });
+
+  // Atualizar KPIs do Relatório
+  if ($('relSupKpiTotal')) $('relSupKpiTotal').textContent = filtrados.length;
+  if ($('relSupKpiSemVist')) $('relSupKpiSemVist').textContent = filtrados.filter(v => v.statusPontual === 'sem_vistoria').length;
+  if ($('relSupKpiVencidas')) $('relSupKpiVencidas').textContent = filtrados.filter(v => v.statusPontual === 'critico').length;
+  if ($('relSupKpiProximas')) $('relSupKpiProximas').textContent = filtrados.filter(v => v.statusPontual === 'atencao').length;
+  if ($('relSupKpiEmDia')) $('relSupKpiEmDia').textContent = filtrados.filter(v => v.statusPontual === 'em_dia').length;
+
+  if (!filtrados.length) {
+    container.innerHTML = '<div style="text-align:center;padding:36px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px">' +
+      '<div style="width:48px;height:48px;border-radius:50%;background:rgba(239,68,68,0.1);color:var(--bad);display:grid;place-items:center;margin:0 auto 12px">' +
+      '<svg class="i" style="width:24px;height:24px"><use href="#i-search"/></svg>' +
+      '</div>' +
+      '<h4 style="font-size:15px;font-weight:700;color:var(--ink)">Nenhum vendedor encontrado</h4>' +
+      '<p style="font-size:12.5px;color:var(--ink-3);margin-top:4px">Ajuste os filtros de supervisor, situação ou o termo de busca para visualizar os registros.</p>' +
+      '</div>';
+    return;
+  }
+
+  // Agrupamento por Equipe / Supervisor
+  const equipesOrdem = ['101', '102', '103'];
+  const gruposMap = new Map();
+
+  equipesOrdem.forEach(eqId => {
+    const list = filtrados.filter(v => v.equipe === eqId);
+    if (list.length > 0) {
+      gruposMap.set(eqId, list);
+    }
+  });
+
+  // Vendedores avulsos/outros se existirem
+  const outros = filtrados.filter(v => !equipesOrdem.includes(v.equipe));
+  if (outros.length > 0) {
+    gruposMap.set('outros', outros);
+  }
+
+  let html = '';
+
+  gruposMap.forEach((vendedoresGrupo, eqKey) => {
+    const eqInfo = EQUIPES_INFO[eqKey] || {
+      nome: 'Outros Vendedores / Avulsos',
+      nomeCurto: 'Avulsos',
+      supervisor: 'Sem equipe fixa',
+      supervisorCurto: 'Avulsos',
+      cor: '#64748b',
+      codigo: 'EXT'
+    };
+
+    const emDia = vendedoresGrupo.filter(v => v.statusPontual === 'em_dia').length;
+    const prox = vendedoresGrupo.filter(v => v.statusPontual === 'atencao').length;
+    const pend = vendedoresGrupo.filter(v => v.isPendente).length;
+
+    html += '<div class="sup-group-card" style="border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04)">' +
+      '<div class="sup-group-head" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--panel-2);border-bottom:1px solid var(--line);flex-wrap:wrap;gap:10px">' +
+      '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
+      '<span class="badge" style="background:' + eqInfo.cor + '22;color:' + eqInfo.cor + ';font-weight:800;font-size:11px;padding:3px 8px;border-radius:4px">' +
+      esc(eqInfo.nomeCurto) +
+      '</span>' +
+      '<span style="font-weight:800;font-size:14px;color:var(--ink)">Supervisor: ' + esc(eqInfo.supervisor) + '</span>' +
+      '<div style="display:inline-flex;align-items:center;gap:8px;font-size:11.5px;padding:3px 8px;background:var(--panel);border-radius:6px;border:1px solid var(--line)">' +
+      '<span style="color:var(--ink-2);font-weight:600">' + vendedoresGrupo.length + ' ' + (vendedoresGrupo.length === 1 ? 'vendedor' : 'vendedores') + '</span> · ' +
+      '<span style="color:var(--ok);font-weight:700">Em dia: ' + emDia + '</span> · ' +
+      '<span style="color:var(--warn);font-weight:700">Próx: ' + prox + '</span> · ' +
+      '<span style="color:var(--bad);font-weight:700">Pendentes: ' + pend + '</span>' +
+      '</div>' +
+      '</div>' +
+      '<div class="sup-group-actions" style="display:flex;align-items:center;gap:6px">' +
+      (pend > 0 && eqKey !== 'outros'
+        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 9px;font-size:11.5px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" onclick="copiarCobrancaWhatsAppEquipe(\'' + esc(eqKey) + '\')" title="Copiar lista de pendentes desta equipe para o WhatsApp">' +
+        '<svg class="i" style="width:13px;height:13px"><use href="#i-whatsapp"/></svg> <span>Cobrar Equipe</span>' +
+        '</button>'
+        : ''
+      ) +
+      '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 9px;font-size:11.5px;font-weight:700" onclick="gerarRelatorioPdfVendedoresSupervisor(\'' + esc(eqKey) + '\', \'' + esc(stFiltro) + '\', false)" title="Baixar relatório em PDF desta equipe">' +
+      '<svg class="i" style="width:13px;height:13px"><use href="#i-file-text"/></svg> <span>PDF da Equipe</span>' +
+      '</button>' +
+      '</div>' +
+      '</div>' +
+
+      '<div class="table-wrap" style="overflow-x:auto">' +
+      '<table class="grid sup-rel-table" style="width:100%;margin:0;font-size:12.5px">' +
+      '<thead>' +
+      '<tr>' +
+      '<th style="width:230px">Vendedor / Motorista</th>' +
+      '<th style="width:90px">Rota</th>' +
+      '<th style="width:160px">Veículo & KM</th>' +
+      '<th style="width:165px">Situação da Vistoria</th>' +
+      '<th style="width:175px">Próxima Vistoria</th>' +
+      '<th style="width:150px">Última Vistoria</th>' +
+      '<th style="width:125px;text-align:right">Ações</th>' +
+      '</tr>' +
+      '</thead>' +
+      '<tbody>' +
+      vendedoresGrupo.map(v => {
+        const iniciais = getIniciaisNome(v.nome);
+        const cm = v.cicloMensal;
+        let pontualBadge = '';
+
+        if (v.statusPontual === 'sem_vistoria') {
+          pontualBadge = '<span class="badge-pontual critico" style="background:rgba(239,68,68,0.18);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);font-weight:800"><svg class="i" style="width:11px;height:11px"><use href="#i-alert"/></svg> NUNCA REALIZOU</span>';
+        } else if (v.statusPontual === 'critico') {
+          pontualBadge = '<span class="badge-pontual critico" style="background:rgba(239,68,68,0.15);color:#fca5a5;font-weight:700"><svg class="i" style="width:11px;height:11px"><use href="#i-alert"/></svg> ' + (cm ? 'Vencida (' + cm.diasDecorridos + 'd)' : 'Vencida') + '</span>';
+        } else if (v.statusPontual === 'atencao') {
+          pontualBadge = '<span class="badge-pontual atencao" style="background:rgba(245,158,11,0.15);color:#fcd34d;font-weight:700"><svg class="i" style="width:11px;height:11px"><use href="#i-clock"/></svg> ' + (cm ? 'Vence em ' + cm.diasParaVencer + 'd' : 'Próxima') + '</span>';
+        } else {
+          pontualBadge = '<span class="badge-pontual em-dia" style="background:rgba(16,185,129,0.15);color:#6ee7b7;font-weight:700"><svg class="i" style="width:11px;height:11px"><use href="#i-check"/></svg> ' + (cm ? 'Em dia (' + cm.diasDecorridos + 'd)' : 'Em dia') + '</span>';
+        }
+
+        let proximaHtml = '';
+        if (v.statusPontual === 'sem_vistoria') {
+          proximaHtml = '<span class="txt-bad" style="font-weight:700">Imediata (Sem histórico)</span>';
+        } else if (cm) {
+          if (cm.status === 'vencida') {
+            const atr = Math.abs(cm.diasParaVencer);
+            proximaHtml = '<div class="vend-ciclo-box">' +
+              '<span class="txt-bad" style="font-weight:700">Vencida em ' + esc(cm.dataProximaFmt) + '</span>' +
+              '<span style="font-size:10.5px;color:var(--bad)">Atrasada há ' + atr + (atr === 1 ? ' dia' : ' dias') + '</span>' +
+              '</div>';
+          } else {
+            proximaHtml = '<div class="vend-ciclo-box">' +
+              '<span style="font-weight:700;color:var(--ink)">' + esc(cm.dataProximaFmt) + '</span>' +
+              '<span style="font-size:10.5px;color:var(--ink-3)">Restam ' + cm.diasParaVencer + (cm.diasParaVencer === 1 ? ' dia' : ' dias') + '</span>' +
+              '</div>';
+          }
+        } else {
+          proximaHtml = '<span class="muted">—</span>';
+        }
+
+        let ultimaHtml = '';
+        if (v.dataUltima) {
+          ultimaHtml = '<div>' +
+            '<span style="font-weight:700;color:var(--ink)">' + formatarData(v.dataUltima) + '</span>' +
+            '<span style="display:block;font-size:11px;color:var(--ink-3)">' + esc(v.horaUltima || '--:--') + ' (' + esc(v.tipoUltimo) + ')</span>' +
+            '</div>';
+        } else {
+          ultimaHtml = '<span style="color:var(--bad);font-weight:600">Nenhum registro</span>';
+        }
+
+        let veiculoHtml = '';
+        if (v.veiculoAtual !== '—') {
+          veiculoHtml = '<div class="stack">' +
+            '<button type="button" class="plate" onclick="fecharModalRelatorioSupervisores(); abrirHistoricoVeiculo(\'' + esc(v.veiculoAtual) + '\')" title="Ver histórico">' + esc(v.veiculoAtual) + '</button>' +
+            '<span class="t2" style="font-size:11px">' + esc(v.modeloAtual) + (v.kmAtual ? ' · ' + fmtKm(v.kmAtual) : '') + '</span>' +
+            '</div>';
+        } else {
+          veiculoHtml = '<span class="muted">Sem carro atribuído</span>';
+        }
+
+        return '<tr style="' + (v.isPendente ? 'background:rgba(239,68,68,0.03)' : '') + '">' +
+          '<td data-label="Vendedor">' +
+          '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div class="vend-avatar" style="' + (v.isPendente ? 'background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)' : '') + '">' + esc(iniciais) + '</div>' +
+          '<div>' +
+          '<div style="font-weight:700;color:var(--ink);font-size:13px">' + esc(v.nome) + '</div>' +
+          '<div style="font-size:11px;color:var(--ink-3)">' + v.totalVistorias + ' ' + (v.totalVistorias === 1 ? 'vistoria realizada' : 'vistorias realizadas') + '</div>' +
+          '</div>' +
+          '</div>' +
+          '</td>' +
+          '<td data-label="Rota"><span class="badge-rota" style="font-weight:700">Rota ' + esc(v.rota) + '</span></td>' +
+          '<td data-label="Veículo">' + veiculoHtml + '</td>' +
+          '<td data-label="Situação">' + pontualBadge + '</td>' +
+          '<td data-label="Próxima Vistoria">' + proximaHtml + '</td>' +
+          '<td data-label="Última Vistoria">' + ultimaHtml + '</td>' +
+          '<td data-label="Ações" style="text-align:right">' +
+          '<div style="display:inline-flex;align-items:center;gap:5px">' +
+          '<button type="button" class="btn btn-ghost" style="height:27px;padding:0 7px;font-size:11px;color:var(--accent-hi)" onclick="fecharModalRelatorioSupervisores(); abrirModalVendedor(\'' + esc(v.nome) + '\')" title="Ver histórico completo de vistorias deste vendedor">' +
+          icon('user') + ' <span>Histórico</span>' +
+          '</button>' +
+          (v.isPendente
+            ? '<button type="button" class="btn btn-ghost" style="height:27px;padding:0 7px;font-size:11px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" onclick="copiarCobrancaWhatsAppVendedor(\'' + esc(v.rota) + '\')" title="Copiar cobrança WhatsApp para este vendedor">' +
+            '<svg class="i" style="width:12px;height:12px"><use href="#i-whatsapp"/></svg> <span>Cobrar</span>' +
+            '</button>'
+            : ''
+          ) +
+          '</div>' +
+          '</td>' +
+          '</tr>';
+      }).join('') +
+      '</tbody>' +
+      '</table>' +
+      '</div>' +
+      '</div>';
+  });
+
+  container.innerHTML = html;
+}
+window.renderModalRelatorioSupervisores = renderModalRelatorioSupervisores;
+
+function gerarRelatorioPdfVendedoresSupervisor(equipeFiltro, statusFiltro, isPrint = false) {
+  const eqAlvo = equipeFiltro || ($('relSupFiltroEquipe') ? $('relSupFiltroEquipe').value : 'todos');
+  const stAlvo = statusFiltro || ($('relSupFiltroStatus') ? $('relSupFiltroStatus').value : 'todos');
+  const qBusca = $('relSupInputBusca') ? normalizarTextoBusca($('relSupInputBusca').value) : '';
+
+  const todos = getVendedoresData();
+  const filtrados = todos.filter(v => {
+    if (eqAlvo !== 'todos' && v.equipe !== eqAlvo) return false;
+    if (stAlvo === 'pendentes' && !v.isPendente) return false;
+    if (stAlvo === 'sem_vistoria' && v.statusPontual !== 'sem_vistoria') return false;
+    if (stAlvo === 'critico' && v.statusPontual !== 'critico') return false;
+    if (stAlvo === 'atencao' && v.statusPontual !== 'atencao') return false;
+    if (stAlvo === 'em_dia' && v.statusPontual !== 'em_dia') return false;
+    if (qBusca) {
+      const hay = normalizarTextoBusca(v.nome + ' ' + v.rota + ' ' + (v.supervisor || '') + ' ' + (v.veiculoAtual || '') + ' ' + (v.modeloAtual || ''));
+      if (!hay.includes(qBusca)) return false;
+    }
+    return true;
+  });
+
+  if (!filtrados.length) {
+    toast('Nenhum vendedor encontrado para emitir o relatório.', 'error');
+    return;
+  }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    const M = 10;
+    const W = 190;
+    const ROXO = [48, 42, 110];
+    const CINZA = [95, 95, 110];
+    const LINHA = [195, 195, 208];
+
+    const fonte = (tam, estilo = 'normal', cor = [20, 20, 30]) => {
+      doc.setFont('helvetica', estilo);
+      doc.setFontSize(tam);
+      doc.setTextColor(...cor);
+    };
+
+    const corta = (txt, maxW) => {
+      const l = doc.splitTextToSize(String(txt || ''), maxW);
+      return l[0] || '';
+    };
+
+    let y = M;
+
+    doc.setFillColor(...ROXO);
+    doc.roundedRect(M, y, 28, 13, 2, 2, 'F');
+    fonte(9, 'bold', [255, 255, 255]);
+    doc.text('GOMEX', M + 14, y + 5.8, { align: 'center' });
+    fonte(6, 'bold', [196, 210, 255]);
+    doc.text('FROTA', M + 14, y + 9.8, { align: 'center' });
+
+    fonte(11.5, 'bold', ROXO);
+    doc.text('RELATÓRIO DE VISTORIAS POR SUPERVISOR & VENDEDORES', M + 32, y + 5.2);
+    fonte(7, 'normal', CINZA);
+    doc.text('Controle de conformidade de check-lists, prazos de vistoria mensal e pendências · Gomex Distribuidora', M + 32, y + 9.5);
+
+    const descEq = eqAlvo === 'todos' ? 'Todas as Equipes (35 Vendedores)' : (EQUIPES_INFO[eqAlvo] ? EQUIPES_INFO[eqAlvo].nome : 'Equipe ' + eqAlvo);
+    const dataHoraEmissao = new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    doc.text('Filtro: ' + descEq + ' · Emitido em: ' + dataHoraEmissao, M + 32, y + 12.8);
+
+    y += 16;
+
+    const totGeral = filtrados.length;
+    const emDiaGeral = filtrados.filter(v => v.statusPontual === 'em_dia').length;
+    const proxGeral = filtrados.filter(v => v.statusPontual === 'atencao').length;
+    const pendGeral = filtrados.filter(v => v.isPendente).length;
+
+    const kpiW = W / 4;
+    const kpis = [
+      ['TOTAL DE VENDEDORES', String(totGeral), [20, 20, 30]],
+      ['VISTORIAS EM DIA', String(emDiaGeral), [21, 128, 61]],
+      ['PRÓXIMAS DE VENCER', String(proxGeral), [180, 83, 9]],
+      ['PENDENTES / SEM VISTORIA', String(pendGeral), [220, 38, 38]]
+    ];
+
+    kpis.forEach(([lbl, val, cor], idx) => {
+      const kx = M + idx * kpiW;
+      doc.setFillColor(245, 246, 252);
+      doc.rect(kx, y, kpiW, 11, 'F');
+      doc.setDrawColor(...LINHA);
+      doc.rect(kx, y, kpiW, 11);
+      fonte(5.8, 'bold', CINZA);
+      doc.text(lbl, kx + 2.5, y + 3.8);
+      fonte(9.5, 'bold', cor);
+      doc.text(val, kx + 2.5, y + 8.8);
+    });
+
+    y += 14;
+
+    const equipesOrdem = ['101', '102', '103'];
+    const grupos = [];
+
+    equipesOrdem.forEach(eqId => {
+      const list = filtrados.filter(v => v.equipe === eqId);
+      if (list.length > 0) {
+        grupos.push({ info: EQUIPES_INFO[eqId], lista: list });
+      }
+    });
+
+    const outros = filtrados.filter(v => !equipesOrdem.includes(v.equipe));
+    if (outros.length > 0) {
+      grupos.push({
+        info: {
+          codigo: 'EXT',
+          nome: 'Outros Vendedores / Avulsos',
+          nomeCurto: 'Avulsos',
+          supervisor: 'Sem equipe fixa'
+        },
+        lista: outros
+      });
+    }
+
+    const desenharHeaderTabela = (posY) => {
+      doc.setFillColor(240, 242, 248);
+      doc.rect(M, posY, W, 5, 'F');
+      doc.setDrawColor(...LINHA);
+      doc.rect(M, posY, W, 5);
+      fonte(6, 'bold', CINZA);
+      doc.text('ROTA', M + 2, posY + 3.5);
+      doc.text('VENDEDOR / MOTORISTA', M + 18, posY + 3.5);
+      doc.text('VEÍCULO / PLACA', M + 68, posY + 3.5);
+      doc.text('SITUAÇÃO DA VISTORIA', M + 104, posY + 3.5);
+      doc.text('PRÓXIMA VISTORIA', M + 140, posY + 3.5);
+      doc.text('ÚLTIMA VISTORIA', M + W - 2, posY + 3.5, { align: 'right' });
+      return posY + 5;
+    };
+
+    grupos.forEach(g => {
+      if (y > 255) {
+        doc.addPage();
+        y = M;
+      }
+
+      const pends = g.lista.filter(v => v.isPendente).length;
+      const emD = g.lista.filter(v => v.statusPontual === 'em_dia').length;
+
+      doc.setFillColor(...ROXO);
+      doc.rect(M, y, W, 5.5, 'F');
+      fonte(7.2, 'bold', [255, 255, 255]);
+      doc.text('EQUIPE ' + g.info.codigo + ' · SUPERVISOR: ' + g.info.supervisor.toUpperCase() + ' (' + g.lista.length + ' VENDEDORES)', M + 2.5, y + 3.8);
+      fonte(6.5, 'bold', [220, 225, 245]);
+      doc.text('Em dia: ' + emD + ' | Pendentes: ' + pends, M + W - 2.5, y + 3.8, { align: 'right' });
+      y += 5.5;
+
+      y = desenharHeaderTabela(y);
+
+      g.lista.forEach((v, idx) => {
+        if (y > 270) {
+          doc.addPage();
+          y = M;
+          y = desenharHeaderTabela(y);
+        }
+
+        if (idx % 2 === 1) {
+          doc.setFillColor(250, 250, 253);
+          doc.rect(M, y, W, 5.2, 'F');
+        }
+        doc.setDrawColor(...LINHA);
+        doc.rect(M, y, W, 5.2);
+
+        fonte(6.5, 'bold', ROXO);
+        doc.text('Rota ' + v.rota, M + 2, y + 3.6);
+
+        fonte(6.8, 'bold', [20, 20, 30]);
+        doc.text(corta(v.nome, 46), M + 18, y + 3.6);
+
+        fonte(6.3, 'normal', CINZA);
+        const veicTxt = v.veiculoAtual !== '—' ? v.veiculoAtual + (v.kmAtual ? ' (' + fmtKm(v.kmAtual) + ')' : '') : 'Sem carro';
+        doc.text(corta(veicTxt, 34), M + 68, y + 3.6);
+
+        let sitTxt = 'Em dia';
+        let sitCor = [21, 128, 61];
+        if (v.statusPontual === 'sem_vistoria') {
+          sitTxt = 'NUNCA REALIZOU';
+          sitCor = [220, 38, 38];
+        } else if (v.statusPontual === 'critico') {
+          sitTxt = 'Vencida (' + v.diasSemVistoria + 'd)';
+          sitCor = [220, 38, 38];
+        } else if (v.statusPontual === 'atencao') {
+          sitTxt = 'Vence em ' + (v.cicloMensal ? v.cicloMensal.diasParaVencer : 7) + 'd';
+          sitCor = [180, 83, 9];
+        }
+        fonte(6.5, 'bold', sitCor);
+        doc.text(sitTxt, M + 104, y + 3.6);
+
+        fonte(6.3, 'normal', [20, 20, 30]);
+        let proxTxt = '—';
+        if (v.statusPontual === 'sem_vistoria') {
+          proxTxt = 'Imediata';
+        } else if (v.cicloMensal) {
+          proxTxt = v.cicloMensal.dataProximaFmt;
+        }
+        doc.text(proxTxt, M + 140, y + 3.6);
+
+        fonte(6.3, 'normal', CINZA);
+        const ultTxt = v.dataUltima ? formatarData(v.dataUltima) : 'Nenhuma';
+        doc.text(ultTxt, M + W - 2, y + 3.6, { align: 'right' });
+
+        y += 5.2;
+      });
+
+      y += 4;
+    });
+
+    const nomeArq = 'Relatorio_Vistorias_Supervisores_' + (eqAlvo || 'Geral') + '_' + isoLocal(new Date()) + '.pdf';
+    if (isPrint) {
+      doc.autoPrint();
+      const url = URL.createObjectURL(doc.output('blob'));
+      window.open(url, '_blank');
+      toast('Abrindo relatório para impressão...');
+    } else {
+      doc.save(nomeArq);
+      toast('Relatório PDF por Supervisor gerado com sucesso!');
+    }
+  } catch (err) {
+    console.error('Erro ao gerar PDF de supervisores:', err);
+    toast('Erro ao gerar PDF: ' + err.message, 'error');
+  }
+}
+window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSupervisor;
+
 
 
       function encaminharRevisaoParaManutencao() {
