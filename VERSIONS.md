@@ -4,7 +4,28 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v1.9.0-stable` (13/11/2026)
+## 📌 Versão Atual: `v2.0.0-modular` (13/11/2026)
+* **Tag Oficial no GitHub:** [`v2.0.0-modular`](https://github.com/assistencia-go/gomex-painel/releases/tag/v2.0.0-modular)
+* **Status:** Produção Estável (Cloudflare Workers & Assets)
+* **Principais Entregas:**
+  - **Modularização Completa do Projeto (`src/`):**
+    - Desacoplamento do arquivo monolítico em módulos independentes e altamente legíveis:
+      - `src/css/`: 10 arquivos categorizados (tokens, botões, tabelas, gaveta, responsividade, módulos).
+      - `src/html/`: Componentes modulares (`views/` para cada tela, `modals/`, `drawer/`, ícones SVG e login).
+      - `src/js/`: Camada `core/` (estado, auth SHA-256, API Supabase, rotas, RBAC) e camada `modules/` (vistorias, manutenção, vendedores, gastos, galeria, ocorrências, pdf).
+  - **Compilador Determinístico de Segurança (`build.js`):**
+    - Geração automatizada do `index.html` de produção a partir dos módulos de `src/` com verificação de integridade bit-a-bit (zero divergência de código).
+    - Integração no fluxo de build (`generate_worker.js`) e no pipeline de testes (`validate.mjs`).
+  - **Otimização Cloudflare Edge:**
+    - `worker.js` reduzido de 1.021 KB para apenas 35.7 KB (menos de 4% do limite do plano), eliminando duplicação de HTML e aproveitando o Cloudflare Assets com fallback SPA resiliente.
+  - **Preservação Integral de Dados e Regras de Negócio:**
+    - Zero mudanças visuais ou comportamentais; conformidade rigorosa com a política corporativa Zero-Emoji e aprovação no headless smoke test.
+
+---
+
+## 📌 Versões Anteriores
+
+### `v1.9.0-stable` (13/11/2026)
 * **Tag Oficial no GitHub:** [`v1.9.0-stable`](https://github.com/assistencia-go/gomex-painel/releases/tag/v1.9.0-stable)
 * **Status:** Produção Estável (Cloudflare Workers)
 * **Principais Entregas:**
