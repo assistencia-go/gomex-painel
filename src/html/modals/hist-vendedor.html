@@ -1,0 +1,79 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL DE HISTÓRICO COMPLETO DO VENDEDOR -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalHistVendedor">
+    <div class="modal-card" style="max-width:860px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="vend-avatar" id="mHVendAvatar" style="width:38px;height:38px;font-size:14px">GV</div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="mHVendNome">Vendedor</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px" id="mHVendSub">Histórico operacional do vendedor
+            </p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalVendedor()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+      <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:75vh;overflow-y:auto">
+        <!-- Cards de Resumo do Vendedor -->
+        <div class="vend-hist-kpis"
+          style="display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;padding:12px;background:var(--raised);border-radius:8px;border:1px solid var(--line)">
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Veículo Atual</div>
+            <div id="mHVendCarro" style="font-size:13.5px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Último Check-list</div>
+            <div id="mHVendUltimaData" style="font-size:13px;font-weight:700;color:var(--ink);margin-top:2px">–</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Próxima Vistoria & Prazo</div>
+            <div id="mHVendProximaData" style="font-size:13px;font-weight:800;color:var(--ink);margin-top:2px">–</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Status Pontualidade</div>
+            <div id="mHVendPontualidade" style="margin-top:4px">–</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
+            <div id="mHVendTotal" style="font-size:16px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
+          </div>
+        </div>
+
+        <!-- Tabela de Vistorias do Vendedor -->
+        <div>
+          <h4 style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--ink-2)">Vistorias Realizadas por Este
+            Vendedor:</h4>
+          <div class="table-wrap">
+            <table class="grid" style="font-size:12.5px">
+              <thead>
+                <tr>
+                  <th style="width:70px">Nº</th>
+                  <th style="width:130px">Data / Hora</th>
+                  <th style="width:110px">Placa</th>
+                  <th style="width:90px">Tipo</th>
+                  <th style="width:100px">Quilometragem</th>
+                  <th style="width:90px">Avarias</th>
+                  <th style="width:90px">Pneus</th>
+                  <th>Situação</th>
+                  <th style="width:70px;text-align:right">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="mHVendTableBody">
+                <!-- Renderizado via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <button type="button" class="btn" onclick="fecharModalVendedor()">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="fecharModalVendedor(); abrirModalRelatorioSupervisores('todos')">
+          <svg class="i" style="width:14px;height:14px"><use href="#i-users" /></svg>
+          <span>Painel de Vendedores por Supervisor</span>
+        </button>
+      </footer>
+    </div>
+  </div>
