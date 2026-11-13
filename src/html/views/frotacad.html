@@ -1,0 +1,141 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO 6: CADASTRO FIXO DA FROTA & PRONTUÁRIO DOS VEÍCULOS -->
+        <!-- ====================================================================== -->
+        <div id="sectionFrotaCadView" hidden>
+          <!-- Resumo da Frota -->
+          <section class="summary" aria-label="Resumo da frota de veículos">
+            <dl class="summary-grid">
+              <div class="stat" onclick="filtrarFrotaPorCard('todos')" style="cursor:pointer"
+                title="Clique para ver todos os veículos da frota">
+                <div class="stat-head">
+                  <span class="stat-lbl">Veículos na Frota</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-truck" />
+                    </svg></div>
+                </div>
+                <dd id="cadStatTotal">0</dd>
+                <span class="stat-sub">Placas cadastradas</span>
+              </div>
+
+              <div class="stat" onclick="filtrarFrotaPorCard('em_dia')" style="cursor:pointer"
+                title="Clique para filtrar veículos com vistoria em dia">
+                <div class="stat-head">
+                  <span class="stat-lbl">Vistorias em Dia</span>
+                  <div class="stat-ico green"><svg class="i">
+                      <use href="#i-badge-check" />
+                    </svg></div>
+                </div>
+                <dd id="cadStatEmDia" style="color:var(--ok)">0</dd>
+                <span class="stat-sub">Ciclo mensal regular</span>
+              </div>
+
+              <div class="stat" onclick="filtrarFrotaPorCard('atencao_vistoria')" style="cursor:pointer"
+                title="Clique para filtrar vistorias próximas ou vencidas">
+                <div class="stat-head">
+                  <span class="stat-lbl">Aviso Vistoria</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-clock" />
+                    </svg></div>
+                </div>
+                <dd id="cadStatAtrasoVistoria" style="color:var(--warn)">0</dd>
+                <span class="stat-sub">Próxima ou vencida</span>
+              </div>
+
+              <div class="stat" onclick="filtrarFrotaPorCard('alerta_oleo')" style="cursor:pointer"
+                title="Clique para filtrar troca de óleo próxima ou vencida">
+                <div class="stat-head">
+                  <span class="stat-lbl">Troca de Óleo</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-droplet" />
+                    </svg></div>
+                </div>
+                <dd id="cadStatAlertaOleo" style="color:var(--warn)">0</dd>
+                <span class="stat-sub">Próxima ou vencida por KM</span>
+              </div>
+
+              <div class="stat" onclick="filtrarFrotaPorCard('sem_vistoria')" style="cursor:pointer"
+                title="Clique para filtrar veículos sem nenhuma vistoria">
+                <div class="stat-head">
+                  <span class="stat-lbl">Sem Vistoria Feita</span>
+                  <div class="stat-ico red"><svg class="i">
+                      <use href="#i-alert" />
+                    </svg></div>
+                </div>
+                <dd id="cadStatSemVistoria" style="color:var(--bad)">0</dd>
+                <span class="stat-sub">Pendente no sistema</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Quadro de Controle e Gestão da Frota -->
+          <section class="board" aria-label="Controle de Veículos">
+            <div
+              style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px">
+              <div>
+                <h2 style="font-size:15px;font-weight:700">Cadastro Fixo de Veículos & Prontuário da Frota</h2>
+                <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Monitore cada placa, motorista titular,
+                  quilometragem, histórico de gastos por KM e cobre vistorias pelo WhatsApp.</p>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <button type="button" class="btn btn-primary" id="btnTopCadastrarVeiculo" onclick="abrirModalCadastrarVeiculo()"
+                  title="Cadastrar novo veículo na frota">
+                  <svg class="i">
+                    <use href="#i-plus" />
+                  </svg>
+                  <span>Cadastrar Novo Veículo</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Toolbar de Filtros da Frota -->
+            <div class="toolbar">
+              <div class="search">
+                <svg class="i">
+                  <use href="#i-search" />
+                </svg>
+                <label for="cadFiltroBusca" class="sr-only">Buscar veículo</label>
+                <input class="input" type="search" id="cadFiltroBusca"
+                  placeholder="Buscar por placa, modelo, motorista titular ou rota..." autocomplete="off"
+                  oninput="renderFrotaCadView()">
+              </div>
+
+              <select class="select" id="cadFiltroStatus" onchange="renderFrotaCadView()">
+                <option value="todos">Todos os veículos</option>
+                <option value="em_dia">Vistoria em dia</option>
+                <option value="atencao_vistoria">Vistoria próxima ou vencida</option>
+                <option value="alerta_oleo">Troca de óleo próxima/vencida</option>
+                <option value="sem_vistoria">Sem vistoria realizada</option>
+              </select>
+
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosCad" onclick="limparFiltrosCad()" hidden>
+                <svg class="i">
+                  <use href="#i-x" />
+                </svg>Limpar filtros
+              </button>
+            </div>
+
+            <!-- Tabela da Frota -->
+            <div class="table-wrap">
+              <table class="grid" id="cadFrotaTable">
+                <thead>
+                  <tr>
+                    <th style="width:125px">Placa / Veículo</th>
+                    <th style="width:160px">Motorista Titular</th>
+                    <th style="width:90px">Rota</th>
+                    <th style="width:115px">KM Atual</th>
+                    <th style="width:165px">Vistoria Mensal</th>
+                    <th style="width:165px">Troca de Óleo (KM)</th>
+                    <th style="width:140px">Custo por KM</th>
+                    <th style="width:180px;text-align:right">Ações Rápidas</th>
+                  </tr>
+                </thead>
+                <tbody id="cadFrotaTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="board-foot">
+              <span id="cadFrotaFooterInfo">0 veículos listados</span>
+              <span style="font-size:12px;color:var(--ink-3)">Controle de Frota Integrado com Check-list</span>
+            </div>
+          </section>
+        </div>
