@@ -1,0 +1,236 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO 4: CUSTOS, PEÇAS & INSUMOS DA FROTA (POR PLACA, MOTORISTA E PERÍODO) -->
+        <!-- ====================================================================== -->
+        <div id="sectionGastosView" hidden>
+          <!-- BARRA DE LEVANTAMENTO POR PERÍODO (DE DATA X ATÉ DATA Y) E AÇÕES -->
+          <div class="gastos-period-bar">
+            <div class="gastos-date-inputs">
+              <div style="display:flex;align-items:center;gap:6px;margin-right:4px">
+                <svg class="i" style="color:var(--accent-hi);width:17px;height:17px">
+                  <use href="#i-calendar" />
+                </svg>
+                <strong style="font-size:13px;color:var(--ink)">Levantamento:</strong>
+              </div>
+              <div class="gastos-date-field">
+                <label for="gastoDataInicio">De</label>
+                <input type="date" id="gastoDataInicio" onchange="onFiltroGastosDataManual()">
+              </div>
+              <div class="gastos-date-field">
+                <label for="gastoDataFim">Até</label>
+                <input type="date" id="gastoDataFim" onchange="onFiltroGastosDataManual()">
+              </div>
+
+              <div class="gastos-quick-periods">
+                <button type="button" class="pill-period active" data-per="todos"
+                  onclick="aplicarPeriodoGastos('todos')">Todo o Período</button>
+                <button type="button" class="pill-period" data-per="hoje"
+                  onclick="aplicarPeriodoGastos('hoje')">Hoje</button>
+                <button type="button" class="pill-period" data-per="mes_atual"
+                  onclick="aplicarPeriodoGastos('mes_atual')">Este Mês</button>
+                <button type="button" class="pill-period" data-per="mes_passado"
+                  onclick="aplicarPeriodoGastos('mes_passado')">Mês Passado</button>
+                <button type="button" class="pill-period" data-per="30dias"
+                  onclick="aplicarPeriodoGastos('30dias')">Últimos 30 dias</button>
+                <button type="button" class="pill-period" data-per="90dias" onclick="aplicarPeriodoGastos('90dias')">90
+                  dias</button>
+                <button type="button" class="pill-period" data-per="ano_atual"
+                  onclick="aplicarPeriodoGastos('ano_atual')">Este Ano</button>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <button type="button" class="btn" onclick="abrirModalCatalogoProdutos()"
+                title="Cadastrar ou gerenciar produtos, peças e óleos">
+                <svg class="i">
+                  <use href="#i-box" />
+                </svg>
+                <span>Catálogo de Produtos</span>
+                <span class="cnt" id="badgeCountProdutos"
+                  style="background:var(--accent-tint);color:var(--accent-hi);padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">0</span>
+              </button>
+              <button type="button" class="btn btn-primary" id="btnViewGastosLancar" onclick="abrirModalLancarGasto()"
+                title="Lançar peça, óleo ou gasto em uma placa">
+                <svg class="i">
+                  <use href="#i-plus" />
+                </svg>
+                <span>Lançar Gasto no Veículo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPIS EXECUTIVOS DO LEVANTAMENTO -->
+          <section class="summary" aria-label="Resumo financeiro de peças e insumos">
+            <dl class="summary-grid">
+              <!-- 1. Total Investido no Período -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Investido no Período</span>
+                  <div class="stat-ico emerald"><svg class="i">
+                      <use href="#i-wallet" />
+                    </svg></div>
+                </div>
+                <dd id="gastoStatTotalRS" style="color:var(--ok);font-size:21px">R$ 0,00</dd>
+                <span class="stat-sub" id="gastoStatTotalSub">0 lançamentos no período</span>
+              </div>
+
+              <!-- 2. Litros de Óleo & Fluidos -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Óleo & Lubrificantes</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-droplet" />
+                    </svg></div>
+                </div>
+                <dd id="gastoStatLitros" style="color:#fbbf24;font-size:21px">0 L</dd>
+                <span class="stat-sub" id="gastoStatLitrosSub">R$ 0,00 em óleo/fluidos</span>
+              </div>
+
+              <!-- 3. Peças & Serviços Aplicados -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Peças & Serviços</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-box" />
+                    </svg></div>
+                </div>
+                <dd id="gastoStatPecasQtd" style="font-size:21px">0 un</dd>
+                <span class="stat-sub" id="gastoStatPecasSub">0 veículos atendidos</span>
+              </div>
+
+              <!-- 4. Veículo com Maior Investimento -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Maior Gasto (Placa)</span>
+                  <div class="stat-ico purple"><svg class="i">
+                      <use href="#i-truck" />
+                    </svg></div>
+                </div>
+                <dd id="gastoStatTopPlaca" style="font-size:20px">–</dd>
+                <span class="stat-sub" id="gastoStatTopPlacaSub">R$ 0,00 no período</span>
+              </div>
+
+              <!-- 5. Quem Mais Gastou (Motorista/Responsável) -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Maior Gasto (Motorista)</span>
+                  <div class="stat-ico green"><svg class="i">
+                      <use href="#i-user" />
+                    </svg></div>
+                </div>
+                <dd id="gastoStatTopMotorista"
+                  style="font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">–</dd>
+                <span class="stat-sub" id="gastoStatTopMotoristaSub">R$ 0,00 acumulados</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- QUADRO PRINCIPAL: ABAS DE VISÃO + FILTROS + RELATÓRIOS -->
+          <section class="board" aria-label="Controle de custos e peças">
+            <div class="gastos-board-head"
+              style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px;padding-right:14px">
+              <div class="tabs" id="gastosSubTabs" style="border-bottom:0">
+                <button type="button" class="tab" data-gtab="lancamentos" aria-pressed="true"
+                  onclick="alternarAbaGastos('lancamentos')">
+                  <svg class="i" style="width:13px;height:13px;color:#10b981"><use href="#i-receipt" /></svg>Lançamentos Detalhados <span class="cnt" id="cntGastosLanc">0</span>
+                </button>
+                <button type="button" class="tab" data-gtab="por_veiculo" aria-pressed="false"
+                  onclick="alternarAbaGastos('por_veiculo')">
+                  <svg class="i" style="width:13px;height:13px;color:var(--accent-hi)"><use href="#i-truck" /></svg>Investimento por Veículo (Placa) <span
+                    class="cnt" id="cntGastosVeic">0</span>
+                </button>
+                <button type="button" class="tab" data-gtab="por_motorista" aria-pressed="false"
+                  onclick="alternarAbaGastos('por_motorista')">
+                  <svg class="i" style="width:13px;height:13px;color:#38bdf8"><use href="#i-user" /></svg>Por Quem Gastou (Motorista) <span class="cnt"
+                    id="cntGastosMot">0</span>
+                </button>
+                <button type="button" class="tab" data-gtab="por_produto" aria-pressed="false"
+                  onclick="alternarAbaGastos('por_produto')">
+                  <svg class="i" style="width:13px;height:13px;color:#fbbf24"><use href="#i-package" /></svg>Por Produto / Peça <span class="cnt"
+                    id="cntGastosProd">0</span>
+                </button>
+              </div>
+
+              <div class="gastos-export-actions">
+                <button type="button" class="btn" onclick="exportarCsvGastos()"
+                  title="Exportar levantamento filtrado para planilha Excel (CSV)">
+                  <svg class="i">
+                    <use href="#i-download" />
+                  </svg>
+                  <span>CSV</span>
+                </button>
+                <button type="button" class="btn" onclick="gerarRelatorioPdfGastos(true)"
+                  title="Imprimir relatório executivo do período">
+                  <svg class="i">
+                    <use href="#i-printer" />
+                  </svg>
+                  <span>Imprimir</span>
+                </button>
+                <button type="button" class="btn btn-primary" onclick="gerarRelatorioPdfGastos(false)"
+                  title="Baixar Relatório PDF Oficial do período e filtros selecionados">
+                  <svg class="i">
+                    <use href="#i-file-text" />
+                  </svg>
+                  <span>Relatório</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- TOOLBAR DE FILTROS -->
+            <div class="toolbar">
+              <div class="search">
+                <svg class="i">
+                  <use href="#i-search" />
+                </svg>
+                <label for="gastoFiltroBusca" class="sr-only">Buscar lançamento</label>
+                <input class="input" type="search" id="gastoFiltroBusca"
+                  placeholder="Buscar produto, peça, óleo, placa, quem gastou, NF ou oficina..." autocomplete="off"
+                  oninput="onFiltroGastosChange()">
+              </div>
+
+              <label class="sr-only" for="gastoFiltroPlaca">Placa do Veículo</label>
+              <select class="select" id="gastoFiltroPlaca" onchange="onFiltroGastosChange()">
+                <option value="">Todas as placas</option>
+              </select>
+
+              <label class="sr-only" for="gastoFiltroMotorista">Quem Gastou / Motorista</label>
+              <select class="select" id="gastoFiltroMotorista" onchange="onFiltroGastosChange()">
+                <option value="">Todos os motoristas / resp.</option>
+              </select>
+
+              <label class="sr-only" for="gastoFiltroCategoria">Categoria</label>
+              <select class="select" id="gastoFiltroCategoria" onchange="onFiltroGastosChange()">
+                <option value="">Todas as categorias</option>
+                <option value="Óleo & Lubrificantes">Óleo & Lubrificantes</option>
+                <option value="Filtros">Filtros</option>
+                <option value="Freios & Suspensão">Freios & Suspensão</option>
+                <option value="Peças Mecânicas">Peças Mecânicas</option>
+                <option value="Pneus & Borracharia">Pneus & Borracharia</option>
+                <option value="Elétrica & Iluminação">Elétrica & Iluminação</option>
+                <option value="Funilaria & Carroceria">Funilaria & Carroceria</option>
+                <option value="Mão de Obra / Serviço">Mão de Obra / Serviço</option>
+                <option value="Outros">Outros</option>
+              </select>
+
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGastos" onclick="limparFiltrosGastos()"
+                hidden>
+                <svg class="i">
+                  <use href="#i-x" />
+                </svg>Limpar filtros
+              </button>
+            </div>
+
+            <!-- TABELA DINÂMICA DAS 4 ABAS DE CUSTOS & PEÇAS -->
+            <div class="table-wrap">
+              <table class="grid" id="gastosTable">
+                <thead id="gastosTableHead"></thead>
+                <tbody id="gastosTableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="board-foot">
+              <span id="gastosFooterInfo">0 registros exibidos</span>
+              <span id="gastosFooterSum" style="font-weight:800;color:var(--accent-hi);font-size:13.5px">Total listado:
+                R$ 0,00</span>
+            </div>
+          </section>
+        </div>
