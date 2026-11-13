@@ -1,0 +1,129 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO: OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA -->
+        <!-- ====================================================================== -->
+        <div id="sectionOcorrenciasView" hidden style="max-width:100%;overflow-x:hidden">
+          <!-- Resumo de Ocorrências e Pausas -->
+          <section class="summary" aria-label="Resumo das ocorrências e pausas">
+            <dl class="summary-grid">
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Parados Agora</span>
+                  <div class="stat-ico red"><svg class="i"><use href="#i-stopwatch" /></svg></div>
+                </div>
+                <dd id="ocrStatParadosAgora">0</dd>
+                <span class="stat-sub" id="ocrStatParadosSub">Vendedores em pausa</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Tempo Total Parado</span>
+                  <div class="stat-ico yellow"><svg class="i"><use href="#i-clock" /></svg></div>
+                </div>
+                <dd id="ocrStatTempoHoje">0 min</dd>
+                <span class="stat-sub">Soma de toda a frota hoje</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Ocorrências Hoje</span>
+                  <div class="stat-ico blue"><svg class="i"><use href="#i-alert" /></svg></div>
+                </div>
+                <dd id="ocrStatOcrHoje">0</dd>
+                <span class="stat-sub" id="ocrStatOcrHojeSub">Registros no dia</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Pausas Concluídas</span>
+                  <div class="stat-ico green"><svg class="i"><use href="#i-check" /></svg></div>
+                </div>
+                <dd id="ocrStatConcluidasHoje">0</dd>
+                <span class="stat-sub">Liberados p/ rota</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Agendadas</span>
+                  <div class="stat-ico" style="background:rgba(99,102,241,0.15);color:#6366f1"><svg class="i"><use href="#i-calendar-clock" /></svg></div>
+                </div>
+                <dd id="ocrStatAgendadas">0</dd>
+                <span class="stat-sub">Serviços futuros</span>
+              </div>
+            </dl>
+          </section>
+
+          <!-- Banner Chamativo se houver tempo médio estourado -->
+          <div id="ocrAlertaAtrasosBanner" class="banner-alerta-tempo-estourado" style="display:none">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="pulse-dot-red" style="width:12px;height:12px"></span>
+              <span id="ocrAlertaAtrasosTexto" style="font-weight:700">Atenção: existem ocorrências com o tempo médio ultrapassado!</span>
+            </div>
+            <button type="button" class="btn btn-sm" onclick="filtrarOcorrencias('atrasado')" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-alert" /></svg>
+              <span>Ver Atrasadas</span>
+            </button>
+          </div>
+
+          <!-- Barra de Ações & Filtros da Visão de Ocorrências -->
+          <div class="gastos-period-bar" style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1">
+              <button type="button" class="btn btn-primary" id="btnTopNovaOcorrencia" onclick="abrirModalOcorrencia()"
+                title="Registrar nova ocorrência ou parada de vendedor"
+                style="height:42px;padding:0 18px;font-size:13.5px;font-weight:700">
+                <svg class="i"><use href="#i-plus" /></svg>
+                <span>Nova Ocorrência / Registrar Parada</span>
+              </button>
+
+              <button type="button" class="btn" onclick="abrirModalRelatorioOcorrencias()"
+                title="Gerar relatório de ocorrências por período (de data X até Y)"
+                style="height:42px;padding:0 16px;font-size:13px;font-weight:700">
+                <svg class="i"><use href="#i-file-text" /></svg>
+                <span>Relatório por Período</span>
+              </button>
+
+              <button type="button" class="btn" onclick="sincronizarGastosComServidor('pull')"
+                title="Atualizar lista de ocorrências" style="height:42px;padding:0 14px">
+                <svg class="i"><use href="#i-refresh" /></svg>
+                <span class="btn-lbl-mob-hide">Atualizar</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Filtros Rápidos (Pills Mobile-Friendly) & Campo de Busca -->
+          <section class="card" style="margin-bottom:16px;padding:14px 16px">
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div class="ocr-filter-tabs-row">
+                <button type="button" class="filter-tab active" id="btnOcrFiltroTodos" onclick="filtrarOcorrencias('todos')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg> Todos <span class="tab-badge" id="badgeOcrFiltroTodos">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" onclick="filtrarOcorrencias('aberto')">
+                  <span class="pulse-dot-red" style="margin-right:2px"></span> Parados Agora <span class="tab-badge" id="badgeOcrFiltroAbertos">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAgendadas" onclick="filtrarOcorrencias('agendado')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-calendar-clock" /></svg> Agendadas <span class="tab-badge" id="badgeOcrFiltroAgendadas">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroAtrasados" onclick="filtrarOcorrencias('atrasado')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-alert" /></svg> Tempo Excedido <span class="tab-badge" id="badgeOcrFiltroAtrasados">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-calendar" /></svg> Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" onclick="filtrarOcorrencias('finalizado')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg> Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
+                </button>
+              </div>
+
+              <div class="search-box" style="width:100%">
+                <svg class="i"><use href="#i-search" /></svg>
+                <input type="search" id="ocrInputBusca" class="search-input"
+                  placeholder="Buscar ocorrência por vendedor, rota, placa, motivo ou oficina..."
+                  oninput="buscarOcorrencias(this.value)">
+              </div>
+            </div>
+          </section>
+
+          <!-- Grid de Cards de Ocorrências (Mobile & Desktop) -->
+          <div id="ocrListaCards" class="ocr-grid">
+            <!-- Renderizado dinamicamente por renderOcorrenciasView() -->
+          </div>
+        </div>
