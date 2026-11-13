@@ -1,0 +1,219 @@
+        <!-- ====================================================================== -->
+        <!-- VISÃO 1: VISTORIAS E CHECK-LISTS DA FROTA -->
+        <!-- ====================================================================== -->
+        <div id="sectionVistoriasView">
+          <!-- BANNER DE ALERTAS CRÍTICOS -->
+          <div class="alerts-banner" id="alertsBanner" hidden>
+            <div class="alerts-left">
+              <div class="alerts-badge"><svg class="i" style="stroke-width:2.2">
+                  <use href="#i-alert" />
+                </svg></div>
+              <div>
+                <div class="alerts-title">Alertas Operacionais da Frota Detectados</div>
+                <div class="alerts-desc" id="alertsSummaryText">Carregando diagnósticos da frota...</div>
+              </div>
+            </div>
+            <div class="alerts-pills">
+              <button type="button" class="alert-pill red" id="pillBloqueados" hidden
+                title="Filtrar apenas veículos bloqueados">0 Bloqueados</button>
+              <button type="button" class="alert-pill red" id="pillVistoriaVencida" hidden
+                title="Filtrar veículos com vistoria mensal vencida (mais de 30 dias sem nova vistoria)">0 Vistoria
+                Mensal Vencida</button>
+              <button type="button" class="alert-pill yellow" id="pillVistoriaProxima" hidden
+                title="Filtrar veículos cuja vistoria mensal vence nos próximos 7 dias">0 Vistoria Mensal
+                Próxima</button>
+              <button type="button" class="alert-pill red" id="pillOleoVencido" hidden
+                title="Filtrar veículos com troca de óleo vencida por KM">0 Troca de Óleo Vencida</button>
+              <button type="button" class="alert-pill yellow" id="pillOleoProximo" hidden
+                title="Filtrar veículos com troca de óleo próxima por KM">0 Troca de Óleo Próxima</button>
+              <button type="button" class="alert-pill yellow" id="pillPneus" hidden
+                title="Filtrar apenas veículos com dano em pneus">0 Pneu c/ Dano</button>
+              <button type="button" class="alert-pill yellow" id="pillRevisao" hidden
+                title="Filtrar apenas veículos com revisão próxima ou vencida">0 Revisão Próxima</button>
+              <button type="button" class="btn btn-ghost" id="btnFilterAlerts"
+                style="height:28px;padding:0 10px;font-size:12px;background:rgba(255,255,255,0.15)">
+                Filtrar Alertas
+              </button>
+            </div>
+          </div>
+
+          <!-- RESUMO / KPIS APERFEIÇOADOS COM MICRO-ÍCONES -->
+          <section class="summary" aria-label="Resumo das vistorias">
+            <dl class="summary-grid">
+              <!-- 1. Total -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Total Vistorias</span>
+                  <div class="stat-ico blue"><svg class="i">
+                      <use href="#i-truck" />
+                    </svg></div>
+                </div>
+                <dd id="stTotal">–</dd>
+                <span class="stat-sub">Histórico acumulado</span>
+              </div>
+
+              <!-- 2. Hoje -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Hoje</span>
+                  <div class="stat-ico emerald"><svg class="i">
+                      <use href="#i-clock" />
+                    </svg></div>
+                </div>
+                <dd id="stHoje">–</dd>
+                <span class="stat-sub" id="stHojeSub">Registradas hoje</span>
+              </div>
+
+              <!-- 3. Este Mês -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Neste mês</span>
+                  <div class="stat-ico purple"><svg class="i">
+                      <use href="#i-calendar" />
+                    </svg></div>
+                </div>
+                <dd id="stMes">–</dd>
+                <span class="stat-sub">Mês vigente</span>
+              </div>
+
+              <!-- 4. Conformidade -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Conformidade</span>
+                  <div class="stat-ico green"><svg class="i">
+                      <use href="#i-shield" />
+                    </svg></div>
+                </div>
+                <dd id="stConf">–</dd>
+                <span class="stat-sub">Veículos 100% liberados</span>
+              </div>
+
+              <!-- 5. Com Avarias -->
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Com avarias</span>
+                  <div class="stat-ico amber"><svg class="i">
+                      <use href="#i-alert" />
+                    </svg></div>
+                </div>
+                <dd id="stAv">–</dd>
+                <span class="stat-sub">Carroceria c/ marcas</span>
+              </div>
+            </dl>
+
+            <div class="split" id="split" role="img" aria-label="Sem dados ainda">
+              <i class="s-ok" id="splitOk"></i><i class="s-warn" id="splitWarn"></i><i class="s-bad" id="splitBad"></i>
+            </div>
+          </section>
+
+          <!-- TABELA E CONTROLE DE FILTROS -->
+          <section class="board" aria-label="Lista de vistorias">
+            <div class="tabs" id="tabs">
+              <button type="button" class="tab" data-status="" aria-pressed="true"><svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg>Todas <span class="cnt"
+                  id="cntAll">0</span></button>
+              <button type="button" class="tab" data-status="Liberado" aria-pressed="false"><i
+                  class="dot dot-ok"></i>Liberadas <span class="cnt" id="cntLib">0</span></button>
+              <button type="button" class="tab" data-status="Ressalva" aria-pressed="false"><i
+                  class="dot dot-warn"></i>Com ressalva <span class="cnt" id="cntRes">0</span></button>
+              <button type="button" class="tab" data-status="Não liberado" aria-pressed="false"><i
+                  class="dot dot-bad"></i>Bloqueadas <span class="cnt" id="cntBlk">0</span></button>
+              <button type="button" class="tab" data-status="Em Manutenção" aria-pressed="false"><i class="dot"
+                  style="background:#f59e0b"></i>Em Manutenção <span class="cnt" id="cntManutEm">0</span></button>
+              <button type="button" class="tab" data-status="Manutenção Concluída" aria-pressed="false"><i class="dot"
+                  style="background:#10b981"></i>Já foi p/ Manutenção <span class="cnt"
+                  id="cntManutJaFoi">0</span></button>
+              <button type="button" class="tab" data-status="Inativo" aria-pressed="false"><i class="dot"
+                  style="background:#94a3b8"></i>Inativas <span class="cnt" id="cntInat">0</span></button>
+            </div>
+
+            <div class="toolbar">
+              <div class="search">
+                <svg class="i">
+                  <use href="#i-search" />
+                </svg>
+                <label for="filtroBusca" class="sr-only">Buscar vistoria</label>
+                <input class="input" type="search" id="filtroBusca" placeholder="Placa, motorista, rota ou número"
+                  autocomplete="off">
+                <kbd aria-hidden="true">/</kbd>
+              </div>
+
+              <label class="sr-only" for="filtroVeiculo">Veículo</label>
+              <select class="select" id="filtroVeiculo">
+                <option value="">Todos os veículos</option>
+                <option value="Kombi">Kombi</option>
+                <option value="Transit">Transit</option>
+                <option value="Master">Master</option>
+                <option value="Outro">Outros modelos</option>
+              </select>
+
+              <label class="sr-only" for="filtroEquipeVistoria">Equipe</label>
+              <select class="select" id="filtroEquipeVistoria" style="font-weight:600">
+                <option value="">Todas as equipes</option>
+                <option value="101">Eq. 101 · Alisson Bezerra</option>
+                <option value="102">Eq. 102 · Eliase Mendes</option>
+                <option value="103">Eq. 103 · Alisson Pereira</option>
+              </select>
+
+              <label class="sr-only" for="filtroRota">Rota</label>
+              <select class="select" id="filtroRota">
+                <option value="">Todas as rotas</option>
+              </select>
+
+              <label class="sr-only" for="filtroPeriodo">Período</label>
+              <select class="select" id="filtroPeriodo">
+                <option value="">Qualquer período</option>
+                <option value="hoje">Hoje</option>
+                <option value="7dias">Últimos 7 dias</option>
+                <option value="30dias">Últimos 30 dias</option>
+              </select>
+
+              <button type="button" class="btn btn-ghost" id="btnClearFilters" hidden><svg class="i">
+                  <use href="#i-x" />
+                </svg>Limpar filtros</button>
+            </div>
+
+            <div class="table-wrap">
+              <table class="grid">
+                <thead>
+                  <tr>
+                    <th class="c-num" data-col="numero" aria-sort="none"><button type="button" class="th-sort"
+                        data-sort="numero">Nº <svg class="i">
+                          <use href="#i-chev-down" />
+                        </svg></button></th>
+                    <th class="c-date" data-col="data" aria-sort="descending"><button type="button" class="th-sort"
+                        data-sort="data">Data <svg class="i">
+                          <use href="#i-chev-down" />
+                        </svg></button></th>
+                    <th class="c-veic" data-col="veiculo" aria-sort="none"><button type="button" class="th-sort"
+                        data-sort="veiculo">Veículo <svg class="i">
+                          <use href="#i-chev-down" />
+                        </svg></button></th>
+                    <th class="c-driver">Motorista</th>
+                    <th class="c-av">Avarias</th>
+                    <th class="c-pneu">Pneus</th>
+                    <th class="c-nok">Itens reprovados</th>
+                    <th class="c-status" data-col="liberacao" aria-sort="none"><button type="button" class="th-sort"
+                        data-sort="liberacao">Situação <svg class="i">
+                          <use href="#i-chev-down" />
+                        </svg></button></th>
+                    <th class="c-act">Ações Rápidas</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+
+            <div class="board-foot">
+              <span id="tableInfo">Carregando…</span>
+              <div class="pager">
+                <button type="button" class="btn" id="btnPrevPage" aria-label="Página anterior" disabled><svg class="i">
+                    <use href="#i-chev-left" />
+                  </svg></button>
+                <span id="pageIndicator">Página 1 de 1</span>
+                <button type="button" class="btn" id="btnNextPage" aria-label="Próxima página" disabled><svg class="i">
+                    <use href="#i-chev-right" />
+                  </svg></button>
+              </div>
+            </div>
+          </section>
+        </div>
