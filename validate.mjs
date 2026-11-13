@@ -136,6 +136,7 @@ if (!fs.existsSync(indexPath)) {
 console.log(`\n${COLORS.bold}--- 2. Validando Sintaxe dos Arquivos JavaScript ---${COLORS.reset}`);
 const jsFilesToCheck = [
   'server.js',
+  'build.js',
   'generate_worker.js',
   'sw.js',
   'public/sw.js',
@@ -340,7 +341,7 @@ try {
   const targetBackupDir = path.join(backupsDir, `backup_${timestamp}`);
   fs.mkdirSync(targetBackupDir, { recursive: true });
 
-  const filesToBackup = ['index.html', 'worker.js', 'generate_worker.js', 'sw.js'];
+  const filesToBackup = ['index.html', 'worker.js', 'generate_worker.js', 'build.js', 'sw.js'];
   for (const f of filesToBackup) {
     const src = path.join(__dirname, f);
     if (fs.existsSync(src)) {
