@@ -1,0 +1,228 @@
+    /* ============================================================================
+     GALERIA DE FOTOS DOS VEÍCULOS DA FROTA
+     ============================================================================ */
+    .galeria-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .galeria-card {
+      background: var(--raised);
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 160ms ease, border-color 160ms ease;
+    }
+
+    .galeria-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+
+    .galeria-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 185px;
+      background: #050507;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .galeria-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 240ms ease;
+    }
+
+    .galeria-card:hover .galeria-img-wrap img {
+      transform: scale(1.03);
+    }
+
+    .galeria-img-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .galeria-card-body {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .upload-dropzone {
+      border: 2px dashed var(--line-strong);
+      border-radius: 10px;
+      padding: 22px 16px;
+      text-align: center;
+      background: var(--panel-2);
+      cursor: pointer;
+      transition: all 160ms ease;
+    }
+
+    .upload-dropzone:hover,
+    .upload-dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-tint);
+    }
+
+    .upload-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .upload-preview-item {
+      position: relative;
+      height: 82px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      background: #000;
+    }
+
+    .upload-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .upload-preview-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.9);
+      color: #fff;
+      border: 0;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* Anexo de Foto da NF / Cupom no Modal de Gasto */
+    .gasto-anexo-box {
+      background: var(--panel-2);
+      border: 1.5px dashed var(--line-strong);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: grid;
+      gap: 10px;
+      transition: border-color .2s;
+    }
+
+    .gasto-anexo-box:focus-within,
+    .gasto-anexo-box:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-anexo-nf {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(237, 133, 112, 0.12);
+      color: var(--accent-hi);
+      border: 1px solid rgba(237, 133, 112, 0.35);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 3px;
+      transition: all 140ms ease;
+    }
+
+    .btn-anexo-nf:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Botão e Caixa de Mensagem Pronta WhatsApp */
+    .btn-whatsapp-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: rgba(37, 211, 102, 0.12);
+      color: #25d366;
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 160ms ease;
+      font-family: inherit;
+    }
+
+    .btn-whatsapp-copy:hover {
+      background: #25d366;
+      color: #0b141a;
+      box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .whatsapp-preview-box {
+      background: #0b141a;
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e9edef;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    /* Prontuário do Veículo (Custo por KM) */
+    .custo-km-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 12px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .timeline-filter-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink-2);
+      transition: all 140ms ease;
+    }
+
+    .timeline-filter-btn.active {
+      background: var(--accent-tint);
+      color: var(--accent-hi);
+      border-color: var(--accent);
+    }
