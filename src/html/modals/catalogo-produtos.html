@@ -1,0 +1,136 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: CATÁLOGO DE PRODUTOS, PEÇAS & INSUMOS DA FROTA -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalCatalogoProdutos">
+    <div class="modal-card" style="width:min(1080px, 96vw);max-width:1080px;max-height:90vh">
+      <header class="modal-head" style="padding:18px 24px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div
+            style="width:38px;height:38px;border-radius:9px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:20px;height:20px">
+              <use href="#i-box" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:17px;font-weight:700">Catálogo de Produtos, Peças & Óleos da Frota</h3>
+            <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Cadastre peças, litros de óleo e serviços com
+              código para lançar rapidamente nos veículos</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCatalogoProdutos()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+
+      <div class="modal-body" style="padding:22px 24px;display:grid;gap:18px;max-height:80vh;overflow-y:auto">
+        <!-- Formulário de Cadastro / Edição de Produto (Amplo e Espaçado) -->
+        <div
+          style="background:var(--panel-2);border:1.5px solid var(--line-strong);border-radius:10px;padding:16px 18px;display:grid;gap:14px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <h4 style="font-size:14px;font-weight:700;color:var(--ink);margin:0" id="catFormTitle">Cadastrar Novo
+              Produto / Peça</h4>
+            <button type="button" class="btn btn-ghost" id="btnCancelarEdicaoProd"
+              style="height:26px;padding:0 10px;font-size:12px" onclick="limparFormCatalogoProduto()" hidden>Cancelar
+              edição</button>
+          </div>
+          <input type="hidden" id="catProdEditId" value="">
+
+          <div class="cat-prod-form-grid">
+            <div>
+              <label for="catProdCodigo" class="gasto-field-lbl" style="font-size:12px">Código *</label>
+              <input type="text" id="catProdCodigo" class="input" placeholder="20"
+                style="height:40px;font-size:13.5px;font-weight:800;text-align:center">
+            </div>
+            <div>
+              <label for="catProdNome" class="gasto-field-lbl" style="font-size:12px">Nome do Produto / Peça / Óleo
+                *</label>
+              <input type="text" id="catProdNome" class="input" placeholder="Informe o nome do produto ou peça"
+                style="height:40px;font-size:13.5px">
+            </div>
+            <div>
+              <label for="catProdCategoria" class="gasto-field-lbl" style="font-size:12px">Categoria</label>
+              <select id="catProdCategoria" class="input" style="height:40px;font-size:13px">
+                <option value="Óleo & Lubrificantes">Óleo & Lubrificantes</option>
+                <option value="Filtros">Filtros</option>
+                <option value="Freios & Suspensão">Freios & Suspensão</option>
+                <option value="Peças Mecânicas">Peças Mecânicas</option>
+                <option value="Pneus & Borracharia">Pneus & Borracharia</option>
+                <option value="Elétrica & Iluminação">Elétrica & Iluminação</option>
+                <option value="Funilaria & Carroceria">Funilaria & Carroceria</option>
+                <option value="Mão de Obra / Serviço">Mão de Obra / Serviço</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div>
+              <label for="catProdUnidade" class="gasto-field-lbl" style="font-size:12px">Unidade</label>
+              <select id="catProdUnidade" class="input" style="height:40px;font-size:13px">
+                <option value="L">Litros (L)</option>
+                <option value="un">Unidade (un)</option>
+                <option value="jg">Jogo / Kit (jg)</option>
+                <option value="par">Par (par)</option>
+                <option value="sv">Serviço (sv)</option>
+                <option value="kg">Quilo (kg)</option>
+              </select>
+            </div>
+            <div>
+              <label for="catProdPreco" class="gasto-field-lbl" style="font-size:12px">Valor Base (R$)</label>
+              <input type="text" id="catProdPreco" class="input" placeholder="0,00"
+                style="height:40px;font-size:13.5px">
+            </div>
+            <button type="button" class="btn btn-primary" id="btnSalvarCatProd"
+              style="height:40px;padding:0 18px;font-size:13px" onclick="salvarProdutoNoCatalogo()">
+              <svg class="i">
+                <use href="#i-check" />
+              </svg>
+              <span id="btnSalvarCatProdLabel">Cadastrar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Busca e Tabela de Produtos Cadastrados -->
+        <div>
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+            <h4 style="font-size:13.5px;font-weight:700;color:var(--ink-2);margin:0">Produtos Cadastrados no Catálogo
+              (<span id="catTotalProdCount">0</span>)</h4>
+            <div class="search" style="width:340px;max-width:100%;height:36px">
+              <svg class="i">
+                <use href="#i-search" />
+              </svg>
+              <input type="search" id="catBuscaProd" class="input"
+                placeholder="Filtrar por código, nome ou categoria..." style="height:36px;font-size:13px"
+                oninput="renderTabelaCatalogoProdutos()">
+            </div>
+          </div>
+
+          <div class="table-wrap"
+            style="max-height:420px;overflow-y:auto;border:1px solid var(--line);border-radius:10px">
+            <table class="grid" style="font-size:13px">
+              <thead>
+                <tr>
+                  <th style="width:84px;white-space:nowrap">Código</th>
+                  <th style="min-width:260px">Produto / Peça / Insumo</th>
+                  <th style="width:195px;white-space:nowrap">Categoria</th>
+                  <th style="width:140px;white-space:nowrap">Unidade</th>
+                  <th style="width:125px;white-space:nowrap">Preço Base</th>
+                  <th style="width:80px;white-space:nowrap">Usos</th>
+                  <th style="width:105px;text-align:right;white-space:nowrap">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="catProdutosTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalCatalogoProdutos()">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="fecharModalCatalogoProdutos(); abrirModalLancarGasto()">
+          <svg class="i">
+            <use href="#i-plus" />
+          </svg>
+          <span>Ir para Lançar Gasto no Veículo</span>
+        </button>
+      </footer>
+    </div>
+  </div>
