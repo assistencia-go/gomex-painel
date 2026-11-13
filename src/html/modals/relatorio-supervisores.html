@@ -1,0 +1,109 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: ACOMPANHAMENTO DE VENDEDORES & RELATÓRIO PDF POR SUPERVISOR -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalRelatorioSupervisores">
+    <div class="modal-card" style="max-width:1080px;width:96%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div
+            style="width:38px;height:38px;border-radius:10px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;flex-shrink:0">
+            <svg class="i" style="width:20px;height:20px">
+              <use href="#i-users" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:800">Acompanhamento de Vendedores & Relatório por Supervisor</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de quem está sem vistoria, vencida, próxima de vencer e emissão de PDF agrupado por supervisor</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioSupervisores()" aria-label="Fechar">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:76vh;overflow-y:auto">
+        <!-- Barra de Filtros do Relatório -->
+        <div class="sup-rel-filters"
+          style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--raised);padding:12px;border-radius:10px;border:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1">
+            <div style="display:flex;align-items:center;gap:6px">
+              <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-users" /></svg>
+              <label for="relSupFiltroEquipe" style="font-size:12px;font-weight:700;color:var(--ink-2)">Supervisor:</label>
+            </div>
+            <select id="relSupFiltroEquipe" class="input" style="height:34px;min-width:210px;font-weight:700"
+              onchange="renderModalRelatorioSupervisores()">
+              <option value="todos">Todos os Supervisores (3 Equipes)</option>
+              <option value="101">Equipe 101 · Alisson Bezerra</option>
+              <option value="102">Equipe 102 · Eliase Mendes</option>
+              <option value="103">Equipe 103 · Alisson Pereira</option>
+            </select>
+
+            <div style="display:flex;align-items:center;gap:6px;margin-left:4px">
+              <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-filter" /></svg>
+              <label for="relSupFiltroStatus" style="font-size:12px;font-weight:700;color:var(--ink-2)">Situação:</label>
+            </div>
+            <select id="relSupFiltroStatus" class="input" style="height:34px;min-width:195px;font-weight:600"
+              onchange="renderModalRelatorioSupervisores()">
+              <option value="todos">Todos os Vendedores</option>
+              <option value="pendentes">Pendentes (Sem Vistoria + Vencidas)</option>
+              <option value="sem_vistoria">Apenas Nunca Realizaram</option>
+              <option value="critico">Apenas Vistorias Vencidas (&gt;30d)</option>
+              <option value="atencao">Próximas da Vistoria (≤ 7 dias)</option>
+              <option value="em_dia">Vistorias Em Dia</option>
+            </select>
+          </div>
+
+          <div class="input-with-icon" style="min-width:210px;flex:0 1 250px">
+            <svg class="i input-icon-left"><use href="#i-search" /></svg>
+            <input type="search" id="relSupInputBusca" class="input" style="height:34px;font-size:12.5px"
+              placeholder="Buscar vendedor, rota ou placa..." oninput="renderModalRelatorioSupervisores()">
+          </div>
+        </div>
+
+        <!-- KPIs Gerais do Acompanhamento -->
+        <div class="sup-rel-kpis">
+          <div style="padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--ink-3);text-transform:uppercase">Total Listado</div>
+            <div style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px" id="relSupKpiTotal">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--bad);text-transform:uppercase">Sem Vistoria</div>
+            <div style="font-size:18px;font-weight:800;color:var(--bad);margin-top:2px" id="relSupKpiSemVist">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.22);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--bad);text-transform:uppercase">Vistoria Vencida</div>
+            <div style="font-size:18px;font-weight:800;color:var(--bad);margin-top:2px" id="relSupKpiVencidas">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--warn);text-transform:uppercase">Próx. Vistoria (≤7d)</div>
+            <div style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px" id="relSupKpiProximas">0</div>
+          </div>
+          <div style="padding:10px 12px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);border-radius:8px">
+            <div style="font-size:10.5px;font-weight:700;color:var(--ok);text-transform:uppercase">Em Dia</div>
+            <div style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px" id="relSupKpiEmDia">0</div>
+          </div>
+        </div>
+
+        <!-- Container dos Grupos por Supervisor -->
+        <div id="relSupGruposContainer" style="display:grid;gap:14px">
+          <!-- Renderizado via JS -->
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <button type="button" class="btn" onclick="fecharModalRelatorioSupervisores()">Fechar</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, true)"
+            title="Abrir versão de impressão do relatório por supervisor">
+            <svg class="i" style="width:15px;height:15px"><use href="#i-printer" /></svg>
+            <span>Imprimir / Visualizar PDF</span>
+          </button>
+          <button type="button" class="btn btn-primary" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, false)"
+            title="Baixar arquivo PDF agrupado por supervisor">
+            <svg class="i" style="width:15px;height:15px"><use href="#i-file" /></svg>
+            <span>Baixar Relatório PDF por Supervisor</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
