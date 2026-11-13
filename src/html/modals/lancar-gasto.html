@@ -1,0 +1,241 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: LANÇAR / EDITAR GASTO, PEÇA OU ÓLEO NO VEÍCULO -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalLancarGasto">
+    <div class="modal-card" style="width:min(960px, 96vw);max-width:960px;max-height:90vh">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div
+            style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:20px;height:20px">
+              <use href="#i-wallet" />
+            </svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700" id="modalLancarGastoTitulo">Lançar Gasto / Peça no Veículo</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Vincule peças, litros de óleo ou serviços
+              diretamente à placa e ao motorista responsável</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalLancarGasto()"><svg class="i">
+            <use href="#i-x" />
+          </svg></button>
+      </header>
+
+      <div class="modal-body" style="padding:20px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
+        <input type="hidden" id="gastoEditId" value="">
+
+        <!-- LINHA 1: PLACA DO VEÍCULO, MODELO E DATA (100% ALINHADOS) -->
+        <div class="gasto-form-grid-3">
+          <div>
+            <label for="gastoInputPlaca" class="gasto-field-lbl" style="color:var(--accent-hi)">
+              Placa do Veículo *
+            </label>
+            <input type="text" id="gastoInputPlaca" list="datalistPlacasFrota" class="input"
+              placeholder="Digite ou escolha a placa (ex: ABC1234)" maxlength="8"
+              style="height:38px;font-weight:800;text-transform:uppercase"
+              oninput="this.value=this.value.toUpperCase(); onDigitarPlacaNoModalGasto(this.value)"
+              onchange="onDigitarPlacaNoModalGasto(this.value)">
+            <datalist id="datalistPlacasFrota"></datalist>
+          </div>
+
+          <div>
+            <label for="gastoInputVeiculo" class="gasto-field-lbl">
+              Modelo do Veículo
+            </label>
+            <input type="text" id="gastoInputVeiculo" class="input" placeholder="Informe o modelo do veículo"
+              style="height:38px">
+          </div>
+
+          <div>
+            <label for="gastoInputData" class="gasto-field-lbl">
+              Data do Gasto / Aplicação *
+            </label>
+            <input type="date" id="gastoInputData" class="input" style="height:38px;font-weight:600">
+          </div>
+        </div>
+
+        <!-- LINHA 2: QUEM GASTOU / MOTORISTA, KM E Nº NF / O.S. (100% ALINHADOS) -->
+        <div class="gasto-form-grid-3">
+          <div>
+            <label for="gastoInputMotorista" class="gasto-field-lbl" style="color:var(--ink)">
+              Quem Gastou / Motorista *
+            </label>
+            <input type="text" id="gastoInputMotorista" list="datalistMotoristasFrota" class="input"
+              placeholder="Motorista ou responsável" style="height:38px;font-weight:600">
+            <datalist id="datalistMotoristasFrota"></datalist>
+          </div>
+
+          <div>
+            <label for="gastoInputKm" class="gasto-field-lbl">
+              KM do Veículo
+            </label>
+            <input type="number" id="gastoInputKm" class="input" placeholder="Quilometragem atual" style="height:38px">
+          </div>
+
+          <div>
+            <label for="gastoInputNF" class="gasto-field-lbl">
+              Nº NF / O.S. / Cupom
+            </label>
+            <input type="text" id="gastoInputNF" class="input" placeholder="Número da nota ou O.S." style="height:38px">
+          </div>
+        </div>
+
+        <!-- 2. PRODUTOS / PEÇAS / LITROS DE ÓLEO LANÇADOS (POR CÓDIGO OU BUSCA RÁPIDA POR NOME) -->
+        <div
+          style="background:var(--panel-2);border:1.5px solid var(--line-strong);border-radius:10px;padding:14px;display:grid;gap:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <div>
+              <h4 style="font-size:13.5px;font-weight:700;color:var(--ink);margin:0">Produtos, Peças ou Litros de Óleo
+                Aplicados *</h4>
+              <p style="font-size:11.5px;color:var(--ink-3);margin:2px 0 0">Digite o <strong>código</strong> (ex: 01,
+                02) ou escreva o <strong>nome do produto</strong> para filtrar na hora.</p>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost"
+                style="height:28px;font-size:12px;padding:0 10px;color:var(--accent-hi);border-color:rgba(237,133,112,0.4)"
+                onclick="toggleCadastroRapidoProdutoInline()">
+                <svg class="i" style="width:13px;height:13px">
+                  <use href="#i-box" />
+                </svg>
+                <span>+ Cadastrar Produto Novo</span>
+              </button>
+              <button type="button" class="btn" id="btnAddMaisItemGasto"
+                style="height:28px;font-size:12px;padding:0 10px" onclick="adicionarLinhaItemGasto()">
+                <svg class="i" style="width:13px;height:13px">
+                  <use href="#i-plus" />
+                </svg>
+                <span>Mais 1 Item</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mini-form de Cadastro Rápido de Produto sem sair do lançamento -->
+          <div id="boxCadastroRapidoProduto" hidden
+            style="padding:12px;background:var(--bg);border:1px dashed var(--accent);border-radius:8px;display:grid;gap:10px;box-sizing:border-box;max-width:100%;overflow-x:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+              <strong style="font-size:12px;color:var(--accent-hi)">Novo Produto / Peça para o Catálogo:</strong>
+              <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px"
+                onclick="toggleCadastroRapidoProdutoInline(false)">Fechar</button>
+            </div>
+            <div class="rapido-prod-form-grid">
+              <div>
+                <label class="gasto-field-lbl" style="font-size:11px">Código</label>
+                <input type="text" id="rapidoProdCodigo" class="input" placeholder="20"
+                  style="height:34px;font-size:12.5px;font-weight:800;text-align:center">
+              </div>
+              <div>
+                <label class="gasto-field-lbl" style="font-size:11px">Nome da Peça / Óleo / Produto *</label>
+                <input type="text" id="rapidoProdNome" class="input" placeholder="Informe o nome do produto ou peça"
+                  style="height:34px;font-size:12.5px">
+              </div>
+              <div>
+                <label class="gasto-field-lbl" style="font-size:11px">Categoria</label>
+                <select id="rapidoProdCat" class="input" style="height:34px;font-size:12px">
+                  <option value="Óleo & Lubrificantes">Óleo & Lubrificantes</option>
+                  <option value="Filtros">Filtros</option>
+                  <option value="Freios & Suspensão">Freios & Suspensão</option>
+                  <option value="Peças Mecânicas">Peças Mecânicas</option>
+                  <option value="Pneus & Borracharia">Pneus & Borracharia</option>
+                  <option value="Elétrica & Iluminação">Elétrica & Iluminação</option>
+                  <option value="Funilaria & Carroceria">Funilaria & Carroceria</option>
+                  <option value="Mão de Obra / Serviço">Mão de Obra / Serviço</option>
+                  <option value="Outros">Outros</option>
+                </select>
+              </div>
+              <div>
+                <label class="gasto-field-lbl" style="font-size:11px">Unidade</label>
+                <select id="rapidoProdUnid" class="input" style="height:34px;font-size:12px">
+                  <option value="L">Litros (L)</option>
+                  <option value="un">Unidade (un)</option>
+                  <option value="jg">Jogo / Kit (jg)</option>
+                  <option value="par">Par (par)</option>
+                  <option value="sv">Serviço (sv)</option>
+                  <option value="kg">Quilo (kg)</option>
+                </select>
+              </div>
+              <div>
+                <label class="gasto-field-lbl" style="font-size:11px">Preço Base (R$)</label>
+                <input type="text" id="rapidoProdPreco" class="input" placeholder="0,00"
+                  style="height:34px;font-size:12.5px">
+              </div>
+              <button type="button" class="btn btn-primary" style="height:34px;padding:0 12px;font-size:12px"
+                onclick="salvarProdutoRapidoInline()">
+                Cadastrar
+              </button>
+            </div>
+          </div>
+
+          <!-- Linhas de itens do lançamento -->
+          <div id="gastoItensContainer" style="display:grid;gap:8px"></div>
+        </div>
+
+        <!-- LINHA 3: FORNECEDOR E OBSERVAÇÕES -->
+        <div class="gasto-form-grid-2">
+          <div>
+            <label for="gastoInputFornecedor" class="gasto-field-lbl">
+              Fornecedor / Auto Peças / Oficina
+            </label>
+            <input type="text" id="gastoInputFornecedor" class="input"
+              placeholder="Informe o fornecedor, auto peças ou oficina" style="height:38px">
+          </div>
+          <div>
+            <label for="gastoInputObs" class="gasto-field-lbl">
+              Observações do Gasto / Serviço
+            </label>
+            <input type="text" id="gastoInputObs" class="input"
+              placeholder="Observações sobre a peça ou serviço realizado" style="height:38px">
+          </div>
+        </div>
+
+        <!-- ANEXO: FOTO DA NOTA FISCAL / CUPOM / PEÇA TROCADA -->
+        <div class="gasto-anexo-box">
+          <input type="file" id="gastoAnexoInput" accept="image/*" multiple hidden
+            onchange="onSelecionarAnexosGasto(this.files)">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div>
+              <h4
+                style="font-size:13px;font-weight:700;color:var(--ink);margin:0;display:flex;align-items:center;gap:6px">
+                <svg class="i" style="width:15px;height:15px;color:var(--accent-hi)">
+                  <use href="#i-file-text" />
+                </svg>
+                <span>Foto da Nota Fiscal / Cupom ou Peça Trocada</span>
+                <span style="font-weight:500;color:var(--ink-3);font-size:11.5px">(opcional)</span>
+              </h4>
+              <p style="font-size:11.5px;color:var(--ink-3);margin:2px 0 0">Fica salva junto com o lançamento e também
+                na
+                galeria do veículo. Também aceita <strong>Ctrl + V</strong>.</p>
+            </div>
+            <button type="button" class="btn" style="height:30px;font-size:12px;padding:0 12px"
+              onclick="acionarSeletorAnexoGasto()">
+              <svg class="i" style="width:13px;height:13px">
+                <use href="#i-camera" />
+              </svg>
+              <span id="gastoAnexoBtnLabel">Anexar Foto</span>
+            </button>
+          </div>
+          <div class="upload-preview-grid" id="gastoAnexoPreview" hidden style="display:none"></div>
+        </div>
+
+        <!-- 4. BANNER DE VALOR TOTAL DO LANÇAMENTO -->
+        <div class="gasto-total-banner">
+          <div>
+            <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--ink-2)">Valor Total deste
+              Lançamento</div>
+            <div style="font-size:12px;color:var(--ink-3)" id="gastoModalResumoItens">1 item selecionado</div>
+          </div>
+          <div id="gastoModalTotalPreview" style="font-size:22px;font-weight:800;color:var(--ok)">R$ 0,00</div>
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharModalLancarGasto()">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarLancamentoGasto" onclick="salvarLancamentoGasto()">
+          <svg class="i">
+            <use href="#i-check" />
+          </svg>
+          <span>Salvar Lançamento na Placa</span>
+        </button>
+      </footer>
+    </div>
+  </div>
