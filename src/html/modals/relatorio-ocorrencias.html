@@ -1,0 +1,131 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL: RELATÓRIO DE OCORRÊNCIAS & PAUSAS POR PERÍODO (X ATÉ Y) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="modalRelatorioOcorrencias">
+    <div class="modal-card" style="max-width:760px;width:95%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div
+            style="width:38px;height:38px;border-radius:8px;background:rgba(237, 133, 112, 0.15);color:var(--accent-hi);display:grid;place-items:center">
+            <svg class="i" style="width:22px;height:22px"><use href="#i-file-text" /></svg>
+          </div>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Relatório de Ocorrências & Pausas da Frota</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Filtre por período (de data X até Y) para auditar tempos e emitir relatórios</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioOcorrencias()">
+          <svg class="i"><use href="#i-x" /></svg>
+        </button>
+      </header>
+
+      <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:78vh;overflow-y:auto">
+        <!-- Seleção Rápida de Período -->
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:700;color:var(--ink-3);margin-right:4px">Período:</span>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" onclick="aplicarPeriodoRelatorioOcr('hoje')">Hoje</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" onclick="aplicarPeriodoRelatorioOcr('7d')">Últimos 7 dias</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" onclick="aplicarPeriodoRelatorioOcr('15d')">Últimos 15 dias</button>
+          <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" onclick="aplicarPeriodoRelatorioOcr('mes')">Mês Atual</button>
+          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" onclick="aplicarPeriodoRelatorioOcr('tudo')">Todo o Histórico</button>
+        </div>
+
+        <!-- Linha de Datas: Data Início (X) até Data Fim (Y) -->
+        <div class="ocr-form-grid-2" style="background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px">
+          <div class="ocr-form-field">
+            <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">
+              Data Inicial (De) *
+            </label>
+            <input type="date" id="ocrRelDataInicio" class="input" style="height:42px;font-weight:700"
+              onchange="atualizarPreviaRelatorioOcr()">
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">
+              Data Final (Até) *
+            </label>
+            <input type="date" id="ocrRelDataFim" class="input" style="height:42px;font-weight:700"
+              onchange="atualizarPreviaRelatorioOcr()">
+          </div>
+        </div>
+
+        <!-- Filtros Adicionais: Vendedor e Situação -->
+        <div class="ocr-form-grid-2">
+          <div class="ocr-form-field">
+            <label for="ocrRelVendedor" class="gasto-field-lbl">Filtrar por Vendedor / Motorista</label>
+            <select id="ocrRelVendedor" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
+              <option value="">Todos os vendedores</option>
+            </select>
+          </div>
+
+          <div class="ocr-form-field">
+            <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
+            <select id="ocrRelStatus" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
+              <option value="">Todas as situações</option>
+              <option value="finalizado">Apenas Finalizadas</option>
+              <option value="aberto">Apenas Em Aberto (Parados)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Painel de Resumo / KPIs da Prévia -->
+        <div class="ocr-rel-kpis-grid">
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Ocorrências</span>
+            <div id="ocrRelTotalOcr" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Total Parado</span>
+            <div id="ocrRelTempoTotal" style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px">0 min</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Média por Pausa</span>
+            <div id="ocrRelTempoMedio" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0 min</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Total Despesas</span>
+            <div id="ocrRelCustoTotal" style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px">R$ 0,00</div>
+          </div>
+        </div>
+
+        <!-- Prévia das Ocorrências Selecionadas -->
+        <div>
+          <div style="font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+            <span>Prévia dos Registros no Período</span>
+            <span id="ocrRelContadorPrevia" style="font-size:11.5px;color:var(--ink-3);font-weight:500">0 encontrados</span>
+          </div>
+
+          <div id="ocrRelListaPrevia" style="max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);padding:4px">
+            <!-- Preenchido via atualizarPreviaRelatorioOcr() -->
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorioOcorrencias()">Fechar</button>
+
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn" onclick="copiarResumoRelatorioWhatsApp()"
+            title="Copiar resumo consolidado para WhatsApp" style="color:#25d366">
+            <svg class="i"><use href="#i-whatsapp" /></svg>
+            <span>Resumo WhatsApp</span>
+          </button>
+
+          <button type="button" class="btn" onclick="exportarCsvOcorrencias()"
+            title="Download em planilha Excel (CSV)">
+            <svg class="i"><use href="#i-download" /></svg>
+            <span>Planilha Excel (CSV)</span>
+          </button>
+
+          <button type="button" class="btn btn-primary" onclick="gerarPdfRelatorioOcorrencias()"
+            title="Gerar e imprimir relatório PDF oficial">
+            <svg class="i"><use href="#i-printer" /></svg>
+            <span>Gerar PDF Oficial</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
