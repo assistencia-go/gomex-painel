@@ -1,5 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
+
+// 0. SE EXISTIR A ARQUITETURA MODULAR EM src/, COMPILAR O index.html ANTES DE TUDO
+const srcDir = path.join(__dirname, 'src');
+if (fs.existsSync(srcDir)) {
+  try {
+    const { buildIndexHtml } = require('./build.js');
+    buildIndexHtml();
+  } catch (err) {
+    console.error('[ERRO] Falha ao compilar módulos de src/ para index.html:', err.message);
+  }
+}
 
 const htmlPath = path.join(__dirname, 'index.html');
 const htmlContent = fs.readFileSync(htmlPath, 'utf8');
