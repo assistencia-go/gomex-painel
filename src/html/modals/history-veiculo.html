@@ -1,0 +1,142 @@
+  <!-- ========================================================================== -->
+  <!-- MODAL DE HISTÓRICO COMPLETO DA PLACA (PRONTUÁRIO DO VEÍCULO) -->
+  <!-- ========================================================================== -->
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal-card" style="max-width:920px;width:96%">
+      <header class="modal-head">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <span class="plate" id="histPlateTitle">ABC 1234</span>
+          <div>
+            <h3 style="font-size:16px;font-weight:700">Prontuário & Linha do Tempo do Veículo</h3>
+            <span style="font-size:12px;color:var(--ink-3)" id="histVeiculoSubTitle">Histórico completo
+              consolidado</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i">
+              <use href="#i-x" />
+            </svg></button>
+        </div>
+      </header>
+      <div class="modal-body" style="padding:18px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
+        <!-- Métricas Principais do Veículo (5 Colunas com Custo por KM e Troca de Óleo) -->
+        <div
+          style="display:grid;grid-template-columns:repeat(5, 1fr);gap:10px;padding:12px 14px;background:var(--raised);border-radius:10px;border:1px solid var(--line)"
+          class="edit-grid-2">
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Vistorias</div>
+            <div id="histTotalCount" style="font-size:17px;font-weight:800;color:var(--ink)">0</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histFirstDate">–</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Quilometragem Atual</div>
+            <div id="histLastKm" style="font-size:17px;font-weight:800;color:var(--ink)">–</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histKmRodadosSub">0 km rodados</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Total Investido</div>
+            <div id="histTotalGastoPlaca" style="font-size:16px;font-weight:800;color:var(--ok)">R$ 0,00</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histGastoPecasOSSub">Peças + O.S.</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Custo por KM</div>
+            <div id="histCustoPorKm" style="font-size:16px;font-weight:800;color:#38bdf8">R$ 0,00/km</div>
+            <span style="font-size:10.5px;color:var(--ink-3)">Custo operacional</span>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--ink-3);font-weight:600">Troca de Óleo (KM)</div>
+            <div id="histStatusOleo" style="font-size:13px;font-weight:700;margin-top:2px">–</div>
+            <span style="font-size:10.5px;color:var(--ink-3)" id="histMetaOleoSub">A cada 10.000 km</span>
+          </div>
+        </div>
+
+        <!-- Resumo de Peças, Óleo & Gastos desta Placa -->
+        <div style="padding:12px 14px;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px">
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <h4
+              style="font-size:13px;font-weight:700;color:var(--ink);margin:0;display:flex;align-items:center;gap:6px">
+              <svg class="i" style="width:15px;height:15px;color:var(--accent-hi)">
+                <use href="#i-wallet" />
+              </svg>
+              <span>Peças, Óleo & Gastos Lançados nesta Placa</span>
+            </h4>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="btn btn-ghost"
+                style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
+                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGastosDaPlaca(p)">
+                <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg> Ver Extrato / PDF
+              </button>
+              <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
+                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalLancarGasto(p)">
+                <svg class="i" style="width:12px;height:12px">
+                  <use href="#i-plus" />
+                </svg> Lançar Peça / Óleo
+              </button>
+            </div>
+          </div>
+          <div id="histGastosPlacaList" style="display:grid;gap:6px;max-height:150px;overflow-y:auto;font-size:12px">
+          </div>
+        </div>
+
+        <!-- Galeria de Fotos desta Placa -->
+        <div style="padding:12px 14px;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px">
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+            <h4
+              style="font-size:13px;font-weight:700;color:var(--ink);margin:0;display:flex;align-items:center;gap:6px">
+              <svg class="i" style="width:15px;height:15px;color:var(--accent-hi)">
+                <use href="#i-camera" />
+              </svg>
+              <span>Galeria de Fotos deste Veículo</span>
+              <span class="cnt" id="histGaleriaCount"
+                style="background:var(--accent-tint);color:var(--accent-hi);padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">0</span>
+            </h4>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="btn btn-ghost"
+                style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
+                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGaleriaDaPlaca(p)">
+                <svg class="i" style="width:12px;height:12px"><use href="#i-image" /></svg> Abrir Galeria da Placa
+              </button>
+              <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
+                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalSubirFoto(p)">
+                <svg class="i" style="width:12px;height:12px">
+                  <use href="#i-camera" />
+                </svg> + Subir Foto
+              </button>
+            </div>
+          </div>
+          <div id="histGaleriaPlacaList"
+            style="display:grid;grid-template-columns:repeat(auto-fill, minmax(115px, 1fr));gap:8px"></div>
+        </div>
+
+        <!-- Timeline de Vistorias e Ocorrências -->
+        <div>
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px">
+            <h4 style="font-size:13px;font-weight:700;color:var(--ink-2);margin:0">Linha do Tempo de Vistorias:</h4>
+            <div style="display:flex;gap:4px">
+              <button type="button" class="timeline-filter-btn active" id="btnHistFilterAll"
+                onclick="filtrarTimelineHist('todos')"><svg class="i" style="width:11px;height:11px"><use href="#i-grid" /></svg> Todas</button>
+              <button type="button" class="timeline-filter-btn" id="btnHistFilterAvarias"
+                onclick="filtrarTimelineHist('avarias')"><svg class="i" style="width:11px;height:11px"><use href="#i-alert" /></svg> Com Avarias</button>
+              <button type="button" class="timeline-filter-btn" id="btnHistFilterBloq"
+                onclick="filtrarTimelineHist('bloqueadas')"><svg class="i" style="width:11px;height:11px"><use href="#i-ban" /></svg> Bloqueadas</button>
+            </div>
+          </div>
+          <div class="hist-timeline" id="histTimeline"></div>
+        </div>
+      </div>
+      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn" onclick="fecharHistoricoModal()">Fechar</button>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn" onclick="imprimirProntuarioVeiculo()">
+            <svg class="i">
+              <use href="#i-printer" />
+            </svg>
+            <span>Imprimir Prontuário</span>
+          </button>
+        </div>
+      </footer>
+    </div>
+  </div>
