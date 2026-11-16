@@ -93,6 +93,28 @@
       border: none !important;
     }
 
+    #badgeOcrFiltroFimSemana {
+      background: #475569 !important;
+      color: #ffffff !important;
+      border: none !important;
+    }
+
+    .summary-grid-ocr {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+
+    @media (max-width: 1120px) {
+      .summary-grid-ocr {
+        grid-template-columns: repeat(3, 1fr) !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .summary-grid-ocr {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+
     .ocr-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -138,6 +160,11 @@
 
     .ocr-card.agendada {
       border-left: 5px solid #4f46e5;
+      background: #ffffff;
+    }
+
+    .ocr-card.fim-semana {
+      border-left: 5px solid #475569;
       background: #ffffff;
     }
 
@@ -222,6 +249,12 @@
       background: #dbeafe;
       color: #1e40af;
       border: 1px solid #bfdbfe;
+    }
+
+    .badge-status-pausa.fim-semana {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
     }
 
     .ocr-tipo-badge {
@@ -316,6 +349,12 @@
       background: #dbeafe;
       color: #1e40af;
       border: 1px solid #bfdbfe;
+    }
+
+    .ocr-duracao-highlight.fim-semana {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #cbd5e1;
     }
 
     .ocr-detail-text {
