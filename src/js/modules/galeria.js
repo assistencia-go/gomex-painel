@@ -263,6 +263,51 @@
       }
       window.salvarFotosGaleria = salvarFotosGaleria;
 
+      // Estado de navegação da Galeria: modo ('pastas' | 'fotos') e pasta (placa) aberta
+      const galeriaUI = { modo: 'pastas', placaAberta: '' };
+
+      function chavePlacaGaleria(f) {
+        return ((f && f.placa) || '').toUpperCase().trim() || 'SEM PLACA';
+      }
+
+      function htmlGaleriaVazia(fPlaca) {
+        return '<div style="grid-column:1/-1" class="empty">' +
+          '<div class="empty-icon-wrap"><svg class="i"><use href="#i-camera"/></svg></div>' +
+          '<h2>Nenhuma foto encontrada na galeria</h2>' +
+          '<p>Suba as fotos encaminhadas pelos motoristas com a placa do veículo, data da foto e nome do motorista.</p>' +
+          '<div class="empty-action">' +
+          '<button type="button" class="btn btn-primary" onclick="abrirModalSubirFoto(\'' + esc(fPlaca || '') + '\')">' +
+          '<svg class="i"><use href="#i-camera"/></svg> <span>+ Subir Foto na Galeria</span>' +
+          '</button>' +
+          '</div>' +
+          '</div>';
+      }
+
+      function abrirPastaGaleria(placa) {
+        galeriaUI.modo = 'pastas';
+        galeriaUI.placaAberta = (placa || '').toUpperCase().trim();
+        renderGaleriaView();
+        const bar = $('galeriaAlbumBar');
+        if (bar && bar.scrollIntoView) bar.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
+      window.abrirPastaGaleria = abrirPastaGaleria;
+
+      function fecharPastaGaleria() {
+        // Se o filtro de placa foi definido só para abrir este álbum, limpa para listar todas as pastas
+        const sel = $('galFiltroPlaca');
+        if (sel && sel.value && sel.value.toUpperCase().trim() === galeriaUI.placaAberta) sel.value = '';
+        galeriaUI.placaAberta = '';
+        renderGaleriaView();
+      }
+      window.fecharPastaGaleria = fecharPastaGaleria;
+
+      function alternarModoGaleria(modo) {
+        galeriaUI.modo = modo === 'fotos' ? 'fotos' : 'pastas';
+        if (galeriaUI.modo === 'fotos') galeriaUI.placaAberta = '';
+        renderGaleriaView();
+      }
+      window.alternarModoGaleria = alternarModoGaleria;
+
       function irParaGaleriaDaPlaca(placa) {
         const p = (placa || '').toUpperCase().trim();
         alternarVisaoPrincipal('galeria');
@@ -270,6 +315,8 @@
           popularFiltrosGaleria();
           $('galFiltroPlaca').value = p;
         }
+        galeriaUI.modo = 'pastas';
+        galeriaUI.placaAberta = p;
         renderGaleriaView();
       }
       window.irParaGaleriaDaPlaca = irParaGaleriaDaPlaca;
@@ -279,6 +326,7 @@
         if ($('galFiltroPlaca')) $('galFiltroPlaca').value = '';
         if ($('galFiltroMotorista')) $('galFiltroMotorista').value = '';
         if ($('galFiltroCategoria')) $('galFiltroCategoria').value = '';
+        galeriaUI.placaAberta = '';
         renderGaleriaView();
       }
       window.limparFiltrosGaleria = limparFiltrosGaleria;
@@ -333,7 +381,7 @@
           $('btnLimparFiltrosGaleria').hidden = !Boolean(q || fPlaca || fMot || fCat);
         }
 
-        const filtradas = fotos.filter(f => {
+        const filtradasBase = fotos.filter(f => {
           if (fPlaca && (f.placa || '').toUpperCase().trim() !== fPlaca) return false;
           if (fMot && (f.motorista || '').toLowerCase().trim() !== fMot) return false;
           if (fCat && (f.categoria || '') !== fCat) return false;
@@ -343,6 +391,100 @@
           }
           return true;
         });
+
+        // ---- Modo de visualização: Pastas por Placa / Todas as Fotos ----
+        const pastasEl = $('galeriaPastasContainer');
+        const albumBar = $('galeriaAlbumBar');
+        const modo = galeriaUI.modo === 'fotos' ? 'fotos' : 'pastas';
+
+        // Selecionar outra placa no filtro enquanto um álbum está aberto troca de álbum
+        if (modo === 'pastas' && galeriaUI.placaAberta && fPlaca && fPlaca !== galeriaUI.placaAberta) {
+          galeriaUI.placaAberta = fPlaca;
+        }
+        // Se o álbum aberto ficou sem fotos (ex.: última foto excluída), volta para as pastas
+        if (galeriaUI.placaAberta && !fotos.some(f => chavePlacaGaleria(f) === galeriaUI.placaAberta)) {
+          galeriaUI.placaAberta = '';
+        }
+        const aberta = modo === 'pastas' ? galeriaUI.placaAberta : '';
+
+        const filtradas = aberta
+          ? filtradasBase.filter(f => chavePlacaGaleria(f) === aberta)
+          : filtradasBase;
+
+        if ($('btnModoPastas')) {
+          $('btnModoPastas').classList.toggle('active', modo === 'pastas');
+          $('btnModoPastas').setAttribute('aria-pressed', modo === 'pastas' ? 'true' : 'false');
+        }
+        if ($('btnModoFotos')) {
+          $('btnModoFotos').classList.toggle('active', modo === 'fotos');
+          $('btnModoFotos').setAttribute('aria-pressed', modo === 'fotos' ? 'true' : 'false');
+        }
+
+        if (albumBar) {
+          albumBar.style.display = aberta ? 'flex' : 'none';
+          if (aberta) {
+            const ref = fotos.find(f => chavePlacaGaleria(f) === aberta) || {};
+            if ($('albumPlacaBadge')) $('albumPlacaBadge').textContent = aberta;
+            if ($('albumVeiculoTitulo')) $('albumVeiculoTitulo').textContent = ref.veiculo || 'Veículo da Frota';
+            if ($('albumQtdFotosBadge')) {
+              $('albumQtdFotosBadge').textContent = filtradas.length + (filtradas.length === 1 ? ' foto' : ' fotos');
+            }
+          }
+        }
+
+        const mostrarPastas = modo === 'pastas' && !aberta;
+        if (pastasEl) pastasEl.style.display = mostrarPastas ? '' : 'none';
+        grid.style.display = mostrarPastas ? 'none' : '';
+
+        if (mostrarPastas) {
+          const grupos = new Map();
+          filtradasBase.forEach(f => {
+            const k = chavePlacaGaleria(f);
+            if (!grupos.has(k)) grupos.set(k, []);
+            grupos.get(k).push(f);
+          });
+          const pastas = Array.from(grupos.entries()).map(([placa, lista]) => {
+            const ordenadas = lista.slice().sort((a, b) => String(b.data || '').localeCompare(String(a.data || '')));
+            return { placa, fotos: ordenadas, capa: ordenadas[0] };
+          }).sort((a, b) => String(b.capa.data || '').localeCompare(String(a.capa.data || '')));
+
+          if ($('galeriaFooterInfo')) {
+            $('galeriaFooterInfo').textContent = pastas.length + (pastas.length === 1 ? ' pasta' : ' pastas') +
+              ' · ' + filtradasBase.length + (filtradasBase.length === 1 ? ' foto' : ' fotos');
+          }
+
+          if (!pastasEl) return;
+          if (!pastas.length) {
+            pastasEl.innerHTML = htmlGaleriaVazia(fPlaca);
+            return;
+          }
+          pastasEl.innerHTML = pastas.map(p => {
+            const capa = p.capa;
+            const mots = new Set(p.fotos.map(x => (x.motorista || '').trim()).filter(Boolean));
+            return '<article class="pasta-card" role="button" tabindex="0" onclick="abrirPastaGaleria(\'' + esc(p.placa) + '\')" ' +
+              'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();abrirPastaGaleria(\'' + esc(p.placa) + '\')}">' +
+              '<div class="pasta-capa-wrap">' +
+              (capa.imagem
+                ? '<img src="' + capa.imagem + '" alt="Capa da pasta ' + esc(p.placa) + '" decoding="async">'
+                : '<div class="pasta-capa-empty"><svg class="i"><use href="#i-camera"/></svg></div>') +
+              '<div class="pasta-badge-icon"><svg class="i"><use href="#i-folder"/></svg></div>' +
+              '<div class="pasta-badge-qtd">' + p.fotos.length + (p.fotos.length === 1 ? ' foto' : ' fotos') + '</div>' +
+              '</div>' +
+              '<div class="pasta-card-body">' +
+              '<div class="pasta-card-header">' +
+              '<span class="plate" style="font-size:12px">' + esc(p.placa) + '</span>' +
+              '<span class="pasta-card-model">' + esc(capa.veiculo || 'Veículo da Frota') + '</span>' +
+              '</div>' +
+              '<div class="pasta-card-meta">' +
+              '<div>Última foto: <strong>' + formatarData(capa.data) + '</strong></div>' +
+              '<div>' + mots.size + (mots.size === 1 ? ' motorista' : ' motoristas') + '</div>' +
+              '</div>' +
+              '</div>' +
+              '<div class="pasta-card-foot"><span>Abrir pasta</span>' + icon('eye') + '</div>' +
+              '</article>';
+          }).join('');
+          return;
+        }
 
         if ($('galeriaFooterInfo')) {
           $('galeriaFooterInfo').textContent = filtradas.length + (filtradas.length === 1 ? ' foto exibida' : ' fotos exibidas');
@@ -365,7 +507,7 @@
         grid.innerHTML = filtradas.map(f => {
           return '<article class="galeria-card">' +
             '<div class="galeria-img-wrap" onclick="abrirLightboxFoto(\'' + esc(f.id) + '\')">' +
-            '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" loading="lazy">' +
+            '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" decoding="async">' +
             '<div class="galeria-img-badges">' +
             '<span class="plate" style="font-size:11px;background:rgba(9,9,11,0.88);backdrop-filter:blur(4px)">' + esc(f.placa) + '</span>' +
             '<span class="badge-cat-prod" style="background:rgba(9,9,11,0.82);color:#fff;border-color:rgba(255,255,255,0.2)">' + esc(f.categoria || 'Vistoria') + '</span>' +
