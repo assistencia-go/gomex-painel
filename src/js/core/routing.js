@@ -176,6 +176,7 @@
 
         if (isAdmin) {
           renderAdminPermissoes();
+          if (typeof carregarArmazenamentoSupabase === 'function') carregarArmazenamentoSupabase(false);
         } else if (isManut) {
           renderManutencaoViewGeral();
         } else if (isOcorrencias) {
