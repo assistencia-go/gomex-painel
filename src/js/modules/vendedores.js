@@ -1392,6 +1392,22 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
               '</div>';
           }
 
+          const trocaInfoDr = (!isInat && typeof obterMapaTrocasVendedorPlaca === 'function')
+            ? obterMapaTrocasVendedorPlaca(state.all).porVistoriaId.get(String(it.id))
+            : null;
+          if (trocaInfoDr) {
+            cardsHtml += '<div class="dr-alert-card yellow">' +
+              '<div class="dr-alert-icon">' + icon('user') + '</div>' +
+              '<div style="flex:1">' +
+              '<div class="dr-alert-title">Mudança de Vendedor na Placa ' + esc(trocaInfoDr.placa) + '</div>' +
+              '<div class="dr-alert-desc">Este veículo já tinha histórico com <strong>' + esc(trocaInfoDr.motoristaAnterior) + '</strong> (Vistoria Nº ' + esc(trocaInfoDr.vistoriaAnteriorNum) + (trocaInfoDr.vistoriaAnteriorData ? ' em ' + formatarData(trocaInfoDr.vistoriaAnteriorData) : '') + ') e passou para <strong>' + esc(trocaInfoDr.motoristaAtual) + '</strong>.</div>' +
+              '<button type="button" class="dr-alert-action-btn" onclick="abrirModalCustodia(\'' + esc(trocaInfoDr.placa) + '\')">' +
+              icon('truck') + ' Ver Histórico de Trocas / Custódia' +
+              '</button>' +
+              '</div>' +
+              '</div>';
+          }
+
           elAlerts.innerHTML = cardsHtml;
           elAlerts.hidden = !cardsHtml;
         }
@@ -1418,7 +1434,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
 
         const kv = [
           ['Veículo', esc(it.veiculo || '—') + (it.veiculo_outro ? ' (' + esc(it.veiculo_outro) + ')' : '')],
-          ['Motorista', esc(it.motorista || '—')],
+          ['Motorista', '<strong>' + esc(it.motorista || '—') + '</strong>' + (it._motoristaOriginal ? ' <span style="font-size:11px;color:var(--ink-3)">(lançado: ' + esc(it._motoristaOriginal) + ')</span>' : '')],
           ['Rota / Região', (it.rota ? '<strong style="color:var(--accent-hi)">' + esc(it.rota) + '</strong>' : '<span style="color:var(--ink-3)">Não informada</span>') + ' <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px;margin-left:6px;border-color:rgba(237,133,112,0.38);color:var(--accent-hi)" onclick="abrirModalEditarVistoria(' + it.id + ')">Editar</button>'],
           ['Data e hora', formatarData(it.data) + ' às ' + esc(it.hora || '--:--')],
           ['Quilometragem', fmtKm(it.km)],
