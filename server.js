@@ -670,7 +670,7 @@ const server = http.createServer((req, res) => {
   const resolvedBase = path.resolve(__dirname);
   let filePath = path.resolve(__dirname, safeRel);
 
-  if (!filePath.startsWith(resolvedBase) || BLOCKED_FILES.has(path.basename(filePath)) || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+  if (!filePath.startsWith(resolvedBase) || BLOCKED_FILES.has(path.basename(filePath)) || path.basename(filePath).startsWith('.') || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     filePath = path.join(resolvedBase, 'index.html');
   }
 
