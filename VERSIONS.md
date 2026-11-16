@@ -13,6 +13,10 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
     - Alternador `Pastas por Placa` / `Todas as Fotos` e filtros (busca, placa, motorista, categoria) funcionando nos dois modos.
   - **Correção das fotos no Mobile:** remoção do `loading="lazy"` das imagens e correção da ordem de carregamento do CSS responsivo.
   - **Topbar simplificada:** removidos os botões `Subir Foto` e `Lançar Gasto / Peça` do topo, mantendo apenas `Atualizar` e `Exportar CSV`.
+  - **Botão `Adicionar Fotos` na Galeria:** envio de fotos direto pelo painel (cabeçalho da galeria e dentro de cada pasta, com a placa pré-preenchida).
+  - **Placa legível sobre as fotos:** texto branco em fundo escuro nos cards da galeria.
+  - **Vendedores & Custódia:** correção da sobreposição entre título, busca, seletor de equipe e filtros (layout empilhado no celular).
+  - **Segurança do deploy:** token do GitHub removido do código; lido apenas de `GITHUB_TOKEN` (variável de ambiente ou arquivo `.env` local, ignorado pelo Git e bloqueado no servidor).
   - **Conformidade Pré-Deploy:** `validate.mjs` 100% aprovado (sintaxe, Zero-Emoji, smoke test headless e Wrangler dry-run).
 
 ---
