@@ -35,6 +35,10 @@
       }
 
       function abrirModalSubirFoto(placaPadrao = '', motoristaPadrao = '') {
+        if (typeof podeEditar === 'function' && !podeEditar('galeria')) {
+          if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Galeria de Fotos');
+          return;
+        }
         const pNorm = (placaPadrao || '').toUpperCase().trim();
         popularDatalistEPlacasNoModalGasto();
         const info = pNorm ? obterInfoPlacaNaFrota(pNorm) : { placa: '', veiculo: '', motorista: '', km: '' };
@@ -582,6 +586,10 @@
       window.baixarFotoGaleria = baixarFotoGaleria;
 
       async function excluirFotoGaleria(id) {
+        if (typeof podeEditar === 'function' && !podeEditar('galeria')) {
+          if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Galeria de Fotos');
+          return;
+        }
         const f = (gastosState.galeria || []).find(x => String(x.id) === String(id));
         if (!f) return;
         const confirmado = await abrirConfirmacaoGlobal({
