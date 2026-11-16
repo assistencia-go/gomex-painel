@@ -6,20 +6,21 @@
             <div class="admin-panel-title-area">
               <div class="admin-tag-exclusivo">
                 <svg class="i" style="width:14px;height:14px;stroke-width:2.5"><use href="#i-shield" /></svg>
-                <span>Área Restrita · Super Admin Gomex</span>
+                <span>Área Restrita · Administrador Gomex</span>
               </div>
-              <h2 class="admin-view-title">Gestão de Usuários & Bloqueio de Telas</h2>
-              <p class="admin-view-subtitle">Controle de acesso granular (RBAC). Módulos desmarcados serão <strong>completamente bloqueados e ocultados</strong> do menu do respectivo usuário.</p>
+              <h2 class="admin-view-title">Gestão de Usuários, Permissões & Armazenamento</h2>
+              <p class="admin-view-subtitle">Controle granular de telas, ações de edição/exportação, criação de usuários e monitoramento do espaço livre no Supabase. Tudo fica salvo na tabela <code>parametros</code> do Supabase.</p>
             </div>
 
             <div class="admin-head-actions">
+              <span class="admin-perm-count-badge" id="adminSupabaseSyncBadge" title="Estado da sincronização com o Supabase">Supabase: Verificando...</span>
               <button type="button" class="btn btn-outline" onclick="abrirModalNovoUsuario()" id="btnAdminNovoUsuario" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;">
                 <svg class="i"><use href="#i-user" /></svg>
                 <span>+ Novo Usuário</span>
               </button>
               <button type="button" class="btn btn-primary" onclick="salvarPermissoesUsuarios(true)" id="btnSalvarPermissoes" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
                 <svg class="i"><use href="#i-check" /></svg>
-                <span>Salvar Permissões na Nuvem</span>
+                <span>Salvar no Supabase</span>
               </button>
             </div>
           </div>
@@ -28,31 +29,100 @@
           <div class="summary-grid" style="margin-bottom:20px;">
             <div class="stat">
               <div class="stat-head">
-                <span class="stat-lbl">Usuários no Sistema</span>
+                <span class="stat-lbl">Usuários Ativos</span>
                 <div class="stat-ico blue"><svg class="i"><use href="#i-user" /></svg></div>
               </div>
               <dd id="statAdminTotalUsers">0</dd>
-              <span class="stat-sub">Supervisores e Gerência</span>
+              <span class="stat-sub" id="statAdminUsersSub">Administrador, Gerência e Supervisores</span>
             </div>
 
             <div class="stat">
               <div class="stat-head">
-                <span class="stat-lbl">Módulos Gerenciáveis</span>
+                <span class="stat-lbl">Controles Granulares</span>
                 <div class="stat-ico green"><svg class="i"><use href="#i-badge-check" /></svg></div>
               </div>
-              <dd>7 Telas</dd>
-              <span class="stat-sub">Vistorias, Ocorrências, Gastos, etc.</span>
+              <dd id="statAdminModulesCount">7 Telas + 8 Ações</dd>
+              <span class="stat-sub">Visão, Edição, Galeria, Exportação & Admin</span>
             </div>
 
             <div class="stat">
               <div class="stat-head">
-                <span class="stat-lbl">Status do Bloqueio</span>
-                <div class="stat-ico green"><svg class="i"><use href="#i-shield" /></svg></div>
+                <span class="stat-lbl">Espaço Livre no Banco Supabase</span>
+                <div class="stat-ico amber"><svg class="i"><use href="#i-shield" /></svg></div>
               </div>
-              <dd style="color:var(--ok);font-size:17px;font-weight:800;">Ativo & Sincronizado</dd>
-              <span class="stat-sub">Bloqueia visual e rotas diretas</span>
+              <dd id="statAdminSupabaseFree" style="font-size:18px;font-weight:800;">Calculando...</dd>
+              <span class="stat-sub" id="statAdminSupabaseFreeSub">Consultando tabelas no Supabase</span>
             </div>
           </div>
+
+          <!-- Monitor de Armazenamento do Supabase -->
+          <section class="admin-storage-card" id="adminSupabaseStorageCard" aria-label="Monitor de armazenamento do Supabase">
+            <div class="admin-storage-head">
+              <div>
+                <div class="admin-storage-title">
+                  <svg class="i" style="color:#4f46e5;"><use href="#i-truck" /></svg>
+                  <span>Monitor de Armazenamento Livre · Supabase</span>
+                  <span class="admin-storage-mode-badge" id="adminStorageModeBadge">Aguardando leitura</span>
+                </div>
+                <p class="admin-storage-sub" id="adminStorageSummarySub">Mede em tempo real o tamanho dos check-lists, fotos na galeria, gastos, ocorrências e buckets Storage no Supabase.</p>
+              </div>
+              <div class="admin-storage-controls">
+                <select id="adminSupabasePlanSelect" class="select" onchange="alterarPlanoSupabaseMonitor(this.value)" title="Cota do seu plano Supabase" style="height:34px;font-size:12px;">
+                  <option value="free">Plano Free (500 MB Banco / 1 GB Storage)</option>
+                  <option value="pro">Plano Pro (8 GB Banco / 100 GB Storage)</option>
+                </select>
+                <button type="button" class="btn btn-outline" id="btnAtualizarStorageSupabase" onclick="carregarArmazenamentoSupabase(true)" style="height:34px;padding:0 12px;font-size:12px;">
+                  <svg class="i"><use href="#i-refresh" /></svg>
+                  <span>Atualizar Leitura</span>
+                </button>
+                <button type="button" class="btn btn-ghost" id="btnCopiarSqlStorageStats" onclick="copiarSqlMedicaoSupabase()" style="height:34px;padding:0 10px;font-size:12px;" title="Copia uma função SQL opcional para medir até os índices exatos do PostgreSQL">
+                  <span>Copiar SQL Exato</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-storage-grid">
+              <div class="admin-storage-meter">
+                <div class="admin-storage-meter-top">
+                  <strong>Banco de Dados (PostgreSQL)</strong>
+                  <span id="adminDbQuotaText">—</span>
+                </div>
+                <div class="admin-storage-bar"><i id="adminDbBarFill" style="width:0%"></i></div>
+                <div class="admin-storage-meter-foot">
+                  <span id="adminDbFreeText">Livre: —</span>
+                  <span id="adminDbPctText">0%</span>
+                </div>
+              </div>
+
+              <div class="admin-storage-meter">
+                <div class="admin-storage-meter-top">
+                  <strong>Galeria de Fotos (Trava JSON atual)</strong>
+                  <span id="adminGalQuotaText">— / 8,5 MB</span>
+                </div>
+                <div class="admin-storage-bar"><i id="adminGalBarFill" style="width:0%"></i></div>
+                <div class="admin-storage-meter-foot">
+                  <span id="adminGalFreeText">Fotos: — / 200</span>
+                  <span id="adminGalPctText">0%</span>
+                </div>
+              </div>
+
+              <div class="admin-storage-meter">
+                <div class="admin-storage-meter-top">
+                  <strong>Supabase Storage (Buckets)</strong>
+                  <span id="adminBucketQuotaText">—</span>
+                </div>
+                <div class="admin-storage-bar"><i id="adminBucketBarFill" style="width:0%"></i></div>
+                <div class="admin-storage-meter-foot">
+                  <span id="adminBucketFreeText">Livre: —</span>
+                  <span id="adminBucketPctText">0%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-storage-breakdown" id="adminStorageBreakdown">
+              <span>Carregando detalhamento por módulo...</span>
+            </div>
+          </section>
 
           <!-- Filtro / Busca de Usuários -->
           <div class="admin-filter-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
