@@ -107,7 +107,7 @@ async function pushFile(fileName) {
       }
 
       const body = {
-        message: `feat(painel): remover flash do login no refresh, padronizar vendedor em caixa alta e alertar troca na placa (${fileName})`,
+        message: `feat(painel): RBAC administrador, usuarios salvos no Supabase e monitor real de armazenamento (${fileName})`,
         content: base64Content,
         branch: 'main'
       };
