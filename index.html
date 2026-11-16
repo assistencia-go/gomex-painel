@@ -2210,6 +2210,54 @@
     }
 
     /* ============================================================================
+     VENDEDORES & CUSTÓDIA: CABEÇALHO E FILTROS (sem sobreposição de blocos)
+     ============================================================================ */
+    .vend-panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px 18px;
+      flex-wrap: wrap;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .vend-panel-title {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+    .vend-panel-title h2 {
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .vend-panel-title p {
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+    .vend-panel-filters {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .vend-search {
+      flex: 0 0 270px;
+      width: 270px;
+      max-width: 270px;
+    }
+    .vend-search .input {
+      height: 32px;
+      font-size: 12px;
+    }
+    .vend-select-equipe {
+      height: 32px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ============================================================================
      GAVETA DE DETALHES & WORKFLOW DE LIBERAÇÃO
      ============================================================================ */
     .scrim {
@@ -4094,6 +4142,24 @@
       background: var(--accent-tint);
       color: var(--accent-hi);
       border-color: var(--accent);
+    }
+
+    /* Ações do cabeçalho da galeria (Adicionar Fotos + alternador de modo) */
+    .galeria-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Placa sobre a foto: texto branco em fundo escuro (alto contraste) */
+    .galeria-img-badges .plate,
+    .galeria-plate-badge {
+      background: rgba(9, 9, 11, 0.9) !important;
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.55) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
     }
 
     /* ============================================================================
@@ -6961,6 +7027,75 @@
       }
     }
 
+    /* Vendedores & Custódia no mobile: um bloco abaixo do outro, sem sobreposição */
+    @media (max-width: 760px) {
+      #sectionVendedoresView .vend-panel-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      #sectionVendedoresView .vend-panel-title {
+        flex: none;
+        width: 100%;
+      }
+
+      #sectionVendedoresView .vend-panel-filters {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        flex-wrap: nowrap;
+        gap: 10px;
+        width: 100%;
+      }
+
+      #sectionVendedoresView .vend-search {
+        flex: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      #sectionVendedoresView .vend-search .input {
+        height: 40px;
+        font-size: 14px;
+      }
+
+      #sectionVendedoresView .vend-select-equipe {
+        flex: none;
+        width: 100% !important;
+        max-width: none !important;
+        height: 40px !important;
+        font-size: 13px;
+      }
+
+      #sectionVendedoresView .panel-filters .btn-group .btn {
+        height: 40px !important;
+        font-size: 12px !important;
+      }
+
+      #sectionVendedoresView .panel-filters > .btn {
+        height: 40px !important;
+      }
+
+      .galeria-head-actions {
+        width: 100%;
+      }
+
+      .galeria-head-actions > .btn {
+        flex: 1 1 100%;
+        justify-content: center;
+        height: 40px;
+      }
+
+      .galeria-album-bar .btn-primary {
+        width: 100%;
+        justify-content: center;
+        height: 40px;
+      }
+    }
+
   </style>
 </head>
 
@@ -8168,24 +8303,25 @@
           </section>
 
           <!-- Painel de Vendedores e Filtros -->
-          <section class="panel">
-            <div class="panel-head" style="gap:14px;flex-wrap:wrap">
-              <div>
+          <section class="board" aria-label="Gestão de vendedores">
+            <div class="vend-panel-head">
+              <div class="vend-panel-title">
                 <h2>Gestão de Vendedores, Prazos & Supervisores</h2>
                 <p>Acompanhe quem está sem vistoria, quanto tempo falta até a próxima vistoria e emita relatórios em PDF por supervisor.</p>
               </div>
 
-              <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <div class="search-wrap" style="width:230px">
+              <div class="panel-filters vend-panel-filters">
+                <div class="search search-wrap vend-search">
                   <svg class="i">
                     <use href="#i-search" />
                   </svg>
+                  <label for="filtroVendBusca" class="sr-only">Buscar vendedor, rota ou placa</label>
                   <input type="text" class="input input-search" id="filtroVendBusca"
-                    placeholder="Buscar vendedor, rota ou placa...">
+                    placeholder="Buscar vendedor, rota ou placa..." autocomplete="off">
                 </div>
 
                 <!-- Seletor de Equipe -->
-                <select class="select" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)" style="height:32px;font-size:12px;font-weight:700">
+                <select class="select vend-select-equipe" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)">
                   <option value="todos">Todas as Equipes (35)</option>
                   <option value="101">Equipe 101 · Alisson Bezerra (12)</option>
                   <option value="102">Equipe 102 · Eliase Mendes (11)</option>
@@ -8546,7 +8682,11 @@
                 <h2 style="font-size:15px;font-weight:700">Galeria Fotográfica dos Veículos</h2>
                 <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Álbuns organizados por placa do veículo e histórico visual de vistorias.</p>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div class="galeria-head-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="btnAdicionarFotosGaleria" onclick="adicionarFotosGaleria()" title="Enviar novas fotos para a galeria">
+                  <svg class="i"><use href="#i-camera" /></svg>
+                  <span>Adicionar Fotos</span>
+                </button>
                 <div class="galeria-mode-toggle" role="group" aria-label="Modo de visualização">
                   <button type="button" class="btn btn-sm btn-ghost gal-mode-btn active" id="btnModoPastas" onclick="alternarModoGaleria('pastas')">
                     <svg class="i"><use href="#i-folder" /></svg>
@@ -8571,6 +8711,10 @@
                 <strong id="albumVeiculoTitulo" style="font-size:13.5px;color:var(--ink)"></strong>
                 <span class="badge" id="albumQtdFotosBadge" style="font-size:11.5px"></span>
               </div>
+              <button type="button" class="btn btn-sm btn-primary" id="btnAdicionarFotosPasta" onclick="adicionarFotosGaleria()" title="Adicionar fotos nesta pasta">
+                <svg class="i"><use href="#i-camera" /></svg>
+                <span>Adicionar Fotos nesta Pasta</span>
+              </button>
             </div>
 
             <!-- Filtros da Galeria -->
@@ -20658,6 +20802,13 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
       }
       window.abrirPastaGaleria = abrirPastaGaleria;
 
+      // Abre o modal de upload; se houver pasta aberta, já vem com a placa preenchida
+      function adicionarFotosGaleria() {
+        const p = galeriaUI.placaAberta && galeriaUI.placaAberta !== 'SEM PLACA' ? galeriaUI.placaAberta : '';
+        abrirModalSubirFoto(p);
+      }
+      window.adicionarFotosGaleria = adicionarFotosGaleria;
+
       function fecharPastaGaleria() {
         // Se o filtro de placa foi definido só para abrir este álbum, limpa para listar todas as pastas
         const sel = $('galFiltroPlaca');
@@ -20875,7 +21026,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
             '<div class="galeria-img-wrap" onclick="abrirLightboxFoto(\'' + esc(f.id) + '\')">' +
             '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" decoding="async">' +
             '<div class="galeria-img-badges">' +
-            '<span class="plate" style="font-size:11px;background:rgba(9,9,11,0.88);backdrop-filter:blur(4px)">' + esc(f.placa) + '</span>' +
+            '<span class="plate galeria-plate-badge" style="font-size:11px">' + esc(f.placa) + '</span>' +
             '<span class="badge-cat-prod" style="background:rgba(9,9,11,0.82);color:#fff;border-color:rgba(255,255,255,0.2)">' + esc(f.categoria || 'Vistoria') + '</span>' +
             '</div>' +
             '</div>' +
