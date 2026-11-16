@@ -59,7 +59,11 @@
                 <h2 style="font-size:15px;font-weight:700">Galeria Fotográfica dos Veículos</h2>
                 <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Álbuns organizados por placa do veículo e histórico visual de vistorias.</p>
               </div>
-              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div class="galeria-head-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="btnAdicionarFotosGaleria" onclick="adicionarFotosGaleria()" title="Enviar novas fotos para a galeria">
+                  <svg class="i"><use href="#i-camera" /></svg>
+                  <span>Adicionar Fotos</span>
+                </button>
                 <div class="galeria-mode-toggle" role="group" aria-label="Modo de visualização">
                   <button type="button" class="btn btn-sm btn-ghost gal-mode-btn active" id="btnModoPastas" onclick="alternarModoGaleria('pastas')">
                     <svg class="i"><use href="#i-folder" /></svg>
@@ -84,6 +88,10 @@
                 <strong id="albumVeiculoTitulo" style="font-size:13.5px;color:var(--ink)"></strong>
                 <span class="badge" id="albumQtdFotosBadge" style="font-size:11.5px"></span>
               </div>
+              <button type="button" class="btn btn-sm btn-primary" id="btnAdicionarFotosPasta" onclick="adicionarFotosGaleria()" title="Adicionar fotos nesta pasta">
+                <svg class="i"><use href="#i-camera" /></svg>
+                <span>Adicionar Fotos nesta Pasta</span>
+              </button>
             </div>
 
             <!-- Filtros da Galeria -->
