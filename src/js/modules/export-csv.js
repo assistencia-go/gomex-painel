@@ -7,6 +7,10 @@
       };
 
       $('btnExport').addEventListener('click', () => {
+        if (typeof podeExportar === 'function' && !podeExportar()) {
+          if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Exportação de Relatórios');
+          return;
+        }
         if (state.visaoAtual === 'frotacad') {
           exportarFrotaVeiculosCsv();
           return;
