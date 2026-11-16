@@ -1,6 +1,187 @@
     /* ============================================================================
      GALERIA DE FOTOS DOS VEÍCULOS DA FROTA
      ============================================================================ */
+
+    /* Alternador de Modo de Exibição (Pastas vs Fotos) */
+    .galeria-mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .gal-mode-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-2);
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      transition: all 140ms ease;
+    }
+    .gal-mode-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    .gal-mode-btn:hover:not(.active) {
+      color: var(--ink);
+      background: var(--panel-3, rgba(255,255,255,0.06));
+    }
+
+    /* Barra de Navegação do Álbum Aberto */
+    .galeria-album-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .galeria-album-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Grid de Pastas por Placa (Álbuns) */
+    .galeria-pastas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      padding: 18px;
+    }
+
+    /* Card da Pasta do Veículo */
+    .pasta-card {
+      background: var(--raised);
+      border: 1px solid var(--line-strong);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+      position: relative;
+    }
+    .pasta-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .pasta-capa-wrap {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      background: #09090b;
+      overflow: hidden;
+    }
+    .pasta-capa-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 260ms ease;
+    }
+    .pasta-card:hover .pasta-capa-wrap img {
+      transform: scale(1.04);
+    }
+    .pasta-capa-empty {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel-2);
+      color: var(--ink-3);
+      gap: 8px;
+    }
+    .pasta-capa-empty svg {
+      width: 36px;
+      height: 36px;
+      opacity: 0.6;
+    }
+    .pasta-badge-qtd {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.88);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      backdrop-filter: blur(4px);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .pasta-badge-icon {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .pasta-badge-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+    .pasta-card-body {
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .pasta-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .pasta-card-model {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .pasta-card-meta {
+      font-size: 11.5px;
+      color: var(--ink-2);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .pasta-card-foot {
+      padding: 10px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--panel-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--accent-hi);
+      font-weight: 700;
+    }
+
     .galeria-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
