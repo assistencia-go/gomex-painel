@@ -18,11 +18,11 @@ const CSS_FILES = [
   '03-topbar-alerts-kpis.css',
   '04-tables-tabs-badges.css',
   '05-drawer-modals-base.css',
-  '06-responsive-mobile.css',
   '07-gastos-pecas.css',
   '08-galeria-fotos.css',
   '09-ocorrencias-pausas.css',
-  '10-admin-rbac.css'
+  '10-admin-rbac.css',
+  '06-responsive-mobile.css'
 ];
 
 // 2. Ordem determinística dos blocos HTML
