@@ -272,7 +272,13 @@
           }
         });
 
-        const totalAlertas = blk + comPneuDano + revisaoVencendo + vistMensalProxima + vistMensalVencida + oleoVencidoCount + oleoProximoCount;
+        // Alertas de Mudança de Vendedor em placa com histórico
+        const trocaVendedorInfo = typeof obterMapaTrocasVendedorPlaca === 'function'
+          ? obterMapaTrocasVendedorPlaca(ativos)
+          : { porVistoriaId: new Map(), latestChangedIds: new Set() };
+        const trocasVendedorCount = trocaVendedorInfo.latestChangedIds.size;
+
+        const totalAlertas = blk + comPneuDano + revisaoVencendo + vistMensalProxima + vistMensalVencida + oleoVencidoCount + oleoProximoCount + trocasVendedorCount;
 
         const banner = $('alertsBanner');
         if (totalAlertas > 0) {
@@ -328,6 +334,17 @@
             pRev.hidden = true;
           }
 
+          const pTrocaVend = $('pillTrocaVendedor');
+          if (pTrocaVend) {
+            if (trocasVendedorCount > 0) {
+              pTrocaVend.hidden = false;
+              pTrocaVend.innerHTML = icon('user') + ' <span>' + trocasVendedorCount + (trocasVendedorCount === 1 ? ' Troca de Vendedor' : ' Trocas de Vendedor') + '</span>';
+              pTrocaVend.classList.toggle('active', state.alertType === 'troca_vendedor');
+            } else {
+              pTrocaVend.hidden = true;
+            }
+          }
+
           const pOleoVenc = $('pillOleoVencido');
           if (pOleoVenc) {
             if (oleoVencidoCount > 0) {
@@ -374,6 +391,7 @@
       if ($('pillVistoriaProxima')) $('pillVistoriaProxima').addEventListener('click', () => alternarFiltroAlerta('vistoria_proxima'));
       if ($('pillPneus')) $('pillPneus').addEventListener('click', () => alternarFiltroAlerta('pneu'));
       if ($('pillRevisao')) $('pillRevisao').addEventListener('click', () => alternarFiltroAlerta('revisao'));
+      if ($('pillTrocaVendedor')) $('pillTrocaVendedor').addEventListener('click', () => alternarFiltroAlerta('troca_vendedor'));
       if ($('pillOleoVencido')) $('pillOleoVencido').addEventListener('click', () => alternarFiltroAlerta('oleo_vencido'));
       if ($('pillOleoProximo')) $('pillOleoProximo').addEventListener('click', () => alternarFiltroAlerta('oleo_proximo'));
 
@@ -400,6 +418,9 @@
         const d30 = isoLocal(new Date(Date.now() - 30 * 864e5));
         const known = ['Kombi', 'Transit', 'Master'];
         const mapaMensal = obterStatusMensalPorPlaca();
+        const trocaInfo = typeof obterMapaTrocasVendedorPlaca === 'function'
+          ? obterMapaTrocasVendedorPlaca(state.all)
+          : { porVistoriaId: new Map(), latestChangedIds: new Set() };
 
         state.filtered = state.all.filter(it => {
           const isInativo = it.status === 'inativo';
@@ -428,6 +449,7 @@
             const isLatestOfPlate = Boolean(infoM && String(infoM.latestId) === String(it.id));
             const isVistProx = isLatestOfPlate && infoM.ciclo?.status === 'proxima';
             const isVistVenc = isLatestOfPlate && infoM.ciclo?.status === 'vencida';
+            const isTrocaVend = trocaInfo.latestChangedIds.has(String(it.id));
 
             if (state.alertType === 'bloqueado') {
               if (!isBlk) return false;
@@ -435,6 +457,8 @@
               if (!isVistVenc) return false;
             } else if (state.alertType === 'vistoria_proxima') {
               if (!isVistProx) return false;
+            } else if (state.alertType === 'troca_vendedor') {
+              if (!isTrocaVend) return false;
             } else if (state.alertType === 'pneu') {
               if (!isPn) return false;
             } else if (state.alertType === 'revisao') {
@@ -448,7 +472,7 @@
             } else {
               const stO = typeof calcularStatusOleoPorKm === 'function' ? calcularStatusOleoPorKm(it.placa) : null;
               const isOleoAlert = stO && (stO.status === 'vencido' || stO.status === 'proximo');
-              if (!isBlk && !isPn && !isRev && !isVistProx && !isVistVenc && !isOleoAlert) return false;
+              if (!isBlk && !isPn && !isRev && !isVistProx && !isVistVenc && !isOleoAlert && !isTrocaVend) return false;
             }
           }
           if (q) {
@@ -578,7 +602,7 @@
         return '<tr><td class="empty" colspan="9">' + icon(ic) + '<h2>' + title + '</h2><p>' + text + '</p>' + action + '</td></tr>';
       }
 
-      function rowHtml(it, mapaMensalRef = null) {
+      function rowHtml(it, mapaMensalRef = null, mapaTrocasRef = null) {
         const av = avariasOf(it).length;
         const nok = nokOf(it).length;
         const alert = pneuAlert(it);
@@ -595,6 +619,7 @@
         const cicloMensal = isLatestOfPlate ? infoMensal.ciclo : null;
         const isMensalVencida = Boolean(cicloMensal && cicloMensal.status === 'vencida');
         const isMensalProxima = Boolean(cicloMensal && cicloMensal.status === 'proxima');
+        const trocaVendedor = (!isInat && mapaTrocasRef) ? mapaTrocasRef.get(String(it.id)) : null;
 
         // Diagnóstico de Alertas Operacionais da Linha
         const kmAtual = Number(it.km) || 0;
@@ -609,7 +634,7 @@
         let alertRowClass = '';
         if (isBlkAlert || isRevOverdue || isPnAlert || isMensalVencida) {
           alertRowClass = ' row-alert-red';
-        } else if (isRevClose || isMensalProxima) {
+        } else if (isRevClose || isMensalProxima || trocaVendedor) {
           alertRowClass = ' row-alert-yellow';
         }
 
@@ -628,7 +653,7 @@
           '</td>' +
           '<td class="c-driver">' +
           '<div class="stack">' +
-          '<span class="t1">' + esc(it.motorista || 'Não informado') + '</span>' +
+          '<span class="t1"' + (it._motoristaOriginal ? ' title="Lançado no app como: ' + esc(it._motoristaOriginal) + '"' : '') + '>' + esc(it.motorista || 'Não informado') + '</span>' +
           '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
           '<span class="badge-km">' + fmtKm(it.km) + '</span>' +
           (it.rota
@@ -636,6 +661,9 @@
             : '<button type="button" class="btn-add-rota-inline" data-act="editar" data-id="' + id + '" title="Adicionar rota desta vistoria">+ Rota</button>'
           ) +
           '</div>' +
+          (trocaVendedor
+            ? '<div style="margin-top:4px"><span class="badge-row-alert yellow" title="Atenção: placa ' + placa + ' possuía histórico anterior com ' + esc(trocaVendedor.motoristaAnterior) + ' (Vistoria Nº ' + esc(trocaVendedor.vistoriaAnteriorNum) + ')"><svg class="i" style="width:10px;height:10px;stroke-width:2.2"><use href="#i-alert"/></svg><span>Mudou vendedor (era ' + esc(trocaVendedor.motoristaAnterior) + ')</span></span></div>'
+            : '') +
           (isInat ? '<div class="txt-motivo-inat" title="Motivo da inativação">' + icon('alert') + ' <span>Motivo: ' + esc(extrairMotivoInativacao(it)) + '</span></div>' : '') +
           '</div>' +
           '</td>' +
@@ -720,7 +748,10 @@
           $('tableInfo').textContent = '0 de ' + state.all.length + ' vistorias';
         } else {
           const mapaMensal = obterStatusMensalPorPlaca();
-          body.innerHTML = items.map(it => rowHtml(it, mapaMensal)).join('');
+          const trocasMap = typeof obterMapaTrocasVendedorPlaca === 'function'
+            ? obterMapaTrocasVendedorPlaca(state.all).porVistoriaId
+            : null;
+          body.innerHTML = items.map(it => rowHtml(it, mapaMensal, trocasMap)).join('');
           $('tableInfo').textContent = (start + 1) + '–' + (start + items.length) + ' de ' + total + ' ' + (total === 1 ? 'vistoria' : 'vistorias');
         }
 
