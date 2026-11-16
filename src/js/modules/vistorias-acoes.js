@@ -361,9 +361,14 @@
           return;
         }
 
+        const trocasTimeline = typeof obterMapaTrocasVendedorPlaca === 'function'
+          ? obterMapaTrocasVendedorPlaca(state.all).porVistoriaId
+          : new Map();
+
         timelineEl.innerHTML = filtradas.map(v => {
           const av = avariasOf(v).length;
           const nok = nokOf(v).length;
+          const tr = trocasTimeline.get(String(v.id));
           const cls = v.liberacao === 'Não liberado' ? 'bad' : v.liberacao === 'Ressalva' ? 'warn' : 'ok';
           return '<div class="hist-item ' + cls + '">' +
             '<i class="hist-dot"></i>' +
@@ -375,6 +380,7 @@
             '</div>' +
             '<div style="font-size:12px;color:var(--ink-2);margin-top:2px">' +
             'Motorista: <b>' + esc(v.motorista || 'Não informado') + '</b> · Km: ' + fmtKm(v.km) + ' · Rota: ' + esc(v.rota || '—') + ' · ' + esc(v.tipo || 'Saída') +
+            (tr ? ' <span class="badge-row-alert yellow" style="margin-left:6px">Trocou de ' + esc(tr.motoristaAnterior) + '</span>' : '') +
             '</div>' +
             '<div style="font-size:11.5px;color:var(--ink-3);margin-top:2px">' +
             (av ? '<span class="txt-warn">' + av + ' avaria(s) na carroceria</span>' : 'Carroceria íntegra') +
