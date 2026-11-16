@@ -2250,8 +2250,10 @@
                 if (!window.state) window.state = {};
                 window.state.permissoes = { ...(window.state.permissoes || {}), ...data.permissoes };
                 try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(window.state.permissoes)); } catch (e) { }
+                if (typeof carregarPermissoesIniciais === 'function') carregarPermissoesIniciais();
                 if (typeof aplicarPermissoesUi === 'function') aplicarPermissoesUi();
-                if (typeof renderAdminPermissoes === 'function' && window.state.visaoPrincipal === 'admin') renderAdminPermissoes();
+                if (typeof atualizarBadgeSyncSupabaseAdmin === 'function') atualizarBadgeSyncSupabaseAdmin(true);
+                if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
               }
               if (mudou) {
                 salvarGastosLocalStorage();
@@ -2310,8 +2312,10 @@
                         if (!window.state) window.state = {};
                         window.state.permissoes = { ...(window.state.permissoes || {}), ...p };
                         try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(window.state.permissoes)); } catch (e) { }
+                        if (typeof carregarPermissoesIniciais === 'function') carregarPermissoesIniciais();
                         if (typeof aplicarPermissoesUi === 'function') aplicarPermissoesUi();
-                        if (typeof renderAdminPermissoes === 'function' && window.state.visaoPrincipal === 'admin') renderAdminPermissoes();
+                        if (typeof atualizarBadgeSyncSupabaseAdmin === 'function') atualizarBadgeSyncSupabaseAdmin(true);
+                        if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
                       }
                     } catch (e) { }
                   }
