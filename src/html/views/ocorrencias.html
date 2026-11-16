@@ -4,23 +4,32 @@
         <div id="sectionOcorrenciasView" hidden style="max-width:100%;overflow-x:hidden">
           <!-- Resumo de Ocorrências e Pausas -->
           <section class="summary" aria-label="Resumo das ocorrências e pausas">
-            <dl class="summary-grid">
+            <dl class="summary-grid summary-grid-ocr">
               <div class="stat">
                 <div class="stat-head">
                   <span class="stat-lbl">Parados Agora</span>
                   <div class="stat-ico red"><svg class="i"><use href="#i-stopwatch" /></svg></div>
                 </div>
                 <dd id="ocrStatParadosAgora">0</dd>
-                <span class="stat-sub" id="ocrStatParadosSub">Vendedores em pausa</span>
+                <span class="stat-sub" id="ocrStatParadosSub">Em expediente</span>
               </div>
 
               <div class="stat">
                 <div class="stat-head">
-                  <span class="stat-lbl">Tempo Total Parado</span>
+                  <span class="stat-lbl">Tempo Útil Hoje</span>
                   <div class="stat-ico yellow"><svg class="i"><use href="#i-clock" /></svg></div>
                 </div>
                 <dd id="ocrStatTempoHoje">0 min</dd>
-                <span class="stat-sub">Soma de toda a frota hoje</span>
+                <span class="stat-sub" id="ocrStatTempoHojeSub">Dias úteis (expediente)</span>
+              </div>
+
+              <div class="stat">
+                <div class="stat-head">
+                  <span class="stat-lbl">Tempo Fim de Semana</span>
+                  <div class="stat-ico" style="background:rgba(71,85,105,0.14);color:#475569"><svg class="i"><use href="#i-calendar-clock" /></svg></div>
+                </div>
+                <dd id="ocrStatTempoFimSemana" style="color:#475569">0 min</dd>
+                <span class="stat-sub" id="ocrStatTempoFimSemanaSub">Fora do expediente (sáb/dom)</span>
               </div>
 
               <div class="stat">
@@ -47,7 +56,7 @@
                   <div class="stat-ico" style="background:rgba(99,102,241,0.15);color:#6366f1"><svg class="i"><use href="#i-calendar-clock" /></svg></div>
                 </div>
                 <dd id="ocrStatAgendadas">0</dd>
-                <span class="stat-sub">Serviços futuros</span>
+                <span class="stat-sub" id="ocrStatAgendadasSub">Serviços futuros</span>
               </div>
             </dl>
           </section>
@@ -107,6 +116,9 @@
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-calendar" /></svg> Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
+                </button>
+                <button type="button" class="filter-tab" id="btnOcrFiltroFimSemana" onclick="filtrarOcorrencias('fim_semana')">
+                  <svg class="i" style="width:13px;height:13px"><use href="#i-calendar-clock" /></svg> Fim de Semana <span class="tab-badge" id="badgeOcrFiltroFimSemana">0</span>
                 </button>
                 <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" onclick="filtrarOcorrencias('finalizado')">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg> Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
