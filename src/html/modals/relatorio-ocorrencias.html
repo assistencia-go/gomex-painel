@@ -49,7 +49,7 @@
           </div>
         </div>
 
-        <!-- Filtros Adicionais: Vendedor e Situação -->
+        <!-- Filtros Adicionais: Vendedor, Situação e Regime de Fim de Semana -->
         <div class="ocr-form-grid-2">
           <div class="ocr-form-field">
             <label for="ocrRelVendedor" class="gasto-field-lbl">Filtrar por Vendedor / Motorista</label>
@@ -68,6 +68,15 @@
           </div>
         </div>
 
+        <div class="ocr-form-field">
+          <label for="ocrRelModoFimSemana" class="gasto-field-lbl">Ocorrências de Fim de Semana (Sábado e Domingo)</label>
+          <select id="ocrRelModoFimSemana" class="input" style="height:42px;font-weight:600" onchange="atualizarPreviaRelatorioOcr()">
+            <option value="excluir" selected>Apenas Dias Úteis (Não exibir Fim de Semana no relatório)</option>
+            <option value="somente_fds">Somente Tempo de Fim de Semana (Fora do Expediente)</option>
+            <option value="separar">Incluir Ambos (Separados no Resumo)</option>
+          </select>
+        </div>
+
         <!-- Painel de Resumo / KPIs da Prévia -->
         <div class="ocr-rel-kpis-grid">
           <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
@@ -76,8 +85,14 @@
           </div>
 
           <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Total Parado</span>
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Útil Parado</span>
             <div id="ocrRelTempoTotal" style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px">0 min</div>
+          </div>
+
+          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
+            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Fim de Semana</span>
+            <div id="ocrRelTempoFimSemana" style="font-size:18px;font-weight:800;color:#475569;margin-top:2px">0 min</div>
+            <span id="ocrRelFimSemanaSub" style="font-size:10.5px;color:var(--ink-3);display:block;margin-top:1px">Fora do expediente</span>
           </div>
 
           <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
