@@ -135,6 +135,172 @@
         ].join(':')).join('|');
       }
 
+      // Normaliza e resolve nome completo do vendedor/motorista em CAIXA ALTA apenas no painel
+      function _normTxtVist(s) {
+        return String(s || '')
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      function _tokensNomeVist(s) {
+        return _normTxtVist(s).split(' ').filter(Boolean);
+      }
+
+      function _tokensBatemNoNome(typedTokens, candidatoNome, prefixMin = 0) {
+        if (!typedTokens.length) return false;
+        const candTokens = _tokensNomeVist(candidatoNome);
+        if (!candTokens.length) return false;
+        return typedTokens.every(t =>
+          candTokens.includes(t) ||
+          (prefixMin > 0 && t.length >= prefixMin && candTokens.some(ct => ct.startsWith(t)))
+        );
+      }
+
+      function resolverNomeVendedorPainel(rawNome, rota = '', placa = '', nomesHistoricosPlaca = []) {
+        const orig = String(rawNome || '').trim();
+        if (!orig) return '';
+        if (_normTxtVist(orig) === 'nao informado') return 'NÃO INFORMADO';
+
+        const typedTokens = _tokensNomeVist(orig);
+        const listaOficial = (typeof EQUIPES_VENDEDORES_PADRAO !== 'undefined' && Array.isArray(EQUIPES_VENDEDORES_PADRAO))
+          ? EQUIPES_VENDEDORES_PADRAO
+          : [];
+        const rotaDigits = String(rota || '').replace(/\D/g, '');
+
+        // 1. Se houver rota oficial e o nome digitado conferir com o titular daquela rota
+        if (rotaDigits && listaOficial.length) {
+          const porRota = listaOficial.find(v => v.rota === rotaDigits);
+          if (porRota && _tokensBatemNoNome(typedTokens, porRota.nome, 3)) {
+            return String(porRota.nome).toLocaleUpperCase('pt-BR');
+          }
+        }
+
+        // 2. Match no catálogo oficial de vendedores (token exato primeiro, depois prefixo >= 3 letras)
+        if (listaOficial.length) {
+          let candidatos = listaOficial.filter(v => _tokensBatemNoNome(typedTokens, v.nome, 0));
+          if (!candidatos.length) {
+            candidatos = listaOficial.filter(v => _tokensBatemNoNome(typedTokens, v.nome, 3));
+          }
+          if (candidatos.length === 1) {
+            return String(candidatos[0].nome).toLocaleUpperCase('pt-BR');
+          }
+          // Desempate caso haja homônimo de primeiro nome usando histórico da própria placa
+          if (candidatos.length > 1 && Array.isArray(nomesHistoricosPlaca) && nomesHistoricosPlaca.length) {
+            const histNormSet = new Set(nomesHistoricosPlaca.map(n => _normTxtVist(n)).filter(Boolean));
+            const noHistorico = candidatos.filter(c => histNormSet.has(_normTxtVist(c.nome)));
+            if (noHistorico.length === 1) {
+              return String(noHistorico[0].nome).toLocaleUpperCase('pt-BR');
+            }
+          }
+        }
+
+        // 3. Fallback: nomes completos já vistos no histórico da própria placa ou no cadastro da frota
+        const extras = Array.isArray(nomesHistoricosPlaca) ? nomesHistoricosPlaca.slice() : [];
+        if (typeof gastosState !== 'undefined' && Array.isArray(gastosState.veiculos)) {
+          const pNorm = String(placa || '').toUpperCase().trim();
+          gastosState.veiculos.forEach(v => {
+            if ((!pNorm || String(v.placa || '').toUpperCase().trim() === pNorm) && v.motorista) {
+              extras.push(v.motorista);
+            }
+          });
+        }
+        const nomesMultiUnicos = [...new Set(extras.map(n => String(n || '').trim()).filter(n => _tokensNomeVist(n).length >= 2))];
+        if (nomesMultiUnicos.length) {
+          let histCand = nomesMultiUnicos.filter(n => _tokensBatemNoNome(typedTokens, n, 0));
+          if (!histCand.length) histCand = nomesMultiUnicos.filter(n => _tokensBatemNoNome(typedTokens, n, 3));
+          if (histCand.length === 1) {
+            return histCand[0].toLocaleUpperCase('pt-BR');
+          }
+        }
+
+        // 4. Sempre exibir em CAIXA ALTA no painel
+        return orig.toLocaleUpperCase('pt-BR');
+      }
+      window.resolverNomeVendedorPainel = resolverNomeVendedorPainel;
+
+      function normalizarVistoriasPainel(rows) {
+        if (!Array.isArray(rows)) return rows;
+        const nomesPorPlaca = new Map();
+        rows.forEach(it => {
+          if (!it || it.status === 'inativo') return;
+          const p = String(it.placa || '').toUpperCase().trim();
+          const m = String(it.motorista || '').trim();
+          if (!p || !m || _tokensNomeVist(m).length < 2) return;
+          if (!nomesPorPlaca.has(p)) nomesPorPlaca.set(p, []);
+          nomesPorPlaca.get(p).push(m);
+        });
+
+        rows.forEach(it => {
+          if (!it) return;
+          const orig = String(it.motorista || '').trim();
+          if (!orig) return;
+          const p = String(it.placa || '').toUpperCase().trim();
+          const histPlaca = p ? (nomesPorPlaca.get(p) || []) : [];
+          const resolvido = resolverNomeVendedorPainel(orig, it.rota, p, histPlaca);
+          if (resolvido && resolvido !== orig) {
+            if (!it._motoristaOriginal && _normTxtVist(orig) !== _normTxtVist(resolvido)) {
+              it._motoristaOriginal = orig;
+            }
+            it.motorista = resolvido;
+          }
+        });
+        return rows;
+      }
+      window.normalizarVistoriasPainel = normalizarVistoriasPainel;
+
+      function obterMapaTrocasVendedorPlaca(rows) {
+        const fonte = Array.isArray(rows) ? rows : (state.all || []);
+        const porPlaca = new Map();
+        fonte.forEach(it => {
+          if (!it || it.status === 'inativo') return;
+          const p = String(it.placa || '').toUpperCase().trim();
+          if (!p) return;
+          if (!porPlaca.has(p)) porPlaca.set(p, []);
+          porPlaca.get(p).push(it);
+        });
+
+        const porVistoriaId = new Map();
+        const latestChangedIds = new Set();
+
+        porPlaca.forEach((lista, placa) => {
+          if (lista.length < 2) return;
+          lista.sort((a, b) => {
+            const ka = (a.data || '') + ' ' + (a.hora || '');
+            const kb = (b.data || '') + ' ' + (b.hora || '');
+            const cmp = ka.localeCompare(kb);
+            if (cmp !== 0) return cmp;
+            return (Number(a.id) || 0) - (Number(b.id) || 0);
+          });
+
+          for (let i = 1; i < lista.length; i++) {
+            const anterior = lista[i - 1];
+            const atual = lista[i];
+            const mAnt = String(anterior.motorista || '').trim();
+            const mAtu = String(atual.motorista || '').trim();
+            const normAnt = _normTxtVist(mAnt);
+            const normAtu = _normTxtVist(mAtu);
+            if (normAnt && normAtu && normAnt !== 'nao informado' && normAtu !== 'nao informado' && normAnt !== normAtu) {
+              const isLatest = i === lista.length - 1;
+              porVistoriaId.set(String(atual.id), {
+                placa,
+                motoristaAnterior: mAnt,
+                motoristaAtual: mAtu,
+                vistoriaAnteriorNum: anterior.numero || '—',
+                vistoriaAnteriorData: anterior.data || '',
+                isLatestOfPlate: isLatest
+              });
+              if (isLatest) latestChangedIds.add(String(atual.id));
+            }
+          }
+        });
+
+        return { porVistoriaId, latestChangedIds };
+      }
+      window.obterMapaTrocasVendedorPlaca = obterMapaTrocasVendedorPlaca;
+
       async function getRows(proxyPath, directPath) {
         try {
           const r = await fetch(proxyPath, { cache: 'no-store' });
@@ -180,7 +346,7 @@
           if (!state.loaded) {
             const cached = lerSnapshotLocal();
             if (cached) {
-              const merged = aplicarPendentesLocais(cached);
+              const merged = normalizarVistoriasPainel(aplicarPendentesLocais(cached));
               merged.forEach(x => state.known.add(x.id));
               state.all = merged;
               state.sig = computeStateSig(merged);
@@ -193,7 +359,7 @@
           return;
         }
 
-        const d = aplicarPendentesLocais(raw);
+        const d = normalizarVistoriasPainel(aplicarPendentesLocais(raw));
         // Propaga automaticamente a rota mais recente informada pelo vendedor no check-list
         const rotaPorMotorista = new Map();
         d.forEach(item => {
@@ -231,12 +397,22 @@
         renderAll();
 
         if (fresh.length) {
+          const trocasInfo = obterMapaTrocasVendedorPlaca(d);
+          const freshTrocas = fresh
+            .map(x => trocasInfo.porVistoriaId.get(String(x.id)))
+            .filter(Boolean);
           const hasBad = fresh.some(x => x.liberacao === 'Não liberado');
-          const hasWarn = fresh.some(x => x.liberacao === 'Ressalva');
+          const hasWarn = fresh.some(x => x.liberacao === 'Ressalva') || freshTrocas.length > 0;
           if (hasBad) tocarChimeAlerta('bad');
           else if (hasWarn) tocarChimeAlerta('warn');
 
           toast(fresh.length === 1 ? 'Nova vistoria ' + fresh[0].numero + ' recebida' : fresh.length + ' novas vistorias recebidas');
+          if (freshTrocas.length === 1) {
+            const tr = freshTrocas[0];
+            toast('Atenção: placa ' + tr.placa + ' mudou de vendedor (' + tr.motoristaAnterior + ' -> ' + tr.motoristaAtual + ')', 'error');
+          } else if (freshTrocas.length > 1) {
+            toast('Atenção: ' + freshTrocas.length + ' vistorias chegaram com troca de vendedor em placas já cadastradas!', 'error');
+          }
           dispararNotificacaoNativa(fresh[0], fresh.length);
           notificarServidorNovaVistoria(fresh[0], fresh.length);
         }
