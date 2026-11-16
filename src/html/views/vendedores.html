@@ -175,24 +175,25 @@
           </section>
 
           <!-- Painel de Vendedores e Filtros -->
-          <section class="panel">
-            <div class="panel-head" style="gap:14px;flex-wrap:wrap">
-              <div>
+          <section class="board" aria-label="Gestão de vendedores">
+            <div class="vend-panel-head">
+              <div class="vend-panel-title">
                 <h2>Gestão de Vendedores, Prazos & Supervisores</h2>
                 <p>Acompanhe quem está sem vistoria, quanto tempo falta até a próxima vistoria e emita relatórios em PDF por supervisor.</p>
               </div>
 
-              <div class="panel-filters" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <div class="search-wrap" style="width:230px">
+              <div class="panel-filters vend-panel-filters">
+                <div class="search search-wrap vend-search">
                   <svg class="i">
                     <use href="#i-search" />
                   </svg>
+                  <label for="filtroVendBusca" class="sr-only">Buscar vendedor, rota ou placa</label>
                   <input type="text" class="input input-search" id="filtroVendBusca"
-                    placeholder="Buscar vendedor, rota ou placa...">
+                    placeholder="Buscar vendedor, rota ou placa..." autocomplete="off">
                 </div>
 
                 <!-- Seletor de Equipe -->
-                <select class="select" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)" style="height:32px;font-size:12px;font-weight:700">
+                <select class="select vend-select-equipe" id="filtroVendEquipe" onchange="selecionarEquipeFiltro(this.value)">
                   <option value="todos">Todas as Equipes (35)</option>
                   <option value="101">Equipe 101 · Alisson Bezerra (12)</option>
                   <option value="102">Equipe 102 · Eliase Mendes (11)</option>
