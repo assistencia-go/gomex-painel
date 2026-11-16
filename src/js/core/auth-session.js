@@ -107,6 +107,120 @@
         }
       }
 
+      async function gerarHashSenhaForte(senha) {
+        const texto = String(senha || '');
+        if (typeof crypto !== 'undefined' && crypto.subtle && typeof crypto.subtle.deriveBits === 'function' && typeof crypto.subtle.importKey === 'function') {
+          try {
+            const saltBytes = new Uint8Array(16);
+            if (typeof crypto.getRandomValues === 'function') {
+              crypto.getRandomValues(saltBytes);
+            } else {
+              for (let i = 0; i < saltBytes.length; i++) saltBytes[i] = Math.floor(Math.random() * 256);
+            }
+            const enc = new TextEncoder();
+            const keyMat = await crypto.subtle.importKey('raw', enc.encode(texto), { name: 'PBKDF2' }, false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits(
+              { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+              keyMat,
+              256
+            );
+            const toHex = arr => Array.from(new Uint8Array(arr)).map(b => b.toString(16).padStart(2, '0')).join('');
+            return { alg: 'pbkdf2', iter: 100000, salt: toHex(saltBytes), hash: toHex(bits) };
+          } catch (e) {}
+        }
+        const sha = await sha256Hex(texto);
+        return { alg: 'sha256', hash: sha };
+      }
+      window.gerarHashSenhaForte = gerarHashSenhaForte;
+
+      async function verificarHashSenhaRegistro(senha, authRec) {
+        if (!authRec || !senha) return false;
+        if (authRec.alg === 'pbkdf2' && authRec.salt && authRec.hash && crypto?.subtle?.deriveBits && crypto?.subtle?.importKey) {
+          try {
+            const saltBytes = new Uint8Array(String(authRec.salt).match(/.{1,2}/g).map(h => parseInt(h, 16)));
+            const enc = new TextEncoder();
+            const keyMat = await crypto.subtle.importKey('raw', enc.encode(String(senha)), { name: 'PBKDF2' }, false, ['deriveBits']);
+            const bits = await crypto.subtle.deriveBits(
+              { name: 'PBKDF2', salt: saltBytes, iterations: Number(authRec.iter) || 100000, hash: 'SHA-256' },
+              keyMat,
+              256
+            );
+            const hex = Array.from(new Uint8Array(bits)).map(b => b.toString(16).padStart(2, '0')).join('');
+            return hex === authRec.hash;
+          } catch (e) {
+            return false;
+          }
+        }
+        if (authRec.hash) {
+          const inputHash = await sha256Hex(senha);
+          return inputHash === authRec.hash;
+        }
+        return false;
+      }
+
+      function obterCatalogoUsuarioAuth(uNorm) {
+        const customUsers = (state.permissoes && Array.isArray(state.permissoes.usuariosCustom))
+          ? state.permissoes.usuariosCustom
+          : [];
+        const customMeta = customUsers.find(cu => normalizarUsuario(cu.key) === uNorm);
+        const uNoSpace = uNorm.replace(/\s+/g, '');
+        const baseMeta = VALID_USERS[uNorm] || VALID_USERS[uNoSpace];
+        if (customMeta || baseMeta) {
+          return {
+            key: uNorm,
+            name: (customMeta && customMeta.name) || (baseMeta && baseMeta.name) || uNorm,
+            role: (customMeta && customMeta.role) || 'Supervisor',
+            equipe: (customMeta && customMeta.equipe) || '',
+            isCustom: Boolean(customMeta && !baseMeta),
+            hashes: baseMeta ? baseMeta.hashes : []
+          };
+        }
+        return null;
+      }
+
+      async function sincronizarPermissoesParaLogin() {
+        const aplicar = (p) => {
+          if (!p || typeof p !== 'object') return;
+          state.permissoes = { ...(state.permissoes || {}), ...p };
+          if (typeof carregarPermissoesIniciais === 'function') {
+            try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(state.permissoes)); } catch (e) {}
+            carregarPermissoesIniciais();
+          }
+        };
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = controller ? setTimeout(() => controller.abort(), 2500) : null;
+        try {
+          const res = await fetch('/api/frota-gastos', {
+            cache: 'no-store',
+            signal: controller ? controller.signal : undefined
+          });
+          if (res.ok) {
+            const d = await res.json();
+            if (d && d.permissoes) {
+              aplicar(d.permissoes);
+              return true;
+            }
+          }
+        } catch (e) {
+        } finally {
+          if (timer) clearTimeout(timer);
+        }
+        try {
+          const resSup = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=eq.frota_permissoes_usuarios_v1&select=*', {
+            headers: { apikey: apiKey(), Authorization: 'Bearer ' + apiKey(), 'Content-Type': 'application/json' },
+            cache: 'no-store'
+          });
+          if (resSup.ok) {
+            const rows = await resSup.json();
+            if (Array.isArray(rows) && rows[0] && rows[0].descricao) {
+              aplicar(JSON.parse(rows[0].descricao));
+              return true;
+            }
+          }
+        } catch (e2) {}
+        return false;
+      }
+
       function checkExistingAuth() {
         const raw = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY);
         if (!raw) return false;
@@ -126,15 +240,20 @@
             return false;
           }
 
-          const uRaw = (auth.user || '').toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-          const uNoSpace = uRaw.replace(/\s+/g, '');
-          const existingUser = VALID_USERS[uRaw] || VALID_USERS[uNoSpace];
+          const uRaw = normalizarUsuario(auth.user || '');
+          const existingUser = obterCatalogoUsuarioAuth(uRaw);
+          const uPerms = state.permissoes && state.permissoes[uRaw];
+          if (uRaw !== 'gomex' && uPerms && uPerms.ativo === false) {
+            encerrarSessao('Seu acesso foi desativado pelo Administrador.');
+            return false;
+          }
+
           if (existingUser && auth.token) {
             auth.lastActivity = now;
             const storage = localStorage.getItem(AUTH_KEY) ? localStorage : sessionStorage;
             storage.setItem(AUTH_KEY, JSON.stringify(auth));
 
-            showApp(auth.name || existingUser.name, auth.user);
+            showApp(auth.name || existingUser.name, uRaw);
             iniciarMonitorSessao();
             return true;
           }
@@ -234,8 +353,11 @@
         if ($('login')) $('login').hidden = true;
         if ($('app')) $('app').hidden = false;
 
-        // Auto-seleção da equipe do supervisor logado
-        if (state.currentUser.includes('101')) {
+        // Auto-seleção da equipe do supervisor logado (cadastro custom ou código da rota no login)
+        const userMetaEq = (typeof obterCatalogoUsuarioAuth === 'function' ? obterCatalogoUsuarioAuth(state.currentUser) : null)?.equipe || '';
+        if (userMetaEq) {
+          state.filtroVendEquipe = userMetaEq;
+        } else if (state.currentUser.includes('101')) {
           state.filtroVendEquipe = '101';
         } else if (state.currentUser.includes('102') || state.currentUser.includes('elias')) {
           state.filtroVendEquipe = '102';
@@ -297,27 +419,56 @@
         }
 
         const u = ($('loginUser')?.value || '').trim();
-        const uNorm = u.toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ').trim();
-        const uNormNoSpace = uNorm.replace(/\s+/g, '');
+        const uNorm = normalizarUsuario(u);
         const p = $('loginPass')?.value || '';
 
-        const validUser = VALID_USERS[uNorm] || VALID_USERS[uNormNoSpace];
-        if (!validUser || !p) {
+        if (!uNorm || !p) {
           if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Usuário ou senha incorretos. Confira e tente de novo.';
           if ($('loginError')) $('loginError').classList.add('show');
           if ($('loginPass')) $('loginPass').select();
           return false;
         }
 
-        const inputHash = await sha256Hex(p);
-        const senhaValida = (validUser.hashes && validUser.hashes.includes(inputHash)) ||
-                            (validUser.hash && validUser.hash === inputHash) ||
-                            ALLOWED_HASHES.has(inputHash) ||
-                            (p === 'Gomex@2026' || p === 'gomex@2026' || p === 'Gomex2026' || p === 'gomex2026' ||
-                             (uNorm === 'eliase' && (p === 'SUP102' || p === 'sup102')) ||
-                             (uNorm === 'alisson 101' && (p === 'SUP101' || p === 'sup101')) ||
-                             (uNorm === 'alisson 103' && (p === 'SUP103' || p === 'sup103')) ||
-                             (uNorm === 'maycon' && (p === 'GERENCIA@2026' || p === 'gerencia@2026' || p === 'Gerencia@2026')));
+        // Busca usuários/permissões atualizados do Supabase antes de autenticar
+        await sincronizarPermissoesParaLogin();
+
+        const validUser = obterCatalogoUsuarioAuth(uNorm);
+        if (!validUser) {
+          if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Usuário ou senha incorretos. Confira e tente de novo.';
+          if ($('loginError')) $('loginError').classList.add('show');
+          if ($('loginPass')) $('loginPass').select();
+          return false;
+        }
+
+        const uPerms = state.permissoes && state.permissoes[uNorm];
+        if (uNorm !== 'gomex' && uPerms && uPerms.ativo === false) {
+          if ($('loginErrorMsg')) $('loginErrorMsg').textContent = 'Este usuário foi desativado pelo Administrador.';
+          if ($('loginError')) $('loginError').classList.add('show');
+          return false;
+        }
+
+        const customAuthRec = state.permissoes && state.permissoes.usuariosAuth && state.permissoes.usuariosAuth[uNorm];
+        let senhaValida = false;
+
+        if (customAuthRec) {
+          senhaValida = await verificarHashSenhaRegistro(p, customAuthRec);
+          // Para o administrador raiz (@gomex), mantém hashes padrão apenas se a senha não tiver sido trocada com isStrict
+          if (!senhaValida && uNorm === 'gomex' && !customAuthRec.strict) {
+            const inputHash = await sha256Hex(p);
+            senhaValida = Boolean(validUser.hashes && validUser.hashes.includes(inputHash));
+          }
+        } else if (!validUser.isCustom) {
+          const inputHash = await sha256Hex(p);
+          senhaValida = Boolean(
+            (validUser.hashes && validUser.hashes.includes(inputHash)) ||
+            ALLOWED_HASHES.has(inputHash) ||
+            (p === 'Gomex@2026' || p === 'gomex@2026' || p === 'Gomex2026' || p === 'gomex2026' ||
+              (uNorm === 'eliase' && (p === 'SUP102' || p === 'sup102')) ||
+              (uNorm === 'alisson 101' && (p === 'SUP101' || p === 'sup101')) ||
+              (uNorm === 'alisson 103' && (p === 'SUP103' || p === 'sup103')) ||
+              (uNorm === 'maycon' && (p === 'GERENCIA@2026' || p === 'gerencia@2026' || p === 'Gerencia@2026')))
+          );
+        }
 
         if (senhaValida) {
           const now = Date.now();
