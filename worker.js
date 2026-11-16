@@ -483,6 +483,155 @@ export default {
       }
     }
 
+    // 1.6 MONITOR DE ARMAZENAMENTO SUPABASE (/api/supabase-storage-stats)
+    if (url.pathname === '/api/supabase-storage-stats' && request.method === 'GET') {
+      const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\/+$/, '');
+      const supabaseKey = getSupabaseKey(env);
+      const enc = new TextEncoder();
+      const byteLen = (s) => enc.encode(String(s || '')).length;
+      const sbHeaders = {
+        'apikey': supabaseKey,
+        'Authorization': 'Bearer ' + supabaseKey,
+        'Content-Type': 'application/json'
+      };
+      try {
+        let parametrosRows = [];
+        let checklistsRows = [];
+        let checklistsTotal = 0;
+        let buckets = [];
+        let rpcData = null;
+
+        const [rParam, rChk, rBucket, rRpc] = await Promise.allSettled([
+          fetch(supabaseUrl + '/rest/v1/parametros?select=id,valor,descricao', { headers: sbHeaders }),
+          fetch(supabaseUrl + '/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500', {
+            headers: { ...sbHeaders, 'Prefer': 'count=exact' }
+          }),
+          fetch(supabaseUrl + '/storage/v1/bucket', { headers: sbHeaders }),
+          fetch(supabaseUrl + '/rest/v1/rpc/gomex_db_storage_stats', { method: 'POST', headers: sbHeaders, body: '{}' })
+        ]);
+
+        const rParamOk = rParam.status === 'fulfilled' && rParam.value.ok;
+        const rChkOk = rChk.status === 'fulfilled' && rChk.value.ok;
+        if (!rParamOk && !rChkOk) {
+          return new Response(JSON.stringify({ ok: false, error: 'Falha ao consultar tabelas reais no Supabase' }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+          });
+        }
+        if (rParamOk) {
+          const d = await rParam.value.json().catch(() => []);
+          if (Array.isArray(d)) parametrosRows = d;
+        }
+        if (rChkOk) {
+          const cr = rChk.value.headers.get('content-range') || '';
+          const mTotal = cr.match(/\/(\d+)$/);
+          const d = await rChk.value.json().catch(() => []);
+          if (Array.isArray(d)) checklistsRows = d;
+          checklistsTotal = mTotal ? Number(mTotal[1]) : checklistsRows.length;
+        }
+        if (rBucket.status === 'fulfilled' && rBucket.value.ok) {
+          const d = await rBucket.value.json().catch(() => []);
+          if (Array.isArray(d)) buckets = d;
+        }
+        if (rRpc.status === 'fulfilled' && rRpc.value.ok) {
+          rpcData = await rRpc.value.json().catch(() => null);
+        }
+
+        let galeriaBytes = 0, galeriaFotos = 0, gastosBytes = 0, ocorrenciasBytes = 0, outrosParametrosBytes = 0;
+        for (const row of parametrosRows) {
+          const rowBytes = byteLen(JSON.stringify(row));
+          if (row.id === 'frota_galeria_veiculos_v1') {
+            galeriaBytes += rowBytes;
+            try {
+              const arr = JSON.parse(row.descricao || '[]');
+              if (Array.isArray(arr)) galeriaFotos = arr.length;
+            } catch (e) {
+              galeriaFotos = Number(row.valor) || 0;
+            }
+          } else if (row.id === 'frota_lancamentos_gastos_v1' || row.id === 'frota_catalogo_produtos_v1') {
+            gastosBytes += rowBytes;
+          } else if (row.id === 'frota_ocorrencias_v1' || row.id === 'frota_agendamentos_servicos_v1') {
+            ocorrenciasBytes += rowBytes;
+          } else {
+            outrosParametrosBytes += rowBytes;
+          }
+        }
+
+        const sampleChkBytes = checklistsRows.reduce((acc, r) => acc + byteLen(JSON.stringify(r)), 0);
+        const checklistsBytes = checklistsRows.length && checklistsTotal > checklistsRows.length
+          ? Math.round((sampleChkBytes / checklistsRows.length) * checklistsTotal)
+          : sampleChkBytes;
+
+        let storageFilesCount = 0;
+        let storageBytesUsed = 0;
+        for (const b of buckets) {
+          const bName = b.id || b.name;
+          if (!bName) continue;
+          const prefixes = [''];
+          let calls = 0;
+          while (prefixes.length && calls < 25) {
+            const prefix = prefixes.shift();
+            calls++;
+            try {
+              const listRes = await fetch(supabaseUrl + '/storage/v1/object/list/' + encodeURIComponent(bName), {
+                method: 'POST',
+                headers: sbHeaders,
+                body: JSON.stringify({ prefix, limit: 1000, offset: 0 })
+              });
+              if (!listRes.ok) continue;
+              const objs = await listRes.json().catch(() => []);
+              if (!Array.isArray(objs)) continue;
+              for (const obj of objs) {
+                if (!obj || !obj.name || obj.name === '.emptyFolderPlaceholder') continue;
+                if (obj.metadata && typeof obj.metadata.size === 'number') {
+                  storageFilesCount++;
+                  storageBytesUsed += obj.metadata.size;
+                } else if (!obj.metadata && obj.id === null) {
+                  prefixes.push(prefix ? prefix + '/' + obj.name : obj.name);
+                }
+              }
+            } catch (e) {}
+          }
+        }
+
+        const measuredTablesBytes = checklistsBytes + galeriaBytes + gastosBytes + ocorrenciasBytes + outrosParametrosBytes;
+        const rpcDbBytes = rpcData && typeof rpcData.db_bytes === 'number' ? rpcData.db_bytes : null;
+        const exactPgSize = rpcDbBytes !== null;
+        const dbBytesUsed = exactPgSize ? rpcDbBytes : measuredTablesBytes;
+
+        return new Response(JSON.stringify({
+          ok: true,
+          exactPgSize,
+          dbBytesUsed,
+          measuredTablesBytes,
+          dbBreakdown: {
+            checklistsBytes,
+            checklistsCount: checklistsTotal,
+            galeriaBytes,
+            galeriaFotos,
+            gastosBytes,
+            ocorrenciasBytes,
+            outrosParametrosBytes
+          },
+          storage: {
+            available: rBucket.status === 'fulfilled' && rBucket.value.ok,
+            bucketsCount: buckets.length,
+            filesCount: storageFilesCount,
+            bytesUsed: storageBytesUsed
+          },
+          checkedAt: new Date().toISOString()
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+        });
+      } catch (err) {
+        return new Response(JSON.stringify({ ok: false, error: err.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+        });
+      }
+    }
+
     // 2. ROTA DE CHECKLISTS (GET, PATCH & POST)
     if (url.pathname === '/api/checklists') {
       const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\/+$/, '');
