@@ -54,7 +54,8 @@ const HTML_FILES = [
   'modals/catalogo-produtos.html',
   'modals/subir-foto.html',
   'modals/ver-foto.html',
-  'modals/push-notificacoes.html'
+  'modals/push-notificacoes.html',
+  'modals/admin-usuarios.html'
 ];
 
 // 3. Ordem determinística dos scripts JS
