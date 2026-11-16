@@ -292,6 +292,13 @@
       }
       window.abrirPastaGaleria = abrirPastaGaleria;
 
+      // Abre o modal de upload; se houver pasta aberta, já vem com a placa preenchida
+      function adicionarFotosGaleria() {
+        const p = galeriaUI.placaAberta && galeriaUI.placaAberta !== 'SEM PLACA' ? galeriaUI.placaAberta : '';
+        abrirModalSubirFoto(p);
+      }
+      window.adicionarFotosGaleria = adicionarFotosGaleria;
+
       function fecharPastaGaleria() {
         // Se o filtro de placa foi definido só para abrir este álbum, limpa para listar todas as pastas
         const sel = $('galFiltroPlaca');
@@ -509,7 +516,7 @@
             '<div class="galeria-img-wrap" onclick="abrirLightboxFoto(\'' + esc(f.id) + '\')">' +
             '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" decoding="async">' +
             '<div class="galeria-img-badges">' +
-            '<span class="plate" style="font-size:11px;background:rgba(9,9,11,0.88);backdrop-filter:blur(4px)">' + esc(f.placa) + '</span>' +
+            '<span class="plate galeria-plate-badge" style="font-size:11px">' + esc(f.placa) + '</span>' +
             '<span class="badge-cat-prod" style="background:rgba(9,9,11,0.82);color:#fff;border-color:rgba(255,255,255,0.2)">' + esc(f.categoria || 'Vistoria') + '</span>' +
             '</div>' +
             '</div>' +
