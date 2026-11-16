@@ -544,6 +544,148 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  // Monitoramento real de uso e espaço livre no Supabase (/api/supabase-storage-stats)
+  if (pathname === '/api/supabase-storage-stats' && req.method === 'GET') {
+    (async () => {
+      const byteLen = (s) => Buffer.byteLength(String(s || ''), 'utf8');
+      const sbHeaders = {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json'
+      };
+      let parametrosRows = [];
+      let checklistsRows = [];
+      let checklistsTotal = 0;
+      let buckets = [];
+      let rpcData = null;
+
+      const [rParam, rChk, rBucket, rRpc] = await Promise.allSettled([
+        fetch(`${SUPABASE_URL}/rest/v1/parametros?select=id,valor,descricao`, { headers: sbHeaders }),
+        fetch(`${SUPABASE_URL}/rest/v1/veiculo_checklists?select=*&order=id.desc&limit=500`, {
+          headers: { ...sbHeaders, 'Prefer': 'count=exact' }
+        }),
+        fetch(`${SUPABASE_URL}/storage/v1/bucket`, { headers: sbHeaders }),
+        fetch(`${SUPABASE_URL}/rest/v1/rpc/gomex_db_storage_stats`, { method: 'POST', headers: sbHeaders, body: '{}' })
+      ]);
+
+      const rParamOk = rParam.status === 'fulfilled' && rParam.value.ok;
+      const rChkOk = rChk.status === 'fulfilled' && rChk.value.ok;
+      if (!rParamOk && !rChkOk) {
+        res.writeHead(502, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+        res.end(JSON.stringify({ ok: false, error: 'Falha ao consultar tabelas reais no Supabase' }));
+        return;
+      }
+      if (rParamOk) {
+        const d = await rParam.value.json().catch(() => []);
+        if (Array.isArray(d)) parametrosRows = d;
+      }
+      if (rChkOk) {
+        const cr = rChk.value.headers.get('content-range') || '';
+        const mTotal = cr.match(/\/(\d+)$/);
+        const d = await rChk.value.json().catch(() => []);
+        if (Array.isArray(d)) checklistsRows = d;
+        checklistsTotal = mTotal ? Number(mTotal[1]) : checklistsRows.length;
+      }
+      if (rBucket.status === 'fulfilled' && rBucket.value.ok) {
+        const d = await rBucket.value.json().catch(() => []);
+        if (Array.isArray(d)) buckets = d;
+      }
+      if (rRpc.status === 'fulfilled' && rRpc.value.ok) {
+        rpcData = await rRpc.value.json().catch(() => null);
+      }
+
+      let galeriaBytes = 0, galeriaFotos = 0, gastosBytes = 0, ocorrenciasBytes = 0, outrosParametrosBytes = 0;
+      for (const row of parametrosRows) {
+        const rowBytes = byteLen(JSON.stringify(row));
+        if (row.id === 'frota_galeria_veiculos_v1') {
+          galeriaBytes += rowBytes;
+          try {
+            const arr = JSON.parse(row.descricao || '[]');
+            if (Array.isArray(arr)) galeriaFotos = arr.length;
+          } catch (e) {
+            galeriaFotos = Number(row.valor) || 0;
+          }
+        } else if (row.id === 'frota_lancamentos_gastos_v1' || row.id === 'frota_catalogo_produtos_v1') {
+          gastosBytes += rowBytes;
+        } else if (row.id === 'frota_ocorrencias_v1' || row.id === 'frota_agendamentos_servicos_v1') {
+          ocorrenciasBytes += rowBytes;
+        } else {
+          outrosParametrosBytes += rowBytes;
+        }
+      }
+
+      const sampleChkBytes = checklistsRows.reduce((acc, r) => acc + byteLen(JSON.stringify(r)), 0);
+      const checklistsBytes = checklistsRows.length && checklistsTotal > checklistsRows.length
+        ? Math.round((sampleChkBytes / checklistsRows.length) * checklistsTotal)
+        : sampleChkBytes;
+
+      let storageFilesCount = 0;
+      let storageBytesUsed = 0;
+      for (const b of buckets) {
+        const bName = b.id || b.name;
+        if (!bName) continue;
+        const prefixes = [''];
+        let calls = 0;
+        while (prefixes.length && calls < 25) {
+          const prefix = prefixes.shift();
+          calls++;
+          try {
+            const listRes = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${encodeURIComponent(bName)}`, {
+              method: 'POST',
+              headers: sbHeaders,
+              body: JSON.stringify({ prefix, limit: 1000, offset: 0 })
+            });
+            if (!listRes.ok) continue;
+            const objs = await listRes.json().catch(() => []);
+            if (!Array.isArray(objs)) continue;
+            for (const obj of objs) {
+              if (!obj || !obj.name || obj.name === '.emptyFolderPlaceholder') continue;
+              if (obj.metadata && typeof obj.metadata.size === 'number') {
+                storageFilesCount++;
+                storageBytesUsed += obj.metadata.size;
+              } else if (!obj.metadata && obj.id === null) {
+                prefixes.push(prefix ? `${prefix}/${obj.name}` : obj.name);
+              }
+            }
+          } catch (e) {}
+        }
+      }
+
+      const measuredTablesBytes = checklistsBytes + galeriaBytes + gastosBytes + ocorrenciasBytes + outrosParametrosBytes;
+      const rpcDbBytes = rpcData && typeof rpcData.db_bytes === 'number' ? rpcData.db_bytes : null;
+      const exactPgSize = rpcDbBytes !== null;
+      const dbBytesUsed = exactPgSize ? rpcDbBytes : measuredTablesBytes;
+
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(JSON.stringify({
+        ok: true,
+        exactPgSize,
+        dbBytesUsed,
+        measuredTablesBytes,
+        dbBreakdown: {
+          checklistsBytes,
+          checklistsCount: checklistsTotal,
+          galeriaBytes,
+          galeriaFotos,
+          gastosBytes,
+          ocorrenciasBytes,
+          outrosParametrosBytes
+        },
+        storage: {
+          available: rBucket.status === 'fulfilled' && rBucket.value.ok,
+          bucketsCount: buckets.length,
+          filesCount: storageFilesCount,
+          bytesUsed: storageBytesUsed
+        },
+        checkedAt: new Date().toISOString()
+      }));
+    })().catch(err => {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ ok: false, error: err.message }));
+    });
+    return;
+  }
+
   // Proxy seguro para /api/checklists
   if (pathname === '/api/checklists') {
     // 1. Atualizações de Vistoria (PATCH ou POST com id)
