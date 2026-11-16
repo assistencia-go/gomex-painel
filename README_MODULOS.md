@@ -126,3 +126,4 @@ Agora que o projeto está dividido em pastas limpas, você pode pedir diretament
   *A IA irá direto em `src/js/modules/pdf-export.js`.*
 
 Qualquer alteração feita nos arquivos de `src/` é automaticamente compilada no `index.html` e no `worker.js` de produção sem nenhum risco de quebrar outras partes do sistema.
+
