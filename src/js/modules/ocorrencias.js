@@ -30,9 +30,68 @@
         return String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
       }
 
-      function formatarDataHoje() {
-        const now = new Date();
+      function formatarDataHoje(refMs) {
+        const now = (refMs !== undefined && refMs !== null) ? new Date(refMs) : new Date();
         return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+      }
+
+      // Verifica se uma data YYYY-MM-DD cai no fim de semana (0 = Domingo, 6 = Sábado)
+      function ehDataFimDeSemana(dataStr) {
+        if (!dataStr) return false;
+        const partes = String(dataStr).slice(0, 10).split('-').map(Number);
+        if (partes.length < 3 || isNaN(partes[0]) || isNaN(partes[1]) || isNaN(partes[2])) return false;
+        const dw = new Date(partes[0], partes[1] - 1, partes[2]).getDay();
+        return dw === 0 || dw === 6;
+      }
+      window.ehDataFimDeSemana = ehDataFimDeSemana;
+
+      function nomeDiaFimDeSemana(dataStr) {
+        if (!dataStr) return '';
+        const partes = String(dataStr).slice(0, 10).split('-').map(Number);
+        if (partes.length < 3 || isNaN(partes[0]) || isNaN(partes[1]) || isNaN(partes[2])) return '';
+        const dw = new Date(partes[0], partes[1] - 1, partes[2]).getDay();
+        if (dw === 6) return 'Sábado';
+        if (dw === 0) return 'Domingo';
+        return '';
+      }
+
+      function fimDoFimDeSemanaTimestamp(dataStr) {
+        const partes = String(dataStr || '').slice(0, 10).split('-').map(Number);
+        if (partes.length < 3 || isNaN(partes[0]) || isNaN(partes[1]) || isNaN(partes[2])) return null;
+        const dt = new Date(partes[0], partes[1] - 1, partes[2]);
+        const dw = dt.getDay();
+        if (dw !== 0 && dw !== 6) return null;
+        const diasAteSegunda = dw === 6 ? 2 : 1;
+        return new Date(partes[0], partes[1] - 1, partes[2] + diasAteSegunda, 0, 0, 0, 0).getTime();
+      }
+
+      // Separa o intervalo [iniMs, fimMs] entre minutos de dias úteis (Seg-Sex) e fim de semana (Sáb-Dom)
+      function dividirMinutosExpedienteEFds(iniMs, fimMs) {
+        if (!iniMs || !fimMs || fimMs <= iniMs) return { utilMin: 0, fdsMin: 0 };
+        const dIni = new Date(iniMs);
+        const dFim = new Date(fimMs);
+        if (dIni.getFullYear() === dFim.getFullYear() && dIni.getMonth() === dFim.getMonth() && dIni.getDate() === dFim.getDate()) {
+          const total = Math.floor((fimMs - iniMs) / 60000);
+          const dw = dIni.getDay();
+          return (dw === 0 || dw === 6) ? { utilMin: 0, fdsMin: total } : { utilMin: total, fdsMin: 0 };
+        }
+        let utilMs = 0;
+        let fdsMs = 0;
+        let cursor = iniMs;
+        let guard = 0;
+        while (cursor < fimMs && guard++ < 65) {
+          const dt = new Date(cursor);
+          const proxDia = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate() + 1, 0, 0, 0, 0).getTime();
+          const segFim = Math.min(fimMs, proxDia);
+          const dw = dt.getDay();
+          if (dw === 0 || dw === 6) fdsMs += (segFim - cursor);
+          else utilMs += (segFim - cursor);
+          cursor = segFim;
+        }
+        return {
+          utilMin: Math.max(0, Math.floor(utilMs / 60000)),
+          fdsMin: Math.max(0, Math.floor(fdsMs / 60000))
+        };
       }
 
       function definirHoraAgora(inputId) {
@@ -142,9 +201,14 @@
 
         const isFutura = dt > hojeStr;
         const isHojeFuturo = (dt === hojeStr && ts && ts > agoraMs);
+        const isFds = ehDataFimDeSemana(dt);
+        const diaFds = nomeDiaFimDeSemana(dt);
 
         if (hintBadge) {
-          if (isFutura) {
+          if (isFds) {
+            hintBadge.textContent = 'Fim de Semana (' + diaFds + ') · Fora de expediente';
+            hintBadge.style.color = '#475569';
+          } else if (isFutura) {
             hintBadge.textContent = 'Serviço Futuro (Agendado)';
             hintBadge.style.color = '#6366f1';
           } else if (isHojeFuturo) {
@@ -224,7 +288,13 @@
         });
 
         if (txtEl) {
-          if (info.isFinalizado) {
+          if (info.isFimDeSemana && info.isAgendadoFuturo) {
+            txtEl.innerHTML = 'Agendado p/ fim de semana (<b style="color:#475569">' + esc(info.diaFimSemana) + ' · ' + formatarData(dt) + ' às ' + ini + '</b>) · Contabilizado separado (fora do relatório)';
+          } else if (info.isFimDeSemana && info.isFinalizado) {
+            txtEl.innerHTML = 'Fim de semana (' + esc(info.diaFimSemana) + ') · Tempo fora do expediente: <b style="color:#475569">' + formatarMinutosAmigavel(info.tempoFimSemanaMin) + '</b> (separado do relatório)';
+          } else if (info.isFimDeSemana) {
+            txtEl.innerHTML = 'Fim de semana (' + esc(info.diaFimSemana) + ') · Tempo fora do expediente: <b style="color:#475569">' + formatarMinutosAmigavel(info.tempoFimSemanaMin) + '</b> (não conta atraso nem relatório)';
+          } else if (info.isFinalizado) {
             txtEl.innerHTML = 'Pausa finalizada · Duração total: <b style="color:var(--ok)">' + formatarMinutosAmigavel(info.tempoDecorridoMin) + '</b>';
           } else if (info.isAgendadoFuturo) {
             txtEl.innerHTML = 'Agendado para <b style="color:#6366f1">' + formatarData(dt) + ' às ' + ini + '</b> · Término previsto às <b>' + info.horaFimPrevista + '</b>';
@@ -236,7 +306,9 @@
         }
 
         if (badgeEl) {
-          if (info.isFinalizado) {
+          if (info.isFimDeSemana) {
+            badgeEl.innerHTML = '<span class="badge-status-pausa fim-semana">Fim de Semana (Separado)</span>';
+          } else if (info.isFinalizado) {
             badgeEl.innerHTML = '<span class="badge-status-pausa finalizado"><svg class="i" style="width:12px;height:12px"><use href="#i-check" /></svg> Concluído</span>';
           } else if (info.isAgendadoFuturo) {
             badgeEl.innerHTML = '<span class="badge-status-pausa agendado">Agendada (Sem contagem)</span>';
@@ -500,6 +572,9 @@
           selVend.innerHTML = '<option value="">Todos os vendedores</option>' +
             mots.map(m => '<option value="' + esc(m) + '">' + esc(m) + '</option>').join('');
         }
+        if ($('ocrRelModoFimSemana')) {
+          $('ocrRelModoFimSemana').value = 'excluir';
+        }
 
         aplicarPeriodoRelatorioOcr('mes');
 
@@ -560,54 +635,103 @@
       }
       window.aplicarPeriodoRelatorioOcr = aplicarPeriodoRelatorioOcr;
 
-      function obterOcorrenciasFiltradasRelatorio() {
+      function obterDadosRelatorioOcorrencias() {
         const todas = Array.isArray(gastosState.ocorrencias) ? gastosState.ocorrencias : [];
         const dtIni = ($('ocrRelDataInicio')?.value || '').trim();
         const dtFim = ($('ocrRelDataFim')?.value || '').trim();
         const vend = ($('ocrRelVendedor')?.value || '').trim().toLowerCase();
-        const status = ($('ocrRelStatus')?.value || '').trim();
+        const statusFiltro = ($('ocrRelStatus')?.value || '').trim();
+        const modoFds = ($('ocrRelModoFimSemana')?.value || 'excluir').trim();
+        const agoraMs = Date.now();
 
-        return todas.filter(item => {
+        const baseFiltrada = todas.filter(item => {
           const dt = (item.data || '').slice(0, 10);
           if (dtIni && dt < dtIni) return false;
           if (dtFim && dt > dtFim) return false;
           if (vend && !(item.vendedor || '').toLowerCase().includes(vend)) return false;
-          if (status && item.status !== status) return false;
+          if (statusFiltro) {
+            const info = calcularStatusTempoOcorrencia(item, agoraMs);
+            if (statusFiltro === 'aberto' && !(info.isAberto || info.isEmAndamentoFimSemana)) return false;
+            if (statusFiltro === 'finalizado' && !info.isFinalizado) return false;
+          }
           return true;
-        });
+        }).map(item => ({ item, info: calcularStatusTempoOcorrencia(item, agoraMs) }));
+
+        const uteis = baseFiltrada.filter(p => !p.info.isFimDeSemana);
+        const fimSemana = baseFiltrada.filter(p => p.info.isFimDeSemana);
+
+        const tempoUtilTotalMin = baseFiltrada.reduce((acc, p) => acc + (p.info.tempoUtilMin || 0), 0);
+        const tempoFimSemanaTotalMin = baseFiltrada.reduce((acc, p) => acc + (p.info.tempoFimSemanaMin || 0), 0);
+
+        let selecionadas = uteis;
+        if (modoFds === 'somente_fds') selecionadas = fimSemana;
+        else if (modoFds === 'separar') selecionadas = baseFiltrada;
+
+        const totalCusto = selecionadas.reduce((acc, p) => acc + (Number(p.item.custo) || 0), 0);
+        const tempoListadoMin = modoFds === 'somente_fds'
+          ? tempoFimSemanaTotalMin
+          : (modoFds === 'separar' ? (tempoUtilTotalMin + tempoFimSemanaTotalMin) : tempoUtilTotalMin);
+        const mediaMinutos = selecionadas.length > 0 ? Math.round(tempoListadoMin / selecionadas.length) : 0;
+
+        return {
+          modoFds,
+          selecionadas,
+          uteis,
+          fimSemana,
+          tempoUtilTotalMin,
+          tempoFimSemanaTotalMin,
+          tempoListadoMin,
+          mediaMinutos,
+          totalCusto
+        };
+      }
+
+      function obterOcorrenciasFiltradasRelatorio() {
+        return obterDadosRelatorioOcorrencias().selecionadas.map(p => p.item);
       }
 
       function atualizarPreviaRelatorioOcr() {
-        const lista = obterOcorrenciasFiltradasRelatorio();
-        const horaAgora = formatarHoraAtual();
+        const dados = obterDadosRelatorioOcorrencias();
+        const { modoFds, selecionadas, fimSemana, tempoUtilTotalMin, tempoFimSemanaTotalMin, mediaMinutos, totalCusto } = dados;
 
-        let totalMinutos = 0;
-        let totalCusto = 0;
-
-        lista.forEach(x => {
-          totalCusto += Number(x.custo) || 0;
-          if (x.status === 'finalizado') {
-            totalMinutos += Number(x.duracao_minutos) || 0;
-          } else if (x.status === 'aberto') {
-            totalMinutos += calcularDuracaoMinutos(x.hora_inicio, horaAgora);
+        if ($('ocrRelTotalOcr')) $('ocrRelTotalOcr').textContent = selecionadas.length;
+        if ($('ocrRelTempoTotal')) {
+          $('ocrRelTempoTotal').textContent = formatarMinutosAmigavel(modoFds === 'somente_fds' ? 0 : tempoUtilTotalMin);
+        }
+        if ($('ocrRelTempoFimSemana')) {
+          $('ocrRelTempoFimSemana').textContent = formatarMinutosAmigavel(tempoFimSemanaTotalMin);
+        }
+        if ($('ocrRelFimSemanaSub')) {
+          if (modoFds === 'excluir') {
+            $('ocrRelFimSemanaSub').textContent = fimSemana.length
+              ? (fimSemana.length + ' reg. ocultado(s) do relatório')
+              : 'Fora do expediente (separado)';
+          } else if (modoFds === 'somente_fds') {
+            $('ocrRelFimSemanaSub').textContent = fimSemana.length + ' registro(s) no período';
+          } else {
+            $('ocrRelFimSemanaSub').textContent = fimSemana.length + ' reg. separados do útil';
           }
-        });
-
-        const mediaMinutos = lista.length > 0 ? Math.round(totalMinutos / lista.length) : 0;
-
-        if ($('ocrRelTotalOcr')) $('ocrRelTotalOcr').textContent = lista.length;
-        if ($('ocrRelTempoTotal')) $('ocrRelTempoTotal').textContent = formatarMinutosAmigavel(totalMinutos);
+        }
         if ($('ocrRelTempoMedio')) $('ocrRelTempoMedio').textContent = formatarMinutosAmigavel(mediaMinutos);
         if ($('ocrRelCustoTotal')) $('ocrRelCustoTotal').textContent = fmtMoeda(totalCusto);
-        if ($('ocrRelContadorPrevia')) $('ocrRelContadorPrevia').textContent = lista.length + ' ocorrência(s) encontrada(s)';
+        if ($('ocrRelContadorPrevia')) {
+          const extraOcultos = (modoFds === 'excluir' && fimSemana.length > 0)
+            ? (' · ' + fimSemana.length + ' de fim de semana fora do relatório')
+            : '';
+          $('ocrRelContadorPrevia').textContent = selecionadas.length + ' ocorrência(s) no relatório' + extraOcultos;
+        }
 
         const container = $('ocrRelListaPrevia');
         if (!container) return;
 
-        if (!lista.length) {
+        if (!selecionadas.length) {
+          const avisoFds = (modoFds === 'excluir' && fimSemana.length > 0)
+            ? `<div style="margin-top:6px;font-size:12px;color:#475569;font-weight:600">${fimSemana.length} registro(s) de fim de semana (${formatarMinutosAmigavel(tempoFimSemanaTotalMin)}) foram ocultados do relatório operacional.</div>`
+            : '';
           container.innerHTML = `
             <div style="text-align:center;padding:24px 12px;color:var(--ink-3);font-size:13px">
-              Nenhuma ocorrência encontrada para o período selecionado.
+              Nenhuma ocorrência encontrada para o filtro selecionado.
+              ${avisoFds}
             </div>
           `;
           return;
@@ -626,24 +750,36 @@
               </tr>
             </thead>
             <tbody>
-              ${lista.map((x, idx) => `
-                <tr style="border-bottom:1px solid var(--line);${idx % 2 === 0 ? 'background:transparent' : 'background:rgba(255,255,255,0.02)'}">
-                  <td style="padding:8px 10px;white-space:nowrap">${formatarData(x.data)}</td>
-                  <td style="padding:8px 10px;font-weight:600;color:var(--ink)">
-                    ${esc(x.vendedor)} <span class="badge-rota" style="font-size:10px;padding:1px 5px">Rota ${esc(x.rota)}</span>
-                  </td>
-                  <td style="padding:8px 10px;color:var(--ink-2)">${esc(x.tipo || 'Ocorrência')}</td>
-                  <td style="padding:8px 10px;white-space:nowrap;color:var(--ink-3)">${esc(x.hora_inicio || '--:--')} às ${esc(x.hora_fim || '--:--')}</td>
-                  <td style="padding:8px 10px;font-weight:700;color:${x.status === 'aberto' ? 'var(--warn)' : 'var(--ok)'}">
-                    ${x.status === 'aberto' ? 'Em aberto' : formatarMinutosAmigavel(x.duracao_minutos)}
-                  </td>
-                  <td style="padding:8px 10px">
-                    <span style="font-size:11px;font-weight:700;color:${x.status === 'aberto' ? 'var(--bad)' : 'var(--ok)'}">
-                      ${x.status === 'aberto' ? 'Em Pausa' : 'Liberado'}
-                    </span>
-                  </td>
-                </tr>
-              `).join('')}
+              ${selecionadas.map(({ item: x, info }, idx) => {
+                const durMin = info.isFimDeSemana ? info.tempoFimSemanaMin : info.tempoUtilMin;
+                const durTexto = info.isAgendadoFuturo
+                  ? 'Agendada'
+                  : (info.isAberto || info.isEmAndamentoFimSemana
+                    ? (formatarMinutosAmigavel(durMin) + (info.isFimDeSemana ? ' (FDS)' : ' (aberto)'))
+                    : formatarMinutosAmigavel(durMin));
+                const statusTexto = info.isFimDeSemana
+                  ? ('Fim de Semana (' + info.diaFimSemana + ')')
+                  : (info.isAgendadoFuturo ? 'Agendada' : (info.isAberto ? 'Em Pausa' : 'Liberado'));
+                const statusCor = info.isFimDeSemana ? '#475569' : (info.isAberto ? 'var(--bad)' : (info.isAgendadoFuturo ? '#6366f1' : 'var(--ok)'));
+                return `
+                  <tr style="border-bottom:1px solid var(--line);${idx % 2 === 0 ? 'background:transparent' : 'background:rgba(255,255,255,0.02)'}">
+                    <td style="padding:8px 10px;white-space:nowrap">${formatarData(x.data)}${info.isFimDeSemana ? ' <span style="font-size:10px;font-weight:700;color:#475569">(FDS)</span>' : ''}</td>
+                    <td style="padding:8px 10px;font-weight:600;color:var(--ink)">
+                      ${esc(x.vendedor)} <span class="badge-rota" style="font-size:10px;padding:1px 5px">Rota ${esc(x.rota)}</span>
+                    </td>
+                    <td style="padding:8px 10px;color:var(--ink-2)">${esc(x.tipo || 'Ocorrência')}</td>
+                    <td style="padding:8px 10px;white-space:nowrap;color:var(--ink-3)">${esc(x.hora_inicio || '--:--')} às ${esc(x.hora_fim || '--:--')}</td>
+                    <td style="padding:8px 10px;font-weight:700;color:${info.isFimDeSemana ? '#475569' : (info.isAberto ? 'var(--warn)' : 'var(--ok)')}">
+                      ${durTexto}
+                    </td>
+                    <td style="padding:8px 10px">
+                      <span style="font-size:11px;font-weight:700;color:${statusCor}">
+                        ${statusTexto}
+                      </span>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
             </tbody>
           </table>
         `;
@@ -651,18 +787,25 @@
       window.atualizarPreviaRelatorioOcr = atualizarPreviaRelatorioOcr;
 
       function exportarCsvOcorrencias() {
-        const lista = obterOcorrenciasFiltradasRelatorio();
-        if (!lista.length) {
-          toast('Nenhuma ocorrência encontrada para exportar no período.', 'error');
+        const dados = obterDadosRelatorioOcorrencias();
+        const selecionadas = dados.selecionadas;
+        if (!selecionadas.length) {
+          toast('Nenhuma ocorrência encontrada para exportar com o filtro atual.', 'error');
           return;
         }
 
-        const csvCell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+        const csvCell = v => {
+          let s = String(v ?? '');
+          if (/^[=+\-@]/.test(s)) s = "'" + s;
+          return '"' + s.replace(/"/g, '""') + '"';
+        };
         const headers = [
           'Data',
+          'Regime / Jornada',
           'Hora Inicio',
           'Hora Fim',
-          'Duracao (min)',
+          'Tempo Util (min)',
+          'Tempo Fim de Semana (min)',
           'Duracao Formatada',
           'Vendedor',
           'Rota',
@@ -676,23 +819,28 @@
           'Descricao / Servico'
         ];
 
-        const rows = lista.map(x => [
-          formatarData(x.data),
-          x.hora_inicio || '',
-          x.hora_fim || '',
-          String(x.duracao_minutos || 0),
-          formatarMinutosAmigavel(x.duracao_minutos),
-          x.vendedor || '',
-          x.rota || '',
-          x.veiculo || '',
-          x.placa || '',
-          x.tipo || '',
-          x.local || '',
-          Number(x.custo || 0).toFixed(2).replace('.', ','),
-          x.status === 'aberto' ? 'Em Aberto / Parado' : 'Finalizada / Liberado',
-          x.responsavel || '',
-          x.descricao || ''
-        ].map(csvCell).join(';'));
+        const rows = selecionadas.map(({ item: x, info }) => {
+          const minExibir = info.isFimDeSemana ? info.tempoFimSemanaMin : info.tempoUtilMin;
+          return [
+            formatarData(x.data),
+            info.isFimDeSemana ? ('Fim de Semana (' + info.diaFimSemana + ' · Fora do Expediente)') : 'Dia Util (Expediente)',
+            x.hora_inicio || '',
+            x.hora_fim || '',
+            String(info.tempoUtilMin || 0),
+            String(info.tempoFimSemanaMin || 0),
+            formatarMinutosAmigavel(minExibir),
+            x.vendedor || '',
+            x.rota || '',
+            x.veiculo || '',
+            x.placa || '',
+            x.tipo || '',
+            x.local || '',
+            Number(x.custo || 0).toFixed(2).replace('.', ','),
+            info.isFimDeSemana ? 'Fim de Semana (Fora do Expediente)' : (info.isAgendadoFuturo ? 'Agendada' : (info.isAberto ? 'Em Aberto / Parado' : 'Finalizada / Liberado')),
+            x.responsavel || '',
+            x.descricao || ''
+          ].map(csvCell).join(';');
+        });
 
         const csv = '\uFEFF' + [headers.map(csvCell).join(';'), ...rows].join('\r\n');
         const dtIni = ($('ocrRelDataInicio')?.value || 'inicio').replace(/-/g, '');
@@ -704,14 +852,15 @@
         a.download = `Gomex_Ocorrencias_Frota_${dtIni}_a_${dtFim}.csv`;
         a.click();
         URL.revokeObjectURL(url);
-        toast(`${lista.length} ocorrência(s) exportada(s) para Excel (CSV)!`);
+        toast(`${selecionadas.length} ocorrência(s) exportada(s) para Excel (CSV)!`);
       }
       window.exportarCsvOcorrencias = exportarCsvOcorrencias;
 
       function gerarPdfRelatorioOcorrencias() {
-        const lista = obterOcorrenciasFiltradasRelatorio();
-        if (!lista.length) {
-          toast('Nenhuma ocorrência encontrada para gerar relatório PDF.', 'error');
+        const dados = obterDadosRelatorioOcorrencias();
+        const { modoFds, selecionadas, fimSemana, tempoUtilTotalMin, tempoFimSemanaTotalMin, mediaMinutos, totalCusto } = dados;
+        if (!selecionadas.length) {
+          toast('Nenhuma ocorrência encontrada para gerar relatório PDF neste filtro.', 'error');
           return;
         }
 
@@ -739,44 +888,47 @@
           const dtIni = $('ocrRelDataInicio')?.value ? formatarData($('ocrRelDataInicio').value) : 'Início';
           const dtFim = $('ocrRelDataFim')?.value ? formatarData($('ocrRelDataFim').value) : 'Hoje';
 
-          let totalMinutos = 0;
-          let totalCusto = 0;
-          lista.forEach(x => {
-            totalMinutos += Number(x.duracao_minutos) || 0;
-            totalCusto += Number(x.custo) || 0;
-          });
-
           // Cabeçalho Oficial
           fonte(14, 'bold', ROXO);
           doc.text('GOMEX DISTRIBUIDORA DE ALIMENTOS', M, 14);
 
           fonte(10, 'bold', [30, 30, 40]);
-          doc.text('RELATÓRIO EXECUTIVO DE OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA', M, 20);
+          const subTituloPdf = modoFds === 'somente_fds'
+            ? 'RELATÓRIO DE OCORRÊNCIAS DE FIM DE SEMANA (FORA DO EXPEDIENTE)'
+            : 'RELATÓRIO EXECUTIVO DE OCORRÊNCIAS & CONTROLE DE PAUSAS DA FROTA';
+          doc.text(subTituloPdf, M, 20);
 
           fonte(8.5, 'normal', CINZA);
           const agoraStr = new Date().toLocaleString('pt-BR');
-          doc.text(`Período analisado: De ${dtIni} até ${dtFim}  ·  Emitido em: ${agoraStr} por Hendreo`, M, 25);
+          const notaFdsPdf = modoFds === 'excluir'
+            ? `  ·  Fim de semana: excluído da listagem (${fimSemana.length} reg. / ${formatarMinutosAmigavel(tempoFimSemanaTotalMin)} fora do expediente)`
+            : '';
+          doc.text(`Período: ${dtIni} até ${dtFim}  ·  Emitido em: ${agoraStr}${notaFdsPdf}`, M, 25);
 
-          // Card de Indicadores no Topo
+          // Card de Indicadores no Topo (5 colunas alinhadas com separação entre Tempo Útil e Fim de Semana)
           doc.setFillColor(245, 247, 250);
           doc.setDrawColor(...LINHA);
           doc.roundedRect(M, 28, W, 14, 2, 2, 'FD');
 
-          fonte(8, 'bold', CINZA);
-          doc.text('TOTAL DE OCORRÊNCIAS', M + 8, 33);
-          doc.text('TEMPO TOTAL PARADO', M + 70, 33);
-          doc.text('MÉDIA POR PARADA', M + 140, 33);
-          doc.text('TOTAL DE DESPESAS', M + 210, 33);
+          fonte(7.5, 'bold', CINZA);
+          doc.text('OCORRÊNCIAS', M + 6, 33);
+          doc.text('TEMPO ÚTIL (EXPEDIENTE)', M + 52, 33);
+          doc.text('TEMPO FIM DE SEMANA (SEPARADO)', M + 114, 33);
+          doc.text('MÉDIA POR PARADA', M + 188, 33);
+          doc.text('TOTAL DESPESAS', M + 236, 33);
 
-          fonte(10.5, 'bold', ROXO);
-          doc.text(String(lista.length), M + 8, 39);
-          doc.text(formatarMinutosAmigavel(totalMinutos), M + 70, 39);
-          doc.text(formatarMinutosAmigavel(lista.length ? Math.round(totalMinutos / lista.length) : 0), M + 140, 39);
-          doc.text(fmtMoeda(totalCusto), M + 210, 39);
+          fonte(10, 'bold', ROXO);
+          doc.text(String(selecionadas.length), M + 6, 39);
+          doc.text(formatarMinutosAmigavel(modoFds === 'somente_fds' ? 0 : tempoUtilTotalMin), M + 52, 39);
+          fonte(10, 'bold', [71, 85, 105]);
+          doc.text(formatarMinutosAmigavel(tempoFimSemanaTotalMin), M + 114, 39);
+          fonte(10, 'bold', ROXO);
+          doc.text(formatarMinutosAmigavel(mediaMinutos), M + 188, 39);
+          doc.text(fmtMoeda(totalCusto), M + 236, 39);
 
           // Tabela de Ocorrências
           let y = 48;
-          const colW = [22, 18, 18, 20, 52, 26, 42, 40, 22, 17];
+          const colW = [24, 16, 16, 22, 50, 26, 42, 38, 22, 21];
           const headers = ['DATA', 'INÍCIO', 'FIM', 'DURAÇÃO', 'VENDEDOR / ROTA', 'PLACA / VEÍC', 'MOTIVO / PROBLEMA', 'LOCAL', 'CUSTO', 'STATUS'];
 
           const desenharCabecalho = () => {
@@ -793,7 +945,7 @@
 
           desenharCabecalho();
 
-          lista.forEach((item, idx) => {
+          selecionadas.forEach(({ item, info }, idx) => {
             if (y > 185) {
               doc.addPage('a4', 'landscape');
               y = 15;
@@ -811,12 +963,16 @@
             fonte(7.2, 'normal', [30, 35, 45]);
             let xOff = M;
 
-            doc.text(formatarData(item.data), xOff + 2, y + 4.5); xOff += colW[0];
+            doc.text(formatarData(item.data) + (info.isFimDeSemana ? ' (FDS)' : ''), xOff + 2, y + 4.5); xOff += colW[0];
             doc.text(item.hora_inicio || '--:--', xOff + 2, y + 4.5); xOff += colW[1];
             doc.text(item.hora_fim || '--:--', xOff + 2, y + 4.5); xOff += colW[2];
 
-            fonte(7.2, 'bold', item.status === 'aberto' ? [180, 80, 10] : [20, 120, 60]);
-            doc.text(item.status === 'aberto' ? 'Em aberto' : formatarMinutosAmigavel(item.duracao_minutos), xOff + 2, y + 4.5); xOff += colW[3];
+            const durMin = info.isFimDeSemana ? info.tempoFimSemanaMin : info.tempoUtilMin;
+            const durPdf = info.isAgendadoFuturo
+              ? 'Agendada'
+              : (info.isFimDeSemana ? (formatarMinutosAmigavel(durMin) + ' (FDS)') : (info.isAberto ? (formatarMinutosAmigavel(durMin) + ' *') : formatarMinutosAmigavel(durMin)));
+            fonte(7.2, 'bold', info.isFimDeSemana ? [71, 85, 105] : (info.isAberto ? [180, 80, 10] : [20, 120, 60]));
+            doc.text(durPdf, xOff + 2, y + 4.5); xOff += colW[3];
 
             fonte(7.2, 'bold', [20, 20, 30]);
             doc.text(corta(`${item.vendedor || ''} (Rota ${item.rota || ''})`, colW[4] - 3), xOff + 2, y + 4.5); xOff += colW[4];
@@ -828,8 +984,9 @@
 
             doc.text(item.custo ? fmtMoeda(item.custo) : '—', xOff + 2, y + 4.5); xOff += colW[8];
 
-            fonte(7.2, 'bold', item.status === 'aberto' ? [185, 28, 28] : [21, 128, 61]);
-            doc.text(item.status === 'aberto' ? 'Em Pausa' : 'Liberado', xOff + 2, y + 4.5);
+            const stPdf = info.isFimDeSemana ? 'Fim Semana' : (info.isAgendadoFuturo ? 'Agendada' : (info.isAberto ? 'Em Pausa' : 'Liberado'));
+            fonte(7.2, 'bold', info.isFimDeSemana ? [71, 85, 105] : (info.isAberto ? [185, 28, 28] : [21, 128, 61]));
+            doc.text(stPdf, xOff + 2, y + 4.5);
 
             y += 6.5;
           });
@@ -854,8 +1011,9 @@
       window.gerarPdfRelatorioOcorrencias = gerarPdfRelatorioOcorrencias;
 
       async function copiarResumoRelatorioWhatsApp() {
-        const lista = obterOcorrenciasFiltradasRelatorio();
-        if (!lista.length) {
+        const dados = obterDadosRelatorioOcorrencias();
+        const { modoFds, selecionadas, fimSemana, tempoUtilTotalMin, tempoFimSemanaTotalMin, mediaMinutos, totalCusto } = dados;
+        if (!selecionadas.length && !(modoFds === 'excluir' && fimSemana.length > 0)) {
           toast('Nenhuma ocorrência encontrada para o resumo.', 'error');
           return;
         }
@@ -863,35 +1021,35 @@
         const dtIni = $('ocrRelDataInicio')?.value ? formatarData($('ocrRelDataInicio').value) : 'Início';
         const dtFim = $('ocrRelDataFim')?.value ? formatarData($('ocrRelDataFim').value) : 'Hoje';
 
-        let totalMinutos = 0;
-        let totalCusto = 0;
         const porVendedor = new Map();
-
-        lista.forEach(x => {
-          totalMinutos += Number(x.duracao_minutos) || 0;
-          totalCusto += Number(x.custo) || 0;
+        selecionadas.forEach(({ item: x, info }) => {
           const k = `${x.vendedor || 'Outro'} (Rota ${x.rota || '—'})`;
-          if (!porVendedor.has(k)) porVendedor.set(k, { count: 0, minutos: 0, custo: 0 });
-          const item = porVendedor.get(k);
-          item.count++;
-          item.minutos += Number(x.duracao_minutos) || 0;
-          item.custo += Number(x.custo) || 0;
+          if (!porVendedor.has(k)) porVendedor.set(k, { count: 0, utilMin: 0, fdsMin: 0, custo: 0 });
+          const acc = porVendedor.get(k);
+          acc.count++;
+          acc.utilMin += info.tempoUtilMin || 0;
+          acc.fdsMin += info.tempoFimSemanaMin || 0;
+          acc.custo += Number(x.custo) || 0;
         });
 
-        const linhasVend = Array.from(porVendedor.entries()).map(([k, v]) =>
-          `• ${k}: ${v.count} pausa(s) · Total: ${formatarMinutosAmigavel(v.minutos)}${v.custo > 0 ? ' · ' + fmtMoeda(v.custo) : ''}`
-        );
+        const linhasVend = Array.from(porVendedor.entries()).map(([k, v]) => {
+          const parteFds = v.fdsMin > 0 ? ` · Fim de Semana: ${formatarMinutosAmigavel(v.fdsMin)}` : '';
+          return `• ${k}: ${v.count} pausa(s) · Tempo Útil: ${formatarMinutosAmigavel(v.utilMin)}${parteFds}${v.custo > 0 ? ' · ' + fmtMoeda(v.custo) : ''}`;
+        });
 
         const msg = [
           '*RELATÓRIO CONSOLIDADO DE PAUSAS DA FROTA · GOMEX*',
           `*Período:* De ${dtIni} até ${dtFim}`,
           '',
-          `*Total de Ocorrências:* ${lista.length}`,
-          `*Tempo Total Parado:* ${formatarMinutosAmigavel(totalMinutos)}`,
-          `*Média por Parada:* ${formatarMinutosAmigavel(lista.length ? Math.round(totalMinutos / lista.length) : 0)}`,
+          `*Ocorrências no Relatório:* ${selecionadas.length}`,
+          `*Tempo Útil (Expediente):* ${formatarMinutosAmigavel(modoFds === 'somente_fds' ? 0 : tempoUtilTotalMin)}`,
+          tempoFimSemanaTotalMin > 0
+            ? `*Tempo Fim de Semana (Fora do Expediente - Separado):* ${formatarMinutosAmigavel(tempoFimSemanaTotalMin)}${modoFds === 'excluir' ? ` (${fimSemana.length} reg. não incluído(s) na lista)` : ''}`
+            : '',
+          `*Média por Parada:* ${formatarMinutosAmigavel(mediaMinutos)}`,
           totalCusto > 0 ? `*Total de Despesas:* ${fmtMoeda(totalCusto)}` : '',
           '',
-          '*Detalhamento por Vendedor:*',
+          linhasVend.length ? '*Detalhamento por Vendedor:*' : '',
           ...linhasVend,
           '',
           '*Responsável:* Hendreo'
@@ -939,11 +1097,13 @@
       window.extrairTimestampOcorrencia = extrairTimestampOcorrencia;
 
       function calcularStatusTempoOcorrencia(item, agoraMs = Date.now()) {
-        const hojeStr = formatarDataHoje();
+        const hojeStr = formatarDataHoje(agoraMs);
         const dt = (item.data || hojeStr).slice(0, 10);
         const hrIni = (item.hora_inicio || '08:00').slice(0, 5);
         const tempoMedioMin = parseInt(item.tempo_medio_minutos, 10) || 60;
         const status = item.status || 'aberto';
+        const isFimDeSemana = ehDataFimDeSemana(dt);
+        const diaFimSemana = nomeDiaFimDeSemana(dt);
 
         const inicioMs = extrairTimestampOcorrencia(dt, hrIni) || agoraMs;
         const fimPrevistoMs = inicioMs + (tempoMedioMin * 60000);
@@ -956,16 +1116,47 @@
           if (!duracaoRealMin && item.hora_fim) {
             duracaoRealMin = calcularDuracaoMinutos(hrIni, item.hora_fim);
           }
+
+          if (isFimDeSemana) {
+            return {
+              status: 'finalizado',
+              isFimDeSemana: true,
+              diaFimSemana,
+              isAgendadoFuturo: false,
+              isAberto: false,
+              isEmAndamentoFimSemana: false,
+              isFinalizado: true,
+              isAtrasado: false,
+              finalizadoComAtraso: false,
+              tempoUtilMin: 0,
+              tempoFimSemanaMin: duracaoRealMin,
+              tempoDecorridoMin: duracaoRealMin,
+              tempoExcedidoMin: 0,
+              tempoMedioMin,
+              horaInicio: hrIni,
+              horaFimPrevista,
+              badgeClass: 'fim-semana',
+              badgeTexto: 'FIM DE SEMANA (' + diaFimSemana.toUpperCase() + ')',
+              duracaoTexto: 'Tempo Fim de Semana: ' + formatarMinutosAmigavel(duracaoRealMin),
+              statusMensagem: 'Fora do expediente (' + diaFimSemana + ') · Contabilizado separado (não entra no relatório)'
+            };
+          }
+
           const ultrapassou = tempoMedioMin > 0 && duracaoRealMin > tempoMedioMin;
           const excedidoMin = ultrapassou ? (duracaoRealMin - tempoMedioMin) : 0;
 
           return {
             status: 'finalizado',
+            isFimDeSemana: false,
+            diaFimSemana: '',
             isAgendadoFuturo: false,
             isAberto: false,
+            isEmAndamentoFimSemana: false,
             isFinalizado: true,
             isAtrasado: false,
             finalizadoComAtraso: ultrapassou,
+            tempoUtilMin: duracaoRealMin,
+            tempoFimSemanaMin: 0,
             tempoDecorridoMin: duracaoRealMin,
             tempoExcedidoMin: excedidoMin,
             tempoMedioMin,
@@ -982,7 +1173,7 @@
         // Critério: status === 'agendado' OU data > hoje OU (data === hoje e inicioMs > agoraMs)
         const isDataFutura = dt > hojeStr;
         const isHorarioFuturoHoje = dt === hojeStr && inicioMs > agoraMs;
-        const isAgendadoFuturo = status === 'agendado' || isDataFutura || isHorarioFuturoHoje;
+        const isAgendadoFuturo = (status === 'agendado' && isDataFutura) || isDataFutura || isHorarioFuturoHoje || (status === 'agendado' && !isFimDeSemana);
 
         if (isAgendadoFuturo) {
           let textoQuando = '';
@@ -995,16 +1186,45 @@
               textoQuando = formatarData(dt) + ' às ' + hrIni;
             }
           } else {
-            const diffMin = Math.ceil((inicioMs - agoraMs) / 60000);
+            const diffMin = Math.max(0, Math.ceil((inicioMs - agoraMs) / 60000));
             textoQuando = diffMin > 60 ? ('Hoje às ' + hrIni) : ('Em ' + diffMin + ' min');
+          }
+
+          if (isFimDeSemana) {
+            return {
+              status: 'agendado',
+              isFimDeSemana: true,
+              diaFimSemana,
+              isAgendadoFuturo: true,
+              isAberto: false,
+              isEmAndamentoFimSemana: false,
+              isFinalizado: false,
+              isAtrasado: false,
+              tempoUtilMin: 0,
+              tempoFimSemanaMin: 0,
+              tempoDecorridoMin: 0,
+              tempoMedioMin,
+              horaInicio: hrIni,
+              horaFimPrevista,
+              progressoPct: 0,
+              badgeClass: 'fim-semana',
+              badgeTexto: 'AGENDADA · FIM DE SEMANA (' + textoQuando + ')',
+              duracaoTexto: 'Fora de expediente (' + diaFimSemana + ')',
+              statusMensagem: 'Agendada para o fim de semana (' + diaFimSemana + ') · Contabilizado separado (não entra no relatório)'
+            };
           }
 
           return {
             status: 'agendado',
+            isFimDeSemana: false,
+            diaFimSemana: '',
             isAgendadoFuturo: true,
             isAberto: false,
+            isEmAndamentoFimSemana: false,
             isFinalizado: false,
             isAtrasado: false,
+            tempoUtilMin: 0,
+            tempoFimSemanaMin: 0,
             tempoDecorridoMin: 0,
             tempoMedioMin,
             horaInicio: hrIni,
@@ -1017,21 +1237,57 @@
           };
         }
 
-        // 3. Caso Aberto / Em Andamento (Vendedor Parado ou na Oficina)
-        const decorridoMin = Math.max(0, Math.floor((agoraMs - inicioMs) / 60000));
-        const ultrapassou = agoraMs > fimPrevistoMs;
-        const excedidoMin = ultrapassou ? Math.floor((agoraMs - fimPrevistoMs) / 60000) : 0;
-        const restanteMin = ultrapassou ? 0 : Math.ceil((fimPrevistoMs - agoraMs) / 60000);
-        const progressoPct = Math.min(100, Math.round((decorridoMin / (tempoMedioMin || 1)) * 100));
+        // 3A. Ocorrência de Fim de Semana (no dia ou agendada cujo horário já passou) -> NÃO entra no expediente nem conta atraso!
+        if (isFimDeSemana) {
+          const limiteFds = fimDoFimDeSemanaTimestamp(dt) || agoraMs;
+          const fimCalculoMs = Math.min(agoraMs, limiteFds);
+          const fdsMin = Math.max(0, dividirMinutosExpedienteEFds(inicioMs, fimCalculoMs).fdsMin);
+          return {
+            status: 'fim_semana',
+            isFimDeSemana: true,
+            diaFimSemana,
+            isAgendadoFuturo: false,
+            isAberto: false,
+            isEmAndamentoFimSemana: true,
+            isFinalizado: false,
+            isAtrasado: false,
+            tempoUtilMin: 0,
+            tempoFimSemanaMin: fdsMin,
+            tempoDecorridoMin: fdsMin,
+            tempoExcedidoMin: 0,
+            tempoMedioMin,
+            horaInicio: hrIni,
+            horaFimPrevista,
+            progressoPct: 0,
+            badgeClass: 'fim-semana',
+            badgeTexto: 'FIM DE SEMANA (' + diaFimSemana.toUpperCase() + ')',
+            duracaoTexto: 'Tempo Fim de Semana: ' + formatarMinutosAmigavel(fdsMin),
+            statusMensagem: 'Fora do expediente (' + diaFimSemana + ') · Contabilizado separado (não entra no relatório)'
+          };
+        }
+
+        // 3B. Caso Aberto / Em Andamento em Dia Útil (desconta automaticamente sábados e domingos caso atravesse o fim de semana)
+        const split = dividirMinutosExpedienteEFds(inicioMs, agoraMs);
+        const decorridoUtilMin = split.utilMin;
+        const fdsDurantePausaMin = split.fdsMin;
+        const ultrapassou = tempoMedioMin > 0 && decorridoUtilMin > tempoMedioMin;
+        const excedidoMin = ultrapassou ? (decorridoUtilMin - tempoMedioMin) : 0;
+        const restanteMin = ultrapassou ? 0 : Math.max(0, tempoMedioMin - decorridoUtilMin);
+        const progressoPct = Math.min(100, Math.round((decorridoUtilMin / (tempoMedioMin || 1)) * 100));
 
         if (ultrapassou) {
           return {
             status: 'aberto',
+            isFimDeSemana: false,
+            diaFimSemana: '',
             isAgendadoFuturo: false,
             isAberto: true,
+            isEmAndamentoFimSemana: false,
             isFinalizado: false,
             isAtrasado: true,
-            tempoDecorridoMin: decorridoMin,
+            tempoUtilMin: decorridoUtilMin,
+            tempoFimSemanaMin: fdsDurantePausaMin,
+            tempoDecorridoMin: decorridoUtilMin,
             tempoExcedidoMin: excedidoMin,
             tempoMedioMin,
             horaInicio: hrIni,
@@ -1039,17 +1295,22 @@
             progressoPct: 100,
             badgeClass: 'atrasado',
             badgeTexto: 'TEMPO EXCEDIDO (+' + formatarMinutosAmigavel(excedidoMin) + ')',
-            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoMin),
+            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoUtilMin),
             statusMensagem: 'TEMPO MÉDIO ULTRAPASSADO em +' + formatarMinutosAmigavel(excedidoMin) + '! Previsão era ' + horaFimPrevista
           };
         } else {
           return {
             status: 'aberto',
+            isFimDeSemana: false,
+            diaFimSemana: '',
             isAgendadoFuturo: false,
             isAberto: true,
+            isEmAndamentoFimSemana: false,
             isFinalizado: false,
             isAtrasado: false,
-            tempoDecorridoMin: decorridoMin,
+            tempoUtilMin: decorridoUtilMin,
+            tempoFimSemanaMin: fdsDurantePausaMin,
+            tempoDecorridoMin: decorridoUtilMin,
             tempoRestanteMin: restanteMin,
             tempoMedioMin,
             horaInicio: hrIni,
@@ -1057,7 +1318,7 @@
             progressoPct: progressoPct,
             badgeClass: 'no-prazo',
             badgeTexto: 'No Prazo (Restam ' + formatarMinutosAmigavel(restanteMin) + ')',
-            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoMin),
+            duracaoTexto: 'Parado há ' + formatarMinutosAmigavel(decorridoUtilMin),
             statusMensagem: 'Em atendimento · Restam ' + formatarMinutosAmigavel(restanteMin) + ' (Término previsto: ' + horaFimPrevista + ')'
           };
         }
@@ -1104,6 +1365,24 @@
             ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
             '',
             '*STATUS:* VENDEDOR LIBERADO / RETORNO À ROTA',
+            info.isFimDeSemana ? ('*Regime:* Fim de Semana (' + info.diaFimSemana + ' · Fora do expediente)') : '',
+            '_Supervisor da Frota: ' + (ocr.responsavel || 'Hendreo') + '_'
+          ].filter(Boolean).join('\n');
+        } else if (info.isFimDeSemana) {
+          msg = [
+            '*GOMEX DISTRIBUIDORA · OCORRÊNCIA DE FIM DE SEMANA*',
+            '',
+            '*Veículo:* ' + (ocr.veiculo || ocr.placa || 'Frota Gomex'),
+            '*Rota:* ' + (ocr.rota || '—'),
+            '*Vendedor / Motorista:* ' + (ocr.vendedor || '—'),
+            '*Motivo / Serviço:* ' + (ocr.tipo || 'Ocorrência'),
+            '*Data / Início:* ' + dataFmt + ' às ' + (ocr.hora_inicio || '--:--'),
+            '*Tempo Fim de Semana (Fora do Expediente):* ' + formatarMinutosAmigavel(info.tempoFimSemanaMin),
+            ocr.local ? ('*Local:* ' + ocr.local) : '',
+            ocr.custo ? ('*Custo:* ' + fmtMoeda(ocr.custo)) : '',
+            ocr.descricao ? ('*Detalhes:* ' + ocr.descricao) : '',
+            '',
+            '*REGIME:* FIM DE SEMANA (Contabilizado separado · fora do relatório)',
             '_Supervisor da Frota: ' + (ocr.responsavel || 'Hendreo') + '_'
           ].filter(Boolean).join('\n');
         } else {
@@ -1150,7 +1429,7 @@
 
       function filtrarOcorrencias(filtro) {
         ocorrenciasState.filtro = filtro;
-        ['Todos', 'Abertos', 'Agendadas', 'Atrasados', 'Hoje', 'Finalizados'].forEach(tab => {
+        ['Todos', 'Abertos', 'Agendadas', 'Atrasados', 'Hoje', 'FimSemana', 'Finalizados'].forEach(tab => {
           const btn = $('btnOcrFiltro' + tab);
           if (btn) btn.classList.remove('active');
         });
@@ -1158,6 +1437,7 @@
         else if (filtro === 'agendado' && $('btnOcrFiltroAgendadas')) $('btnOcrFiltroAgendadas').classList.add('active');
         else if (filtro === 'atrasado' && $('btnOcrFiltroAtrasados')) $('btnOcrFiltroAtrasados').classList.add('active');
         else if (filtro === 'hoje' && $('btnOcrFiltroHoje')) $('btnOcrFiltroHoje').classList.add('active');
+        else if (filtro === 'fim_semana' && $('btnOcrFiltroFimSemana')) $('btnOcrFiltroFimSemana').classList.add('active');
         else if (filtro === 'finalizado' && $('btnOcrFiltroFinalizados')) $('btnOcrFiltroFinalizados').classList.add('active');
         else if ($('btnOcrFiltroTodos')) $('btnOcrFiltroTodos').classList.add('active');
         renderOcorrenciasView();
@@ -1175,29 +1455,54 @@
         const hojeStr = formatarDataHoje();
         const agoraMs = Date.now();
 
-        // Processar status com cálculo preciso de data e horário
+        // Processar status com cálculo preciso de data, horário e separação de fim de semana
         const processadas = todas.map(item => {
           const info = calcularStatusTempoOcorrencia(item, agoraMs);
           return { item, info };
         });
 
-        // Contagens precisas: apenas quem está aberto e NÃO é futuro conta como "Parados Agora"
-        const paradosAgora = processadas.filter(p => p.info.isAberto);
+        // Contagens operacionais (dias úteis) separadas do fim de semana
+        const paradosAgora = processadas.filter(p => p.info.isAberto && !p.info.isFimDeSemana);
         const agendadas = processadas.filter(p => p.info.isAgendadoFuturo);
-        const atrasadas = processadas.filter(p => p.info.isAtrasado);
+        const agendadasFds = agendadas.filter(p => p.info.isFimDeSemana);
+        const atrasadas = processadas.filter(p => p.info.isAtrasado && !p.info.isFimDeSemana);
         const deHoje = processadas.filter(p => (p.item.data || '').startsWith(hojeStr));
-        const concluidasHoje = deHoje.filter(p => p.item.status === 'finalizado');
+        const deHojeUteis = deHoje.filter(p => !p.info.isFimDeSemana);
+        const concluidasHoje = deHojeUteis.filter(p => p.item.status === 'finalizado');
+        const fimDeSemanaLista = processadas.filter(p => p.info.isFimDeSemana || p.info.tempoFimSemanaMin > 0);
 
-        const tempoHojeMinutos = deHoje.reduce((acc, p) => {
-          return acc + (p.info.tempoDecorridoMin || 0);
+        const tempoHojeUtilMinutos = deHojeUteis.reduce((acc, p) => {
+          return acc + (p.info.tempoUtilMin || 0);
+        }, 0);
+        const tempoFimSemanaTotalMinutos = processadas.reduce((acc, p) => {
+          return acc + (p.info.tempoFimSemanaMin || 0);
         }, 0);
 
-        // Atualização dos KPIs no topo
+        // Atualização dos KPIs no topo (separando Tempo Útil vs Tempo Fim de Semana)
         if ($('ocrStatParadosAgora')) $('ocrStatParadosAgora').textContent = paradosAgora.length;
-        if ($('ocrStatAgendadas')) $('ocrStatAgendadas').textContent = agendadas.length;
-        if ($('ocrStatTempoHoje')) $('ocrStatTempoHoje').textContent = formatarMinutosAmigavel(tempoHojeMinutos);
+        if ($('ocrStatTempoHoje')) $('ocrStatTempoHoje').textContent = formatarMinutosAmigavel(tempoHojeUtilMinutos);
+        if ($('ocrStatTempoHojeSub')) {
+          $('ocrStatTempoHojeSub').textContent = ehDataFimDeSemana(hojeStr)
+            ? 'Hoje é fim de semana (0 útil)'
+            : 'Dias úteis (expediente)';
+        }
+        if ($('ocrStatTempoFimSemana')) $('ocrStatTempoFimSemana').textContent = formatarMinutosAmigavel(tempoFimSemanaTotalMinutos);
+        if ($('ocrStatTempoFimSemanaSub')) {
+          $('ocrStatTempoFimSemanaSub').textContent = fimDeSemanaLista.length + ' reg. sáb/dom (separado)';
+        }
         if ($('ocrStatOcrHoje')) $('ocrStatOcrHoje').textContent = deHoje.length;
+        if ($('ocrStatOcrHojeSub')) {
+          $('ocrStatOcrHojeSub').textContent = ehDataFimDeSemana(hojeStr)
+            ? 'Hoje · Fim de semana'
+            : 'Registros no dia';
+        }
         if ($('ocrStatConcluidasHoje')) $('ocrStatConcluidasHoje').textContent = concluidasHoje.length;
+        if ($('ocrStatAgendadas')) $('ocrStatAgendadas').textContent = agendadas.length;
+        if ($('ocrStatAgendadasSub')) {
+          $('ocrStatAgendadasSub').textContent = agendadasFds.length > 0
+            ? (agendadasFds.length + ' no fim de semana')
+            : 'Serviços futuros';
+        }
 
         // Atualização dos Badges das Abas de Filtros
         if ($('badgeOcrFiltroTodos')) $('badgeOcrFiltroTodos').textContent = todas.length;
@@ -1205,9 +1510,10 @@
         if ($('badgeOcrFiltroAgendadas')) $('badgeOcrFiltroAgendadas').textContent = agendadas.length;
         if ($('badgeOcrFiltroAtrasados')) $('badgeOcrFiltroAtrasados').textContent = atrasadas.length;
         if ($('badgeOcrFiltroHoje')) $('badgeOcrFiltroHoje').textContent = deHoje.length;
+        if ($('badgeOcrFiltroFimSemana')) $('badgeOcrFiltroFimSemana').textContent = fimDeSemanaLista.length;
         if ($('badgeOcrFiltroFinalizados')) $('badgeOcrFiltroFinalizados').textContent = todas.filter(x => x.status === 'finalizado').length;
 
-        // Banner chamativo de tempo médio excedido
+        // Banner chamativo de tempo médio excedido (apenas ocorrências de dias úteis)
         const bannerAtraso = $('ocrAlertaAtrasosBanner');
         const textoBanner = $('ocrAlertaAtrasosTexto');
         if (bannerAtraso) {
@@ -1224,13 +1530,15 @@
         // Filtragem
         let lista = [...processadas];
         if (ocorrenciasState.filtro === 'aberto') {
-          lista = lista.filter(p => p.info.isAberto);
+          lista = lista.filter(p => p.info.isAberto && !p.info.isFimDeSemana);
         } else if (ocorrenciasState.filtro === 'agendado') {
           lista = lista.filter(p => p.info.isAgendadoFuturo);
         } else if (ocorrenciasState.filtro === 'atrasado') {
-          lista = lista.filter(p => p.info.isAtrasado);
+          lista = lista.filter(p => p.info.isAtrasado && !p.info.isFimDeSemana);
         } else if (ocorrenciasState.filtro === 'hoje') {
           lista = lista.filter(p => (p.item.data || '').startsWith(hojeStr));
+        } else if (ocorrenciasState.filtro === 'fim_semana') {
+          lista = lista.filter(p => p.info.isFimDeSemana || p.info.tempoFimSemanaMin > 0);
         } else if (ocorrenciasState.filtro === 'finalizado') {
           lista = lista.filter(p => p.item.status === 'finalizado');
         }
@@ -1289,15 +1597,25 @@
           const isAgendado = info.isAgendadoFuturo;
           const isAtrasado = info.isAtrasado;
           const isFinalizado = info.isFinalizado;
+          const isFimSemana = info.isFimDeSemana;
+          const podeFinalizar = isAberto || info.isEmAndamentoFimSemana;
 
           let cardClass = 'ocr-card';
-          if (isAtrasado) cardClass += ' atrasada';
+          if (isFimSemana) cardClass += ' fim-semana';
+          else if (isAtrasado) cardClass += ' atrasada';
           else if (isAgendado) cardClass += ' agendada';
           else if (isAberto) cardClass += ' em-aberto';
           else if (isFinalizado) cardClass += ' finalizada';
 
           let tempoPausaHtml = '';
-          if (isAgendado) {
+          if (isFimSemana) {
+            tempoPausaHtml = `
+              <div class="ocr-duracao-highlight fim-semana">
+                <svg class="i" style="width:14px;height:14px"><use href="#i-calendar-clock" /></svg>
+                <span>${esc(info.duracaoTexto)}</span>
+              </div>
+            `;
+          } else if (isAgendado) {
             tempoPausaHtml = `
               <div class="ocr-duracao-highlight agendado">
                 <svg class="i" style="width:14px;height:14px"><use href="#i-calendar-clock" /></svg>
@@ -1333,9 +1651,9 @@
           else if ((item.tipo || '').includes('Mecânica') || (item.tipo || '').includes('Manutenção')) iconeTipo = 'i-tool';
           else if ((item.tipo || '').includes('Banco')) iconeTipo = 'i-tool';
 
-          // Barra de progresso para serviços em andamento com tempo médio
+          // Barra de progresso para serviços em andamento com tempo médio (apenas expediente)
           let progressoHtml = '';
-          if (isAberto && info.tempoMedioMin > 0) {
+          if (isAberto && !isFimSemana && info.tempoMedioMin > 0) {
             const barClass = isAtrasado ? 'atrasado' : 'no-prazo';
             progressoHtml = `
               <div class="tempo-progress-wrap" title="Progresso em relação ao tempo médio estimado">
@@ -1343,6 +1661,14 @@
               </div>
             `;
           }
+
+          const tempoUtilizadoCard = isFimSemana
+            ? (isAgendado ? '0 min (FDS)' : ('FDS: ' + formatarMinutosAmigavel(info.tempoFimSemanaMin)))
+            : (isAgendado ? 'Aguardando início' : (isAberto ? (info.tempoDecorridoMin + ' min até agora') : formatarMinutosAmigavel(info.tempoDecorridoMin)));
+          const tempoUtilizadoLbl = isFimSemana ? 'Tempo Fim Semana' : 'Tempo Utilizado';
+          const tempoUtilizadoCor = isFimSemana
+            ? '#475569'
+            : (isAgendado ? '#6366f1' : (isAtrasado ? 'var(--bad)' : (isFinalizado ? 'var(--ok)' : 'var(--warn)')));
 
           return `
             <div class="${cardClass}">
@@ -1396,9 +1722,9 @@
                     </span>
                   </div>
                   <div class="ocr-time-item">
-                    <span class="ocr-time-lbl">Tempo Utilizado</span>
-                    <span class="ocr-time-val" style="color:${isAgendado ? '#6366f1' : (isAtrasado ? 'var(--bad)' : (isFinalizado ? 'var(--ok)' : 'var(--warn)'))}">
-                      ${isAgendado ? 'Aguardando início' : (isAberto ? (info.tempoDecorridoMin + ' min até agora') : formatarMinutosAmigavel(info.tempoDecorridoMin))}
+                    <span class="ocr-time-lbl">${tempoUtilizadoLbl}</span>
+                    <span class="ocr-time-val" style="color:${tempoUtilizadoCor}">
+                      ${tempoUtilizadoCard}
                     </span>
                   </div>
                 </div>
@@ -1441,7 +1767,7 @@
                   </button>
                 ` : ''}
 
-                ${isAberto ? `
+                ${podeFinalizar ? `
                   <button type="button" class="btn btn-primary" onclick="finalizarPausaRapida('${esc(item.id)}')"
                     title="Finalizar pausa com a hora atual" style="background:#15803d;border-color:#15803d">
                     <svg class="i"><use href="#i-check" /></svg>
