@@ -407,3 +407,21 @@
       color: var(--accent-hi);
       border-color: var(--accent);
     }
+
+    /* Ações do cabeçalho da galeria (Adicionar Fotos + alternador de modo) */
+    .galeria-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Placa sobre a foto: texto branco em fundo escuro (alto contraste) */
+    .galeria-img-badges .plate,
+    .galeria-plate-badge {
+      background: rgba(9, 9, 11, 0.9) !important;
+      color: #ffffff !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.55) !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+    }
