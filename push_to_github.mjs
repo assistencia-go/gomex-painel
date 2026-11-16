@@ -107,7 +107,7 @@ async function pushFile(fileName) {
       }
 
       const body = {
-        message: `feat(ocorrencias): separar contagem e relatorio de ocorrencias no fim de semana (${fileName})`,
+        message: `feat(painel): remover flash do login no refresh, padronizar vendedor em caixa alta e alertar troca na placa (${fileName})`,
         content: base64Content,
         branch: 'main'
       };
