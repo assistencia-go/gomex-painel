@@ -4,9 +4,24 @@ Este arquivo registra formalmente cada marco de versão da aplicação **Gomex F
 
 ---
 
-## 📌 Versão Atual: `v2.0.0-modular` (13/11/2026)
+## 📌 Versão Atual: `v2.1.0` (16/11/2026)
+* **Status:** Produção (Cloudflare Workers & Assets)
+* **Principais Entregas:**
+  - **Galeria de Fotos organizada em Pastas por Placa:**
+    - Visão padrão em pastas (uma por veículo) com foto de capa, quantidade de fotos, veículo, data da última foto e número de motoristas.
+    - Ao abrir uma pasta, são exibidas apenas as fotos da placa, com barra de navegação e botão `Voltar para as Pastas`.
+    - Alternador `Pastas por Placa` / `Todas as Fotos` e filtros (busca, placa, motorista, categoria) funcionando nos dois modos.
+  - **Correção das fotos no Mobile:** remoção do `loading="lazy"` das imagens e correção da ordem de carregamento do CSS responsivo.
+  - **Topbar simplificada:** removidos os botões `Subir Foto` e `Lançar Gasto / Peça` do topo, mantendo apenas `Atualizar` e `Exportar CSV`.
+  - **Conformidade Pré-Deploy:** `validate.mjs` 100% aprovado (sintaxe, Zero-Emoji, smoke test headless e Wrangler dry-run).
+
+---
+
+## 📌 Versões Anteriores
+
+### `v2.0.0-modular` (13/11/2026)
 * **Tag Oficial no GitHub:** [`v2.0.0-modular`](https://github.com/assistencia-go/gomex-painel/releases/tag/v2.0.0-modular)
-* **Status:** Produção Estável (Cloudflare Workers & Assets)
+* **Status:** Versão Arquivada
 * **Principais Entregas:**
   - **Modularização Completa do Projeto (`src/`):**
     - Desacoplamento do arquivo monolítico em módulos independentes e altamente legíveis:
