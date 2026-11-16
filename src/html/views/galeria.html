@@ -57,21 +57,37 @@
               style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px">
               <div>
                 <h2 style="font-size:15px;font-weight:700">Galeria Fotográfica dos Veículos</h2>
-                <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Suba as fotos encaminhadas pelos
-                  motoristas com placa, data da foto, qual era o motorista e observações.</p>
+                <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Álbuns organizados por placa do veículo e histórico visual de vistorias.</p>
               </div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-primary" onclick="abrirModalSubirFoto()">
-                  <svg class="i">
-                    <use href="#i-camera" />
-                  </svg>
-                  <span>+ Subir Foto na Galeria</span>
-                </button>
+                <div class="galeria-mode-toggle" role="group" aria-label="Modo de visualização">
+                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn active" id="btnModoPastas" onclick="alternarModoGaleria('pastas')">
+                    <svg class="i"><use href="#i-folder" /></svg>
+                    <span>Pastas por Placa</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn" id="btnModoFotos" onclick="alternarModoGaleria('fotos')">
+                    <svg class="i"><use href="#i-grid" /></svg>
+                    <span>Todas as Fotos</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Barra de Navegação do Álbum Aberto (Placa Selecionada) -->
+            <div id="galeriaAlbumBar" class="galeria-album-bar" style="display:none">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="fecharPastaGaleria()" style="gap:6px;font-weight:700">
+                <svg class="i"><use href="#i-chev-left" /></svg>
+                <span>Voltar para as Pastas</span>
+              </button>
+              <div class="galeria-album-info">
+                <span class="plate" id="albumPlacaBadge" style="font-size:12px;padding:3px 9px"></span>
+                <strong id="albumVeiculoTitulo" style="font-size:13.5px;color:var(--ink)"></strong>
+                <span class="badge" id="albumQtdFotosBadge" style="font-size:11.5px"></span>
               </div>
             </div>
 
             <!-- Filtros da Galeria -->
-            <div class="toolbar">
+            <div class="toolbar" id="galeriaToolbar">
               <div class="search">
                 <svg class="i">
                   <use href="#i-search" />
@@ -110,8 +126,11 @@
               </button>
             </div>
 
-            <!-- Grid de Fotos -->
-            <div id="galeriaGridContainer" class="galeria-grid"></div>
+            <!-- Container de Pastas por Placa (Álbuns) -->
+            <div id="galeriaPastasContainer" class="galeria-pastas-grid"></div>
+
+            <!-- Grid de Fotos Individuais -->
+            <div id="galeriaGridContainer" class="galeria-grid" style="display:none"></div>
 
             <div class="board-foot">
               <span id="galeriaFooterInfo">0 fotos exibidas</span>
