@@ -107,7 +107,7 @@ async function pushFile(fileName) {
       }
 
       const body = {
-        message: `feat(v2.1.0): fix vendedores mobile, botao adicionar fotos, placa legivel e token protegido (${fileName})`,
+        message: `feat(ocorrencias): separar contagem e relatorio de ocorrencias no fim de semana (${fileName})`,
         content: base64Content,
         branch: 'main'
       };
