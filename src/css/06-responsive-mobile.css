@@ -1151,16 +1151,55 @@
         flex: none !important;
       }
 
-      /* Galeria de Fotos no Mobile */
-      .galeria-grid {
+      /* Galeria de Fotos e Pastas por Placa no Mobile */
+      .galeria-grid,
+      .galeria-pastas-grid {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
         padding: 12px !important;
       }
 
-      .galeria-card img {
-        max-height: 240px;
-        object-fit: cover;
+      .galeria-card,
+      .pasta-card {
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+      }
+
+      .galeria-img-wrap,
+      .pasta-capa-wrap {
+        height: 210px !important;
+        min-height: 210px !important;
+        width: 100% !important;
+        position: relative !important;
+        display: block !important;
+        overflow: hidden !important;
+      }
+
+      .galeria-img-wrap img,
+      .pasta-capa-wrap img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+      }
+
+      .galeria-mode-toggle {
+        width: 100% !important;
+        display: flex !important;
+      }
+
+      .gal-mode-btn {
+        flex: 1 !important;
+        justify-content: center !important;
+        padding: 8px 6px !important;
+        font-size: 11.5px !important;
+      }
+
+      .galeria-album-bar {
+        padding: 10px 12px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
       }
 
       /* Tabela de Manutenção e Vendedores em Cards Mobile */
