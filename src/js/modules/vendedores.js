@@ -1524,6 +1524,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         state.sel = null;
         if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
       }
+      window.closeDrawer = closeDrawer;
 
       $('drClose').addEventListener('click', closeDrawer);
       $('drCloseFoot').addEventListener('click', closeDrawer);
