@@ -21,7 +21,7 @@
             </div>
 
             <!-- Cards das 3 Equipes -->
-            <div class="equipes-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px">
+            <div class="equipes-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(min(280px, 100%), 1fr));gap:12px">
               <!-- Equipe 101 -->
               <div class="equipe-card" id="cardEq101" onclick="selecionarEquipeFiltro('101')"
                 style="cursor:pointer;border:2px solid var(--line);border-radius:var(--r);padding:14px;background:var(--panel);transition:all 0.15s">
@@ -116,7 +116,7 @@
 
           <!-- Resumo de Métricas de Vendedores -->
           <section class="summary" aria-label="Resumo dos vendedores">
-            <dl class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))">
+            <dl class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(min(180px, 100%), 1fr))">
               <div class="stat" onclick="filtrarTabelaVendedores('todos')" style="cursor:pointer" title="Ver todos os vendedores">
                 <div class="stat-head">
                   <span class="stat-lbl">Vendedores Oficiais</span>
