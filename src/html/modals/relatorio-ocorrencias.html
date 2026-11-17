@@ -1,146 +1,251 @@
   <!-- ========================================================================== -->
-  <!-- MODAL: RELATÓRIO DE OCORRÊNCIAS & PAUSAS POR PERÍODO (X ATÉ Y) -->
+  <!-- MODAL: RELATÓRIO DE OCORRÊNCIAS & PAUSAS POR SUPERVISOR & PERÍODO (APP)    -->
   <!-- ========================================================================== -->
-  <div class="modal-overlay" id="modalRelatorioOcorrencias">
-    <div class="modal-card" style="max-width:760px;width:95%">
-      <header class="modal-head">
-        <div style="display:flex;align-items:center;gap:10px">
-          <div
-            style="width:38px;height:38px;border-radius:8px;background:rgba(237, 133, 112, 0.15);color:var(--accent-hi);display:grid;place-items:center">
-            <svg class="i" style="width:22px;height:22px"><use href="#i-file-text" /></svg>
+  <div class="modal-overlay modal-overlay-sheet" id="modalRelatorioOcorrencias">
+    <div class="modal-card playstore-sheet ocr-rel-sheet" style="max-width:860px;width:96%">
+      <div class="playstore-handle"></div>
+
+      <header class="modal-head" style="padding:14px 18px;border-bottom:1px solid var(--line)">
+        <div style="display:flex;align-items:center;gap:11px;min-width:0;flex:1">
+          <div class="ocr-rel-head-ico">
+            <svg class="i" style="width:20px;height:20px"><use href="#i-file-text" /></svg>
           </div>
-          <div>
-            <h3 style="font-size:16px;font-weight:700">Relatório de Ocorrências & Pausas da Frota</h3>
-            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Filtre por período (de data X até Y) para auditar tempos e emitir relatórios</p>
+          <div style="min-width:0;flex:1">
+            <h3 style="font-size:16px;font-weight:800;color:var(--ink);line-height:1.2;overflow-wrap:anywhere">Relatório de Ocorrências & Pausas</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere">Gere por supervisor, filtre por status/motivo e exporte em PDF, WhatsApp ou Excel</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioOcorrencias()">
+        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalRelatorioOcorrencias()" aria-label="Fechar">
           <svg class="i"><use href="#i-x" /></svg>
         </button>
       </header>
 
-      <div class="modal-body" style="padding:20px;display:grid;gap:16px;max-height:78vh;overflow-y:auto">
-        <!-- Seleção Rápida de Período -->
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <span style="font-size:12px;font-weight:700;color:var(--ink-3);margin-right:4px">Período:</span>
-          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" onclick="aplicarPeriodoRelatorioOcr('hoje')">Hoje</button>
-          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" onclick="aplicarPeriodoRelatorioOcr('7d')">Últimos 7 dias</button>
-          <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" onclick="aplicarPeriodoRelatorioOcr('15d')">Últimos 15 dias</button>
-          <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" onclick="aplicarPeriodoRelatorioOcr('mes')">Mês Atual</button>
-          <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" onclick="aplicarPeriodoRelatorioOcr('tudo')">Todo o Histórico</button>
-        </div>
-
-        <!-- Linha de Datas: Data Início (X) até Data Fim (Y) -->
-        <div class="ocr-form-grid-2" style="background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px">
-          <div class="ocr-form-field">
-            <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">
-              Data Inicial (De) *
-            </label>
-            <input type="date" id="ocrRelDataInicio" class="input" style="height:42px;font-weight:700"
-              onchange="atualizarPreviaRelatorioOcr()">
+      <div class="modal-body ocr-rel-body" style="padding:14px 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;max-height:78vh;overflow-y:auto">
+        <!-- Bloco 1: Período Rápido e Datas -->
+        <div class="playstore-block ocr-rel-block">
+          <div class="playstore-block-title">
+            <svg class="i" style="width:14px;height:14px"><use href="#i-calendar" /></svg>
+            <span>Período de Análise</span>
           </div>
 
-          <div class="ocr-form-field">
-            <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">
-              Data Final (Até) *
-            </label>
-            <input type="date" id="ocrRelDataFim" class="input" style="height:42px;font-weight:700"
-              onchange="atualizarPreviaRelatorioOcr()">
-          </div>
-        </div>
-
-        <!-- Filtros Adicionais: Vendedor, Situação e Regime de Fim de Semana -->
-        <div class="ocr-form-grid-2">
-          <div class="ocr-form-field">
-            <label for="ocrRelVendedor" class="gasto-field-lbl">Filtrar por Vendedor / Motorista</label>
-            <select id="ocrRelVendedor" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
-              <option value="">Todos os vendedores</option>
-            </select>
+          <div class="ocr-rel-chips-scroll">
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" onclick="aplicarPeriodoRelatorioOcr('hoje')">Hoje</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" onclick="aplicarPeriodoRelatorioOcr('7d')">7 dias</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" onclick="aplicarPeriodoRelatorioOcr('15d')">15 dias</button>
+            <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" onclick="aplicarPeriodoRelatorioOcr('mes')">Mês Atual</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" onclick="aplicarPeriodoRelatorioOcr('tudo')">Todo o Histórico</button>
           </div>
 
-          <div class="ocr-form-field">
-            <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
-            <select id="ocrRelStatus" class="input" style="height:42px" onchange="atualizarPreviaRelatorioOcr()">
-              <option value="">Todas as situações</option>
-              <option value="finalizado">Apenas Finalizadas</option>
-              <option value="aberto">Apenas Em Aberto (Parados)</option>
-            </select>
+          <div class="ocr-hours-grid">
+            <div class="ocr-form-field">
+              <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">De *</label>
+              <input type="date" id="ocrRelDataInicio" class="input" style="font-weight:700"
+                onchange="atualizarPreviaRelatorioOcr()">
+            </div>
+
+            <div class="ocr-form-field">
+              <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">Até *</label>
+              <input type="date" id="ocrRelDataFim" class="input" style="font-weight:700"
+                onchange="atualizarPreviaRelatorioOcr()">
+            </div>
           </div>
         </div>
 
-        <div class="ocr-form-field">
-          <label for="ocrRelModoFimSemana" class="gasto-field-lbl">Ocorrências de Fim de Semana (Sábado e Domingo)</label>
-          <select id="ocrRelModoFimSemana" class="input" style="height:42px;font-weight:600" onchange="atualizarPreviaRelatorioOcr()">
-            <option value="excluir" selected>Apenas Dias Úteis (Não exibir Fim de Semana no relatório)</option>
-            <option value="somente_fds">Somente Tempo de Fim de Semana (Fora do Expediente)</option>
-            <option value="separar">Incluir Ambos (Separados no Resumo)</option>
-          </select>
+        <!-- Bloco 2: Gerar por Supervisor & Modo de Agrupamento -->
+        <div class="playstore-block ocr-rel-block">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+            <div class="playstore-block-title" style="margin:0">
+              <svg class="i" style="width:14px;height:14px"><use href="#i-users" /></svg>
+              <span>Supervisor / Equipe</span>
+            </div>
+
+            <div class="ocr-seg-control" id="ocrRelAgrupamentoBtns" role="group" aria-label="Formato de agrupamento">
+              <input type="hidden" id="ocrRelAgrupamento" value="por_supervisor">
+              <button type="button" class="ocr-seg-btn active" data-agr="por_supervisor" onclick="selecionarAgrupamentoRelatorioOcr('por_supervisor')">
+                Por Supervisor
+              </button>
+              <button type="button" class="ocr-seg-btn" data-agr="cronologico" onclick="selecionarAgrupamentoRelatorioOcr('cronologico')">
+                Lista Geral
+              </button>
+            </div>
+          </div>
+
+          <input type="hidden" id="ocrRelSupervisor" value="todos">
+          <div class="ocr-rel-chips-scroll" id="ocrRelSupervisorChips">
+            <button type="button" class="ocr-chip-sup active" data-sup="todos" onclick="selecionarSupervisorRelatorioOcr('todos')">
+              Todos os Supervisores
+            </button>
+            <button type="button" class="ocr-chip-sup" data-sup="101" onclick="selecionarSupervisorRelatorioOcr('101')">
+              Alisson Bezerra · 101
+            </button>
+            <button type="button" class="ocr-chip-sup" data-sup="102" onclick="selecionarSupervisorRelatorioOcr('102')">
+              Eliase Mendes · 102
+            </button>
+            <button type="button" class="ocr-chip-sup" data-sup="103" onclick="selecionarSupervisorRelatorioOcr('103')">
+              Alisson Pereira · 103
+            </button>
+            <button type="button" class="ocr-chip-sup" id="btnChipSupOutros" data-sup="outros" onclick="selecionarSupervisorRelatorioOcr('outros')" hidden>
+              Sem equipe fixa
+            </button>
+          </div>
         </div>
 
-        <!-- Painel de Resumo / KPIs da Prévia -->
+        <!-- Bloco 3: Filtros Avançados (Expansível no Mobile / Aberto no Desktop) -->
+        <div class="playstore-block ocr-rel-block" id="ocrRelMaisFiltrosWrap">
+          <div class="ocr-rel-filters-head">
+            <button type="button" class="ocr-rel-toggle-btn" id="btnOcrRelToggleFiltros" onclick="toggleMaisFiltrosRelatorioOcr()" aria-expanded="false">
+              <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-filter" /></svg>
+              <span>Mais Opções de Filtros</span>
+              <span class="ocr-rel-filter-cnt" id="ocrRelFiltrosAtivosBadge" hidden>0</span>
+              <svg class="i ocr-rel-chev" id="ocrRelFiltrosChev" style="width:14px;height:14px"><use href="#i-chev-down" /></svg>
+            </button>
+
+            <button type="button" class="btn-agora-pill" id="btnOcrRelLimparFiltros" onclick="limparFiltrosRelatorioOcr()" hidden>
+              <svg class="i" style="width:11px;height:11px"><use href="#i-x" /></svg>
+              <span>Limpar filtros</span>
+            </button>
+          </div>
+
+          <div class="ocr-rel-filters-body" id="ocrRelMaisFiltrosBody">
+            <div class="ocr-rel-filters-grid">
+              <div class="ocr-form-field ocr-rel-col-span2">
+                <label for="ocrRelBusca" class="gasto-field-lbl">Buscar por placa, rota, oficina ou serviço</label>
+                <input type="search" id="ocrRelBusca" class="input"
+                  placeholder="Ex: IPV0C73, 201, troca de óleo, borracharia..."
+                  oninput="atualizarPreviaRelatorioOcr()">
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelVendedor" class="gasto-field-lbl">Vendedor / Motorista</label>
+                <select id="ocrRelVendedor" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="">Todos os vendedores</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
+                <select id="ocrRelStatus" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="">Todas as situações</option>
+                  <option value="aberto">Em Aberto (Parados agora)</option>
+                  <option value="atrasado">Atrasadas (Tempo Excedido)</option>
+                  <option value="no_prazo">No Prazo (Em andamento)</option>
+                  <option value="agendado">Agendadas (Futuras)</option>
+                  <option value="finalizado">Finalizadas (Liberado)</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelTipo" class="gasto-field-lbl">Tipo / Motivo da Parada</label>
+                <select id="ocrRelTipo" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="">Todos os motivos</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelAbertoPor" class="gasto-field-lbl">Aberto por (Responsável)</label>
+                <select id="ocrRelAbertoPor" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="">Todos os responsáveis</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelCustoFiltro" class="gasto-field-lbl">Despesa / Custo</label>
+                <select id="ocrRelCustoFiltro" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="">Com e sem despesa</option>
+                  <option value="com_custo">Apenas com despesa (&gt; R$ 0)</option>
+                  <option value="sem_custo">Sem despesa (R$ 0)</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelModoFimSemana" class="gasto-field-lbl">Fim de Semana (Sáb/Dom)</label>
+                <select id="ocrRelModoFimSemana" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="excluir" selected>Apenas Dias Úteis</option>
+                  <option value="somente_fds">Somente Fim de Semana</option>
+                  <option value="separar">Incluir Ambos (Separados)</option>
+                </select>
+              </div>
+
+              <div class="ocr-form-field">
+                <label for="ocrRelOrdenacao" class="gasto-field-lbl">Ordenar registros</label>
+                <select id="ocrRelOrdenacao" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                  <option value="data_desc">Mais recentes primeiro</option>
+                  <option value="duracao_desc">Maior tempo parado</option>
+                  <option value="custo_desc">Maior despesa (R$)</option>
+                  <option value="data_asc">Mais antigas primeiro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 4: KPIs Executivos da Prévia -->
         <div class="ocr-rel-kpis-grid">
-          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Ocorrências</span>
-            <div id="ocrRelTotalOcr" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0</div>
+          <div class="ocr-rel-kpi-card">
+            <span class="ocr-rel-kpi-lbl">Ocorrências</span>
+            <div id="ocrRelTotalOcr" class="ocr-rel-kpi-val">0</div>
           </div>
 
-          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Útil Parado</span>
-            <div id="ocrRelTempoTotal" style="font-size:18px;font-weight:800;color:var(--warn);margin-top:2px">0 min</div>
+          <div class="ocr-rel-kpi-card">
+            <span class="ocr-rel-kpi-lbl">Tempo Útil</span>
+            <div id="ocrRelTempoTotal" class="ocr-rel-kpi-val" style="color:var(--warn)">0 min</div>
           </div>
 
-          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Tempo Fim de Semana</span>
-            <div id="ocrRelTempoFimSemana" style="font-size:18px;font-weight:800;color:#475569;margin-top:2px">0 min</div>
-            <span id="ocrRelFimSemanaSub" style="font-size:10.5px;color:var(--ink-3);display:block;margin-top:1px">Fora do expediente</span>
+          <div class="ocr-rel-kpi-card">
+            <span class="ocr-rel-kpi-lbl">Fim de Semana</span>
+            <div id="ocrRelTempoFimSemana" class="ocr-rel-kpi-val" style="color:var(--ink-2)">0 min</div>
+            <span id="ocrRelFimSemanaSub" class="ocr-rel-kpi-sub">Fora do expediente</span>
           </div>
 
-          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Média por Pausa</span>
-            <div id="ocrRelTempoMedio" style="font-size:18px;font-weight:800;color:var(--ink);margin-top:2px">0 min</div>
+          <div class="ocr-rel-kpi-card">
+            <span class="ocr-rel-kpi-lbl">Média / Pausa</span>
+            <div id="ocrRelTempoMedio" class="ocr-rel-kpi-val">0 min</div>
           </div>
 
-          <div style="padding:10px 14px;background:var(--raised);border:1px solid var(--line);border-radius:8px">
-            <span style="font-size:10.5px;color:var(--ink-3);font-weight:700;text-transform:uppercase">Total Despesas</span>
-            <div id="ocrRelCustoTotal" style="font-size:18px;font-weight:800;color:var(--ok);margin-top:2px">R$ 0,00</div>
+          <div class="ocr-rel-kpi-card">
+            <span class="ocr-rel-kpi-lbl">Despesas</span>
+            <div id="ocrRelCustoTotal" class="ocr-rel-kpi-val" style="color:var(--ok)">R$ 0,00</div>
           </div>
         </div>
 
-        <!-- Prévia das Ocorrências Selecionadas -->
+        <!-- Chips de Resumo por Supervisor (tappable) -->
+        <div id="ocrRelResumoSupervisoresChips" class="ocr-rel-chips-scroll" hidden></div>
+
+        <!-- Bloco 5: Prévia Responsiva (App Cards no Mobile / Grid no Desktop) -->
         <div>
-          <div style="font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
-            <span>Prévia dos Registros no Período</span>
+          <div style="font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+            <span>Prévia dos Registros</span>
             <span id="ocrRelContadorPrevia" style="font-size:11.5px;color:var(--ink-3);font-weight:500">0 encontrados</span>
           </div>
 
-          <div id="ocrRelListaPrevia" style="max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);padding:4px">
+          <div id="ocrRelListaPrevia" class="ocr-rel-preview-box">
             <!-- Preenchido via atualizarPreviaRelatorioOcr() -->
           </div>
         </div>
       </div>
 
-      <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorioOcorrencias()">Fechar</button>
+      <footer class="modal-foot ocr-rel-foot">
+        <div class="ocr-rel-foot-secondary">
+          <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorioOcorrencias()">Fechar</button>
 
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn" onclick="copiarResumoRelatorioWhatsApp()"
-            title="Copiar resumo consolidado para WhatsApp" style="color:#25d366">
+            title="Copiar resumo consolidado para WhatsApp" style="color:#16a34a">
             <svg class="i"><use href="#i-whatsapp" /></svg>
-            <span>Resumo WhatsApp</span>
+            <span>WhatsApp</span>
           </button>
 
           <button type="button" class="btn" onclick="exportarCsvOcorrencias()"
             title="Download em planilha Excel (CSV)">
             <svg class="i"><use href="#i-download" /></svg>
-            <span>Planilha Excel (CSV)</span>
-          </button>
-
-          <button type="button" class="btn btn-primary" onclick="gerarPdfRelatorioOcorrencias()"
-            title="Gerar e imprimir relatório PDF oficial">
-            <svg class="i"><use href="#i-printer" /></svg>
-            <span>Gerar PDF Oficial</span>
+            <span>Excel</span>
           </button>
         </div>
+
+        <button type="button" class="btn btn-primary ocr-rel-btn-pdf" onclick="gerarPdfRelatorioOcorrencias()"
+          title="Gerar e imprimir relatório PDF oficial">
+          <svg class="i"><use href="#i-printer" /></svg>
+          <span id="lblBtnGerarPdfOcr">Gerar PDF Oficial</span>
+        </button>
       </footer>
     </div>
   </div>
