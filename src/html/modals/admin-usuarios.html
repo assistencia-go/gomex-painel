@@ -4,17 +4,17 @@
 <div class="modal-overlay" id="modalNovoUsuario" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalNovoUsuarioTitle">
   <div class="modal-card" style="max-width:520px;">
     <div class="modal-head">
-      <div>
+      <div style="min-width:0;flex:1">
         <h3 id="modalNovoUsuarioTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Cadastrar Novo Usuário</h3>
         <div id="modalNovoUsuarioSub" style="font-size:12px;color:var(--ink-3);margin-top:2px;">Salvo no Supabase com senha protegida por hash PBKDF2-SHA256</div>
       </div>
-      <button type="button" class="btn-close-modal" onclick="fecharModalNovoUsuario()" aria-label="Fechar">&times;</button>
+      <button type="button" class="btn-close-modal" style="flex-shrink:0" onclick="fecharModalNovoUsuario()" aria-label="Fechar">&times;</button>
     </div>
 
-    <div style="padding:18px 20px;display:grid;gap:12px;max-height:78vh;overflow-y:auto;">
+    <div class="modal-body" style="padding:18px 20px;display:grid;gap:12px;max-height:78vh;overflow-y:auto;">
       <input type="hidden" id="editarUsuarioKey" value="">
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
           <label for="novoUsuarioNome" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nome Completo *</label>
           <input type="text" id="novoUsuarioNome" class="input" placeholder="Ex.: Carlos Eduardo" style="width:100%;">
@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
           <label for="novoUsuarioCargo" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Cargo / Função</label>
           <input type="text" id="novoUsuarioCargo" class="input" placeholder="Ex.: Supervisor de Frota" style="width:100%;">
@@ -51,7 +51,7 @@
         </select>
       </div>
 
-      <div id="boxSenhaNovoUsuario" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div id="boxSenhaNovoUsuario" class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
           <label for="novoUsuarioSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;" id="lblNovoUsuarioSenha">Senha Individual *</label>
           <input type="password" id="novoUsuarioSenha" class="input" placeholder="Mín. 6 caracteres" autocomplete="new-password" style="width:100%;">
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <div style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
+    <div class="modal-foot" style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
       <button type="button" class="btn btn-ghost" onclick="fecharModalNovoUsuario()">Cancelar</button>
       <button type="button" class="btn btn-primary" id="btnConfirmarNovoUsuario" onclick="confirmarNovoUsuario()">
         <svg class="i"><use href="#i-check" /></svg>
@@ -81,14 +81,14 @@
 <div class="modal-overlay" id="modalAlterarSenha" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalAlterarSenhaTitle">
   <div class="modal-card" style="max-width:440px;">
     <div class="modal-head">
-      <div>
+      <div style="min-width:0;flex:1">
         <h3 id="modalAlterarSenhaTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Alterar Senha de Acesso</h3>
         <div id="alterarSenhaNomeUsuario" style="font-size:12px;color:var(--accent-hi);font-weight:700;margin-top:2px;">Usuário</div>
       </div>
-      <button type="button" class="btn-close-modal" onclick="fecharModalAlterarSenha()" aria-label="Fechar">&times;</button>
+      <button type="button" class="btn-close-modal" style="flex-shrink:0" onclick="fecharModalAlterarSenha()" aria-label="Fechar">&times;</button>
     </div>
 
-    <div style="padding:18px 20px;display:grid;gap:12px;">
+    <div class="modal-body" style="padding:18px 20px;display:grid;gap:12px;">
       <input type="hidden" id="alterarSenhaKey" value="">
       <div>
         <label for="inputNovaSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nova Senha *</label>
@@ -103,7 +103,7 @@
       </div>
     </div>
 
-    <div style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
+    <div class="modal-foot" style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
       <button type="button" class="btn btn-ghost" onclick="fecharModalAlterarSenha()">Cancelar</button>
       <button type="button" class="btn btn-primary" onclick="confirmarAlteracaoSenha()">
         <svg class="i"><use href="#i-lock" /></svg>
