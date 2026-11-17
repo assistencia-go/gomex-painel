@@ -2410,6 +2410,7 @@
       }
 
       carregarGastosLocalStorage();
+      window.sincronizarGastosComServidor = sincronizarGastosComServidor;
       setTimeout(() => sincronizarGastosComServidor('pull'), 400);
 
       function badgeCategoriaProduto(cat) {
