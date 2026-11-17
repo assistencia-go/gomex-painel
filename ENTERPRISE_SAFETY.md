@@ -61,4 +61,16 @@ node validate.mjs
 1. **Padrão Institucional:** A identidade visual da Gomex Distribuidora segue rigoroso padrão executivo sóbrio. Todas as sinalizações visuais devem empregar exclusivamente ícones vetoriais SVG (`<svg class="i"><use href="#..." /></svg>`) ou texto institucional claro.
 2. **Bloqueio Automático Pré-Deploy:** O script `validate.mjs` executa uma varredura Unicode (`\p{Extended_Pictographic}`) no `index.html`. Caso qualquer emoji seja introduzido acidentalmente em atualizações futuras, **o teste é reprovado e o deploy é imediatamente abortado**.
 
+---
+
+## 4. Diretriz Mobile-First Obrigatória: Política Zero-Scroll Horizontal (Proibido Arraste Lateral)
+
+> **REGRA PERMANENTE DO PROJETO:**  
+> É terminantemente **proibido** que telas, modais, cards, filtros, KPIs, selects ou tabelas exijam arraste lateral (`overflow-x` / scroll horizontal) para visualização em dispositivos mobile (`max-width: 768px`).
+
+1. **Ajuste Automático à Tela:** Todo bloco mobile deve respeitar `width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box;` e `overflow-x: hidden` nos contêineres principais (`html`, `body`, `.app-main`, `.page`, `.modal-card`, `.modal-body`, `.playstore-block`).
+2. **Grids e Inputs Seguros:** Todo `display: grid` deve empregar `minmax(0, 1fr)` (nunca `auto` ou `1fr` puro com filhos longos) e todos os `<select>` / `<input>` devem truncar com `text-overflow: ellipsis` para não alargar o viewport.
+3. **Chips, Filtros e KPIs sem Arraste:** Listas de chips, abas e blocos de indicadores devem quebrar linha (`flex-wrap: wrap`) ou empilhar em grade de 2 colunas no mobile.
+4. **Bloqueio Automático Pré-Deploy:** O `validate.mjs` valida a presença das travas CSS anti-overflow mobile e bloqueia o deploy se regras mobile violarem esta política.
+
 
