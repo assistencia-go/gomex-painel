@@ -50,14 +50,14 @@ function lerPushSubsLocais() {
       const parsed = JSON.parse(fs.readFileSync(PUSH_SUBS_FILE, 'utf8'));
       if (Array.isArray(parsed)) return parsed;
     }
-  } catch (e) {}
+  } catch (e) { }
   return [];
 }
 
 function salvarPushSubsLocais(subs) {
   try {
     fs.writeFileSync(PUSH_SUBS_FILE, JSON.stringify(subs, null, 2), 'utf8');
-  } catch (e) {}
+  } catch (e) { }
 }
 
 async function sincronizarPushSubsComSupabase(subs) {
@@ -76,7 +76,7 @@ async function sincronizarPushSubsComSupabase(subs) {
         descricao: JSON.stringify(subs)
       }])
     });
-  } catch (e) {}
+  } catch (e) { }
 }
 
 async function carregarTodasPushSubs() {
@@ -102,7 +102,7 @@ async function carregarTodasPushSubs() {
         }
       }
     }
-  } catch (e) {}
+  } catch (e) { }
   return subs;
 }
 
@@ -207,14 +207,14 @@ function lerGastosLocais() {
         agendamentos: Array.isArray(parsed.agendamentos) ? parsed.agendamentos : []
       };
     }
-  } catch (e) {}
+  } catch (e) { }
   return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [] };
 }
 
 function salvarGastosLocais(data) {
   try {
     fs.writeFileSync(GASTOS_DB_FILE, JSON.stringify(data, null, 2), 'utf8');
-  } catch (e) {}
+  } catch (e) { }
 }
 
 const MIME_TYPES = {
@@ -402,12 +402,12 @@ const server = http.createServer((req, res) => {
                   if (Array.isArray(ag)) out.agendamentos = ag;
                 }
                 if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                  try { out.permissoes = JSON.parse(row.descricao); } catch (e) {}
+                  try { out.permissoes = JSON.parse(row.descricao); } catch (e) { }
                 }
               }
               salvarGastosLocais(out);
             }
-          } catch (e) {}
+          } catch (e) { }
           res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
           res.end(JSON.stringify(out));
         });
@@ -647,7 +647,7 @@ const server = http.createServer((req, res) => {
                 prefixes.push(prefix ? `${prefix}/${obj.name}` : obj.name);
               }
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       }
 
@@ -825,7 +825,12 @@ const server = http.createServer((req, res) => {
       res.end('Erro interno do servidor');
       return;
     }
-    res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache' });
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     res.end(content);
   });
 });
