@@ -2,7 +2,7 @@
 // GOMEX DISTRIBUIDORA · SERVICE WORKER PWA (PAINEL EXECUTIVO)
 // ==============================================================================
 
-const CACHE_NAME = 'gomex-painel-pwa-v1.4';
+const CACHE_NAME = 'gomex-painel-pwa-v1.6';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -38,6 +38,11 @@ self.addEventListener('fetch', event => {
   const req = event.request;
   const url = new URL(req.url);
 
+  // Em localhost, nunca interceptar com cache para refletir alterações imediatamente
+  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') {
+    return;
+  }
+
   // Requisições para APIs do backend: Network First com fallback para cache
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
@@ -55,7 +60,7 @@ self.addEventListener('fetch', event => {
   // Navegação de páginas (rotas SPA como /vistoria, /frota, etc.): Network first com atualização de cache, fallback para cache
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-cache' })
         .then(networkRes => {
           if (networkRes && networkRes.status === 200) {
             const resClone = networkRes.clone();
