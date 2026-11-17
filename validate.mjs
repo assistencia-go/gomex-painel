@@ -128,6 +128,22 @@ if (!fs.existsSync(indexPath)) {
   } else {
     logPass('Política Zero-Emoji 100% cumprida: Nenhum emoji presente no index.html (Design Corporativo Sóbrio).');
   }
+
+  // DIRETRIZ MOBILE OBRIGATÓRIA · POLÍTICA ESTRITA ZERO-SCROLL HORIZONTAL
+  // É terminantemente proibido exigir arraste lateral de blocos/cards/modais no mobile.
+  const mobileOverflowGuards = [
+    'POLÍTICA ESTRITA MOBILE: PROIBIDO SCROLL HORIZONTAL',
+    'overscroll-behavior-x: none !important',
+    'grid-template-columns: minmax(0, 1fr) !important',
+    'text-overflow: ellipsis !important'
+  ];
+  const missingMobileGuards = mobileOverflowGuards.filter(g => !indexContent.includes(g));
+  if (missingMobileGuards.length > 0) {
+    logFail(`POLÍTICA MOBILE ZERO-SCROLL HORIZONTAL VIOLADA: travas obrigatórias ausentes no index.html: ${missingMobileGuards.join(', ')}`);
+    hasError = true;
+  } else {
+    logPass('Política Mobile Zero-Scroll Horizontal 100% ativa no CSS (proibido arraste lateral de blocos).');
+  }
 }
 
 // ------------------------------------------------------------------------------
