@@ -4,20 +4,20 @@
   <div class="modal-overlay" id="modalCustodiaVeiculo">
     <div class="modal-card" style="max-width:880px;width:95%">
       <header class="modal-head">
-        <div style="display:flex;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px;min-width:0;flex:1">
           <div
-            style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center">
+            style="width:36px;height:36px;border-radius:8px;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;flex-shrink:0">
             <svg class="i" style="width:20px;height:20px">
               <use href="#i-history" />
             </svg>
           </div>
-          <div>
-            <h3 style="font-size:16px;font-weight:700">Rastreio de Custódia & Troca de Motoristas</h3>
-            <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Auditoria de avarias entre vendedores para
+          <div style="min-width:0;flex:1">
+            <h3 style="font-size:16px;font-weight:700;overflow-wrap:anywhere">Rastreio de Custódia & Troca de Motoristas</h3>
+            <p style="font-size:12px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere">Auditoria de avarias entre vendedores para
               identificar a origem dos danos</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCustodia()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalCustodia()"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -25,10 +25,10 @@
         <!-- Seletor de Veículo para Auditoria -->
         <div
           style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--raised);padding:12px 16px;border-radius:8px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0;flex:1">
             <label for="selectCustodiaPlaca" style="font-size:13px;font-weight:700;color:var(--ink)">Filtrar
               Veículo:</label>
-            <select id="selectCustodiaPlaca" class="input" style="height:34px;width:200px;font-weight:700"
+            <select id="selectCustodiaPlaca" class="input" style="height:34px;width:200px;max-width:100%;min-width:0;font-weight:700"
               onchange="renderModalCustodiaConteudo(this.value)">
               <option value="">Todos os Veículos</option>
             </select>
