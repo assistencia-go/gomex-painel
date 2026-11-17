@@ -15,7 +15,7 @@
             <p style="font-size:12px;color:var(--ink-3);margin-top:2px;overflow-wrap:anywhere">Gere por supervisor, filtre por status/motivo e exporte em PDF, WhatsApp ou Excel</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalRelatorioOcorrencias()" aria-label="Fechar">
+        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" data-action="fecharModalRelatorioOcorrencias" aria-label="Fechar">
           <svg class="i"><use href="#i-x" /></svg>
         </button>
       </header>
@@ -29,24 +29,24 @@
           </div>
 
           <div class="ocr-rel-chips-scroll">
-            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" onclick="aplicarPeriodoRelatorioOcr('hoje')">Hoje</button>
-            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" onclick="aplicarPeriodoRelatorioOcr('7d')">7 dias</button>
-            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" onclick="aplicarPeriodoRelatorioOcr('15d')">15 dias</button>
-            <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" onclick="aplicarPeriodoRelatorioOcr('mes')">Mês Atual</button>
-            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" onclick="aplicarPeriodoRelatorioOcr('tudo')">Todo o Histórico</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoHoje" data-action="aplicarPeriodoRelatorioOcr" data-arg="hoje">Hoje</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo7d" data-action="aplicarPeriodoRelatorioOcr" data-arg="7d">7 dias</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodo15d" data-action="aplicarPeriodoRelatorioOcr" data-arg="15d">15 dias</button>
+            <button type="button" class="timeline-filter-btn active" id="btnRelPeriodoMes" data-action="aplicarPeriodoRelatorioOcr" data-arg="mes">Mês Atual</button>
+            <button type="button" class="timeline-filter-btn" id="btnRelPeriodoTudo" data-action="aplicarPeriodoRelatorioOcr" data-arg="tudo">Todo o Histórico</button>
           </div>
 
           <div class="ocr-hours-grid">
             <div class="ocr-form-field">
               <label for="ocrRelDataInicio" class="gasto-field-lbl" style="color:var(--ink)">De *</label>
               <input type="date" id="ocrRelDataInicio" class="input" style="font-weight:700"
-                onchange="atualizarPreviaRelatorioOcr()">
+                data-change="atualizarPreviaRelatorioOcr">
             </div>
 
             <div class="ocr-form-field">
               <label for="ocrRelDataFim" class="gasto-field-lbl" style="color:var(--ink)">Até *</label>
               <input type="date" id="ocrRelDataFim" class="input" style="font-weight:700"
-                onchange="atualizarPreviaRelatorioOcr()">
+                data-change="atualizarPreviaRelatorioOcr">
             </div>
           </div>
         </div>
@@ -61,10 +61,10 @@
 
             <div class="ocr-seg-control" id="ocrRelAgrupamentoBtns" role="group" aria-label="Formato de agrupamento">
               <input type="hidden" id="ocrRelAgrupamento" value="por_supervisor">
-              <button type="button" class="ocr-seg-btn active" data-agr="por_supervisor" onclick="selecionarAgrupamentoRelatorioOcr('por_supervisor')">
+              <button type="button" class="ocr-seg-btn active" data-agr="por_supervisor" data-action="selecionarAgrupamentoRelatorioOcr" data-arg="por_supervisor">
                 Por Supervisor
               </button>
-              <button type="button" class="ocr-seg-btn" data-agr="cronologico" onclick="selecionarAgrupamentoRelatorioOcr('cronologico')">
+              <button type="button" class="ocr-seg-btn" data-agr="cronologico" data-action="selecionarAgrupamentoRelatorioOcr" data-arg="cronologico">
                 Lista Geral
               </button>
             </div>
@@ -72,19 +72,19 @@
 
           <input type="hidden" id="ocrRelSupervisor" value="todos">
           <div class="ocr-rel-chips-scroll" id="ocrRelSupervisorChips">
-            <button type="button" class="ocr-chip-sup active" data-sup="todos" onclick="selecionarSupervisorRelatorioOcr('todos')">
+            <button type="button" class="ocr-chip-sup active" data-sup="todos" data-action="selecionarSupervisorRelatorioOcr" data-arg="todos">
               Todos os Supervisores
             </button>
-            <button type="button" class="ocr-chip-sup" data-sup="101" onclick="selecionarSupervisorRelatorioOcr('101')">
+            <button type="button" class="ocr-chip-sup" data-sup="101" data-action="selecionarSupervisorRelatorioOcr" data-arg="101">
               Alisson Bezerra · 101
             </button>
-            <button type="button" class="ocr-chip-sup" data-sup="102" onclick="selecionarSupervisorRelatorioOcr('102')">
+            <button type="button" class="ocr-chip-sup" data-sup="102" data-action="selecionarSupervisorRelatorioOcr" data-arg="102">
               Eliase Mendes · 102
             </button>
-            <button type="button" class="ocr-chip-sup" data-sup="103" onclick="selecionarSupervisorRelatorioOcr('103')">
+            <button type="button" class="ocr-chip-sup" data-sup="103" data-action="selecionarSupervisorRelatorioOcr" data-arg="103">
               Alisson Pereira · 103
             </button>
-            <button type="button" class="ocr-chip-sup" id="btnChipSupOutros" data-sup="outros" onclick="selecionarSupervisorRelatorioOcr('outros')" hidden>
+            <button type="button" class="ocr-chip-sup" id="btnChipSupOutros" data-sup="outros" data-action="selecionarSupervisorRelatorioOcr" data-arg="outros" hidden>
               Sem equipe fixa
             </button>
           </div>
@@ -93,14 +93,14 @@
         <!-- Bloco 3: Filtros Avançados (Expansível no Mobile / Aberto no Desktop) -->
         <div class="playstore-block ocr-rel-block" id="ocrRelMaisFiltrosWrap">
           <div class="ocr-rel-filters-head">
-            <button type="button" class="ocr-rel-toggle-btn" id="btnOcrRelToggleFiltros" onclick="toggleMaisFiltrosRelatorioOcr()" aria-expanded="false">
+            <button type="button" class="ocr-rel-toggle-btn" id="btnOcrRelToggleFiltros" data-action="toggleMaisFiltrosRelatorioOcr" aria-expanded="false">
               <svg class="i" style="width:14px;height:14px;color:var(--accent-hi)"><use href="#i-filter" /></svg>
               <span>Mais Opções de Filtros</span>
               <span class="ocr-rel-filter-cnt" id="ocrRelFiltrosAtivosBadge" hidden>0</span>
               <svg class="i ocr-rel-chev" id="ocrRelFiltrosChev" style="width:14px;height:14px"><use href="#i-chev-down" /></svg>
             </button>
 
-            <button type="button" class="btn-agora-pill" id="btnOcrRelLimparFiltros" onclick="limparFiltrosRelatorioOcr()" hidden>
+            <button type="button" class="btn-agora-pill" id="btnOcrRelLimparFiltros" data-action="limparFiltrosRelatorioOcr" hidden>
               <svg class="i" style="width:11px;height:11px"><use href="#i-x" /></svg>
               <span>Limpar filtros</span>
             </button>
@@ -112,19 +112,19 @@
                 <label for="ocrRelBusca" class="gasto-field-lbl">Buscar por placa, rota, oficina ou serviço</label>
                 <input type="search" id="ocrRelBusca" class="input"
                   placeholder="Ex: IPV0C73, 201, troca de óleo, borracharia..."
-                  oninput="atualizarPreviaRelatorioOcr()">
+                  data-input="atualizarPreviaRelatorioOcr">
               </div>
 
               <div class="ocr-form-field">
                 <label for="ocrRelVendedor" class="gasto-field-lbl">Vendedor / Motorista</label>
-                <select id="ocrRelVendedor" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelVendedor" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="">Todos os vendedores</option>
                 </select>
               </div>
 
               <div class="ocr-form-field">
                 <label for="ocrRelStatus" class="gasto-field-lbl">Situação da Pausa</label>
-                <select id="ocrRelStatus" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelStatus" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="">Todas as situações</option>
                   <option value="aberto">Em Aberto (Parados agora)</option>
                   <option value="atrasado">Atrasadas (Tempo Excedido)</option>
@@ -136,21 +136,21 @@
 
               <div class="ocr-form-field">
                 <label for="ocrRelTipo" class="gasto-field-lbl">Tipo / Motivo da Parada</label>
-                <select id="ocrRelTipo" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelTipo" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="">Todos os motivos</option>
                 </select>
               </div>
 
               <div class="ocr-form-field">
                 <label for="ocrRelAbertoPor" class="gasto-field-lbl">Aberto por (Responsável)</label>
-                <select id="ocrRelAbertoPor" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelAbertoPor" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="">Todos os responsáveis</option>
                 </select>
               </div>
 
               <div class="ocr-form-field">
                 <label for="ocrRelCustoFiltro" class="gasto-field-lbl">Despesa / Custo</label>
-                <select id="ocrRelCustoFiltro" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelCustoFiltro" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="">Com e sem despesa</option>
                   <option value="com_custo">Apenas com despesa (&gt; R$ 0)</option>
                   <option value="sem_custo">Sem despesa (R$ 0)</option>
@@ -159,7 +159,7 @@
 
               <div class="ocr-form-field">
                 <label for="ocrRelModoFimSemana" class="gasto-field-lbl">Fim de Semana (Sáb/Dom)</label>
-                <select id="ocrRelModoFimSemana" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelModoFimSemana" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="excluir" selected>Apenas Dias Úteis</option>
                   <option value="somente_fds">Somente Fim de Semana</option>
                   <option value="separar">Incluir Ambos (Separados)</option>
@@ -168,7 +168,7 @@
 
               <div class="ocr-form-field">
                 <label for="ocrRelOrdenacao" class="gasto-field-lbl">Ordenar registros</label>
-                <select id="ocrRelOrdenacao" class="input" onchange="atualizarPreviaRelatorioOcr()">
+                <select id="ocrRelOrdenacao" class="input" data-change="atualizarPreviaRelatorioOcr">
                   <option value="data_desc">Mais recentes primeiro</option>
                   <option value="duracao_desc">Maior tempo parado</option>
                   <option value="custo_desc">Maior despesa (R$)</option>
@@ -226,22 +226,22 @@
 
       <footer class="modal-foot ocr-rel-foot">
         <div class="ocr-rel-foot-secondary">
-          <button type="button" class="btn btn-ghost" onclick="fecharModalRelatorioOcorrencias()">Fechar</button>
+          <button type="button" class="btn btn-ghost" data-action="fecharModalRelatorioOcorrencias">Fechar</button>
 
-          <button type="button" class="btn" onclick="copiarResumoRelatorioWhatsApp()"
+          <button type="button" class="btn" data-action="copiarResumoRelatorioWhatsApp"
             title="Copiar resumo consolidado para WhatsApp" style="color:#16a34a">
             <svg class="i"><use href="#i-whatsapp" /></svg>
             <span>WhatsApp</span>
           </button>
 
-          <button type="button" class="btn" onclick="exportarCsvOcorrencias()"
+          <button type="button" class="btn" data-action="exportarCsvOcorrencias"
             title="Download em planilha Excel (CSV)">
             <svg class="i"><use href="#i-download" /></svg>
             <span>Excel</span>
           </button>
         </div>
 
-        <button type="button" class="btn btn-primary ocr-rel-btn-pdf" onclick="gerarPdfRelatorioOcorrencias()"
+        <button type="button" class="btn btn-primary ocr-rel-btn-pdf" data-action="gerarPdfRelatorioOcorrencias"
           title="Gerar e imprimir relatório PDF oficial">
           <svg class="i"><use href="#i-printer" /></svg>
           <span id="lblBtnGerarPdfOcr">Gerar PDF Oficial</span>

@@ -67,7 +67,7 @@
               <span class="pulse-dot-red" style="width:12px;height:12px"></span>
               <span id="ocrAlertaAtrasosTexto" style="font-weight:700">Atenção: existem ocorrências com o tempo médio ultrapassado!</span>
             </div>
-            <button type="button" class="btn btn-sm" onclick="filtrarOcorrencias('atrasado')" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:6px">
+            <button type="button" class="btn btn-sm" data-action="filtrarOcorrencias" data-arg="atrasado" style="background:var(--bad);color:#fff;border-color:var(--bad);font-weight:700;display:inline-flex;align-items:center;gap:6px">
               <svg class="i" style="width:14px;height:14px"><use href="#i-alert" /></svg>
               <span>Ver Atrasadas</span>
             </button>
@@ -76,19 +76,19 @@
           <!-- Barra de Ações & Filtros da Visão de Ocorrências (App Style) -->
           <div class="gastos-period-bar ocr-app-actions-bar" style="margin-bottom:12px">
             <div class="ocr-actions-bar-grid">
-              <button type="button" class="btn btn-primary ocr-btn-nova" id="btnTopNovaOcorrencia" onclick="abrirModalOcorrencia()"
+              <button type="button" class="btn btn-primary ocr-btn-nova" id="btnTopNovaOcorrencia" data-action="abrirModalOcorrencia"
                 title="Registrar nova ocorrência ou parada de vendedor">
                 <svg class="i"><use href="#i-plus" /></svg>
                 <span>Nova Ocorrência / Parada</span>
               </button>
 
-              <button type="button" class="btn ocr-btn-relatorio" onclick="abrirModalRelatorioOcorrencias()"
+              <button type="button" class="btn ocr-btn-relatorio" data-action="abrirModalRelatorioOcorrencias"
                 title="Gerar relatório por supervisor, período e filtros">
                 <svg class="i" style="color:var(--accent-hi)"><use href="#i-file-text" /></svg>
                 <span>Relatórios & Supervisor</span>
               </button>
 
-              <button type="button" class="btn ocr-btn-refresh" onclick="sincronizarGastosComServidor('pull')"
+              <button type="button" class="btn ocr-btn-refresh" data-action="sincronizarGastosComServidor" data-arg="pull"
                 title="Atualizar lista de ocorrências">
                 <svg class="i"><use href="#i-refresh" /></svg>
                 <span>Atualizar</span>
@@ -100,25 +100,25 @@
           <section class="card ocr-filter-shell" style="margin-bottom:14px;padding:12px 14px">
             <div style="display:flex;flex-direction:column;gap:10px">
               <div class="ocr-filter-tabs-row">
-                <button type="button" class="filter-tab active" id="btnOcrFiltroTodos" onclick="filtrarOcorrencias('todos')">
+                <button type="button" class="filter-tab active" id="btnOcrFiltroTodos" data-action="filtrarOcorrencias" data-arg="todos">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-grid" /></svg> Todos <span class="tab-badge" id="badgeOcrFiltroTodos">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" onclick="filtrarOcorrencias('aberto')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroAbertos" data-action="filtrarOcorrencias" data-arg="aberto">
                   <span class="pulse-dot-red" style="margin-right:2px"></span> Parados Agora <span class="tab-badge" id="badgeOcrFiltroAbertos">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroAgendadas" onclick="filtrarOcorrencias('agendado')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroAgendadas" data-action="filtrarOcorrencias" data-arg="agendado">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-calendar-clock" /></svg> Agendadas <span class="tab-badge" id="badgeOcrFiltroAgendadas">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroAtrasados" onclick="filtrarOcorrencias('atrasado')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroAtrasados" data-action="filtrarOcorrencias" data-arg="atrasado">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-alert" /></svg> Tempo Excedido <span class="tab-badge" id="badgeOcrFiltroAtrasados">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroHoje" onclick="filtrarOcorrencias('hoje')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroHoje" data-action="filtrarOcorrencias" data-arg="hoje">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-calendar" /></svg> Hoje <span class="tab-badge" id="badgeOcrFiltroHoje">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroFimSemana" onclick="filtrarOcorrencias('fim_semana')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroFimSemana" data-action="filtrarOcorrencias" data-arg="fim_semana">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-calendar-clock" /></svg> Fim de Semana <span class="tab-badge" id="badgeOcrFiltroFimSemana">0</span>
                 </button>
-                <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" onclick="filtrarOcorrencias('finalizado')">
+                <button type="button" class="filter-tab" id="btnOcrFiltroFinalizados" data-action="filtrarOcorrencias" data-arg="finalizado">
                   <svg class="i" style="width:13px;height:13px"><use href="#i-check" /></svg> Finalizadas <span class="tab-badge" id="badgeOcrFiltroFinalizados">0</span>
                 </button>
               </div>
@@ -129,16 +129,16 @@
                   <svg class="i" style="width:13px;height:13px;color:var(--accent-hi)"><use href="#i-users" /></svg>
                   Supervisor:
                 </span>
-                <button type="button" class="ocr-sup-pill active" data-sup="todos" onclick="filtrarOcorrenciasPorSupervisor('todos')">
+                <button type="button" class="ocr-sup-pill active" data-sup="todos" data-action="filtrarOcorrenciasPorSupervisor" data-arg="todos">
                   Todos <span class="ocr-sup-pill-cnt" id="cntOcrSupTodos">0</span>
                 </button>
-                <button type="button" class="ocr-sup-pill" data-sup="101" onclick="filtrarOcorrenciasPorSupervisor('101')">
+                <button type="button" class="ocr-sup-pill" data-sup="101" data-action="filtrarOcorrenciasPorSupervisor" data-arg="101">
                   Alisson Bezerra <span class="ocr-sup-pill-cnt" id="cntOcrSup101">0</span>
                 </button>
-                <button type="button" class="ocr-sup-pill" data-sup="102" onclick="filtrarOcorrenciasPorSupervisor('102')">
+                <button type="button" class="ocr-sup-pill" data-sup="102" data-action="filtrarOcorrenciasPorSupervisor" data-arg="102">
                   Eliase Mendes <span class="ocr-sup-pill-cnt" id="cntOcrSup102">0</span>
                 </button>
-                <button type="button" class="ocr-sup-pill" data-sup="103" onclick="filtrarOcorrenciasPorSupervisor('103')">
+                <button type="button" class="ocr-sup-pill" data-sup="103" data-action="filtrarOcorrenciasPorSupervisor" data-arg="103">
                   Alisson Pereira <span class="ocr-sup-pill-cnt" id="cntOcrSup103">0</span>
                 </button>
               </div>
@@ -147,7 +147,7 @@
                 <svg class="i"><use href="#i-search" /></svg>
                 <input type="search" id="ocrInputBusca" class="search-input"
                   placeholder="Buscar ocorrência por vendedor, rota, supervisor, placa, motivo ou oficina..."
-                  oninput="buscarOcorrencias(this.value)">
+                  data-input="buscarOcorrencias" data-pass="value">
               </div>
             </div>
           </section>

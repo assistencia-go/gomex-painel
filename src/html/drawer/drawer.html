@@ -3,63 +3,6 @@
   <!-- ========================================================================== -->
   <div class="scrim" id="scrim"></div>
 
-  <!-- MODAL: CADASTRAR NOVO USUÁRIO -->
-  <div id="modalNovoUsuario" class="modal-overlay" style="display:none;">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3 style="margin:0;font-size:17px;font-weight:800;color:var(--ink);">Cadastrar Novo Usuário</h3>
-        <button type="button" class="btn-close-modal" onclick="fecharModalNovoUsuario()" aria-label="Fechar"><svg class="i"><use href="#i-x" /></svg></button>
-      </div>
-      <div class="modal-body" style="padding:16px 20px;display:grid;gap:12px;">
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nome Completo:</label>
-          <input type="text" id="novoUsuarioNome" class="input" placeholder="Ex: Carlos Silva" style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Login de Acesso (sem espaços ou acentos):</label>
-          <input type="text" id="novoUsuarioLogin" class="input" placeholder="Ex: carlos" style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Cargo / Perfil:</label>
-          <input type="text" id="novoUsuarioCargo" class="input" placeholder="Ex: Supervisor Rota 104" style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Senha Inicial:</label>
-          <input type="password" id="novoUsuarioSenha" class="input" placeholder="Ex: SUP104" style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-      </div>
-      <div class="modal-foot" style="padding:14px 20px;display:flex;justify-content:flex-end;gap:10px;background:var(--raised);border-top:1px solid var(--line);">
-        <button type="button" class="btn btn-ghost" onclick="fecharModalNovoUsuario()">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="confirmarNovoUsuario()" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;"><svg class="i" style="width:14px;height:14px"><use href="#i-plus" /></svg> Criar Usuário</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: ALTERAR SENHA DO USUÁRIO -->
-  <div id="modalAlterarSenha" class="modal-overlay" style="display:none;">
-    <div class="modal-card">
-      <div class="modal-head">
-        <h3 style="margin:0;font-size:17px;font-weight:800;color:var(--ink);">Alterar Senha de Usuário</h3>
-        <button type="button" class="btn-close-modal" onclick="fecharModalAlterarSenha()" aria-label="Fechar"><svg class="i"><use href="#i-x" /></svg></button>
-      </div>
-      <div class="modal-body" style="padding:16px 20px;display:grid;gap:12px;">
-        <p style="font-size:13px;color:var(--ink-2);margin:0;">Definindo nova senha para o usuário: <strong id="alterarSenhaNomeUsuario" style="color:var(--ink);">-</strong></p>
-        <input type="hidden" id="alterarSenhaKey">
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nova Senha:</label>
-          <input type="password" id="inputNovaSenha" class="input" placeholder="Digite a nova senha..." style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-        <div>
-          <label style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Confirme a Nova Senha:</label>
-          <input type="password" id="inputConfirmarNovaSenha" class="input" placeholder="Repita a nova senha..." style="width:100%;height:38px;border-radius:6px;border:1px solid var(--line);padding:0 10px;">
-        </div>
-      </div>
-      <div class="modal-foot" style="padding:14px 20px;display:flex;justify-content:flex-end;gap:10px;background:var(--raised);border-top:1px solid var(--line);">
-        <button type="button" class="btn btn-ghost" onclick="fecharModalAlterarSenha()">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="confirmarAlteracaoSenha()" style="background:#4f46e5;border-color:#4f46e5;color:#fff;font-weight:700;"><svg class="i" style="width:14px;height:14px"><use href="#i-check" /></svg> Salvar Nova Senha</button>
-      </div>
-    </div>
-  </div>
   <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true"
     tabindex="-1">
     <header class="dr-head">
@@ -74,17 +17,17 @@
 
     <!-- Abas de Navegação da Gaveta -->
     <div class="dr-tabs">
-      <button type="button" class="dr-tab active" id="drTabBtnVistoria" onclick="switchDrTab('vistoria')">
+      <button type="button" class="dr-tab active" id="drTabBtnVistoria" data-action="switchDrTab" data-arg="vistoria">
         <svg class="i">
           <use href="#i-truck" />
         </svg> <span>Vistoria & Check-list</span>
       </button>
-      <button type="button" class="dr-tab" id="drTabBtnEditar" onclick="switchDrTab('editar')">
+      <button type="button" class="dr-tab" id="drTabBtnEditar" data-action="switchDrTab" data-arg="editar">
         <svg class="i">
           <use href="#i-edit" />
         </svg> <span>Editar Vistoria & Rota</span>
       </button>
-      <button type="button" class="dr-tab" id="drTabBtnManut" onclick="switchDrTab('manut')">
+      <button type="button" class="dr-tab" id="drTabBtnManut" data-action="switchDrTab" data-arg="manut">
         <svg class="i">
           <use href="#i-tool" />
         </svg> <span>Manutenção & Observações</span>
@@ -110,7 +53,7 @@
             </div>
             <div style="font-size:12px;color:var(--ink-2);margin-top:3px" id="drInatMotivo">Motivo: —</div>
           </div>
-          <button type="button" class="btn btn-ghost" onclick="reativarVistoria(state.sel)"
+          <button type="button" class="btn btn-ghost" data-action="reativarVistoria" data-arg="__STATE_SEL__"
             style="font-size:12px;height:30px;color:var(--ok);border-color:rgba(61,220,151,0.4)">
             <svg class="i">
               <use href="#i-refresh" />
@@ -123,20 +66,20 @@
           <h3>Decisão & Liberação do Veículo <small>Ação da Gestão</small></h3>
           <div class="approval-card">
             <div class="approval-actions">
-              <button type="button" class="btn-decision" id="btnSetLiberado" onclick="selecionarDecisao('Liberado')">
+              <button type="button" class="btn-decision" id="btnSetLiberado" data-action="selecionarDecisao" data-arg="Liberado">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--ok)">
                   <use href="#i-shield-check" />
                 </svg>
                 <span>Liberar Veículo</span>
               </button>
-              <button type="button" class="btn-decision" id="btnSetRessalva" onclick="selecionarDecisao('Ressalva')">
+              <button type="button" class="btn-decision" id="btnSetRessalva" data-action="selecionarDecisao" data-arg="Ressalva">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--warn)">
                   <use href="#i-alert-triangle" />
                 </svg>
                 <span>Com Ressalva</span>
               </button>
               <button type="button" class="btn-decision" id="btnSetBloqueado"
-                onclick="selecionarDecisao('Não liberado')">
+                data-action="selecionarDecisao" data-arg="Não liberado">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--bad)">
                   <use href="#i-ban" />
                 </svg>
@@ -151,7 +94,7 @@
                 placeholder="Ex: Veículo liberado para rota da manhã. Agendar troca de pneu para as 17h..."></textarea>
             </div>
             <div style="display:flex;justify-content:flex-end">
-              <button type="button" class="btn btn-primary" id="btnSalvarParecer" onclick="salvarDecisaoGestor()">
+              <button type="button" class="btn btn-primary" id="btnSalvarParecer" data-action="salvarDecisaoGestor">
                 <svg class="i">
                   <use href="#i-check" />
                 </svg> Salvar Parecer
@@ -265,7 +208,7 @@
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
             <h3>Assinaturas Digitais</h3>
             <button type="button" class="btn btn-ghost" id="drDownloadAllSigs"
-              onclick="baixarTodasAssinaturas(state.sel)" style="font-size:12px;height:28px;padding:0 10px"
+              data-action="baixarTodasAssinaturas" data-arg="__STATE_SEL__" style="font-size:12px;height:28px;padding:0 10px"
               title="Baixar todas as assinaturas desta vistoria">
               <svg class="i" style="width:13px;height:13px">
                 <use href="#i-download" />
@@ -297,21 +240,21 @@
             </label>
             <div class="maint-status-grid">
               <button type="button" class="btn-maint-status" id="btnMaintStatusNenhuma"
-                onclick="setMaintStatus('Nenhuma')">
+                data-action="setMaintStatus" data-arg="Nenhuma">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2">
                   <use href="#i-circle-dot" />
                 </svg>
                 <span>Sem Manutenção</span>
               </button>
               <button type="button" class="btn-maint-status" id="btnMaintStatusEm"
-                onclick="setMaintStatus('Em manutenção')">
+                data-action="setMaintStatus" data-arg="Em manutenção">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#f59e0b">
                   <use href="#i-tool" />
                 </svg>
                 <span>Está em Manutenção</span>
               </button>
               <button type="button" class="btn-maint-status" id="btnMaintStatusJa"
-                onclick="setMaintStatus('Já foi para manutenção')">
+                data-action="setMaintStatus" data-arg="Já foi para manutenção">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#10b981">
                   <use href="#i-badge-check" />
                 </svg>
@@ -384,13 +327,13 @@
             <span style="font-size:12px;color:var(--ink-3)" id="maintLastSavedInfo"></span>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button type="button" class="btn"
-                onclick="if(state.sel) abrirModalLancarGasto(state.sel.placa, state.sel.motorista, state.sel.km)">
+                data-action="drawerGastoSel">
                 <svg class="i">
                   <use href="#i-plus" />
                 </svg> Lançar Peça / Óleo nesta Placa
               </button>
               <button type="button" class="btn btn-primary" id="btnSalvarManutencao"
-                onclick="salvarObservacoesManutencao()">
+                data-action="salvarObservacoesManutencao">
                 <svg class="i">
                   <use href="#i-check" />
                 </svg> Salvar Observações de Manutenção
@@ -406,7 +349,7 @@
                 style="color:var(--ok);font-weight:700">R$ 0,00</small></h3>
             <button type="button" class="btn btn-ghost"
               style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)"
-              onclick="if(state.sel){ closeDrawer(); irParaGastosDaPlaca(state.sel.placa); }">
+              data-action="drawerVerGastosSel">
               <svg class="i" style="width:12px;height:12px"><use href="#i-receipt" /></svg> Ver Extrato Completo
             </button>
           </div>
@@ -539,7 +482,7 @@
           </div>
 
           <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:6px">
-            <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" onclick="salvarEdicaoVistoria(true)">
+            <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" data-action="salvarEdicaoVistoria" data-args='[true]'>
               <svg class="i">
                 <use href="#i-check" />
               </svg> Salvar Alterações
@@ -553,7 +496,7 @@
       <div style="display:flex;align-items:center;gap:8px">
         <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
         <button type="button" class="btn btn-ghost" id="drBtnInativar"
-          style="color:var(--bad);border-color:rgba(250,138,138,0.35)" onclick="abrirModalInativar(state.sel)"
+          style="color:var(--bad);border-color:rgba(250,138,138,0.35)" data-action="abrirModalInativar" data-arg="__STATE_SEL__"
           title="Inativar vistoria com justificativa">
           <svg class="i">
             <use href="#i-archive" />
@@ -562,7 +505,7 @@
         </button>
       </div>
       <div class="dr-foot-actions">
-        <button type="button" class="btn" id="drBtnEditar" onclick="abrirModalEditarVistoria(state.sel)"
+        <button type="button" class="btn" id="drBtnEditar" data-action="abrirModalEditarVistoria" data-arg="__STATE_SEL__"
           title="Editar dados da vistoria e rota"><svg class="i">
             <use href="#i-edit" />
           </svg> Editar Vistoria</button>

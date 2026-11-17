@@ -103,6 +103,13 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => el.classList.remove('show'), 3800);
       }
+      window.esc = esc;
+      window.escapeHtml = esc;
+      window.isoLocal = isoLocal;
+      window.formatarData = formatarData;
+      window.fmtKm = fmtKm;
+      window.icon = icon;
+      window.toast = toast;
 
       // ==============================================================================
       // MODAL GLOBAL DE CONFIRMAÇÃO EXECUTIVA (SEM POP-UPS NATIVOS DO NAVEGADOR)
@@ -214,5 +221,40 @@
           responderConfirmacaoGlobal(false);
         }
       });
+
+      function comprimirImagemParaDataUrl(file, maxDim = 1100, quality = 0.80) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+              let w = img.width;
+              let h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) {
+                  h = Math.round((h * maxDim) / w);
+                  w = maxDim;
+                } else {
+                  w = Math.round((w * maxDim) / h);
+                  h = maxDim;
+                }
+              }
+              const cv = document.createElement('canvas');
+              cv.width = w;
+              cv.height = h;
+              const ctx = cv.getContext('2d');
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, w, h);
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(cv.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = reject;
+            img.src = ev.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+      window.comprimirImagemParaDataUrl = comprimirImagemParaDataUrl;
 
       // ==============================================================================

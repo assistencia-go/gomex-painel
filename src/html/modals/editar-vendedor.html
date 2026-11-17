@@ -1,0 +1,73 @@
+<!-- ========================================================================== -->
+<!-- MODAL · CADASTRAR / EDITAR VENDEDOR, ROTA & SUPERVISOR -->
+<!-- ========================================================================== -->
+<div class="modal-overlay" id="modalEditarVendedor" role="dialog" aria-modal="true" aria-labelledby="modalEditarVendTitle">
+  <div class="modal-card" style="max-width:520px;">
+    <div class="modal-head">
+      <div class="m-head-title-wrap">
+        <div class="m-head-ico" style="background:var(--accent-tint);color:var(--accent-hi);">
+          <svg class="i"><use href="#i-users" /></svg>
+        </div>
+        <div>
+          <h2 id="modalEditarVendTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Editar Vendedor &amp; Rota</h2>
+          <p id="modalEditarVendSub" style="margin:2px 0 0;font-size:12px;color:var(--ink-3);">Vínculo automático para Vistorias, Ocorrências e Relatórios</p>
+        </div>
+      </div>
+      <button type="button" class="m-close" data-action="fecharModalEditarVendedor" aria-label="Fechar modal">
+        <svg class="i"><use href="#i-x" /></svg>
+      </button>
+    </div>
+
+    <div class="modal-body" style="padding:18px 20px;display:grid;gap:12px;">
+      <input type="hidden" id="editVendId" value="">
+      <input type="hidden" id="editVendOrigRota" value="">
+
+      <div class="edit-grid-2" style="display:grid;grid-template-columns:130px 1fr;gap:10px;">
+        <div>
+          <label for="editVendRota" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nº da Rota *</label>
+          <input type="text" id="editVendRota" class="input" placeholder="Ex.: 201" style="width:100%;font-weight:700;">
+        </div>
+        <div>
+          <label for="editVendNome" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nome Completo do Vendedor *</label>
+          <input type="text" id="editVendNome" class="input" placeholder="Ex.: Eduardo Machado da Silva" style="width:100%;">
+        </div>
+      </div>
+
+      <div>
+        <label for="editVendEquipe" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Equipe &amp; Supervisor Responsável *</label>
+        <select id="editVendEquipe" class="select" style="width:100%;" data-change="atualizarPreviewSupervisorModal">
+          <option value="101">Equipe 101 · Supervisor: Alisson Aparecido Madalena Bezerra</option>
+          <option value="102">Equipe 102 · Supervisor: Eliase Mendes de Aguiar</option>
+          <option value="103">Equipe 103 · Supervisor: Alisson Rodrigo Pereira</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="editVendSupervisor" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Supervisor Personalizado (opcional)</label>
+        <input type="text" id="editVendSupervisor" class="input" placeholder="Deixe em branco para usar o supervisor padrão da equipe"
+          data-input="atualizarPreviewSupervisorModal" style="width:100%;">
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:12px;color:#475569;line-height:1.45;">
+        <div style="font-weight:700;color:#1e293b;margin-bottom:2px;">Vínculo em tempo real</div>
+        <div>Supervisor aplicado nesta rota: <strong id="editVendSupPreview" style="color:var(--accent-hi);">Alisson Aparecido Madalena Bezerra</strong></div>
+      </div>
+    </div>
+
+    <div class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
+      <button type="button" class="btn btn-ghost" id="btnExcluirVendModal" data-action="excluirVendedorEquipe"
+        style="color:var(--bad);border-color:rgba(239,68,68,0.3);display:none;">
+        <svg class="i"><use href="#i-trash" /></svg>
+        <span>Remover</span>
+      </button>
+      <div style="display:flex;gap:8px;margin-left:auto;">
+        <button type="button" class="btn btn-ghost" data-action="fecharModalEditarVendedor">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-action="salvarVendedorEquipe">
+          <svg class="i"><use href="#i-check" /></svg>
+          <span>Salvar Alterações</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

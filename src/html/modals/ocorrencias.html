@@ -20,7 +20,7 @@
             tempo médio da frota</p>
         </div>
       </div>
-      <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalOcorrencia()" title="Fechar">
+      <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" data-action="fecharModalOcorrencia" title="Fechar">
         <svg class="i">
           <use href="#i-x" />
         </svg>
@@ -46,7 +46,7 @@
             </label>
             <input type="text" id="ocrInputVendedor" list="datalistMotoristasFrota" class="input"
               placeholder="Nome do vendedor titular" style="font-weight:600"
-              oninput="aoDigitarVendedorOcorrencia(this.value)">
+              data-input="aoDigitarVendedorOcorrencia" data-pass="value">
           </div>
 
           <div class="ocr-form-field">
@@ -54,7 +54,7 @@
               Rota do Vendedor <span style="color:var(--bad)">*</span>
             </label>
             <input type="text" id="ocrInputRota" class="input" placeholder="Ex: 218, 240, 222..."
-              style="font-weight:600" oninput="aoMudarRotaOcorrencia(this.value)">
+              style="font-weight:600" data-input="aoMudarRotaOcorrencia" data-pass="value">
           </div>
         </div>
 
@@ -64,7 +64,7 @@
               Veículo / Placa
             </label>
             <input type="text" id="ocrInputVeiculo" list="datalistPlacasFrota" class="input" placeholder="Ex: AYR7G87"
-              oninput="atualizarSupervisorAutomaticoModalOcorrencia()">
+              data-input="atualizarSupervisorAutomaticoModalOcorrencia">
           </div>
 
           <div class="ocr-form-field">
@@ -72,7 +72,7 @@
               Supervisor do Vendedor
             </label>
             <input type="text" id="ocrInputSupervisor" class="input" placeholder="Preenchido pela rota"
-              style="font-weight:600" oninput="this.dataset.manual = this.value.trim() ? '1' : ''">
+              style="font-weight:600" data-mark-manual="1">
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@
           <label for="ocrSelectTipo" class="gasto-field-lbl" style="color:var(--ink)">
             Tipo de Ocorrência / Categoria <span style="color:var(--bad)">*</span>
           </label>
-          <select id="ocrSelectTipo" class="input" style="font-weight:600" onchange="aoMudarTipoOcorrencia(this.value)">
+          <select id="ocrSelectTipo" class="input" style="font-weight:600" data-change="aoMudarTipoOcorrencia" data-pass="value">
             <option value="Pneu Furado / Borracharia">Pneu Furado / Borracharia</option>
             <option value="Manutenção Rápida / Troca de Peça">Manutenção Rápida / Troca de Peça</option>
             <option value="Quebra Mecânica">Quebra Mecânica / Motor</option>
@@ -111,47 +111,47 @@
             e tempo sugerido:</label>
           <div class="chips-grid" id="ocrChipsServicosRapidos">
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Pneu Furado / Borracharia', 'Pneu Furado / Borracharia', 30)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Pneu Furado / Borracharia","Pneu Furado / Borracharia",30]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-alert" />
               </svg> Pneu Furado</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Troca de Óleo em Rota', 'Troca de Óleo / Filtro', 45)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Troca de Óleo em Rota","Troca de Óleo / Filtro",45]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-droplet" />
               </svg> Troca de Óleo</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Freios e Pastilhas', 'Manutenção Rápida / Troca de Peça', 90)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Freios e Pastilhas","Manutenção Rápida / Troca de Peça",90]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-tool" />
               </svg> Freios</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Reparo no Banco do Motorista', 'Reparo no Banco', 90)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Reparo no Banco do Motorista","Reparo no Banco",90]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-tool" />
               </svg> Reparo Banco</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Mecânica / Motor', 'Quebra Mecânica', 120)"><svg class="i"
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Mecânica / Motor","Quebra Mecânica",120]'><svg class="i"
                 style="width:12px;height:12px">
                 <use href="#i-tool" />
               </svg> Mecânica</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Bateria / Elétrica', 'Problema Elétrico / Bateria', 60)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Bateria / Elétrica","Problema Elétrico / Bateria",60]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-bolt" />
               </svg> Elétrica</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Revisão Preventiva', 'Revisão Preventiva', 120)"><svg class="i"
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Revisão Preventiva","Revisão Preventiva",120]'><svg class="i"
                 style="width:12px;height:12px">
                 <use href="#i-calendar-clock" />
               </svg> Revisão</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Guincho / Socorro', 'Guincho / Socorro na Pista', 90)"><svg
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Guincho / Socorro","Guincho / Socorro na Pista",90]'><svg
                 class="i" style="width:12px;height:12px">
                 <use href="#i-truck" />
               </svg> Guincho</button>
             <button type="button" class="chip-btn"
-              onclick="selecionarChipMotivoOcorrencia('Outro Imprevisto', 'Outro Imprevisto', 60)"><svg class="i"
+              data-action="selecionarChipMotivoOcorrencia" data-args='["Outro Imprevisto","Outro Imprevisto",60]'><svg class="i"
                 style="width:12px;height:12px">
                 <use href="#i-file" />
               </svg> Outro</button>
@@ -174,7 +174,7 @@
             <span id="ocrDataHintBadge" style="font-size:11px;font-weight:700;color:var(--accent-hi)"></span>
           </div>
           <input type="date" id="ocrInputData" class="input" style="font-weight:700"
-            onchange="aoMudarDataOuHoraOcorrencia()">
+            data-change="aoMudarDataOuHoraOcorrencia">
         </div>
 
         <div class="ocr-hours-grid">
@@ -182,20 +182,20 @@
             <div class="ocr-label-with-btn">
               <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
               <button type="button" class="btn-agora"
-                onclick="definirHoraAgora('ocrInputHoraInicio'); aoMudarDataOuHoraOcorrencia()">Agora</button>
+                data-action="ocrHoraAgoraEAtualizar" data-arg="ocrInputHoraInicio">Agora</button>
             </div>
             <input type="time" id="ocrInputHoraInicio" class="input" style="font-weight:700"
-              oninput="aoMudarDataOuHoraOcorrencia()">
+              data-input="aoMudarDataOuHoraOcorrencia">
           </div>
 
           <div class="ocr-form-field">
             <div class="ocr-label-with-btn">
               <label for="ocrInputHoraFim" class="gasto-field-lbl" style="margin:0">Hora Retorno / Fim</label>
               <button type="button" class="btn-agora"
-                onclick="definirHoraAgora('ocrInputHoraFim'); aoMudarDataOuHoraOcorrencia()">Agora</button>
+                data-action="ocrHoraAgoraEAtualizar" data-arg="ocrInputHoraFim">Agora</button>
             </div>
             <input type="time" id="ocrInputHoraFim" class="input" style="font-weight:700" placeholder="--:--"
-              oninput="aoMudarDataOuHoraOcorrencia()">
+              data-input="aoMudarDataOuHoraOcorrencia">
           </div>
         </div>
 
@@ -209,17 +209,17 @@
               min)</span>
           </div>
           <input type="number" id="ocrInputTempoMedio" min="5" step="5" class="input" placeholder="Ex: 60" value="60"
-            style="font-weight:700" oninput="aoDigitarTempoMedioOcorrencia(this.value)">
+            style="font-weight:700" data-input="aoDigitarTempoMedioOcorrencia" data-pass="value">
 
           <div class="chips-grid" id="ocrChipsTempoMedio" style="margin-top:6px">
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(15)">15m</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(30)">30m</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(45)">45m</button>
-            <button type="button" class="chip-btn active" onclick="selecionarChipTempoMedioOcorrencia(60)">1h</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(90)">1h 30m</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(120)">2h</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(180)">3h</button>
-            <button type="button" class="chip-btn" onclick="selecionarChipTempoMedioOcorrencia(240)">4h</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[15]'>15m</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[30]'>30m</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[45]'>45m</button>
+            <button type="button" class="chip-btn active" data-action="selecionarChipTempoMedioOcorrencia" data-args='[60]'>1h</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[90]'>1h 30m</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[120]'>2h</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[180]'>3h</button>
+            <button type="button" class="chip-btn" data-action="selecionarChipTempoMedioOcorrencia" data-args='[240]'>4h</button>
           </div>
         </div>
 
@@ -251,7 +251,7 @@
           <div class="ocr-form-field">
             <label for="ocrSelectStatus" class="gasto-field-lbl" style="color:var(--ink)">Situação</label>
             <select id="ocrSelectStatus" class="input" style="font-weight:700"
-              onchange="aoMudarStatusOcorrencia(this.value)">
+              data-change="aoMudarStatusOcorrencia" data-pass="value">
               <option value="agendado">Agendada (Serviço Programado / Futuro)</option>
               <option value="aberto">Em Aberto (Vendedor Parado / Em Atendimento)</option>
               <option value="finalizado">Finalizada (Vendedor Liberado)</option>
@@ -287,8 +287,8 @@
     </div>
 
     <footer class="modal-foot" style="padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2)">
-      <button type="button" class="btn" onclick="fecharModalOcorrencia()">Cancelar</button>
-      <button type="button" class="btn btn-primary" id="btnSalvarOcorrencia" onclick="salvarOcorrencia()"
+      <button type="button" class="btn" data-action="fecharModalOcorrencia">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnSalvarOcorrencia" data-action="salvarOcorrencia"
         style="min-width:160px;height:46px;font-size:14px;font-weight:800;border-radius:12px;background:linear-gradient(135deg,#f97316 0%,#ea580c 100%);border-color:#ea580c">
         <svg class="i">
           <use href="#i-check" />

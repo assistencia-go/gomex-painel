@@ -13,33 +13,33 @@
               </div>
               <div class="gastos-date-field">
                 <label for="gastoDataInicio">De</label>
-                <input type="date" id="gastoDataInicio" onchange="onFiltroGastosDataManual()">
+                <input type="date" id="gastoDataInicio" data-change="onFiltroGastosDataManual">
               </div>
               <div class="gastos-date-field">
                 <label for="gastoDataFim">Até</label>
-                <input type="date" id="gastoDataFim" onchange="onFiltroGastosDataManual()">
+                <input type="date" id="gastoDataFim" data-change="onFiltroGastosDataManual">
               </div>
 
               <div class="gastos-quick-periods">
                 <button type="button" class="pill-period active" data-per="todos"
-                  onclick="aplicarPeriodoGastos('todos')">Todo o Período</button>
+                  data-action="aplicarPeriodoGastos" data-arg="todos">Todo o Período</button>
                 <button type="button" class="pill-period" data-per="hoje"
-                  onclick="aplicarPeriodoGastos('hoje')">Hoje</button>
+                  data-action="aplicarPeriodoGastos" data-arg="hoje">Hoje</button>
                 <button type="button" class="pill-period" data-per="mes_atual"
-                  onclick="aplicarPeriodoGastos('mes_atual')">Este Mês</button>
+                  data-action="aplicarPeriodoGastos" data-arg="mes_atual">Este Mês</button>
                 <button type="button" class="pill-period" data-per="mes_passado"
-                  onclick="aplicarPeriodoGastos('mes_passado')">Mês Passado</button>
+                  data-action="aplicarPeriodoGastos" data-arg="mes_passado">Mês Passado</button>
                 <button type="button" class="pill-period" data-per="30dias"
-                  onclick="aplicarPeriodoGastos('30dias')">Últimos 30 dias</button>
-                <button type="button" class="pill-period" data-per="90dias" onclick="aplicarPeriodoGastos('90dias')">90
+                  data-action="aplicarPeriodoGastos" data-arg="30dias">Últimos 30 dias</button>
+                <button type="button" class="pill-period" data-per="90dias" data-action="aplicarPeriodoGastos" data-arg="90dias">90
                   dias</button>
                 <button type="button" class="pill-period" data-per="ano_atual"
-                  onclick="aplicarPeriodoGastos('ano_atual')">Este Ano</button>
+                  data-action="aplicarPeriodoGastos" data-arg="ano_atual">Este Ano</button>
               </div>
             </div>
 
             <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-              <button type="button" class="btn" onclick="abrirModalCatalogoProdutos()"
+              <button type="button" class="btn" data-action="abrirModalCatalogoProdutos"
                 title="Cadastrar ou gerenciar produtos, peças e óleos">
                 <svg class="i">
                   <use href="#i-box" />
@@ -48,7 +48,7 @@
                 <span class="cnt" id="badgeCountProdutos"
                   style="background:var(--accent-tint);color:var(--accent-hi);padding:1px 7px;border-radius:10px;font-size:11px;font-weight:700">0</span>
               </button>
-              <button type="button" class="btn btn-primary" id="btnViewGastosLancar" onclick="abrirModalLancarGasto()"
+              <button type="button" class="btn btn-primary" id="btnViewGastosLancar" data-action="abrirModalLancarGasto"
                 title="Lançar peça, óleo ou gasto em uma placa">
                 <svg class="i">
                   <use href="#i-plus" />
@@ -130,42 +130,42 @@
               style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:8px;padding-right:14px">
               <div class="tabs" id="gastosSubTabs" style="border-bottom:0">
                 <button type="button" class="tab" data-gtab="lancamentos" aria-pressed="true"
-                  onclick="alternarAbaGastos('lancamentos')">
+                  data-action="alternarAbaGastos" data-arg="lancamentos">
                   <svg class="i" style="width:13px;height:13px;color:#10b981"><use href="#i-receipt" /></svg>Lançamentos Detalhados <span class="cnt" id="cntGastosLanc">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_veiculo" aria-pressed="false"
-                  onclick="alternarAbaGastos('por_veiculo')">
+                  data-action="alternarAbaGastos" data-arg="por_veiculo">
                   <svg class="i" style="width:13px;height:13px;color:var(--accent-hi)"><use href="#i-truck" /></svg>Investimento por Veículo (Placa) <span
                     class="cnt" id="cntGastosVeic">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_motorista" aria-pressed="false"
-                  onclick="alternarAbaGastos('por_motorista')">
+                  data-action="alternarAbaGastos" data-arg="por_motorista">
                   <svg class="i" style="width:13px;height:13px;color:#38bdf8"><use href="#i-user" /></svg>Por Quem Gastou (Motorista) <span class="cnt"
                     id="cntGastosMot">0</span>
                 </button>
                 <button type="button" class="tab" data-gtab="por_produto" aria-pressed="false"
-                  onclick="alternarAbaGastos('por_produto')">
+                  data-action="alternarAbaGastos" data-arg="por_produto">
                   <svg class="i" style="width:13px;height:13px;color:#fbbf24"><use href="#i-package" /></svg>Por Produto / Peça <span class="cnt"
                     id="cntGastosProd">0</span>
                 </button>
               </div>
 
               <div class="gastos-export-actions">
-                <button type="button" class="btn" onclick="exportarCsvGastos()"
+                <button type="button" class="btn" data-action="exportarCsvGastos"
                   title="Exportar levantamento filtrado para planilha Excel (CSV)">
                   <svg class="i">
                     <use href="#i-download" />
                   </svg>
                   <span>CSV</span>
                 </button>
-                <button type="button" class="btn" onclick="gerarRelatorioPdfGastos(true)"
+                <button type="button" class="btn" data-action="gerarRelatorioPdfGastos" data-args='[true]'
                   title="Imprimir relatório executivo do período">
                   <svg class="i">
                     <use href="#i-printer" />
                   </svg>
                   <span>Imprimir</span>
                 </button>
-                <button type="button" class="btn btn-primary" onclick="gerarRelatorioPdfGastos(false)"
+                <button type="button" class="btn btn-primary" data-action="gerarRelatorioPdfGastos" data-args='[false]'
                   title="Baixar Relatório PDF Oficial do período e filtros selecionados">
                   <svg class="i">
                     <use href="#i-file-text" />
@@ -184,21 +184,21 @@
                 <label for="gastoFiltroBusca" class="sr-only">Buscar lançamento</label>
                 <input class="input" type="search" id="gastoFiltroBusca"
                   placeholder="Buscar produto, peça, óleo, placa, quem gastou, NF ou oficina..." autocomplete="off"
-                  oninput="onFiltroGastosChange()">
+                  data-input="onFiltroGastosChange">
               </div>
 
               <label class="sr-only" for="gastoFiltroPlaca">Placa do Veículo</label>
-              <select class="select" id="gastoFiltroPlaca" onchange="onFiltroGastosChange()">
+              <select class="select" id="gastoFiltroPlaca" data-change="onFiltroGastosChange">
                 <option value="">Todas as placas</option>
               </select>
 
               <label class="sr-only" for="gastoFiltroMotorista">Quem Gastou / Motorista</label>
-              <select class="select" id="gastoFiltroMotorista" onchange="onFiltroGastosChange()">
+              <select class="select" id="gastoFiltroMotorista" data-change="onFiltroGastosChange">
                 <option value="">Todos os motoristas / resp.</option>
               </select>
 
               <label class="sr-only" for="gastoFiltroCategoria">Categoria</label>
-              <select class="select" id="gastoFiltroCategoria" onchange="onFiltroGastosChange()">
+              <select class="select" id="gastoFiltroCategoria" data-change="onFiltroGastosChange">
                 <option value="">Todas as categorias</option>
                 <option value="Óleo & Lubrificantes">Óleo & Lubrificantes</option>
                 <option value="Filtros">Filtros</option>
@@ -211,7 +211,7 @@
                 <option value="Outros">Outros</option>
               </select>
 
-              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGastos" onclick="limparFiltrosGastos()"
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGastos" data-action="limparFiltrosGastos"
                 hidden>
                 <svg class="i">
                   <use href="#i-x" />

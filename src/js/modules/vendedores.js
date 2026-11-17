@@ -50,7 +50,7 @@ const EQUIPES_INFO = {
   }
 };
 
-const EQUIPES_VENDEDORES_PADRAO = [
+const EQUIPES_VENDEDORES_SEED = [
   // EQUIPE 101 - SUPERVISOR 2: ALISSON APARECIDO MADALENA BEZERRA (12)
   { rota: '201', nome: 'Eduardo Machado da Silva', equipe: '101' },
   { rota: '202', nome: 'Alisson Felipe Machado dos Santos', equipe: '101' },
@@ -93,6 +93,78 @@ const EQUIPES_VENDEDORES_PADRAO = [
   { rota: '240', nome: 'Jefferson Leandro Steche', equipe: '103' }
 ];
 
+const EQUIPES_VENDEDORES_PADRAO = EQUIPES_VENDEDORES_SEED.map(v => ({
+  id: 'rota_' + v.rota,
+  rota: v.rota,
+  nome: v.nome,
+  equipe: v.equipe
+}));
+window.EQUIPES_VENDEDORES_PADRAO = EQUIPES_VENDEDORES_PADRAO;
+
+function aplicarVendedoresRotas() {
+  let overrides = [];
+  if (typeof window !== 'undefined' && window.gastosState && Array.isArray(window.gastosState.vendedores_rotas)) {
+    overrides = window.gastosState.vendedores_rotas;
+  } else {
+    try {
+      const raw = localStorage.getItem('gomex_frota_vendedores_rotas_v1');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) overrides = parsed;
+      }
+    } catch (e) { }
+  }
+
+  const mapa = new Map();
+  EQUIPES_VENDEDORES_SEED.forEach(s => {
+    const id = 'rota_' + s.rota;
+    mapa.set(id, { id, rota: s.rota, nome: s.nome, equipe: s.equipe });
+  });
+
+  overrides.forEach(ov => {
+    if (!ov || typeof ov !== 'object') return;
+    const id = String(ov.id || (ov.rota ? 'rota_' + String(ov.rota).replace(/\D/g, '') : '')).trim();
+    if (!id) return;
+    if (ov.ativo === false) {
+      mapa.delete(id);
+      return;
+    }
+    const rotaClean = String(ov.rota || '').trim();
+    const nomeClean = String(ov.nome || '').trim();
+    const eqClean = String(ov.equipe || '101').trim();
+    if (!rotaClean || !nomeClean) return;
+    mapa.set(id, {
+      id,
+      rota: rotaClean,
+      nome: nomeClean,
+      equipe: eqClean,
+      supervisor: String(ov.supervisor || '').trim()
+    });
+  });
+
+  const merged = Array.from(mapa.values()).sort((a, b) => {
+    const na = parseInt(String(a.rota || '').replace(/\D/g, ''), 10);
+    const nb = parseInt(String(b.rota || '').replace(/\D/g, ''), 10);
+    if (!isNaN(na) && !isNaN(nb) && na !== nb) return na - nb;
+    return String(a.nome).localeCompare(String(b.nome), 'pt-BR');
+  });
+
+  EQUIPES_VENDEDORES_PADRAO.splice(0, EQUIPES_VENDEDORES_PADRAO.length, ...merged);
+
+  ['101', '102', '103'].forEach(eqId => {
+    const cnt = merged.filter(x => x.equipe === eqId).length;
+    if (EQUIPES_INFO[eqId]) EQUIPES_INFO[eqId].totalVendedores = cnt;
+    const elTot = $('eq' + eqId + 'TotalVend');
+    if (elTot) elTot.textContent = cnt + ' Vendedor' + (cnt === 1 ? '' : 'es');
+  });
+
+  if ($('vendEquipesResumoBadge')) {
+    $('vendEquipesResumoBadge').textContent = '3 Equipes · ' + merged.length + ' Vendedores Cadastrados';
+  }
+}
+window.aplicarVendedoresRotas = aplicarVendedoresRotas;
+aplicarVendedoresRotas();
+
 function normalizarTextoBusca(s) {
   return (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 }
@@ -113,12 +185,19 @@ window.getEquipeInfo = getEquipeInfo;
 function getVendedoresData() {
   const masterList = EQUIPES_VENDEDORES_PADRAO.map(v => {
     const eq = EQUIPES_INFO[v.equipe] || { supervisor: 'Não informado', supervisorCurto: 'Supervisor' };
+    const supFull = (v.supervisor && v.supervisor.trim()) ? v.supervisor.trim() : eq.supervisor;
+    const supParts = supFull.split(/\s+/);
+    const supCurto = (v.supervisor && v.supervisor.trim())
+      ? (supParts.length > 1 ? supParts[0] + ' ' + supParts[supParts.length - 1] : supFull)
+      : eq.supervisorCurto;
     return {
+      id: v.id || ('rota_' + v.rota),
       rota: v.rota,
       nome: v.nome,
       equipe: v.equipe,
-      supervisor: eq.supervisor,
-      supervisorCurto: eq.supervisorCurto,
+      supervisor: supFull,
+      supervisorCurto: supCurto,
+      supervisorCustom: v.supervisor || '',
       isOficial: true,
       vistorias: [],
       veiculosSet: new Set()
@@ -242,6 +321,7 @@ function renderVendedoresView() {
   const todos = getVendedoresData();
 
   // 1. Atualizar métricas dos cards de cada equipe
+  aplicarVendedoresRotas();
   ['101', '102', '103'].forEach(eqId => {
     const daEquipe = todos.filter(v => v.equipe === eqId);
     const emDia = daEquipe.filter(v => v.statusPontual === 'em_dia').length;
@@ -379,18 +459,21 @@ function renderVendedoresView() {
       '</td>' +
       '<td>' + (v.kmAtual ? '<span class="badge-km">' + fmtKm(v.kmAtual) + '</span>' : '<span class="muted">—</span>') + '</td>' +
       '<td style="text-align:right">' +
-      '<div style="display:inline-flex;align-items:center;gap:6px">' +
-      '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)" data-vend="' + esc(v.nome) + '" onclick="abrirModalVendedor(this.dataset.vend)" title="Ver todas as vistorias deste vendedor">' +
+      '<div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+      '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)" data-action="abrirModalVendedor" data-arg="' + esc(v.nome) + '" title="Ver todas as vistorias deste vendedor">' +
       icon('user') + ' <span>Vistorias</span>' +
       '</button>' +
+      '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--ink-2)" data-action="abrirModalEditarVendedor" data-arg="' + esc(v.isOficial ? (v.id || v.rota) : ('AVULSO:' + encodeURIComponent(v.nome + '|' + (v.rota || '')))) + '" title="Editar rota, equipe ou supervisor">' +
+      icon('edit') + ' <span>Editar</span>' +
+      '</button>' +
       (v.isPendente
-        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" onclick="copiarCobrancaWhatsAppVendedor(\'' + esc(v.rota) + '\')" title="Copiar mensagem de cobrança pronta para o WhatsApp deste vendedor">' +
+        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:var(--ok);border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.06);font-weight:700" data-action="copiarCobrancaWhatsAppVendedor" data-arg="' + esc(v.rota) + '" title="Copiar mensagem de cobrança pronta para o WhatsApp deste vendedor">' +
         '<svg class="i" style="width:13px;height:13px"><use href="#i-whatsapp"/></svg> <span>Cobrar</span>' +
         '</button>'
         : ''
       ) +
       (v.veiculoAtual !== '—'
-        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:#fbbf24" data-placa="' + esc(v.veiculoAtual) + '" onclick="abrirModalCustodia(this.dataset.placa)" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
+        ? '<button type="button" class="btn btn-ghost" style="height:28px;padding:0 8px;font-size:11.5px;color:#fbbf24" data-action="abrirModalCustodia" data-arg="' + esc(v.veiculoAtual) + '" title="Verificar troca de custódia e histórico de motoristas deste carro">' +
         icon('history') + ' <span>Custódia</span>' +
         '</button>'
         : ''
@@ -641,6 +724,167 @@ function fecharModalVendedor() {
   if ($('modalHistVendedor')) $('modalHistVendedor').classList.remove('open');
 }
 window.fecharModalVendedor = fecharModalVendedor;
+
+function atualizarPreviewSupervisorModal() {
+  const eq = ($('editVendEquipe')?.value || '101').trim();
+  const custom = ($('editVendSupervisor')?.value || '').trim();
+  const padrao = (EQUIPES_INFO[eq] && EQUIPES_INFO[eq].supervisor) ? EQUIPES_INFO[eq].supervisor : 'Não informado';
+  if ($('editVendSupPreview')) $('editVendSupPreview').textContent = custom || padrao;
+}
+window.atualizarPreviewSupervisorModal = atualizarPreviewSupervisorModal;
+
+function abrirModalEditarVendedor(arg) {
+  if (typeof podeEditar === 'function' && !podeEditar('vendedores')) {
+    if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Vendedores & Custódia');
+    return;
+  }
+  const modal = $('modalEditarVendedor');
+  if (!modal) return;
+  const raw = String(arg || '').trim();
+  const isNovo = !raw || raw === '__NEW__';
+
+  let rec = null;
+  if (!isNovo) {
+    if (raw.startsWith('AVULSO:')) {
+      try {
+        const decoded = decodeURIComponent(raw.slice(7));
+        const parts = decoded.split('|');
+        rec = { id: '', nome: parts[0] || '', rota: (parts[1] && parts[1] !== '—') ? parts[1] : '', equipe: '101', supervisor: '', isOficial: false };
+      } catch (e) { }
+    } else {
+      rec = EQUIPES_VENDEDORES_PADRAO.find(v => v.id === raw || v.rota === raw || v.nome === raw) || null;
+    }
+  }
+
+  if (isNovo || !rec || !rec.isOficial && rec.id === '') {
+    if ($('modalEditarVendTitle')) $('modalEditarVendTitle').textContent = rec ? 'Vincular Vendedor Avulso à Equipe' : 'Cadastrar Novo Vendedor & Rota';
+    if ($('modalEditarVendSub')) $('modalEditarVendSub').textContent = 'Define a rota oficial e o supervisor responsável';
+    if ($('editVendId')) $('editVendId').value = '';
+    if ($('editVendOrigRota')) $('editVendOrigRota').value = '';
+    if ($('editVendRota')) $('editVendRota').value = rec ? rec.rota : '';
+    if ($('editVendNome')) $('editVendNome').value = rec ? rec.nome : '';
+    if ($('editVendEquipe')) $('editVendEquipe').value = (rec && rec.equipe) ? rec.equipe : '101';
+    if ($('editVendSupervisor')) $('editVendSupervisor').value = '';
+    if ($('btnExcluirVendModal')) $('btnExcluirVendModal').style.display = 'none';
+  } else {
+    if ($('modalEditarVendTitle')) $('modalEditarVendTitle').textContent = 'Editar Vendedor & Rota ' + rec.rota;
+    if ($('modalEditarVendSub')) $('modalEditarVendSub').textContent = 'Atualiza nome, rota ou supervisor no Supabase';
+    if ($('editVendId')) $('editVendId').value = rec.id || ('rota_' + rec.rota);
+    if ($('editVendOrigRota')) $('editVendOrigRota').value = rec.rota;
+    if ($('editVendRota')) $('editVendRota').value = rec.rota;
+    if ($('editVendNome')) $('editVendNome').value = rec.nome;
+    if ($('editVendEquipe')) $('editVendEquipe').value = rec.equipe || '101';
+    if ($('editVendSupervisor')) $('editVendSupervisor').value = rec.supervisor || '';
+    if ($('btnExcluirVendModal')) $('btnExcluirVendModal').style.display = 'inline-flex';
+  }
+  atualizarPreviewSupervisorModal();
+  modal.classList.add('open');
+}
+window.abrirModalEditarVendedor = abrirModalEditarVendedor;
+
+function fecharModalEditarVendedor() {
+  if ($('modalEditarVendedor')) $('modalEditarVendedor').classList.remove('open');
+}
+window.fecharModalEditarVendedor = fecharModalEditarVendedor;
+
+async function salvarVendedorEquipe() {
+  if (typeof podeEditar === 'function' && !podeEditar('vendedores')) {
+    if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Vendedores & Custódia');
+    return;
+  }
+  const existingId = ($('editVendId')?.value || '').trim();
+  const rotaRaw = ($('editVendRota')?.value || '').trim();
+  const rota = rotaRaw.replace(/\D/g, '') || rotaRaw;
+  const nome = ($('editVendNome')?.value || '').trim();
+  const equipe = ($('editVendEquipe')?.value || '101').trim();
+  const supervisor = ($('editVendSupervisor')?.value || '').trim();
+
+  if (!rota) {
+    toast('Informe o número da rota do vendedor.', 'error');
+    return;
+  }
+  if (!nome || nome.length < 3) {
+    toast('Informe o nome completo do vendedor (mín. 3 letras).', 'error');
+    return;
+  }
+
+  const targetId = existingId || ('rota_' + rota);
+  const conflito = EQUIPES_VENDEDORES_PADRAO.find(v => String(v.rota) === String(rota) && (v.id || 'rota_' + v.rota) !== targetId);
+  if (conflito) {
+    toast(`A Rota ${rota} já pertence a ${conflito.nome}. Edite o registro existente ou use outra rota.`, 'error');
+    return;
+  }
+
+  const rec = {
+    id: targetId,
+    rota,
+    nome,
+    equipe,
+    supervisor,
+    ativo: true,
+    updated_at: new Date().toISOString()
+  };
+
+  if (typeof window.salvarRegistroFrota === 'function') {
+    await window.salvarRegistroFrota('vendedores_rotas', 'upsert', rec);
+  } else if (window.gastosState) {
+    if (!Array.isArray(window.gastosState.vendedores_rotas)) window.gastosState.vendedores_rotas = [];
+    const idx = window.gastosState.vendedores_rotas.findIndex(x => x.id === targetId);
+    if (idx !== -1) window.gastosState.vendedores_rotas[idx] = rec;
+    else window.gastosState.vendedores_rotas.unshift(rec);
+    if (typeof window.sincronizarGastosComServidor === 'function') await window.sincronizarGastosComServidor('push');
+  }
+
+  aplicarVendedoresRotas();
+  fecharModalEditarVendedor();
+  renderVendedoresView();
+  if (typeof renderOcorrenciasView === 'function' && window.state && window.state.visaoAtual === 'ocorrencias') {
+    renderOcorrenciasView();
+  }
+  toast(`Vendedor ${nome} (Rota ${rota}) salvo com sucesso!`);
+}
+window.salvarVendedorEquipe = salvarVendedorEquipe;
+
+async function excluirVendedorEquipe() {
+  if (typeof podeEditar === 'function' && !podeEditar('vendedores')) {
+    if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Vendedores & Custódia');
+    return;
+  }
+  const id = ($('editVendId')?.value || '').trim();
+  const rota = ($('editVendRota')?.value || '').trim();
+  const nome = ($('editVendNome')?.value || '').trim();
+  const equipe = ($('editVendEquipe')?.value || '101').trim();
+  if (!id) return;
+
+  const ok = await abrirConfirmacaoGlobal({
+    titulo: 'Remover Vendedor da Lista Oficial',
+    subtitulo: `Rota ${rota} · ${nome}`,
+    mensagem: `Deseja remover <strong>${esc(nome)}</strong> (Rota ${esc(rota)}) das rotas oficiais?`,
+    aviso: 'As vistorias e ocorrências históricas já lançadas continuam preservadas.',
+    textoConfirmar: 'Remover Vendedor',
+    variante: 'perigo',
+    icone: 'trash'
+  });
+  if (!ok) return;
+
+  const rec = {
+    id,
+    rota,
+    nome,
+    equipe,
+    ativo: false,
+    updated_at: new Date().toISOString()
+  };
+
+  if (typeof window.salvarRegistroFrota === 'function') {
+    await window.salvarRegistroFrota('vendedores_rotas', 'upsert', rec);
+  }
+  aplicarVendedoresRotas();
+  fecharModalEditarVendedor();
+  renderVendedoresView();
+  toast(`${nome} removido da lista oficial.`);
+}
+window.excluirVendedorEquipe = excluirVendedorEquipe;
 
 function getTransicoesCustodia(placaAlvo = null) {
   const transicoes = [];
@@ -1130,7 +1374,7 @@ function gerarRelatorioPdfVendedoresSupervisor(equipeFiltro, statusFiltro, isPri
     fonte(7, 'normal', CINZA);
     doc.text('Controle de conformidade de check-lists, prazos de vistoria mensal e pendências · Gomex Distribuidora', M + 32, y + 9.5);
 
-    const descEq = eqAlvo === 'todos' ? 'Todas as Equipes (35 Vendedores)' : (EQUIPES_INFO[eqAlvo] ? EQUIPES_INFO[eqAlvo].nome : 'Equipe ' + eqAlvo);
+    const descEq = eqAlvo === 'todos' ? 'Todas as Equipes (' + EQUIPES_VENDEDORES_PADRAO.length + ' Vendedores)' : (EQUIPES_INFO[eqAlvo] ? EQUIPES_INFO[eqAlvo].nome : 'Equipe ' + eqAlvo);
     const dataHoraEmissao = new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     doc.text('Filtro: ' + descEq + ' · Emitido em: ' + dataHoraEmissao, M + 32, y + 12.8);
 

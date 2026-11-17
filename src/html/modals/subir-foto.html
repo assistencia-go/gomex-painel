@@ -17,7 +17,7 @@
               data, placa e identificação do condutor</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalSubirFoto()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalSubirFoto"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -25,10 +25,10 @@
       <div class="modal-body" style="padding:20px;display:grid;gap:14px;max-height:78vh;overflow-y:auto">
         <!-- Input oculto separado da dropzone para evitar propagação recursiva de clique -->
         <input type="file" id="galFileInput" accept="image/*" multiple hidden
-          onchange="onSelecionarArquivosGaleria(this.files)">
+          data-change="onSelecionarArquivosGaleria" data-pass="files">
 
         <!-- Área de Upload (Clique, Arraste ou Cole Ctrl+V direto do WhatsApp) -->
-        <div class="upload-dropzone" id="galDropzone" onclick="acionarSeletorFotosGaleria()">
+        <div class="upload-dropzone" id="galDropzone" data-action="acionarSeletorFotosGaleria">
           <div
             style="width:44px;height:44px;border-radius:50%;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;margin:0 auto 8px">
             <svg class="i" style="width:22px;height:22px">
@@ -41,7 +41,7 @@
             pressionar <strong>Ctrl + V</strong> várias vezes nesta janela</div>
           <div style="margin-top:10px">
             <button type="button" class="btn btn-primary" style="height:32px;font-size:12px;padding:0 14px"
-              onclick="event.stopPropagation(); acionarSeletorFotosGaleria()">
+              data-stop="1" data-action="acionarSeletorFotosGaleria">
               <svg class="i" style="width:14px;height:14px">
                 <use href="#i-plus" />
               </svg>
@@ -50,13 +50,13 @@
           </div>
 
           <!-- Barra de status e botão de adicionar mais fotos quando já houver fotos anexadas -->
-          <div id="galUploadStatusHeader" hidden onclick="event.stopPropagation()"
+          <div id="galUploadStatusHeader" hidden data-stop="1"
             style="display:none;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-strong);flex-wrap:wrap">
             <span id="galUploadCountText" style="font-size:12px;font-weight:700;color:#34d399">0 fotos anexadas</span>
             <div style="display:flex;gap:6px">
               <button type="button" class="btn"
                 style="height:28px;font-size:11.5px;padding:0 10px;border-color:var(--accent);color:var(--accent-hi)"
-                onclick="event.stopPropagation(); acionarSeletorFotosGaleria()">
+                data-stop="1" data-action="acionarSeletorFotosGaleria">
                 <svg class="i" style="width:12px;height:12px">
                   <use href="#i-plus" />
                 </svg>
@@ -64,13 +64,13 @@
               </button>
               <button type="button" class="btn btn-ghost"
                 style="height:28px;font-size:11.5px;padding:0 8px;color:var(--bad)"
-                onclick="event.stopPropagation(); limparUploadsDraftGaleria()">
+                data-stop="1" data-action="limparUploadsDraftGaleria">
                 Limpar todas
               </button>
             </div>
           </div>
 
-          <div class="upload-preview-grid" id="galUploadPreviewGrid" hidden onclick="event.stopPropagation()"
+          <div class="upload-preview-grid" id="galUploadPreviewGrid" hidden data-stop="1"
             style="display:none"></div>
         </div>
 
@@ -80,8 +80,8 @@
             <label for="galInputPlaca" class="gasto-field-lbl" style="color:var(--accent-hi)">Placa do Veículo *</label>
             <input type="text" id="galInputPlaca" list="datalistPlacasFrota" class="input" placeholder="Ex: ABC1234"
               maxlength="8" style="height:38px;font-weight:800;text-transform:uppercase"
-              oninput="this.value=this.value.toUpperCase(); onDigitarPlacaNoModalGaleria(this.value)"
-              onchange="onDigitarPlacaNoModalGaleria(this.value)">
+              data-upper="1" data-input="onDigitarPlacaNoModalGaleria" data-pass="value"
+              data-change="onDigitarPlacaNoModalGaleria" data-pass="value">
           </div>
           <div>
             <label for="galInputVeiculo" class="gasto-field-lbl">Modelo do Veículo</label>
@@ -129,8 +129,8 @@
       </div>
 
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharModalSubirFoto()">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSalvarFotoGaleria" onclick="salvarFotosGaleria()">
+        <button type="button" class="btn" data-action="fecharModalSubirFoto">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarFotoGaleria" data-action="salvarFotosGaleria">
           <svg class="i">
             <use href="#i-check" />
           </svg>

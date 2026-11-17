@@ -1,39 +1,5 @@
       // MÓDULO 3: GALERIA DE FOTOS DOS VEÍCULOS (PLACA, DATA, MOTORISTA, CATEGORIA, OBS)
       // ==============================================================================
-      function comprimirImagemParaDataUrl(file, maxDim = 1100, quality = 0.80) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = ev => {
-            const img = new Image();
-            img.onload = () => {
-              let w = img.width;
-              let h = img.height;
-              if (w > maxDim || h > maxDim) {
-                if (w > h) {
-                  h = Math.round((h * maxDim) / w);
-                  w = maxDim;
-                } else {
-                  w = Math.round((w * maxDim) / h);
-                  h = maxDim;
-                }
-              }
-              const cv = document.createElement('canvas');
-              cv.width = w;
-              cv.height = h;
-              const ctx = cv.getContext('2d');
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, w, h);
-              ctx.drawImage(img, 0, 0, w, h);
-              resolve(cv.toDataURL('image/jpeg', quality));
-            };
-            img.onerror = reject;
-            img.src = ev.target.result;
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-
       function abrirModalSubirFoto(placaPadrao = '', motoristaPadrao = '') {
         if (typeof podeEditar === 'function' && !podeEditar('galeria')) {
           if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Galeria de Fotos');
@@ -608,72 +574,5 @@
         toast('Foto excluída da galeria.');
       }
       window.excluirFotoGaleria = excluirFotoGaleria;
-
-      function renderResumoGaleriaNoModalHistorico(placa) {
-        const p = (placa || '').toUpperCase().trim();
-        const fotos = (gastosState.galeria || []).filter(f => (f.placa || '').toUpperCase().trim() === p);
-        if ($('histGaleriaCount')) $('histGaleriaCount').textContent = fotos.length;
-        const listEl = $('histGaleriaPlacaList');
-        if (!listEl) return;
-        if (!fotos.length) {
-          listEl.innerHTML = '<div class="muted" style="grid-column:1/-1;font-size:12px;padding:4px 0">Nenhuma foto enviada para a placa ' + esc(p) + ' ainda.</div>';
-          return;
-        }
-        listEl.innerHTML = fotos.slice(0, 6).map(f =>
-          '<div style="cursor:pointer;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--raised)" onclick="abrirLightboxFoto(\'' + esc(f.id) + '\')" title="' + esc(formatarData(f.data) + ' · ' + f.motorista) + '">' +
-          '<img src="' + f.imagem + '" alt="Foto" style="width:100%;height:74px;object-fit:cover;display:block">' +
-          '<div style="padding:4px 6px;font-size:10.5px;line-height:1.25">' +
-          '<strong style="color:var(--ink);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(f.motorista) + '</strong>' +
-          '<span style="color:var(--ink-3)">' + formatarData(f.data) + '</span>' +
-          '</div>' +
-          '</div>'
-        ).join('');
-      }
-      window.renderResumoGaleriaNoModalHistorico = renderResumoGaleriaNoModalHistorico;
-
-      if ($('modalLancarGasto')) {
-        $('modalLancarGasto').addEventListener('click', e => {
-          if (!e.target.closest('.prod-autocomplete-wrap')) {
-            fecharTodosMenusSugestaoProd();
-          }
-          if (e.target === $('modalLancarGasto')) fecharModalLancarGasto();
-        });
-      }
-
-      document.addEventListener('click', e => {
-        if (!e.target.closest('.prod-autocomplete-wrap')) {
-          fecharTodosMenusSugestaoProd();
-        }
-      });
-      if ($('modalNotificacoesPush')) {
-        $('modalNotificacoesPush').addEventListener('click', e => {
-          if (e.target === $('modalNotificacoesPush')) fecharModalNotificacoesPush();
-        });
-      }
-      if ($('modalCatalogoProdutos')) {
-        $('modalCatalogoProdutos').addEventListener('click', e => {
-          if (e.target === $('modalCatalogoProdutos')) fecharModalCatalogoProdutos();
-        });
-      }
-      if ($('modalSubirFotoGaleria')) {
-        $('modalSubirFotoGaleria').addEventListener('click', e => {
-          if (e.target === $('modalSubirFotoGaleria')) fecharModalSubirFoto();
-        });
-      }
-      if ($('modalVerFotoGaleria')) {
-        $('modalVerFotoGaleria').addEventListener('click', e => {
-          if (e.target === $('modalVerFotoGaleria')) fecharLightboxFoto();
-        });
-      }
-      if ($('modalCopiarWhatsApp')) {
-        $('modalCopiarWhatsApp').addEventListener('click', e => {
-          if (e.target === $('modalCopiarWhatsApp')) fecharModalCopiarWhatsApp();
-        });
-      }
-      if ($('modalCadastrarVeiculo')) {
-        $('modalCadastrarVeiculo').addEventListener('click', e => {
-          if (e.target === $('modalCadastrarVeiculo')) fecharModalCadastrarVeiculo();
-        });
-      }
 
       // ==============================================================================

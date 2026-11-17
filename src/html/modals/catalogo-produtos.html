@@ -17,7 +17,7 @@
               código para lançar rapidamente nos veículos</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCatalogoProdutos()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalCatalogoProdutos"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -30,7 +30,7 @@
             <h4 style="font-size:14px;font-weight:700;color:var(--ink);margin:0" id="catFormTitle">Cadastrar Novo
               Produto / Peça</h4>
             <button type="button" class="btn btn-ghost" id="btnCancelarEdicaoProd"
-              style="height:26px;padding:0 10px;font-size:12px" onclick="limparFormCatalogoProduto()" hidden>Cancelar
+              style="height:26px;padding:0 10px;font-size:12px" data-action="limparFormCatalogoProduto" hidden>Cancelar
               edição</button>
           </div>
           <input type="hidden" id="catProdEditId" value="">
@@ -78,7 +78,7 @@
                 style="height:40px;font-size:13.5px">
             </div>
             <button type="button" class="btn btn-primary" id="btnSalvarCatProd"
-              style="height:40px;padding:0 18px;font-size:13px" onclick="salvarProdutoNoCatalogo()">
+              style="height:40px;padding:0 18px;font-size:13px" data-action="salvarProdutoNoCatalogo">
               <svg class="i">
                 <use href="#i-check" />
               </svg>
@@ -99,7 +99,7 @@
               </svg>
               <input type="search" id="catBuscaProd" class="input"
                 placeholder="Filtrar por código, nome ou categoria..." style="height:36px;font-size:13px"
-                oninput="renderTabelaCatalogoProdutos()">
+                data-input="renderTabelaCatalogoProdutos">
             </div>
           </div>
 
@@ -124,8 +124,8 @@
       </div>
 
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharModalCatalogoProdutos()">Fechar</button>
-        <button type="button" class="btn btn-primary" onclick="fecharModalCatalogoProdutos(); abrirModalLancarGasto()">
+        <button type="button" class="btn" data-action="fecharModalCatalogoProdutos">Fechar</button>
+        <button type="button" class="btn btn-primary" data-action="fecharCatalogoELancarGasto">
           <svg class="i">
             <use href="#i-plus" />
           </svg>

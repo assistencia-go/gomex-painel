@@ -17,7 +17,7 @@
               diretamente à placa e ao motorista responsável</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalLancarGasto()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalLancarGasto"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -34,8 +34,8 @@
             <input type="text" id="gastoInputPlaca" list="datalistPlacasFrota" class="input"
               placeholder="Digite ou escolha a placa (ex: ABC1234)" maxlength="8"
               style="height:38px;font-weight:800;text-transform:uppercase"
-              oninput="this.value=this.value.toUpperCase(); onDigitarPlacaNoModalGasto(this.value)"
-              onchange="onDigitarPlacaNoModalGasto(this.value)">
+              data-upper="1" data-input="onDigitarPlacaNoModalGasto" data-pass="value"
+              data-change="onDigitarPlacaNoModalGasto" data-pass="value">
             <datalist id="datalistPlacasFrota"></datalist>
           </div>
 
@@ -94,14 +94,14 @@
             <div style="display:flex;gap:6px;flex-wrap:wrap">
               <button type="button" class="btn btn-ghost"
                 style="height:28px;font-size:12px;padding:0 10px;color:var(--accent-hi);border-color:rgba(237,133,112,0.4)"
-                onclick="toggleCadastroRapidoProdutoInline()">
+                data-action="toggleCadastroRapidoProdutoInline">
                 <svg class="i" style="width:13px;height:13px">
                   <use href="#i-box" />
                 </svg>
                 <span>+ Cadastrar Produto Novo</span>
               </button>
               <button type="button" class="btn" id="btnAddMaisItemGasto"
-                style="height:28px;font-size:12px;padding:0 10px" onclick="adicionarLinhaItemGasto()">
+                style="height:28px;font-size:12px;padding:0 10px" data-action="adicionarLinhaItemGasto">
                 <svg class="i" style="width:13px;height:13px">
                   <use href="#i-plus" />
                 </svg>
@@ -116,7 +116,7 @@
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
               <strong style="font-size:12px;color:var(--accent-hi)">Novo Produto / Peça para o Catálogo:</strong>
               <button type="button" class="btn btn-ghost" style="height:22px;padding:0 6px;font-size:11px"
-                onclick="toggleCadastroRapidoProdutoInline(false)">Fechar</button>
+                data-action="toggleCadastroRapidoProdutoInline" data-args='[false]'>Fechar</button>
             </div>
             <div class="rapido-prod-form-grid">
               <div>
@@ -160,7 +160,7 @@
                   style="height:34px;font-size:12.5px">
               </div>
               <button type="button" class="btn btn-primary" style="height:34px;padding:0 12px;font-size:12px"
-                onclick="salvarProdutoRapidoInline()">
+                data-action="salvarProdutoRapidoInline">
                 Cadastrar
               </button>
             </div>
@@ -191,7 +191,7 @@
         <!-- ANEXO: FOTO DA NOTA FISCAL / CUPOM / PEÇA TROCADA -->
         <div class="gasto-anexo-box">
           <input type="file" id="gastoAnexoInput" accept="image/*" multiple hidden
-            onchange="onSelecionarAnexosGasto(this.files)">
+            data-change="onSelecionarAnexosGasto" data-pass="files">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
             <div>
               <h4
@@ -207,7 +207,7 @@
                 galeria do veículo. Também aceita <strong>Ctrl + V</strong>.</p>
             </div>
             <button type="button" class="btn" style="height:30px;font-size:12px;padding:0 12px"
-              onclick="acionarSeletorAnexoGasto()">
+              data-action="acionarSeletorAnexoGasto">
               <svg class="i" style="width:13px;height:13px">
                 <use href="#i-camera" />
               </svg>
@@ -229,8 +229,8 @@
       </div>
 
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharModalLancarGasto()">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnSalvarLancamentoGasto" onclick="salvarLancamentoGasto()">
+        <button type="button" class="btn" data-action="fecharModalLancarGasto">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarLancamentoGasto" data-action="salvarLancamentoGasto">
           <svg class="i">
             <use href="#i-check" />
           </svg>

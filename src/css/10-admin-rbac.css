@@ -318,39 +318,7 @@
       background: #dbeafe !important;
     }
 
-    /* Modal Overlay */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .modal-card {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      width: 100%;
-      max-width: 480px;
-      overflow: hidden;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-      animation: modalFadeIn 150ms ease-out;
-    }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--line);
-    }
+    /* Controles auxiliares do modal Admin (regras base unificadas em 05-drawer-modals-base.css) */
     .btn-close-modal {
       border: 0;
       background: transparent;

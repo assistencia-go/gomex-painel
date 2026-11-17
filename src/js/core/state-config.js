@@ -4,6 +4,8 @@
       // Constantes de Conexão Segura (Todas as requisições passam pelo backend protegido do Worker/Servidor)
       const SUPABASE_URL = 'https://lhjeodmnqwsftifdvaru.supabase.co';
       const apiKey = () => '';
+      window.SUPABASE_URL = SUPABASE_URL;
+      window.apiKey = apiKey;
 
       const AUTH_KEY = 'gomex_painel_auth_v1';
       const THEME_KEY = 'gomex_painel_theme_v1';

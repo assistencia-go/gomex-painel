@@ -17,7 +17,7 @@
               identificar a origem dos danos</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalCustodia()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" data-action="fecharModalCustodia"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -29,7 +29,7 @@
             <label for="selectCustodiaPlaca" style="font-size:13px;font-weight:700;color:var(--ink)">Filtrar
               Veículo:</label>
             <select id="selectCustodiaPlaca" class="input" style="height:34px;width:200px;max-width:100%;min-width:0;font-weight:700"
-              onchange="renderModalCustodiaConteudo(this.value)">
+              data-change="renderModalCustodiaConteudo" data-pass="value">
               <option value="">Todos os Veículos</option>
             </select>
           </div>
@@ -44,7 +44,7 @@
         </div>
       </div>
       <footer class="modal-foot">
-        <button type="button" class="btn" onclick="fecharModalCustodia()">Fechar</button>
+        <button type="button" class="btn" data-action="fecharModalCustodia">Fechar</button>
       </footer>
     </div>
   </div>

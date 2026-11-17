@@ -25,6 +25,7 @@ const ALLOWED_PATCH_COLS = new Set([
 const BLOCKED_FILES = new Set(['server.js', 'worker.js', 'wrangler.toml', 'package.json', 'package-lock.json', '.env', 'frota_gastos_db.json', 'push_subscriptions.json', 'generate_worker.js', 'push_to_github.mjs', 'patch_security_and_design.js']);
 const GASTOS_DB_FILE = path.join(__dirname, 'frota_gastos_db.json');
 const PUSH_SUBS_FILE = path.join(__dirname, 'push_subscriptions.json');
+const frotaRepo = require('./lib/frota-repo.js');
 
 const VAPID_PUB_B64URL = 'BNC0C6aRpTSIkY76KeYB_x7VTA52qvjRrV6nAoeHHpZHgC6chgFIA2SCL-ZklO2bJ4egYC8yydWvV-ypBZW9Qfc';
 const PRIV_JWK = {
@@ -204,11 +205,13 @@ function lerGastosLocais() {
         galeria: Array.isArray(parsed.galeria) ? parsed.galeria : [],
         veiculos: Array.isArray(parsed.veiculos) ? parsed.veiculos : [],
         ocorrencias: Array.isArray(parsed.ocorrencias) ? parsed.ocorrencias : [],
-        agendamentos: Array.isArray(parsed.agendamentos) ? parsed.agendamentos : []
+        agendamentos: Array.isArray(parsed.agendamentos) ? parsed.agendamentos : [],
+        vendedores_rotas: Array.isArray(parsed.vendedores_rotas) ? parsed.vendedores_rotas : null,
+        tombstones: parsed.tombstones && typeof parsed.tombstones === 'object' ? parsed.tombstones : {}
       };
     }
   } catch (e) { }
-  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [] };
+  return { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [], vendedores_rotas: null, tombstones: {} };
 }
 
 function salvarGastosLocais(data) {
@@ -240,7 +243,7 @@ const server = http.createServer((req, res) => {
     res.setHeader(k, v);
   }
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey');
 
   if (req.method === 'OPTIONS') {
@@ -350,74 +353,74 @@ const server = http.createServer((req, res) => {
     }
   }
 
+  // API Granular por Registro (/api/frota-registro) -> INSERT / PATCH / DELETE individual por ID
+  if (pathname === '/api/frota-registro') {
+    const method = req.method;
+    if (method === 'POST' || method === 'PATCH' || method === 'DELETE') {
+      let body = '';
+      req.on('data', chunk => {
+        body += chunk;
+        if (body.length > 10 * 1024 * 1024) req.destroy();
+      });
+      req.on('end', async () => {
+        try {
+          const parsed = body ? JSON.parse(body) : {};
+          const opSpec = {
+            colecao: parsed.colecao || parsedUrl.searchParams.get('colecao') || '',
+            op: method === 'DELETE' ? 'delete' : (parsed.op || 'upsert'),
+            id: parsed.id !== undefined ? parsed.id : parsedUrl.searchParams.get('id'),
+            data: parsed.data,
+            updated_at: parsed.updated_at || new Date().toISOString()
+          };
+          if (!frotaRepo.COLECAO_META[opSpec.colecao]) {
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+            return res.end(JSON.stringify({ ok: false, error: 'Coleção inválida' }));
+          }
+          const current = lerGastosLocais();
+          frotaRepo.applyLocalRecordOp(current, opSpec);
+          salvarGastosLocais(current);
+
+          const result = await frotaRepo.saveGranularRecord(SUPABASE_URL, SUPABASE_KEY, opSpec);
+          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+          res.end(JSON.stringify({ ok: true, synced: Boolean(result && result.ok), ...result }));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+          res.end(JSON.stringify({ ok: false, error: err.message }));
+        }
+      });
+      return;
+    }
+  }
+
   // API para Catálogo de Produtos/Peças, Lançamentos de Gastos, Histórico de Manutenção e Galeria (/api/frota-gastos)
   if (pathname === '/api/frota-gastos') {
     if (req.method === 'GET') {
-      const localData = lerGastosLocais();
-      const targetUrl = new URL('/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_permissoes_usuarios_v1)&select=*', SUPABASE_URL);
-      const options = {
-        method: 'GET',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      };
-
-      const sReq = https.request(targetUrl, options, sRes => {
-        let data = '';
-        sRes.on('data', chunk => data += chunk);
-        sRes.on('end', () => {
-          let out = { ...localData };
-          try {
-            const rows = JSON.parse(data);
-            if (Array.isArray(rows)) {
-              for (const row of rows) {
-                if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
-                  const p = JSON.parse(row.descricao);
-                  if (Array.isArray(p)) out.produtos = p;
-                }
-                if (row.id === 'frota_lancamentos_gastos_v1' && row.descricao) {
-                  const l = JSON.parse(row.descricao);
-                  if (Array.isArray(l)) out.lancamentos = l;
-                }
-                if (row.id === 'frota_historico_manutencoes_v1' && row.descricao) {
-                  const hm = JSON.parse(row.descricao);
-                  if (hm && typeof hm === 'object') out.historico_manutencoes = hm;
-                }
-                if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
-                  const gal = JSON.parse(row.descricao);
-                  if (Array.isArray(gal)) out.galeria = gal;
-                }
-                if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
-                  const vc = JSON.parse(row.descricao);
-                  if (Array.isArray(vc)) out.veiculos = vc;
-                }
-                if (row.id === 'frota_ocorrencias_v1' && row.descricao) {
-                  const ocr = JSON.parse(row.descricao);
-                  if (Array.isArray(ocr)) out.ocorrencias = ocr;
-                }
-                if (row.id === 'frota_agendamentos_servicos_v1' && row.descricao) {
-                  const ag = JSON.parse(row.descricao);
-                  if (Array.isArray(ag)) out.agendamentos = ag;
-                }
-                if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                  try { out.permissoes = JSON.parse(row.descricao); } catch (e) { }
-                }
-              }
-              salvarGastosLocais(out);
-            }
-          } catch (e) { }
-          res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-          res.end(JSON.stringify(out));
-        });
-      });
-
-      sReq.on('error', () => {
+      (async () => {
+        const localData = lerGastosLocais();
+        try {
+          const merged = await frotaRepo.fetchAllMerged(SUPABASE_URL, SUPABASE_KEY, localData);
+          if (merged && typeof merged === 'object') {
+            const toSave = {
+              produtos: Array.isArray(merged.produtos) ? merged.produtos : localData.produtos,
+              lancamentos: Array.isArray(merged.lancamentos) ? merged.lancamentos : localData.lancamentos,
+              historico_manutencoes: merged.historico_manutencoes || localData.historico_manutencoes || {},
+              galeria: Array.isArray(merged.galeria) ? merged.galeria : localData.galeria,
+              veiculos: Array.isArray(merged.veiculos) ? merged.veiculos : localData.veiculos,
+              ocorrencias: Array.isArray(merged.ocorrencias) ? merged.ocorrencias : localData.ocorrencias,
+              agendamentos: Array.isArray(merged.agendamentos) ? merged.agendamentos : localData.agendamentos,
+              vendedores_rotas: Array.isArray(merged.vendedores_rotas) ? merged.vendedores_rotas : localData.vendedores_rotas,
+              permissoes: merged.permissoes || localData.permissoes,
+              tombstones: merged.tombstones || localData.tombstones || {}
+            };
+            salvarGastosLocais(toSave);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+            res.end(JSON.stringify({ ...toSave, storageMode: merged.storageMode }));
+            return;
+          }
+        } catch (e) { }
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
-        res.end(JSON.stringify(localData));
-      });
-      sReq.end();
+        res.end(JSON.stringify({ ...localData, storageMode: 'offline_local' }));
+      })();
       return;
     }
 
@@ -427,10 +430,25 @@ const server = http.createServer((req, res) => {
         body += chunk;
         if (body.length > 25 * 1024 * 1024) req.destroy();
       });
-      req.on('end', () => {
+      req.on('end', async () => {
         try {
           const payload = JSON.parse(body || '{}');
           const current = lerGastosLocais();
+
+          // Suporte a lote granular [{ colecao, op, id, data, updated_at }] sem sobrescrever outros usuários
+          if (Array.isArray(payload.ops) && payload.ops.length) {
+            const results = [];
+            for (const opSpec of payload.ops) {
+              frotaRepo.applyLocalRecordOp(current, opSpec);
+              results.push(await frotaRepo.saveGranularRecord(SUPABASE_URL, SUPABASE_KEY, opSpec));
+            }
+            salvarGastosLocais(current);
+            const allOk = results.every(r => r && r.ok);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ ok: true, synced: allOk, results }));
+            return;
+          }
+
           if (Array.isArray(payload.produtos)) current.produtos = payload.produtos;
           if (Array.isArray(payload.lancamentos)) current.lancamentos = payload.lancamentos;
           if (payload.historico_manutencoes && typeof payload.historico_manutencoes === 'object') {
@@ -440,6 +458,7 @@ const server = http.createServer((req, res) => {
           if (Array.isArray(payload.veiculos)) current.veiculos = payload.veiculos;
           if (Array.isArray(payload.ocorrencias)) current.ocorrencias = payload.ocorrencias;
           if (Array.isArray(payload.agendamentos)) current.agendamentos = payload.agendamentos;
+          if (Array.isArray(payload.vendedores_rotas)) current.vendedores_rotas = payload.vendedores_rotas;
           if (payload.permissoes && typeof payload.permissoes === 'object') current.permissoes = payload.permissoes;
           salvarGastosLocais(current);
 
@@ -492,6 +511,13 @@ const server = http.createServer((req, res) => {
               id: 'frota_agendamentos_servicos_v1',
               valor: current.agendamentos.length,
               descricao: JSON.stringify(current.agendamentos)
+            });
+          }
+          if (Array.isArray(current.vendedores_rotas)) {
+            rowsToUpsert.push({
+              id: 'frota_vendedores_rotas_v1',
+              valor: current.vendedores_rotas.length,
+              descricao: JSON.stringify(current.vendedores_rotas)
             });
           }
           if (current.permissoes && typeof current.permissoes === 'object') {
@@ -597,17 +623,22 @@ const server = http.createServer((req, res) => {
       let galeriaBytes = 0, galeriaFotos = 0, gastosBytes = 0, ocorrenciasBytes = 0, outrosParametrosBytes = 0;
       for (const row of parametrosRows) {
         const rowBytes = byteLen(JSON.stringify(row));
-        if (row.id === 'frota_galeria_veiculos_v1') {
+        const mod = frotaRepo.classifyParamRowModule(row.id);
+        if (mod === 'galeria') {
           galeriaBytes += rowBytes;
-          try {
-            const arr = JSON.parse(row.descricao || '[]');
-            if (Array.isArray(arr)) galeriaFotos = arr.length;
-          } catch (e) {
-            galeriaFotos = Number(row.valor) || 0;
+          if (row.id === 'frota_galeria_veiculos_v1') {
+            try {
+              const arr = JSON.parse(row.descricao || '[]');
+              if (Array.isArray(arr)) galeriaFotos = arr.length;
+            } catch (e) {
+              galeriaFotos = Number(row.valor) || 0;
+            }
+          } else {
+            galeriaFotos++;
           }
-        } else if (row.id === 'frota_lancamentos_gastos_v1' || row.id === 'frota_catalogo_produtos_v1') {
+        } else if (mod === 'gastos') {
           gastosBytes += rowBytes;
-        } else if (row.id === 'frota_ocorrencias_v1' || row.id === 'frota_agendamentos_servicos_v1') {
+        } else if (mod === 'ocorrencias') {
           ocorrenciasBytes += rowBytes;
         } else {
           outrosParametrosBytes += rowBytes;
@@ -810,7 +841,9 @@ const server = http.createServer((req, res) => {
   // Serviço seguro de arquivos estáticos (sem path traversal ou exposição de scripts internos)
   const safeRel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
   const resolvedBase = path.resolve(__dirname);
-  let filePath = path.resolve(__dirname, safeRel);
+  let filePath = safeRel.startsWith('chunks/')
+    ? path.resolve(__dirname, 'public', safeRel)
+    : path.resolve(__dirname, safeRel);
 
   if (!filePath.startsWith(resolvedBase) || BLOCKED_FILES.has(path.basename(filePath)) || path.basename(filePath).startsWith('.') || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
     filePath = path.join(resolvedBase, 'index.html');

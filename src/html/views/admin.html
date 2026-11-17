@@ -14,11 +14,11 @@
 
             <div class="admin-head-actions">
               <span class="admin-perm-count-badge" id="adminSupabaseSyncBadge" title="Estado da sincronização com o Supabase">Supabase: Verificando...</span>
-              <button type="button" class="btn btn-outline" onclick="abrirModalNovoUsuario()" id="btnAdminNovoUsuario" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;">
+              <button type="button" class="btn btn-outline" data-action="abrirModalNovoUsuario" id="btnAdminNovoUsuario" style="display:inline-flex;align-items:center;gap:6px;font-weight:600;">
                 <svg class="i"><use href="#i-user" /></svg>
                 <span>+ Novo Usuário</span>
               </button>
-              <button type="button" class="btn btn-primary" onclick="salvarPermissoesUsuarios(true)" id="btnSalvarPermissoes" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
+              <button type="button" class="btn btn-primary" data-action="salvarPermissoesUsuarios" data-args='[true]' id="btnSalvarPermissoes" style="background:#16a34a;border-color:#16a34a;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
                 <svg class="i"><use href="#i-check" /></svg>
                 <span>Salvar no Supabase</span>
               </button>
@@ -67,15 +67,15 @@
                 <p class="admin-storage-sub" id="adminStorageSummarySub">Mede em tempo real o tamanho dos check-lists, fotos na galeria, gastos, ocorrências e buckets Storage no Supabase.</p>
               </div>
               <div class="admin-storage-controls">
-                <select id="adminSupabasePlanSelect" class="select" onchange="alterarPlanoSupabaseMonitor(this.value)" title="Cota do seu plano Supabase" style="height:34px;font-size:12px;">
+                <select id="adminSupabasePlanSelect" class="select" data-change="alterarPlanoSupabaseMonitor" data-pass="value" title="Cota do seu plano Supabase" style="height:34px;font-size:12px;">
                   <option value="free">Plano Free (500 MB Banco / 1 GB Storage)</option>
                   <option value="pro">Plano Pro (8 GB Banco / 100 GB Storage)</option>
                 </select>
-                <button type="button" class="btn btn-outline" id="btnAtualizarStorageSupabase" onclick="carregarArmazenamentoSupabase(true)" style="height:34px;padding:0 12px;font-size:12px;">
+                <button type="button" class="btn btn-outline" id="btnAtualizarStorageSupabase" data-action="carregarArmazenamentoSupabase" data-args='[true]' style="height:34px;padding:0 12px;font-size:12px;">
                   <svg class="i"><use href="#i-refresh" /></svg>
                   <span>Atualizar Leitura</span>
                 </button>
-                <button type="button" class="btn btn-ghost" id="btnCopiarSqlStorageStats" onclick="copiarSqlMedicaoSupabase()" style="height:34px;padding:0 10px;font-size:12px;" title="Copia uma função SQL opcional para medir até os índices exatos do PostgreSQL">
+                <button type="button" class="btn btn-ghost" id="btnCopiarSqlStorageStats" data-action="copiarSqlMedicaoSupabase" style="height:34px;padding:0 10px;font-size:12px;" title="Copia uma função SQL opcional para medir até os índices exatos do PostgreSQL">
                   <span>Copiar SQL Exato</span>
                 </button>
               </div>
@@ -127,7 +127,7 @@
           <!-- Filtro / Busca de Usuários -->
           <div class="admin-filter-bar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
             <div class="search-box" style="flex:1;min-width:240px;position:relative;">
-              <input type="text" id="adminSearchUserInput" class="input" placeholder="Buscar usuário por nome, login ou cargo..." oninput="filtrarUsuariosAdmin(this.value)" style="width:100%;height:38px;padding-left:36px;border-radius:8px;border:1px solid var(--line);">
+              <input type="text" id="adminSearchUserInput" class="input" placeholder="Buscar usuário por nome, login ou cargo..." data-input="filtrarUsuariosAdmin" data-pass="value" style="width:100%;height:38px;padding-left:36px;border-radius:8px;border:1px solid var(--line);">
               <svg class="i" style="position:absolute;left:10px;top:10px;color:var(--ink-3);width:16px;height:16px;"><use href="#i-search" /></svg>
             </div>
             <div style="font-size:12.5px;color:var(--ink-2);" id="adminUsersCountInfo">Listando todos os usuários</div>

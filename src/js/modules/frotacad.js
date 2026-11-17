@@ -33,9 +33,22 @@
 
       function inicializarVeiculosFrotaPadraoSeVazio() {
         if (!Array.isArray(gastosState.veiculos) || gastosState.veiculos.length === 0) {
-          if (typeof VEICULOS_PADRAO_FROTA !== 'undefined' && Array.isArray(VEICULOS_PADRAO_FROTA)) {
-            gastosState.veiculos = JSON.parse(JSON.stringify(VEICULOS_PADRAO_FROTA));
-            salvarGastosLocalStorage();
+          const cachedArr = (typeof window.VEICULOS_PADRAO_FROTA !== 'undefined' && Array.isArray(window.VEICULOS_PADRAO_FROTA))
+            ? window.VEICULOS_PADRAO_FROTA
+            : null;
+          if (cachedArr && cachedArr.length) {
+            gastosState.veiculos = JSON.parse(JSON.stringify(cachedArr));
+            if (typeof salvarGastosLocalStorage === 'function') salvarGastosLocalStorage();
+            if (typeof atualizarSnapshotFrota === 'function') atualizarSnapshotFrota('veiculos');
+          } else if (typeof window.carregarVeiculosPadraoChunk === 'function') {
+            window.carregarVeiculosPadraoChunk().then(arr => {
+              if (Array.isArray(arr) && arr.length && (!Array.isArray(gastosState.veiculos) || !gastosState.veiculos.length)) {
+                gastosState.veiculos = JSON.parse(JSON.stringify(arr));
+                if (typeof salvarGastosLocalStorage === 'function') salvarGastosLocalStorage();
+                if (typeof atualizarSnapshotFrota === 'function') atualizarSnapshotFrota('veiculos');
+                if (state.visaoAtual === 'frotacad') renderFrotaCadView();
+              }
+            }).catch(() => {});
           }
         }
         sincronizarMotoristasComVistorias();

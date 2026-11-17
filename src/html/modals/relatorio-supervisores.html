@@ -16,7 +16,7 @@
             <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Controle de quem está sem vistoria, vencida, próxima de vencer e emissão de PDF agrupado por supervisor</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalRelatorioSupervisores()" aria-label="Fechar">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalRelatorioSupervisores" aria-label="Fechar">
           <svg class="i"><use href="#i-x" /></svg>
         </button>
       </header>
@@ -31,7 +31,7 @@
               <label for="relSupFiltroEquipe" style="font-size:12px;font-weight:700;color:var(--ink-2)">Supervisor:</label>
             </div>
             <select id="relSupFiltroEquipe" class="input" style="height:34px;min-width:210px;font-weight:700"
-              onchange="renderModalRelatorioSupervisores()">
+              data-change="renderModalRelatorioSupervisores">
               <option value="todos">Todos os Supervisores (3 Equipes)</option>
               <option value="101">Equipe 101 · Alisson Bezerra</option>
               <option value="102">Equipe 102 · Eliase Mendes</option>
@@ -43,7 +43,7 @@
               <label for="relSupFiltroStatus" style="font-size:12px;font-weight:700;color:var(--ink-2)">Situação:</label>
             </div>
             <select id="relSupFiltroStatus" class="input" style="height:34px;min-width:195px;font-weight:600"
-              onchange="renderModalRelatorioSupervisores()">
+              data-change="renderModalRelatorioSupervisores">
               <option value="todos">Todos os Vendedores</option>
               <option value="pendentes">Pendentes (Sem Vistoria + Vencidas)</option>
               <option value="sem_vistoria">Apenas Nunca Realizaram</option>
@@ -56,7 +56,7 @@
           <div class="input-with-icon" style="min-width:210px;flex:0 1 250px">
             <svg class="i input-icon-left"><use href="#i-search" /></svg>
             <input type="search" id="relSupInputBusca" class="input" style="height:34px;font-size:12.5px"
-              placeholder="Buscar vendedor, rota ou placa..." oninput="renderModalRelatorioSupervisores()">
+              placeholder="Buscar vendedor, rota ou placa..." data-input="renderModalRelatorioSupervisores">
           </div>
         </div>
 
@@ -91,14 +91,14 @@
       </div>
 
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-        <button type="button" class="btn" onclick="fecharModalRelatorioSupervisores()">Fechar</button>
+        <button type="button" class="btn" data-action="fecharModalRelatorioSupervisores">Fechar</button>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, true)"
+          <button type="button" class="btn" data-action="gerarRelatorioPdfVendedoresSupervisor" data-args='[null,null,true]'
             title="Abrir versão de impressão do relatório por supervisor">
             <svg class="i" style="width:15px;height:15px"><use href="#i-printer" /></svg>
             <span>Imprimir / Visualizar PDF</span>
           </button>
-          <button type="button" class="btn btn-primary" onclick="gerarRelatorioPdfVendedoresSupervisor(null, null, false)"
+          <button type="button" class="btn btn-primary" data-action="gerarRelatorioPdfVendedoresSupervisor" data-args='[null,null,false]'
             title="Baixar arquivo PDF agrupado por supervisor">
             <svg class="i" style="width:15px;height:15px"><use href="#i-file" /></svg>
             <span>Baixar Relatório PDF por Supervisor</span>

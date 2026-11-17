@@ -767,7 +767,7 @@
         renderManutencaoViewGeral();
         renderVendedoresView();
         if (typeof renderGastosView === 'function') renderGastosView();
-        if (typeof renderGaleriaView === 'function') renderGaleriaView();
+        if (typeof renderGaleriaView === 'function' && (state.visaoAtual === 'galeria' || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) renderGaleriaView();
         if (typeof renderFrotaCadView === 'function') renderFrotaCadView();
       }
 

@@ -60,16 +60,16 @@
                 <p style="font-size:12.5px;color:var(--ink-3);margin-top:2px">Álbuns organizados por placa do veículo e histórico visual de vistorias.</p>
               </div>
               <div class="galeria-head-actions">
-                <button type="button" class="btn btn-primary btn-sm" id="btnAdicionarFotosGaleria" onclick="adicionarFotosGaleria()" title="Enviar novas fotos para a galeria">
+                <button type="button" class="btn btn-primary btn-sm" id="btnAdicionarFotosGaleria" data-action="adicionarFotosGaleria" title="Enviar novas fotos para a galeria">
                   <svg class="i"><use href="#i-camera" /></svg>
                   <span>Adicionar Fotos</span>
                 </button>
                 <div class="galeria-mode-toggle" role="group" aria-label="Modo de visualização">
-                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn active" id="btnModoPastas" onclick="alternarModoGaleria('pastas')">
+                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn active" id="btnModoPastas" data-action="alternarModoGaleria" data-arg="pastas">
                     <svg class="i"><use href="#i-folder" /></svg>
                     <span>Pastas por Placa</span>
                   </button>
-                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn" id="btnModoFotos" onclick="alternarModoGaleria('fotos')">
+                  <button type="button" class="btn btn-sm btn-ghost gal-mode-btn" id="btnModoFotos" data-action="alternarModoGaleria" data-arg="fotos">
                     <svg class="i"><use href="#i-grid" /></svg>
                     <span>Todas as Fotos</span>
                   </button>
@@ -79,7 +79,7 @@
 
             <!-- Barra de Navegação do Álbum Aberto (Placa Selecionada) -->
             <div id="galeriaAlbumBar" class="galeria-album-bar" style="display:none">
-              <button type="button" class="btn btn-sm btn-ghost" onclick="fecharPastaGaleria()" style="gap:6px;font-weight:700">
+              <button type="button" class="btn btn-sm btn-ghost" data-action="fecharPastaGaleria" style="gap:6px;font-weight:700">
                 <svg class="i"><use href="#i-chev-left" /></svg>
                 <span>Voltar para as Pastas</span>
               </button>
@@ -88,7 +88,7 @@
                 <strong id="albumVeiculoTitulo" style="font-size:13.5px;color:var(--ink)"></strong>
                 <span class="badge" id="albumQtdFotosBadge" style="font-size:11.5px"></span>
               </div>
-              <button type="button" class="btn btn-sm btn-primary" id="btnAdicionarFotosPasta" onclick="adicionarFotosGaleria()" title="Adicionar fotos nesta pasta">
+              <button type="button" class="btn btn-sm btn-primary" id="btnAdicionarFotosPasta" data-action="adicionarFotosGaleria" title="Adicionar fotos nesta pasta">
                 <svg class="i"><use href="#i-camera" /></svg>
                 <span>Adicionar Fotos nesta Pasta</span>
               </button>
@@ -103,18 +103,18 @@
                 <label for="galFiltroBusca" class="sr-only">Buscar foto</label>
                 <input class="input" type="search" id="galFiltroBusca"
                   placeholder="Buscar por placa, motorista, descrição ou categoria..." autocomplete="off"
-                  oninput="renderGaleriaView()">
+                  data-input="renderGaleriaView">
               </div>
 
-              <select class="select" id="galFiltroPlaca" onchange="renderGaleriaView()">
+              <select class="select" id="galFiltroPlaca" data-change="renderGaleriaView">
                 <option value="">Todas as placas</option>
               </select>
 
-              <select class="select" id="galFiltroMotorista" onchange="renderGaleriaView()">
+              <select class="select" id="galFiltroMotorista" data-change="renderGaleriaView">
                 <option value="">Todos os motoristas</option>
               </select>
 
-              <select class="select" id="galFiltroCategoria" onchange="renderGaleriaView()">
+              <select class="select" id="galFiltroCategoria" data-change="renderGaleriaView">
                 <option value="">Todas as categorias</option>
                 <option value="Estado Geral / Vistoria">Estado Geral / Vistoria</option>
                 <option value="Saída / Retorno de Rota">Saída / Retorno de Rota</option>
@@ -126,7 +126,7 @@
                 <option value="Outros">Outros</option>
               </select>
 
-              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGaleria" onclick="limparFiltrosGaleria()"
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosGaleria" data-action="limparFiltrosGaleria"
                 hidden>
                 <svg class="i">
                   <use href="#i-x" />

@@ -12,7 +12,7 @@
             </p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalVendedor()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalVendedor"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -69,8 +69,8 @@
         </div>
       </div>
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-        <button type="button" class="btn" onclick="fecharModalVendedor()">Fechar</button>
-        <button type="button" class="btn btn-primary" onclick="fecharModalVendedor(); abrirModalRelatorioSupervisores('todos')">
+        <button type="button" class="btn" data-action="fecharModalVendedor">Fechar</button>
+        <button type="button" class="btn btn-primary" data-action="fecharVendedorEAbrirRelatorio">
           <svg class="i" style="width:14px;height:14px"><use href="#i-users" /></svg>
           <span>Painel de Vendedores por Supervisor</span>
         </button>

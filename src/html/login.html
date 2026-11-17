@@ -56,8 +56,8 @@
           <p class="lead">Informe suas credenciais para gerenciar vistorias e aprovar a frota.</p>
         </div>
 
-        <form class="login-form" id="frmLogin" method="POST" action="javascript:void(0);"
-          onsubmit="executarLogin(event); return false;" novalidate>
+        <form class="login-form" id="frmLogin" method="POST" action="#"
+          data-submit="executarLogin" novalidate>
           <div class="field">
             <label for="loginUser">Usuário</label>
             <div class="input-with-icon">
@@ -66,7 +66,7 @@
               </svg>
               <input class="input" type="text" id="loginUser" autocomplete="off" autocapitalize="none"
                 spellcheck="false" value="" required placeholder="Usuário"
-                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
+                data-enter-submit="executarLogin">
             </div>
           </div>
 
@@ -77,7 +77,7 @@
                 <use href="#i-lock" />
               </svg>
               <input class="input" type="password" id="loginPass" autocomplete="off" required placeholder="••••••••"
-                onkeydown="if(event.key==='Enter'){event.preventDefault();executarLogin(event);}">
+                data-enter-submit="executarLogin">
               <button type="button" class="btn btn-ghost btn-icon" id="btnTogglePwd" aria-label="Mostrar senha"
                 aria-pressed="false" title="Mostrar/ocultar senha">
                 <svg class="i" id="eyeIcon">
@@ -99,7 +99,7 @@
             <span id="loginErrorMsg">Usuário ou senha incorretos. Confira e tente de novo.</span>
           </div>
 
-          <button type="button" class="login-btn-submit" id="btnLogin" onclick="executarLogin(event)">
+          <button type="button" class="login-btn-submit" id="btnLogin" data-action="executarLogin" data-arg="__EVENT__">
             <span>Entrar no Painel</span>
             <svg class="i" style="width:16px;height:16px;stroke-width:2.2">
               <use href="#i-chev-right" />

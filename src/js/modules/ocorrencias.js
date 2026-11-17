@@ -272,13 +272,18 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
           ? normalizarTextoBusca(s)
           : String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
 
-        const toInfo = (eqId) => {
+        const toInfo = (eqId, supOverride = '') => {
           const info = eqId ? infos[String(eqId)] : null;
-          if (!info) return null;
+          if (!info && !supOverride) return null;
+          const supClean = String(supOverride || '').trim();
+          const parts = supClean ? supClean.split(/\s+/) : [];
+          const supCurto = supClean
+            ? (parts.length > 1 ? parts[0] + ' ' + parts[parts.length - 1] : supClean)
+            : (info ? info.supervisorCurto : '');
           return {
-            equipe: String(eqId),
-            supervisor: info.supervisor,
-            supervisorCurto: info.supervisorCurto
+            equipe: String(eqId || ''),
+            supervisor: supClean || (info ? info.supervisor : ''),
+            supervisorCurto: supCurto
           };
         };
 
@@ -286,14 +291,14 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
         const rDigits = String(rota || '').replace(/\D/g, '');
         if (rDigits && lista.length) {
           const porRota = lista.find(x => x.rota === rDigits);
-          if (porRota) return toInfo(porRota.equipe);
+          if (porRota) return toInfo(porRota.equipe, porRota.supervisor);
         }
 
         // 2. Nome do vendedor no catálogo oficial (exato ou equipe única)
         const vNorm = norm(vendedor);
         if (vNorm && lista.length) {
           const exato = lista.find(x => norm(x.nome) === vNorm);
-          if (exato) return toInfo(exato.equipe);
+          if (exato) return toInfo(exato.equipe, exato.supervisor);
 
           const vTokens = vNorm.split(/\s+/).filter(Boolean);
           if (vTokens.length) {
@@ -303,7 +308,7 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
             });
             const equipesUnicas = [...new Set(matches.map(m => m.equipe))];
             if (equipesUnicas.length === 1) {
-              return toInfo(equipesUnicas[0]);
+              return toInfo(equipesUnicas[0], matches[0].supervisor);
             }
           }
         }
@@ -327,7 +332,7 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
           || buscarRotaEmLista(state?.all, 'placa', 'motorista');
         if (rotaEncontrada && lista.length) {
           const porRotaFb = lista.find(x => x.rota === rotaEncontrada);
-          if (porRotaFb) return toInfo(porRotaFb.equipe);
+          if (porRotaFb) return toInfo(porRotaFb.equipe, porRotaFb.supervisor);
         }
 
         return null;

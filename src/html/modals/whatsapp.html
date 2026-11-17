@@ -17,7 +17,7 @@
               motorista</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalCopiarWhatsApp()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalCopiarWhatsApp"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -43,8 +43,8 @@
         </div>
       </div>
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharModalCopiarWhatsApp()">Fechar</button>
-        <button type="button" class="btn btn-primary" id="btnCopiarTextoWpp" onclick="executarCopiaTextoWhatsApp()"
+        <button type="button" class="btn" data-action="fecharModalCopiarWhatsApp">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnCopiarTextoWpp" data-action="executarCopiaTextoWhatsApp"
           style="background:#25d366;border-color:#20ba5a;color:#0b141a;font-weight:800">
           <svg class="i" style="width:15px;height:15px">
             <use href="#i-copy" />

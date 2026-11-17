@@ -563,127 +563,26 @@
       box-sizing: border-box;
     }
 
-    /* Regras Mobile Específicas: Aparência e Toque 100% de Aplicativo Nativo */
+    /* Form grids no mobile (base de modais consolidada em 05-drawer-modals-base.css) */
     @media (max-width: 680px) {
-      /* Todos os inputs/selects ficam com 16px no mobile para não acionar zoom automático chato ao digitar */
       input, select, textarea, .input, .select {
         font-size: 16px !important;
       }
 
-      /* Modais legados centralizados; sheets (.playstore-sheet) ancoram embaixo como app nativo */
-      .modal-overlay:not(:has(.playstore-sheet)):not(.modal-overlay-sheet) {
-        padding: 12px 8px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        overflow: hidden !important;
-      }
-
-      .modal-card:not(.playstore-sheet) {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        max-height: 90dvh !important;
-        margin: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: hidden !important;
-        border-radius: 14px !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-head {
-        padding: 12px 14px !important;
-        flex-shrink: 0 !important;
-        min-width: 0 !important;
-        gap: 10px !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-head h3 {
-        font-size: 15px !important;
-        overflow-wrap: anywhere !important;
-      }
-
-      .modal-card:not(.playstore-sheet) .modal-body {
-        padding: 14px !important;
-        flex: 1 1 auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) !important;
-        align-content: start !important;
-        gap: 12px !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-      }
-
-      .modal-card.playstore-sheet .modal-body {
-        padding: 12px 14px !important;
-        flex: 1 1 auto !important;
-        min-height: 0 !important;
-        max-height: none !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        overscroll-behavior: contain !important;
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) !important;
-        align-content: start !important;
-        gap: 12px !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-      }
-
-      .modal-body > * {
-        max-width: 100% !important;
-        min-width: 0 !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-body .input,
-      .modal-body select,
-      .modal-body .select,
-      .modal-body textarea {
-        font-size: 16px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-      }
-
-      .modal-foot:not(.ocr-rel-foot) {
-        padding: 10px 14px !important;
-        flex-direction: column-reverse !important;
-        gap: 8px !important;
-        flex-shrink: 0 !important;
-      }
-
-      .modal-foot:not(.ocr-rel-foot) .btn {
-        width: 100% !important;
-        justify-content: center !important;
-        height: 46px !important;
-        font-size: 14.5px !important;
-        font-weight: 700 !important;
-      }
-
-      /* Form grids viram coluna única vertical */
       .ocr-form-grid-2 {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 12px !important;
-        width: 100% !important;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
       }
 
       .ocr-hours-grid {
-        display: grid !important;
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-        gap: 8px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        min-width: 0 !important;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
       }
     }
 
@@ -874,39 +773,8 @@
     }
 
     /* ============================================================================
-       MODAL PLAY STORE MOBILE-FIRST (ANDROID APP FEEL)
+       MODAL PLAY STORE MOBILE-FIRST (BASE UNIFICADA EM 05-drawer-modals-base.css)
        ============================================================================ */
-    @media (max-width: 768px) {
-      #modalOcorrencia.modal-overlay,
-      .modal-overlay.modal-overlay-sheet,
-      .modal-overlay:has(.playstore-sheet) {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: stretch !important;
-        justify-content: flex-end !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        overflow: hidden !important;
-      }
-      #modalOcorrencia .modal-card,
-      .modal-card.playstore-sheet {
-        width: 100% !important;
-        min-width: 0 !important;
-        max-width: 100% !important;
-        border-radius: 22px 22px 0 0 !important;
-        max-height: 92dvh !important;
-        height: auto !important;
-        margin: 0 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: hidden !important;
-        border-left: none !important;
-        border-right: none !important;
-        border-bottom: none !important;
-        box-sizing: border-box !important;
-        animation: slideUpMobile .24s var(--ease) !important;
-      }
-    }
     @keyframes slideUpMobile {
       from { transform: translateY(100%); }
       to { transform: translateY(0); }

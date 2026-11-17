@@ -5,7 +5,7 @@
           <!-- Resumo da Frota -->
           <section class="summary" aria-label="Resumo da frota de veículos">
             <dl class="summary-grid">
-              <div class="stat" onclick="filtrarFrotaPorCard('todos')" style="cursor:pointer"
+              <div class="stat" data-action="filtrarFrotaPorCard" data-arg="todos" style="cursor:pointer"
                 title="Clique para ver todos os veículos da frota">
                 <div class="stat-head">
                   <span class="stat-lbl">Veículos na Frota</span>
@@ -17,7 +17,7 @@
                 <span class="stat-sub">Placas cadastradas</span>
               </div>
 
-              <div class="stat" onclick="filtrarFrotaPorCard('em_dia')" style="cursor:pointer"
+              <div class="stat" data-action="filtrarFrotaPorCard" data-arg="em_dia" style="cursor:pointer"
                 title="Clique para filtrar veículos com vistoria em dia">
                 <div class="stat-head">
                   <span class="stat-lbl">Vistorias em Dia</span>
@@ -29,7 +29,7 @@
                 <span class="stat-sub">Ciclo mensal regular</span>
               </div>
 
-              <div class="stat" onclick="filtrarFrotaPorCard('atencao_vistoria')" style="cursor:pointer"
+              <div class="stat" data-action="filtrarFrotaPorCard" data-arg="atencao_vistoria" style="cursor:pointer"
                 title="Clique para filtrar vistorias próximas ou vencidas">
                 <div class="stat-head">
                   <span class="stat-lbl">Aviso Vistoria</span>
@@ -41,7 +41,7 @@
                 <span class="stat-sub">Próxima ou vencida</span>
               </div>
 
-              <div class="stat" onclick="filtrarFrotaPorCard('alerta_oleo')" style="cursor:pointer"
+              <div class="stat" data-action="filtrarFrotaPorCard" data-arg="alerta_oleo" style="cursor:pointer"
                 title="Clique para filtrar troca de óleo próxima ou vencida">
                 <div class="stat-head">
                   <span class="stat-lbl">Troca de Óleo</span>
@@ -53,7 +53,7 @@
                 <span class="stat-sub">Próxima ou vencida por KM</span>
               </div>
 
-              <div class="stat" onclick="filtrarFrotaPorCard('sem_vistoria')" style="cursor:pointer"
+              <div class="stat" data-action="filtrarFrotaPorCard" data-arg="sem_vistoria" style="cursor:pointer"
                 title="Clique para filtrar veículos sem nenhuma vistoria">
                 <div class="stat-head">
                   <span class="stat-lbl">Sem Vistoria Feita</span>
@@ -77,7 +77,7 @@
                   quilometragem, histórico de gastos por KM e cobre vistorias pelo WhatsApp.</p>
               </div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-primary" id="btnTopCadastrarVeiculo" onclick="abrirModalCadastrarVeiculo()"
+                <button type="button" class="btn btn-primary" id="btnTopCadastrarVeiculo" data-action="abrirModalCadastrarVeiculo"
                   title="Cadastrar novo veículo na frota">
                   <svg class="i">
                     <use href="#i-plus" />
@@ -96,10 +96,10 @@
                 <label for="cadFiltroBusca" class="sr-only">Buscar veículo</label>
                 <input class="input" type="search" id="cadFiltroBusca"
                   placeholder="Buscar por placa, modelo, motorista titular ou rota..." autocomplete="off"
-                  oninput="renderFrotaCadView()">
+                  data-input="renderFrotaCadView">
               </div>
 
-              <select class="select" id="cadFiltroStatus" onchange="renderFrotaCadView()">
+              <select class="select" id="cadFiltroStatus" data-change="renderFrotaCadView">
                 <option value="todos">Todos os veículos</option>
                 <option value="em_dia">Vistoria em dia</option>
                 <option value="atencao_vistoria">Vistoria próxima ou vencida</option>
@@ -107,7 +107,7 @@
                 <option value="sem_vistoria">Sem vistoria realizada</option>
               </select>
 
-              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosCad" onclick="limparFiltrosCad()" hidden>
+              <button type="button" class="btn btn-ghost" id="btnLimparFiltrosCad" data-action="limparFiltrosCad" hidden>
                 <svg class="i">
                   <use href="#i-x" />
                 </svg>Limpar filtros

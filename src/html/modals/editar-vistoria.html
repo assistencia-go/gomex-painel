@@ -17,7 +17,7 @@
               parecer</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalEditarVistoria()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" data-action="fecharModalEditarVistoria"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -154,9 +154,9 @@
         </div>
       </div>
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharModalEditarVistoria()">Cancelar</button>
+        <button type="button" class="btn" data-action="fecharModalEditarVistoria">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSalvarEdicaoVistoria"
-          onclick="salvarEdicaoVistoria(false)">
+          data-action="salvarEdicaoVistoria" data-args='[false]'>
           <svg class="i">
             <use href="#i-check" />
           </svg> Salvar Alterações

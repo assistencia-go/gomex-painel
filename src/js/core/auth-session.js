@@ -282,6 +282,8 @@
         if ($('loginUser')) $('loginUser').focus();
       }
       window.encerrarSessao = encerrarSessao;
+      window.VALID_USERS = VALID_USERS;
+      window.gerarHashSenhaForte = gerarHashSenhaForte;
 
       function registrarAtividadeUsuario() {
         if (!authed) return;

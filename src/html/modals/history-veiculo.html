@@ -13,7 +13,7 @@
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <button type="button" class="btn btn-ghost btn-icon" onclick="fecharHistoricoModal()"><svg class="i">
+          <button type="button" class="btn btn-ghost btn-icon" data-action="fecharHistoricoModal"><svg class="i">
               <use href="#i-x" />
             </svg></button>
         </div>
@@ -64,11 +64,11 @@
             <div style="display:flex;gap:6px">
               <button type="button" class="btn btn-ghost"
                 style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
-                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGastosDaPlaca(p)">
+                data-action="histVerGastos">
                 <svg class="i" style="width:12px;height:12px"><use href="#i-file-text" /></svg> Ver Extrato / PDF
               </button>
               <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
-                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalLancarGasto(p)">
+                data-action="histLancarGasto">
                 <svg class="i" style="width:12px;height:12px">
                   <use href="#i-plus" />
                 </svg> Lançar Peça / Óleo
@@ -95,11 +95,11 @@
             <div style="display:flex;gap:6px">
               <button type="button" class="btn btn-ghost"
                 style="height:26px;font-size:11.5px;padding:0 8px;color:var(--accent-hi)"
-                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); irParaGaleriaDaPlaca(p)">
+                data-action="histVerGaleria">
                 <svg class="i" style="width:12px;height:12px"><use href="#i-image" /></svg> Abrir Galeria da Placa
               </button>
               <button type="button" class="btn btn-primary" style="height:26px;font-size:11.5px;padding:0 10px"
-                onclick="const p=document.getElementById('histPlateTitle').textContent; fecharHistoricoModal(); abrirModalSubirFoto(p)">
+                data-action="histSubirFoto">
                 <svg class="i" style="width:12px;height:12px">
                   <use href="#i-camera" />
                 </svg> + Subir Foto
@@ -117,20 +117,20 @@
             <h4 style="font-size:13px;font-weight:700;color:var(--ink-2);margin:0">Linha do Tempo de Vistorias:</h4>
             <div style="display:flex;gap:4px">
               <button type="button" class="timeline-filter-btn active" id="btnHistFilterAll"
-                onclick="filtrarTimelineHist('todos')"><svg class="i" style="width:11px;height:11px"><use href="#i-grid" /></svg> Todas</button>
+                data-action="filtrarTimelineHist" data-arg="todos"><svg class="i" style="width:11px;height:11px"><use href="#i-grid" /></svg> Todas</button>
               <button type="button" class="timeline-filter-btn" id="btnHistFilterAvarias"
-                onclick="filtrarTimelineHist('avarias')"><svg class="i" style="width:11px;height:11px"><use href="#i-alert" /></svg> Com Avarias</button>
+                data-action="filtrarTimelineHist" data-arg="avarias"><svg class="i" style="width:11px;height:11px"><use href="#i-alert" /></svg> Com Avarias</button>
               <button type="button" class="timeline-filter-btn" id="btnHistFilterBloq"
-                onclick="filtrarTimelineHist('bloqueadas')"><svg class="i" style="width:11px;height:11px"><use href="#i-ban" /></svg> Bloqueadas</button>
+                data-action="filtrarTimelineHist" data-arg="bloqueadas"><svg class="i" style="width:11px;height:11px"><use href="#i-ban" /></svg> Bloqueadas</button>
             </div>
           </div>
           <div class="hist-timeline" id="histTimeline"></div>
         </div>
       </div>
       <footer class="modal-foot" style="display:flex;justify-content:space-between;align-items:center">
-        <button type="button" class="btn" onclick="fecharHistoricoModal()">Fechar</button>
+        <button type="button" class="btn" data-action="fecharHistoricoModal">Fechar</button>
         <div style="display:flex;gap:8px">
-          <button type="button" class="btn" onclick="imprimirProntuarioVeiculo()">
+          <button type="button" class="btn" data-action="imprimirProntuarioVeiculo">
             <svg class="i">
               <use href="#i-printer" />
             </svg>

@@ -61,19 +61,19 @@
                   custos e observações de reparo de cada veículo da frota.</p>
               </div>
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-                <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('todos')"
+                <button type="button" class="btn btn-ghost" data-action="filtrarTabelaManutGeral" data-arg="todos"
                   id="btnFilterMaintAll" style="font-weight:700;display:inline-flex;align-items:center;gap:6px">
                   <svg class="i" style="width:14px;height:14px">
                     <use href="#i-grid" />
                   </svg> <span>Todas</span>
                 </button>
-                <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('em')"
+                <button type="button" class="btn btn-ghost" data-action="filtrarTabelaManutGeral" data-arg="em"
                   id="btnFilterMaintEm" style="color:#fbbf24;display:inline-flex;align-items:center;gap:6px">
                   <svg class="i" style="width:14px;height:14px">
                     <use href="#i-tool" />
                   </svg> <span>Na Oficina</span>
                 </button>
-                <button type="button" class="btn btn-ghost" onclick="filtrarTabelaManutGeral('concluidas')"
+                <button type="button" class="btn btn-ghost" data-action="filtrarTabelaManutGeral" data-arg="concluidas"
                   id="btnFilterMaintJa" style="color:#34d399;display:inline-flex;align-items:center;gap:6px">
                   <svg class="i" style="width:14px;height:14px">
                     <use href="#i-badge-check" />
@@ -106,7 +106,7 @@
                       <p>Abra qualquer vistoria na tabela e use a aba "Manutenção & Observações" para registrar a ida do
                         veículo à oficina.</p>
                       <div class="empty-action">
-                        <button type="button" class="btn btn-primary" onclick="alternarVisaoPrincipal('vistorias')">
+                        <button type="button" class="btn btn-primary" data-action="alternarVisaoPrincipal" data-arg="vistorias">
                           <svg class="i" style="width:15px;height:15px;margin:0;">
                             <use href="#i-truck" />
                           </svg>

@@ -35,11 +35,18 @@ const iconPath = path.join(__dirname, 'icon.svg');
 const iconContent = fs.existsSync(iconPath) ? fs.readFileSync(iconPath, 'utf8') : '';
 fs.writeFileSync(path.join(publicDir, 'icon.svg'), iconContent, 'utf8');
 
+const frotaRepoPath = path.join(__dirname, 'lib', 'frota-repo.js');
+const frotaRepoRaw = fs.existsSync(frotaRepoPath) ? fs.readFileSync(frotaRepoPath, 'utf8') : '';
+
 const FALLBACK_KEY_B64 = 'c2Jfc2VjcmV0XzF6ZXd0MUlSU1loMnhYQUYzbUJDT1FfMHZ5SEVtVDU=';
 
 const workerCode = `// ==============================================================================
 // GOMEX DISTRIBUIDORA · CLOUDFLARE WORKER & API BACKEND (PAINEL EXECUTIVO)
 // ==============================================================================
+
+${frotaRepoRaw}
+
+const frotaRepo = globalThis.__gomexFrotaRepo;
 
 const FALLBACK_KEY_B64 = '${FALLBACK_KEY_B64}';
 
@@ -162,7 +169,7 @@ export default {
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PATCH, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization, apikey',
       ...SECURITY_HEADERS
     };
@@ -382,6 +389,42 @@ export default {
       }
     }
 
+    // 1.4 API GRANULAR POR REGISTRO (/api/frota-registro) -> INSERT / PATCH / DELETE individual por ID
+    if (url.pathname === '/api/frota-registro') {
+      const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\\/+$/, '');
+      const supabaseKey = getSupabaseKey(env);
+      const method = request.method;
+      if (method === 'POST' || method === 'PATCH' || method === 'DELETE') {
+        try {
+          const rawTxt = await request.text();
+          const parsed = rawTxt ? JSON.parse(rawTxt) : {};
+          const opSpec = {
+            colecao: parsed.colecao || url.searchParams.get('colecao') || '',
+            op: method === 'DELETE' ? 'delete' : (parsed.op || 'upsert'),
+            id: parsed.id !== undefined ? parsed.id : url.searchParams.get('id'),
+            data: parsed.data,
+            updated_at: parsed.updated_at || new Date().toISOString()
+          };
+          if (!frotaRepo.COLECAO_META[opSpec.colecao]) {
+            return new Response(JSON.stringify({ ok: false, error: 'Coleção inválida' }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+            });
+          }
+          const result = await frotaRepo.saveGranularRecord(supabaseUrl, supabaseKey, opSpec);
+          return new Response(JSON.stringify({ ok: true, synced: Boolean(result && result.ok), ...result }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+          });
+        } catch (err) {
+          return new Response(JSON.stringify({ ok: false, error: err.message }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          });
+        }
+      }
+    }
+
     // 1.5 ROTA DE CUSTOS, PEÇAS E INSUMOS DA FROTA (/api/frota-gastos)
     if (url.pathname === '/api/frota-gastos') {
       const supabaseUrl = ((env && env.SUPABASE_URL) || 'https://lhjeodmnqwsftifdvaru.supabase.co').replace(/\\/+$/, '');
@@ -389,49 +432,13 @@ export default {
 
       if (request.method === 'GET') {
         try {
-          const res = await fetch(\`\${supabaseUrl}/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_permissoes_usuarios_v1)&select=*\`, {
-            headers: {
-              'apikey': supabaseKey,
-              'Authorization': \`Bearer \${supabaseKey}\`,
-              'Content-Type': 'application/json'
-            }
-          });
-          const rows = await res.json();
-          const out = { produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [], permissoes: null };
-          if (Array.isArray(rows)) {
-            for (const row of rows) {
-              if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
-                try { out.produtos = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_lancamentos_gastos_v1' && row.descricao) {
-                try { out.lancamentos = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_historico_manutencoes_v1' && row.descricao) {
-                try { out.historico_manutencoes = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
-                try { out.galeria = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
-                try { out.veiculos = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_ocorrencias_v1' && row.descricao) {
-                try { out.ocorrencias = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_agendamentos_servicos_v1' && row.descricao) {
-                try { out.agendamentos = JSON.parse(row.descricao); } catch (e) {}
-              }
-              if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                try { out.permissoes = JSON.parse(row.descricao); } catch (e) {}
-              }
-            }
-          }
+          const out = await frotaRepo.fetchAllMerged(supabaseUrl, supabaseKey, null);
           return new Response(JSON.stringify(out), {
             status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         } catch (err) {
-          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [] }), {
+          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [], vendedores_rotas: null }), {
             status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
           });
@@ -441,6 +448,18 @@ export default {
       if (request.method === 'POST' || request.method === 'PATCH') {
         try {
           const payload = await request.json();
+          if (Array.isArray(payload.ops) && payload.ops.length) {
+            const results = [];
+            for (const opSpec of payload.ops) {
+              results.push(await frotaRepo.saveGranularRecord(supabaseUrl, supabaseKey, opSpec));
+            }
+            const allOk = results.every(r => r && r.ok);
+            return new Response(JSON.stringify({ ok: true, synced: allOk, results }), {
+              status: 200,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+            });
+          }
+
           const rowsToUpsert = [];
           if (Array.isArray(payload.produtos)) {
             rowsToUpsert.push({
@@ -490,6 +509,13 @@ export default {
               id: 'frota_agendamentos_servicos_v1',
               valor: payload.agendamentos.length,
               descricao: JSON.stringify(payload.agendamentos)
+            });
+          }
+          if (Array.isArray(payload.vendedores_rotas)) {
+            rowsToUpsert.push({
+              id: 'frota_vendedores_rotas_v1',
+              valor: payload.vendedores_rotas.length,
+              descricao: JSON.stringify(payload.vendedores_rotas)
             });
           }
           if (payload.permissoes && typeof payload.permissoes === 'object') {
@@ -579,17 +605,22 @@ export default {
         let galeriaBytes = 0, galeriaFotos = 0, gastosBytes = 0, ocorrenciasBytes = 0, outrosParametrosBytes = 0;
         for (const row of parametrosRows) {
           const rowBytes = byteLen(JSON.stringify(row));
-          if (row.id === 'frota_galeria_veiculos_v1') {
+          const mod = frotaRepo.classifyParamRowModule(row.id);
+          if (mod === 'galeria') {
             galeriaBytes += rowBytes;
-            try {
-              const arr = JSON.parse(row.descricao || '[]');
-              if (Array.isArray(arr)) galeriaFotos = arr.length;
-            } catch (e) {
-              galeriaFotos = Number(row.valor) || 0;
+            if (row.id === 'frota_galeria_veiculos_v1') {
+              try {
+                const arr = JSON.parse(row.descricao || '[]');
+                if (Array.isArray(arr)) galeriaFotos = arr.length;
+              } catch (e) {
+                galeriaFotos = Number(row.valor) || 0;
+              }
+            } else {
+              galeriaFotos++;
             }
-          } else if (row.id === 'frota_lancamentos_gastos_v1' || row.id === 'frota_catalogo_produtos_v1') {
+          } else if (mod === 'gastos') {
             gastosBytes += rowBytes;
-          } else if (row.id === 'frota_ocorrencias_v1' || row.id === 'frota_agendamentos_servicos_v1') {
+          } else if (mod === 'ocorrencias') {
             ocorrenciasBytes += rowBytes;
           } else {
             outrosParametrosBytes += rowBytes;

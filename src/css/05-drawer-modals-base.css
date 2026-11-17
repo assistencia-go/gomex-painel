@@ -320,47 +320,98 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      z-index: 85;
-      background: rgba(4, 7, 13, 0.75);
+      z-index: 9999;
+      background: rgba(4, 7, 13, 0.72);
       display: grid;
       grid-template-columns: minmax(0, 1fr);
       place-items: center;
-      padding: 20px;
+      padding: 16px;
+      overflow: hidden;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 200ms, visibility 0s 200ms;
+      transition: opacity 180ms ease, visibility 0s 180ms;
     }
 
     .modal-overlay.open {
       opacity: 1;
       visibility: visible;
-      transition: opacity 200ms, visibility 0s;
+      transition: opacity 180ms ease, visibility 0s;
     }
 
     .modal-card {
       background: var(--panel);
       border: 1px solid var(--line-strong);
-      border-radius: 12px;
+      border-radius: 14px;
       width: min(680px, 100%);
-      max-height: 85vh;
+      min-width: 0;
+      max-width: 100%;
+      max-height: 88dvh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      box-sizing: border-box;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      animation: modalFadeIn 150ms ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     .modal-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       padding: 16px 20px;
       border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .modal-head > div {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .modal-head h3,
+    .modal-head p {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .modal-head > button {
+      flex-shrink: 0;
     }
 
     .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
       overflow-y: auto;
-      padding: 20px;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      padding: 18px 20px;
       display: grid;
-      gap: 18px;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      align-items: start;
+      gap: 16px;
+      box-sizing: border-box;
+    }
+
+    .modal-body > * {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .modal-foot {
@@ -368,6 +419,118 @@
       border-top: 1px solid var(--line);
       display: flex;
       justify-content: flex-end;
+      gap: 10px;
+      flex-shrink: 0;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .modal-overlay {
+        padding: 10px;
+        backdrop-filter: none;
+      }
+
+      .modal-overlay.modal-overlay-sheet,
+      .modal-overlay:has(.playstore-sheet) {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-end;
+        padding: 0;
+        margin: 0;
+        background: rgba(6, 10, 18, 0.72);
+      }
+
+      .modal-card:not(.playstore-sheet) {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: 92dvh !important;
+        margin: 0;
+        border-radius: 14px;
+      }
+
+      .modal-card.playstore-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto;
+        max-height: 92dvh !important;
+        margin: 0;
+        border-radius: 22px 22px 0 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        animation: slideUpMobile .24s var(--ease);
+      }
+
+      .modal-head {
+        padding: 12px 14px;
+      }
+
+      .modal-head h3 {
+        font-size: 15px;
+      }
+
+      .modal-body {
+        padding: 14px !important;
+        gap: 12px !important;
+        max-height: none !important;
+      }
+
+      .modal-body .input,
+      .modal-body select,
+      .modal-body .select,
+      .modal-body textarea {
+        font-size: 16px;
+        width: 100%;
+      }
+
+      .modal-foot {
+        padding: 12px 14px;
+      }
+
+      .modal-foot:not(.ocr-rel-foot) {
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+
+      .modal-foot .btn {
+        min-width: 0 !important;
+        max-width: 100%;
+      }
+
+      .modal-foot:not(.ocr-rel-foot) .btn {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;
+      }
+
+      .ocr-rel-preview-box,
+      #modalHistorico .maint-history-list,
+      #historyModal #histGastosPlacaList,
+      #modalCatalogoProdutos .table-wrap {
+        max-height: none !important;
+        overflow: visible !important;
+        overscroll-behavior: auto !important;
+        -webkit-overflow-scrolling: auto !important;
+      }
+
+      .ocr-rel-row {
+        content-visibility: visible !important;
+        contain: none !important;
+        contain-intrinsic-size: auto !important;
+      }
+
+      .edit-grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .edit-grid-2 {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
     }
 
     .hist-timeline {

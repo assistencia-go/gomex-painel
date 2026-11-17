@@ -1,14 +1,17 @@
 <!-- ========================================================================== -->
 <!-- MODAIS DE ADMINISTRAÇÃO: USUÁRIOS E ALTERAÇÃO DE SENHA (EXCLUSIVO ADMIN) -->
 <!-- ========================================================================== -->
-<div class="modal-overlay" id="modalNovoUsuario" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalNovoUsuarioTitle">
+<div class="modal-overlay" id="modalNovoUsuario" role="dialog" aria-modal="true" aria-labelledby="modalNovoUsuarioTitle">
   <div class="modal-card" style="max-width:520px;">
     <div class="modal-head">
       <div style="min-width:0;flex:1">
-        <h3 id="modalNovoUsuarioTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Cadastrar Novo Usuário</h3>
-        <div id="modalNovoUsuarioSub" style="font-size:12px;color:var(--ink-3);margin-top:2px;">Salvo no Supabase com senha protegida por hash PBKDF2-SHA256</div>
+        <h3 id="modalNovoUsuarioTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Cadastrar Novo
+          Usuário</h3>
+        <div id="modalNovoUsuarioSub" style="font-size:12px;color:var(--ink-3);margin-top:2px;">Salvo no Supabase com
+          senha protegida por hash PBKDF2-SHA256</div>
       </div>
-      <button type="button" class="btn-close-modal" style="flex-shrink:0" onclick="fecharModalNovoUsuario()" aria-label="Fechar">&times;</button>
+      <button type="button" class="btn-close-modal" style="flex-shrink:0" data-action="fecharModalNovoUsuario"
+        aria-label="Fechar">&times;</button>
     </div>
 
     <div class="modal-body" style="padding:18px 20px;display:grid;gap:12px;max-height:78vh;overflow-y:auto;">
@@ -16,22 +19,32 @@
 
       <div class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
-          <label for="novoUsuarioNome" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nome Completo *</label>
+          <label for="novoUsuarioNome"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nome Completo
+            *</label>
           <input type="text" id="novoUsuarioNome" class="input" placeholder="Ex.: Carlos Eduardo" style="width:100%;">
         </div>
         <div>
-          <label for="novoUsuarioLogin" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Login de Acesso *</label>
-          <input type="text" id="novoUsuarioLogin" class="input" placeholder="Ex.: carlos" style="width:100%;text-transform:lowercase;">
+          <label for="novoUsuarioLogin"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Login de Acesso
+            *</label>
+          <input type="text" id="novoUsuarioLogin" class="input" placeholder="Ex.: carlos"
+            style="width:100%;text-transform:lowercase;">
         </div>
       </div>
 
       <div class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
-          <label for="novoUsuarioCargo" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Cargo / Função</label>
-          <input type="text" id="novoUsuarioCargo" class="input" placeholder="Ex.: Supervisor de Frota" style="width:100%;">
+          <label for="novoUsuarioCargo"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Cargo /
+            Função</label>
+          <input type="text" id="novoUsuarioCargo" class="input" placeholder="Ex.: Supervisor de Frota"
+            style="width:100%;">
         </div>
         <div>
-          <label for="novoUsuarioEquipe" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Equipe Vinculada</label>
+          <label for="novoUsuarioEquipe"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Equipe
+            Vinculada</label>
           <select id="novoUsuarioEquipe" class="select" style="width:100%;">
             <option value="">Todas as Equipes</option>
             <option value="101">Equipe 101 · Alisson Bezerra</option>
@@ -42,7 +55,9 @@
       </div>
 
       <div id="boxPerfilInicialNovoUsuario">
-        <label for="novoUsuarioPerfil" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Perfil Inicial de Permissões</label>
+        <label for="novoUsuarioPerfil"
+          style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Perfil Inicial de
+          Permissões</label>
         <select id="novoUsuarioPerfil" class="select" style="width:100%;">
           <option value="supervisor_leitura">Supervisor · Visualizar tudo (Somente Leitura)</option>
           <option value="supervisor_edicao">Supervisor c/ Edição · Telas + Editar registros</option>
@@ -53,63 +68,88 @@
 
       <div id="boxSenhaNovoUsuario" class="edit-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <div>
-          <label for="novoUsuarioSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;" id="lblNovoUsuarioSenha">Senha Individual *</label>
-          <input type="password" id="novoUsuarioSenha" class="input" placeholder="Mín. 6 caracteres" autocomplete="new-password" style="width:100%;">
+          <label for="novoUsuarioSenha"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;"
+            id="lblNovoUsuarioSenha">Senha Individual *</label>
+          <input type="password" id="novoUsuarioSenha" class="input" placeholder="Mín. 6 caracteres"
+            autocomplete="new-password" style="width:100%;">
         </div>
         <div>
-          <label for="novoUsuarioConfirmarSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Confirmar Senha</label>
-          <input type="password" id="novoUsuarioConfirmarSenha" class="input" placeholder="Repita a senha" autocomplete="new-password" style="width:100%;">
+          <label for="novoUsuarioConfirmarSenha"
+            style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Confirmar
+            Senha</label>
+          <input type="password" id="novoUsuarioConfirmarSenha" class="input" placeholder="Repita a senha"
+            autocomplete="new-password" style="width:100%;">
         </div>
       </div>
 
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:11.5px;color:#475569;line-height:1.45;">
+      <div
+        style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:11.5px;color:#475569;line-height:1.45;">
         <strong style="color:#1e293b;display:block;margin-bottom:2px;">Segurança e Persistência no Supabase</strong>
-        Usuários criados aqui recebem senha própria com hash PBKDF2-SHA256 (salt individual) e ficam salvos na tabela <code>parametros</code> (<code>frota_permissoes_usuarios_v1</code>) no Supabase, sem aceitar a senha genérica padrão.
+        Usuários criados aqui recebem senha própria com hash PBKDF2-SHA256 (salt individual) e ficam salvos na tabela
+        <code>parametros</code> (<code>frota_permissoes_usuarios_v1</code>) no Supabase, sem aceitar a senha genérica
+        padrão.
       </div>
     </div>
 
-    <div class="modal-foot" style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
-      <button type="button" class="btn btn-ghost" onclick="fecharModalNovoUsuario()">Cancelar</button>
-      <button type="button" class="btn btn-primary" id="btnConfirmarNovoUsuario" onclick="confirmarNovoUsuario()">
-        <svg class="i"><use href="#i-check" /></svg>
+    <div class="modal-foot"
+      style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
+      <button type="button" class="btn btn-ghost" data-action="fecharModalNovoUsuario">Cancelar</button>
+      <button type="button" class="btn btn-primary" id="btnConfirmarNovoUsuario" data-action="confirmarNovoUsuario">
+        <svg class="i">
+          <use href="#i-check" />
+        </svg>
         <span id="txtBtnConfirmarUsuario">Criar Usuário e Salvar no Supabase</span>
       </button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalAlterarSenha" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modalAlterarSenhaTitle">
+<div class="modal-overlay" id="modalAlterarSenha" role="dialog" aria-modal="true" aria-labelledby="modalAlterarSenhaTitle">
   <div class="modal-card" style="max-width:440px;">
     <div class="modal-head">
       <div style="min-width:0;flex:1">
-        <h3 id="modalAlterarSenhaTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Alterar Senha de Acesso</h3>
-        <div id="alterarSenhaNomeUsuario" style="font-size:12px;color:var(--accent-hi);font-weight:700;margin-top:2px;">Usuário</div>
+        <h3 id="modalAlterarSenhaTitle" style="margin:0;font-size:16px;font-weight:800;color:var(--ink);">Alterar Senha
+          de Acesso</h3>
+        <div id="alterarSenhaNomeUsuario" style="font-size:12px;color:var(--accent-hi);font-weight:700;margin-top:2px;">
+          Usuário</div>
       </div>
-      <button type="button" class="btn-close-modal" style="flex-shrink:0" onclick="fecharModalAlterarSenha()" aria-label="Fechar">&times;</button>
+      <button type="button" class="btn-close-modal" style="flex-shrink:0" data-action="fecharModalAlterarSenha"
+        aria-label="Fechar">&times;</button>
     </div>
 
     <div class="modal-body" style="padding:18px 20px;display:grid;gap:12px;">
       <input type="hidden" id="alterarSenhaKey" value="">
       <div>
-        <label for="inputNovaSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nova Senha *</label>
-        <input type="password" id="inputNovaSenha" class="input" placeholder="Mínimo 6 caracteres" autocomplete="new-password" style="width:100%;">
+        <label for="inputNovaSenha"
+          style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Nova Senha
+          *</label>
+        <input type="password" id="inputNovaSenha" class="input" placeholder="Mínimo 6 caracteres"
+          autocomplete="new-password" style="width:100%;">
       </div>
       <div>
-        <label for="inputConfirmarNovaSenha" style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Confirmar Nova Senha *</label>
-        <input type="password" id="inputConfirmarNovaSenha" class="input" placeholder="Digite novamente a senha" autocomplete="new-password" style="width:100%;">
+        <label for="inputConfirmarNovaSenha"
+          style="display:block;font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px;">Confirmar Nova
+          Senha *</label>
+        <input type="password" id="inputConfirmarNovaSenha" class="input" placeholder="Digite novamente a senha"
+          autocomplete="new-password" style="width:100%;">
       </div>
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 11px;font-size:11.5px;color:#92400e;line-height:1.4;">
-        Ao definir uma nova senha individual para este usuário, a senha genérica antiga não será mais aceita nesta conta e o novo hash será salvo imediatamente no Supabase.
+      <div
+        style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:9px 11px;font-size:11.5px;color:#92400e;line-height:1.4;">
+        Ao definir uma nova senha individual para este usuário, a senha genérica antiga não será mais aceita nesta conta
+        e o novo hash será salvo imediatamente no Supabase.
       </div>
     </div>
 
-    <div class="modal-foot" style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
-      <button type="button" class="btn btn-ghost" onclick="fecharModalAlterarSenha()">Cancelar</button>
-      <button type="button" class="btn btn-primary" onclick="confirmarAlteracaoSenha()">
-        <svg class="i"><use href="#i-lock" /></svg>
+    <div class="modal-foot"
+      style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);background:var(--panel-2);">
+      <button type="button" class="btn btn-ghost" data-action="fecharModalAlterarSenha">Cancelar</button>
+      <button type="button" class="btn btn-primary" data-action="confirmarAlteracaoSenha">
+        <svg class="i">
+          <use href="#i-lock" />
+        </svg>
         <span>Salvar Nova Senha no Supabase</span>
       </button>
     </div>
   </div>
 </div>
-

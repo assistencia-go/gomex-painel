@@ -7,2025 +7,27 @@
       const FROTA_VEICULOS_KEY = 'gomex_frota_cadastro_veiculos_v1';
       const OCORRENCIAS_FROTA_KEY = 'gomex_frota_ocorrencias_v1';
       const AGENDAMENTOS_FROTA_KEY = 'gomex_frota_agendamentos_v1';
+      const VENDEDORES_ROTAS_KEY = 'gomex_frota_vendedores_rotas_v1';
 
-      const VEICULOS_PADRAO_FROTA = [
-        {
-          "id": "veic_4_ARS6B73",
-          "nro_frota": "4",
-          "placa": "ARS6B73",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "Jackson",
-          "rota": "217",
-          "km_inicial": 307493,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X7AP009283",
-          "obs": "Nº Frota: 4 · Chassi: 9BWNF07X7AP009283 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_5_AUD9066",
-          "nro_frota": "5",
-          "placa": "AUD9066",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTK56117",
-          "obs": "Nº Frota: 5 · Chassi: WF0XXXTBFBTK56117 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_6_ATE5817",
-          "nro_frota": "6",
-          "placa": "ATE5817",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X8BP013506",
-          "obs": "Nº Frota: 6 · Chassi: 9BWNF07X8BP013506 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_7_ATJ7180",
-          "nro_frota": "7",
-          "placa": "ATJ7180",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "Jefferson",
-          "rota": "240",
-          "km_inicial": 235336,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "9BWNF07X0BP013466",
-          "obs": "Nº Frota: 7 · Chassi: 9BWNF07X0BP013466 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_8_ARJ4116",
-          "nro_frota": "8",
-          "placa": "ARJ4116",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X2AP002516",
-          "obs": "Nº Frota: 8 · Chassi: 9BWNF07X2AP002516 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_9_AUY9346",
-          "nro_frota": "9",
-          "placa": "AUY9346",
-          "modelo": "TRANSIT Furgão LONGO PRATA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRATA",
-          "chassi": "WFDXXXTBFBTJ28898",
-          "obs": "Nº Frota: 9 · Chassi: WFDXXXTBFBTJ28898 · Cor: PRATA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_10_AUE5535",
-          "nro_frota": "10",
-          "placa": "AUE5535",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL29243",
-          "obs": "Nº Frota: 10 · Chassi: WF0XXXTBFBTL29243 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_12_AVD9290",
-          "nro_frota": "12",
-          "placa": "AVD9290",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTT17636",
-          "obs": "Nº Frota: 12 · Chassi: WF0XXXTBFBTT17636 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_13_AVP7240",
-          "nro_frota": "13",
-          "placa": "AVP7240",
-          "modelo": "TRANSIT Furgão LONGO PRATA 11/11",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRATA",
-          "chassi": "WF0XXXTBFBTY74667",
-          "obs": "Nº Frota: 13 · Chassi: WF0XXXTBFBTY74667 · Cor: PRATA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_15_ATA4077",
-          "nro_frota": "15",
-          "placa": "ATA4077",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXT9FATD13941",
-          "obs": "Nº Frota: 15 · Chassi: WF0XXXT9FATD13941 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_16_AUE5311",
-          "nro_frota": "16",
-          "placa": "AUE5311",
-          "modelo": "TRANSIT Furgão CURTO 11/11 - AUE531",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL28858",
-          "obs": "Nº Frota: 16 · Chassi: WF0XXXTBFBTL28858 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_17_AVS3076",
-          "nro_frota": "17",
-          "placa": "AVS3076",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "WF0XXXTBFBTS14384",
-          "obs": "Nº Frota: 17 · Chassi: WF0XXXTBFBTS14384 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_18_ARJ3228",
-          "nro_frota": "18",
-          "placa": "ARJ3228",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X2AP002063",
-          "obs": "Nº Frota: 18 · Chassi: 9BWNF07X2AP002063 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_20_ARA8711",
-          "nro_frota": "20",
-          "placa": "ARA8711",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/09",
-          "ano": "2009",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X59P023419",
-          "obs": "Nº Frota: 20 · Chassi: 9BWNF07X59P023419 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_21_AQB7182",
-          "nro_frota": "21",
-          "placa": "AQB7182",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/08",
-          "ano": "2008",
-          "motorista": "LEONARDO CESAR ALVARENGA WEIRICH",
-          "rota": "229",
-          "km_inicial": 274526,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWFF07XX8P025699",
-          "obs": "Nº Frota: 21 · Chassi: 9BWFF07XX8P025699 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_22_AQC1D04",
-          "nro_frota": "22",
-          "placa": "AQC1D04",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/08",
-          "ano": "2008",
-          "motorista": "Wesley Honorato Dos Santos",
-          "rota": "206",
-          "km_inicial": 280355,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWFF07X78P025708",
-          "obs": "Nº Frota: 22 · Chassi: 9BWFF07X78P025708 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_23_ASR3401",
-          "nro_frota": "23",
-          "placa": "ASR3401",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9BP002790",
-          "obs": "Nº Frota: 23 · Chassi: 9BWNF07X9BP002790 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_24_ASR3203",
-          "nro_frota": "24",
-          "placa": "ASR3203",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X1BP003187",
-          "obs": "Nº Frota: 24 · Chassi: 9BWNF07X1BP003187 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_25_ASQ3A29",
-          "nro_frota": "25",
-          "placa": "ASQ3A29",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "Gabriel Vinicius Dick",
-          "rota": "224",
-          "km_inicial": 223443,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF05X5BP003127",
-          "obs": "Nº Frota: 25 · Chassi: 9BWNF05X5BP003127 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_26_ARO3871",
-          "nro_frota": "26",
-          "placa": "ARO3871",
-          "modelo": "TRANSIT Furgão LONGO Vw/Kombi",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF05X5BP003127",
-          "obs": "Nº Frota: 26 · Chassi: 9BWNF05X5BP003127 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_27_ATF8557",
-          "nro_frota": "27",
-          "placa": "ATF8557",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 10/10",
-          "ano": "2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTAFATY71694",
-          "obs": "Nº Frota: 27 · Chassi: WF0XXXTAFATY71694 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_28_ASF1725",
-          "nro_frota": "28",
-          "placa": "ASF1725",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 09/09",
-          "ano": "2009",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXT9F9TM76227",
-          "obs": "Nº Frota: 28 · Chassi: WF0XXXT9F9TM76227 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_29_AUD9069",
-          "nro_frota": "29",
-          "placa": "AUD9069",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL28878",
-          "obs": "Nº Frota: 29 · Chassi: WF0XXXTBFBTL28878 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_31_AUE5530",
-          "nro_frota": "31",
-          "placa": "AUE5530",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL29301",
-          "obs": "Nº Frota: 31 · Chassi: WF0XXXTBFBTL29301 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_32_AUE8413",
-          "nro_frota": "32",
-          "placa": "AUE8413",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL29840",
-          "obs": "Nº Frota: 32 · Chassi: WF0XXXTBFBTL29840 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_33_AVD8J86",
-          "nro_frota": "33",
-          "placa": "AVD8J86",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTT23428",
-          "obs": "Nº Frota: 33 · Chassi: WF0XXXTBFBTT23428 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_34_AVD8856",
-          "nro_frota": "34",
-          "placa": "AVD8856",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTJ28813",
-          "obs": "Nº Frota: 34 · Chassi: WF0XXXTBFBTJ28813 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_35_AUY6057",
-          "nro_frota": "35",
-          "placa": "AUY6057",
-          "modelo": "TRANSIT Furgão LONGO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTT17880",
-          "obs": "Nº Frota: 35 · Chassi: WF0XXXTBFBTT17880 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_36_AUY1520",
-          "nro_frota": "36",
-          "placa": "AUY1520",
-          "modelo": "TRANSIT Furgão LONGO PRATA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTT17665",
-          "obs": "Nº Frota: 36 · Chassi: WF0XXXTBFBTT17665 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_39_AWM5868",
-          "nro_frota": "39",
-          "placa": "AWM5868",
-          "modelo": "VOLKS/CAMINHAO 5-150",
-          "ano": "2013/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "9531M32P4DR316745",
-          "obs": "Nº Frota: 39 · Chassi: 9531M32P4DR316745 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_40_AZF3052",
-          "nro_frota": "40",
-          "placa": "AZF3052",
-          "modelo": "FORD/TRANSIT TRANSIT 350L",
-          "ano": "2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "WFOFXPTDFDTP26758",
-          "obs": "Nº Frota: 40 · Chassi: WFOFXPTDFDTP26758 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_41_AZD3676",
-          "nro_frota": "41",
-          "placa": "AZD3676",
-          "modelo": "FORD TRANSIT",
-          "ano": "2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "WF0FXFXPTDFDTR25037",
-          "obs": "Nº Frota: 41 · Chassi: WF0FXFXPTDFDTR25037 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_42_AZD3677",
-          "nro_frota": "42",
-          "placa": "AZD3677",
-          "modelo": "FORD TRANSIT",
-          "ano": "2012/2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "9531M32P4DR316745",
-          "obs": "Nº Frota: 42 · Chassi: 9531M32P4DR316745 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_50_AYR7G87",
-          "nro_frota": "50",
-          "placa": "AYR7G87",
-          "modelo": "RENAULT MASTER Furgão",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "93YMAF4LEFJ429908",
-          "obs": "Nº Frota: 50 · Chassi: 93YMAF4LEFJ429908 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_51_AYT0G34",
-          "nro_frota": "51",
-          "placa": "AYT0G34",
-          "modelo": "RENAULT MASTER Furgão",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "93YMAF4LEFJ312332",
-          "obs": "Nº Frota: 51 · Chassi: 93YMAF4LEFJ312332 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_52_AYS0241",
-          "nro_frota": "52",
-          "placa": "AYS0241",
-          "modelo": "Caminhão SCANIA P250",
-          "ano": "2014",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "AZUL",
-          "chassi": "9BSP6X200E3862369",
-          "obs": "Nº Frota: 52 · Chassi: 9BSP6X200E3862369 · Cor: AZUL · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_53_AYY9607",
-          "nro_frota": "53",
-          "placa": "AYY9607",
-          "modelo": "VW/GOL CONFORTILINE",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAA45U6FT067168",
-          "obs": "Nº Frota: 53 · Chassi: 9BWAA45U6FT067168 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_54_AYY9598",
-          "nro_frota": "54",
-          "placa": "AYY9598",
-          "modelo": "VW/GOL CONFORTILINE",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAA45U2FT066602",
-          "obs": "Nº Frota: 54 · Chassi: 9BWAA45U2FT066602 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_55_AYY9599",
-          "nro_frota": "55",
-          "placa": "AYY9599",
-          "modelo": "VW/GOL CONFORTILINE",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "9BWAA45U6FT066568",
-          "obs": "Nº Frota: 55 · Chassi: 9BWAA45U6FT066568 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_56_AYY9604",
-          "nro_frota": "56",
-          "placa": "AYY9604",
-          "modelo": "VW/GOL CONFORTILINE",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAA45U3FT066527",
-          "obs": "Nº Frota: 56 · Chassi: 9BWAA45U3FT066527 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_57_AZO2983",
-          "nro_frota": "57",
-          "placa": "AZO2983",
-          "modelo": "VW/GOL CONFORTILINE",
-          "ano": "2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "9BWAA45U4FP177922",
-          "obs": "Nº Frota: 57 · Chassi: 9BWAA45U4FP177922 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_58_AZO2984",
-          "nro_frota": "58",
-          "placa": "AZO2984",
-          "modelo": "VW/VOYAGE CONFORTILINE",
-          "ano": "2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "9BWDA45U1FT117231",
-          "obs": "Nº Frota: 58 · Chassi: 9BWDA45U1FT117231 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_61_AZU6981",
-          "nro_frota": "61",
-          "placa": "AZU6981",
-          "modelo": "VOLKSWAGEN GOL CL MB",
-          "ano": "2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRATA",
-          "chassi": "9BWAA45U5FP568366",
-          "obs": "Nº Frota: 61 · Chassi: 9BWAA45U5FP568366 · Cor: PRATA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_62_AZU6980",
-          "nro_frota": "62",
-          "placa": "AZU6980",
-          "modelo": "VOLKSWAGEN GOL CL MB",
-          "ano": "2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRATA",
-          "chassi": "9BWAA45UXFP192005",
-          "obs": "Nº Frota: 62 · Chassi: 9BWAA45UXFP192005 · Cor: PRATA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_63_BAH9445",
-          "nro_frota": "63",
-          "placa": "BAH9445",
-          "modelo": "RENAULT FUR L3H2",
-          "ano": "2016/2017",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YMAFELEHJ256212",
-          "obs": "Nº Frota: 63 · Chassi: 93YMAFELEHJ256212 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_64_BAE7C17",
-          "nro_frota": "64",
-          "placa": "BAE7C17",
-          "modelo": "TOYOTA COROLLA XEI FLEX",
-          "ano": "2015/2016",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BRBDWHE6G0295742",
-          "obs": "Nº Frota: 64 · Chassi: 9BRBDWHE6G0295742 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_65_ARI4753",
-          "nro_frota": "65",
-          "placa": "ARI4753",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X2AP001317",
-          "obs": "Nº Frota: 65 · Chassi: 9BWNF07X2AP001317 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_66_AZG7707",
-          "nro_frota": "66",
-          "placa": "AZG7707",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 11/12",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X2CP009520",
-          "obs": "Nº Frota: 66 · Chassi: 9BWNF07X2CP009520 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_67_AVD8571",
-          "nro_frota": "67",
-          "placa": "AVD8571",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 12/12",
-          "ano": "2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9CP026282",
-          "obs": "Nº Frota: 67 · Chassi: 9BWNF07X9CP026282 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_69_IOM8A79",
-          "nro_frota": "69",
-          "placa": "IOM8A79",
-          "modelo": "KOMBI FURG. 1.4 FLEX 08/08 IOM8A79",
-          "ano": "2008",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWFF07X98P019148",
-          "obs": "Nº Frota: 69 · Chassi: 9BWFF07X98P019148 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_71_ATT5531",
-          "nro_frota": "71",
-          "placa": "ATT5531",
-          "modelo": "FREELANDER 2 SE I6",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETA",
-          "chassi": "",
-          "obs": "Nº Frota: 71 · Cor: PRETA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_72_BAE7C18",
-          "nro_frota": "72",
-          "placa": "BAE7C18",
-          "modelo": "TOYOTA COROLLA XEI FLEX",
-          "ano": "2015/2016",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETA",
-          "chassi": "9BRBDWHE6G0297911",
-          "obs": "Nº Frota: 72 · Chassi: 9BRBDWHE6G0297911 · Cor: PRETA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_73_AVU7716",
-          "nro_frota": "73",
-          "placa": "AVU7716",
-          "modelo": "NISSAN TIIDA",
-          "ano": "2012/2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "3N1BC1CD8DK195934",
-          "obs": "Nº Frota: 73 · Chassi: 3N1BC1CD8DK195934 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_74_AUD6A81",
-          "nro_frota": "74",
-          "placa": "AUD6A81",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 11/12",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X4CP004674",
-          "obs": "Nº Frota: 74 · Chassi: 9BWNF07X4CP004674 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_75_AZV7659",
-          "nro_frota": "75",
-          "placa": "AZV7659",
-          "modelo": "CRUZE LT 1.8 AUTOMATICO FLEX",
-          "ano": "2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BGPB68NOFB217081",
-          "obs": "Nº Frota: 75 · Chassi: 9BGPB68NOFB217081 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_77_IOT9B39",
-          "nro_frota": "77",
-          "placa": "IOT9B39",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/09",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "",
-          "obs": "Nº Frota: 77 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_78_IOX8063",
-          "nro_frota": "78",
-          "placa": "IOX8063",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/09",
-          "ano": "2008/2009",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07XX9P002985",
-          "obs": "Nº Frota: 78 · Chassi: 9BWNF07XX9P002985 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_79_AYM9958",
-          "nro_frota": "79",
-          "placa": "AYM9958",
-          "modelo": "FIAT DOBLO CARGO 1.4 FLEX",
-          "ano": "2014",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BD223153E2038594",
-          "obs": "Nº Frota: 79 · Chassi: 9BD223153E2038594 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_80_IVU6547",
-          "nro_frota": "80",
-          "placa": "IVU6547",
-          "modelo": "FIAT FIORINO 1.4 FLEX",
-          "ano": "2014/2015",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BD265122F9019069",
-          "obs": "Nº Frota: 80 · Chassi: 9BD265122F9019069 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_81_IOT9B64",
-          "nro_frota": "81",
-          "placa": "IOT9B64",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/09",
-          "ano": "2008/2009",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X49P000004",
-          "obs": "Nº Frota: 81 · Chassi: 9BWNF07X49P000004 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_82_IOU0H28",
-          "nro_frota": "82",
-          "placa": "IOU0H28",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 08/09",
-          "ano": "2008/2009",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X39P000852",
-          "obs": "Nº Frota: 82 · Chassi: 9BWNF07X39P000852 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_83_IPS9800",
-          "nro_frota": "83",
-          "placa": "IPS9800",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/09",
-          "ano": "2009",
-          "motorista": "Wesley Aparecido Da Roaa",
-          "rota": "203",
-          "km_inicial": 300986,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X19P027239",
-          "obs": "Nº Frota: 83 · Chassi: 9BWNF07X19P027239 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_84_IPV0C73",
-          "nro_frota": "84",
-          "placa": "IPV0C73",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9AP001704",
-          "obs": "Nº Frota: 84 · Chassi: 9BWNF07X9AP001704 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_85_IQJ8E28",
-          "nro_frota": "85",
-          "placa": "IQJ8E28",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 09/10",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X4AP017051",
-          "obs": "Nº Frota: 85 · Chassi: 9BWNF07X4AP017051 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_87_IRE8E13",
-          "nro_frota": "87",
-          "placa": "IRE8E13",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 87 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_88_IRX2C55",
-          "nro_frota": "88",
-          "placa": "IRX2C55",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 11/12",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9CP001897",
-          "obs": "Nº Frota: 88 · Chassi: 9BWNF07X9CP001897 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_89_IST7D96",
-          "nro_frota": "89",
-          "placa": "IST7D96",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 12/12",
-          "ano": "2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9CP023267",
-          "obs": "Nº Frota: 89 · Chassi: 9BWNF07X9CP023267 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_91_IST6C52",
-          "nro_frota": "91",
-          "placa": "IST6C52",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 12/12",
-          "ano": "2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X7CP023266",
-          "obs": "Nº Frota: 91 · Chassi: 9BWNF07X7CP023266 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_92_IRF3C89",
-          "nro_frota": "92",
-          "placa": "IRF3C89",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9BP012462",
-          "obs": "Nº Frota: 92 · Chassi: 9BWNF07X9BP012462 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_93_IRE8E05",
-          "nro_frota": "93",
-          "placa": "IRE8E05",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X7BP012511",
-          "obs": "Nº Frota: 93 · Chassi: 9BWNF07X7BP012511 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_94_IUB0H75",
-          "nro_frota": "94",
-          "placa": "IUB0H75",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 12/13",
-          "ano": "2012/2013",
-          "motorista": "Emerson 222",
-          "rota": "222",
-          "km_inicial": 187264,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X4DP010363",
-          "obs": "Nº Frota: 94 · Chassi: 9BWNF07X4DP010363 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_95_IRX2C68",
-          "nro_frota": "95",
-          "placa": "IRX2C68",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 11/12",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07XXCP001973",
-          "obs": "Nº Frota: 95 · Chassi: 9BWNF07XXCP001973 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_96_MMJ9099",
-          "nro_frota": "96",
-          "placa": "MMJ9099",
-          "modelo": "I/CHRYSLER 300C SRTB",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "",
-          "obs": "Nº Frota: 96 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_97_BDP9G05",
-          "nro_frota": "97",
-          "placa": "BDP9G05",
-          "modelo": "VW POLO CL ADA",
-          "ano": "2019/2020",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAH5BZ9LP074752",
-          "obs": "Nº Frota: 97 · Chassi: 9BWAH5BZ9LP074752 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_98_CPN8C43",
-          "nro_frota": "98",
-          "placa": "CPN8C43",
-          "modelo": "Caminhão VW 15.180",
-          "ano": "2009/2010",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "9533172S5AO11537",
-          "obs": "Nº Frota: 98 · Chassi: 9533172S5AO11537 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_99_NYA4975",
-          "nro_frota": "99",
-          "placa": "NYA4975",
-          "modelo": "FORD CARGO 1319",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 99 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_100_NYA4J75",
-          "nro_frota": "100",
-          "placa": "NYA4J75",
-          "modelo": "FORD CARGO",
-          "ano": "2012/2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BFXEB1BXDBS10049",
-          "obs": "Nº Frota: 100 · Chassi: 9BFXEB1BXDBS10049 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_101_LUH6G52",
-          "nro_frota": "101",
-          "placa": "LUH6G52",
-          "modelo": "GOLF GTI",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETO",
-          "chassi": "",
-          "obs": "Nº Frota: 101 · Cor: PRETO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_102_BCW8A43",
-          "nro_frota": "102",
-          "placa": "BCW8A43",
-          "modelo": "VW GTI 350 TSI 2.0 230CV 16V AUT.",
-          "ano": "2019",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAV7AU0K4000159",
-          "obs": "Nº Frota: 102 · Chassi: 9BWAV7AU0K4000159 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_103_BDZ1H47",
-          "nro_frota": "103",
-          "placa": "BDZ1H47",
-          "modelo": "TOYOTA XEI",
-          "ano": "2020",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BRB33BE7L2022170",
-          "obs": "Nº Frota: 103 · Chassi: 9BRB33BE7L2022170 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_104_BDO3G59",
-          "nro_frota": "104",
-          "placa": "BDO3G59",
-          "modelo": "MERCEDEZS BENZ SPRINTER 313 STREET CHASSI",
-          "ano": "2019",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "8AC906135KE175688",
-          "obs": "Nº Frota: 104 · Chassi: 8AC906135KE175688 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_105_BEY9C48",
-          "nro_frota": "105",
-          "placa": "BEY9C48",
-          "modelo": "MERCEDES BENZ ATEGO 1719",
-          "ano": "2021",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BM95815MB205407",
-          "obs": "Nº Frota: 105 · Chassi: 9BM95815MB205407 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_106_AUD9B28",
-          "nro_frota": "106",
-          "placa": "AUD9B28",
-          "modelo": "TRANSIT Furgão CURTO BRANCA 11/11",
-          "ano": "2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "WF0XXXTBFBTL28858",
-          "obs": "Nº Frota: 106 · Chassi: WF0XXXTBFBTL28858 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_107_RHB4G63",
-          "nro_frota": "107",
-          "placa": "RHB4G63",
-          "modelo": "POLO TSI 2021/21 RHB4G63",
-          "ano": "2021",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCO",
-          "chassi": "9BWAH5BZXMP061266",
-          "obs": "Nº Frota: 107 · Chassi: 9BWAH5BZXMP061266 · Cor: BRANCO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_108_BCV1B15",
-          "nro_frota": "108",
-          "placa": "BCV1B15",
-          "modelo": "NISSAN 18SL",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "3N1BC1CD5CK219413",
-          "obs": "Nº Frota: 108 · Chassi: 3N1BC1CD5CK219413 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_109_RHN4C29",
-          "nro_frota": "109",
-          "placa": "RHN4C29",
-          "modelo": "GOL",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAG45UXNT087937",
-          "obs": "Nº Frota: 109 · Chassi: 9BWAG45UXNT087937 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_110_RHN4C07",
-          "nro_frota": "110",
-          "placa": "RHN4C07",
-          "modelo": "VW 1.0",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAG45UNT087991",
-          "obs": "Nº Frota: 110 · Chassi: 9BWAG45UNT087991 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_111_RHN9A28",
-          "nro_frota": "111",
-          "placa": "RHN9A28",
-          "modelo": "GOL",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 111 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_112_RHN9A40",
-          "nro_frota": "112",
-          "placa": "RHN9A40",
-          "modelo": "GOL",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 112 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_113_RHN9A52",
-          "nro_frota": "113",
-          "placa": "RHN9A52",
-          "modelo": "VW/GOL CONFORTILINE 2021/2022",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 113 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_114_RHN9C40",
-          "nro_frota": "114",
-          "placa": "RHN9C40",
-          "modelo": "GOL",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 114 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_115_ABL1E73",
-          "nro_frota": "115",
-          "placa": "ABL1E73",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 11/12",
-          "ano": "2011/2012",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X5CP015554",
-          "obs": "Nº Frota: 115 · Chassi: 9BWNF07X5CP015554 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_116_AOI4C05",
-          "nro_frota": "116",
-          "placa": "AOI4C05",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 06/07",
-          "ano": "2006/2007",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWFF07X17P005761",
-          "obs": "Nº Frota: 116 · Chassi: 9BWFF07X17P005761 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_117_AOI4B86",
-          "nro_frota": "117",
-          "placa": "AOI4B86",
-          "modelo": "KOMBI Furgão 1.4 FLEX BRANCA 06/07",
-          "ano": "2006/2007",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWFF07X37P005888",
-          "obs": "Nº Frota: 117 · Chassi: 9BWFF07X37P005888 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_118_RHQ9F75",
-          "nro_frota": "118",
-          "placa": "RHQ9F75",
-          "modelo": "POLO TSI BRANCO 2021/2022",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAH5BZ8NP026503",
-          "obs": "Nº Frota: 118 · Chassi: 9BWAH5BZ8NP026503 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_119_RHS0B22",
-          "nro_frota": "119",
-          "placa": "RHS0B22",
-          "modelo": "I/VOLVO XC40 T5H RDESIGN",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "VERMELHA",
-          "chassi": "YV1XZBBCFN2694672",
-          "obs": "Nº Frota: 119 · Chassi: YV1XZBBCFN2694672 · Cor: VERMELHA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_120_IUI7J59",
-          "nro_frota": "120",
-          "placa": "IUI7J59",
-          "modelo": "KOMBI Furgão",
-          "ano": "2013/2014",
-          "motorista": "Welder Wester Da Silva",
-          "rota": "214",
-          "km_inicial": 173855,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X5EP001351",
-          "obs": "Nº Frota: 120 · Chassi: 9BWNF07X5EP001351 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_121_AXF7J73",
-          "nro_frota": "121",
-          "placa": "AXF7J73",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 13/14",
-          "ano": "2013/2014",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07X9EP007170",
-          "obs": "Nº Frota: 121 · Chassi: 9BWNF07X9EP007170 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_122_ASO8H31",
-          "nro_frota": "122",
-          "placa": "ASO8H31",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 10/11",
-          "ano": "2010/2011",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWNF07XXBP002071",
-          "obs": "Nº Frota: 122 · Chassi: 9BWNF07XXBP002071 · Cor: BRANCA · UF: PRR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_123_RHY4G89",
-          "nro_frota": "123",
-          "placa": "RHY4G89",
-          "modelo": "MB 815",
-          "ano": "2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BM951102NB268140",
-          "obs": "Nº Frota: 123 · Chassi: 9BM951102NB268140 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_124_EWP8I81",
-          "nro_frota": "124",
-          "placa": "EWP8I81",
-          "modelo": "MERCEDES-BENZ/GLA 250 GLA 250",
-          "ano": "2019",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETA",
-          "chassi": "",
-          "obs": "Nº Frota: 124 · Cor: PRETA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_125_AZJ6I40",
-          "nro_frota": "125",
-          "placa": "AZJ6I40",
-          "modelo": "HB 20",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "",
-          "obs": "Nº Frota: 125 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_126_RHV8A22",
-          "nro_frota": "126",
-          "placa": "RHV8A22",
-          "modelo": "I/FORD MUSTANG MACH1",
-          "ano": "2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "VERMELHA",
-          "chassi": "",
-          "obs": "Nº Frota: 126 · Cor: VERMELHA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_127_AVZ9A25",
-          "nro_frota": "127",
-          "placa": "AVZ9A25",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 12/13",
-          "ano": "2012/2013",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 127 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_128_BAL3C34",
-          "nro_frota": "128",
-          "placa": "BAL3C34",
-          "modelo": "KOMBI FURGAO 1.4 FLEX BRANCA 13/14",
-          "ano": "2013/2014",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 128 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_129_SEJ3C54",
-          "nro_frota": "129",
-          "placa": "SEJ3C54",
-          "modelo": "VW NIVUS",
-          "ano": "2023",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 129 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_130_EBP2I49",
-          "nro_frota": "130",
-          "placa": "EBP2I49",
-          "modelo": "I/ BMW M135I XDRIV",
-          "ano": "2020/2021",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "AZUL",
-          "chassi": "WBA7L1106M7F97484",
-          "obs": "Nº Frota: 130 · Chassi: WBA7L1106M7F97484 · Cor: AZUL · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_131_BDA4G12",
-          "nro_frota": "131",
-          "placa": "BDA4G12",
-          "modelo": "HONDA CIVIC EXL CVT",
-          "ano": "2019",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "AZUL",
-          "chassi": "93HFC264KZ211239",
-          "obs": "Nº Frota: 131 · Chassi: 93HFC264KZ211239 · Cor: AZUL · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_132_DTC6H54",
-          "nro_frota": "132",
-          "placa": "DTC6H54",
-          "modelo": "VW POLO HL",
-          "ano": "",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "",
-          "obs": "Nº Frota: 132 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_133_TAZ6C00",
-          "nro_frota": "133",
-          "placa": "TAZ6C00",
-          "modelo": "I/VOLVO XC60 T8 ULT DARK",
-          "ano": "2024",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "CINZA",
-          "chassi": "LYVUZH6C9RB916974",
-          "obs": "Nº Frota: 133 · Chassi: LYVUZH6C9RB916974 · Cor: CINZA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_134_TAY3D65",
-          "nro_frota": "134",
-          "placa": "TAY3D65",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62007SJ122730",
-          "obs": "Nº Frota: 134 · Chassi: 93YF62007SJ122730 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_135_TAY3D64",
-          "nro_frota": "135",
-          "placa": "TAY3D64",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62007SJ122713",
-          "obs": "Nº Frota: 135 · Chassi: 93YF62007SJ122713 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_136_TAY3D63",
-          "nro_frota": "136",
-          "placa": "TAY3D63",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62008SJ122686",
-          "obs": "Nº Frota: 136 · Chassi: 93YF62008SJ122686 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_137_TAY3D62",
-          "nro_frota": "137",
-          "placa": "TAY3D62",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62008SJ122669",
-          "obs": "Nº Frota: 137 · Chassi: 93YF62008SJ122669 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_138_TAY3D69",
-          "nro_frota": "138",
-          "placa": "TAY3D69",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62007SJ122775",
-          "obs": "Nº Frota: 138 · Chassi: 93YF62007SJ122775 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_139_TAY3D68",
-          "nro_frota": "139",
-          "placa": "TAY3D68",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "Magno Cristiano De LIMA",
-          "rota": "211",
-          "km_inicial": 58550,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62007SJJ122758",
-          "obs": "Nº Frota: 139 · Chassi: 93YF62007SJJ122758 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_140_TAY3D67",
-          "nro_frota": "140",
-          "placa": "TAY3D67",
-          "modelo": "RENAULT Furgão L3",
-          "ano": "2024/2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YF62004SJ122734",
-          "obs": "Nº Frota: 140 · Chassi: 93YF62004SJ122734 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_141_TBH2F54",
-          "nro_frota": "141",
-          "placa": "TBH2F54",
-          "modelo": "VW / POLO TRACK MA",
-          "ano": "2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAG5R17STO78162",
-          "obs": "Nº Frota: 141 · Chassi: 9BWAG5R17STO78162 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_142_TBI4B51",
-          "nro_frota": "142",
-          "placa": "TBI4B51",
-          "modelo": "VW POLO CL AB",
-          "ano": "2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAH5BZ8ST663104",
-          "obs": "Nº Frota: 142 · Chassi: 9BWAH5BZ8ST663104 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_143_TBI4B57",
-          "nro_frota": "143",
-          "placa": "TBI4B57",
-          "modelo": "VW POLO CL AB",
-          "ano": "2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "9BWAH5BZ9ST662740",
-          "obs": "Nº Frota: 143 · Chassi: 9BWAH5BZ9ST662740 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_144_TBK3I17",
-          "nro_frota": "144",
-          "placa": "TBK3I17",
-          "modelo": "RENAULT CHASSI CAB",
-          "ano": "2025/2026",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "93YU62S05TJ210990",
-          "obs": "Nº Frota: 144 · Chassi: 93YU62S05TJ210990 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_145_RHV0A25",
-          "nro_frota": "145",
-          "placa": "RHV0A25",
-          "modelo": "PORSCHE CAYENNE CP PHE",
-          "ano": "2025",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BEGE",
-          "chassi": "WP1BE29Y8SDA68555",
-          "obs": "Nº Frota: 145 · Chassi: WP1BE29Y8SDA68555 · Cor: BEGE · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_146_FIL0E51",
-          "nro_frota": "146",
-          "placa": "FIL0E51",
-          "modelo": "TOYOTA TOYOTA/CCROSS XRX HYBRID",
-          "ano": "2021/2022",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "",
-          "chassi": "",
-          "obs": "Nº Frota: 146 · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_147_TLT9J49",
-          "nro_frota": "147",
-          "placa": "TLT9J49",
-          "modelo": "HARLEY DAVIDSON",
-          "ano": "2024",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETA",
-          "chassi": "9321YBK75RD023258",
-          "obs": "Nº Frota: 147 · Chassi: 9321YBK75RD023258 · Cor: PRETA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_148_BBB000",
-          "nro_frota": "148",
-          "placa": "BBB000",
-          "modelo": "MUSTANG MACH 1 PRETO",
-          "ano": "1969",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "PRETO",
-          "chassi": "",
-          "obs": "Nº Frota: 148 · Cor: PRETO · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
-        },
-        {
-          "id": "veic_149_SEU7D32",
-          "nro_frota": "149",
-          "placa": "SEU7D32",
-          "modelo": "CAMINHAO MERCEDES BENZ ACCELO 817",
-          "ano": "2022/2023",
-          "motorista": "",
-          "rota": "",
-          "km_inicial": 0,
-          "meta_oleo_km": 10000,
-          "cor": "BRANCA",
-          "chassi": "",
-          "obs": "Nº Frota: 149 · Cor: BRANCA · UF: PR",
-          "ativo": true,
-          "created_at": "2026-11-04"
+      // Lista base de veículos carregada sob demanda (/chunks/veiculos-padrao.json)
+      window.VEICULOS_PADRAO_FROTA = window.VEICULOS_PADRAO_FROTA || null;
+      async function carregarVeiculosPadraoChunk() {
+        if (Array.isArray(window.VEICULOS_PADRAO_FROTA) && window.VEICULOS_PADRAO_FROTA.length) {
+          return window.VEICULOS_PADRAO_FROTA;
         }
-      ];
+        try {
+          const res = await fetch('/chunks/veiculos-padrao.json', { cache: 'force-cache' });
+          if (res.ok) {
+            const arr = await res.json();
+            if (Array.isArray(arr)) {
+              window.VEICULOS_PADRAO_FROTA = arr;
+              return arr;
+            }
+          }
+        } catch (e) { }
+        return [];
+      }
+      window.carregarVeiculosPadraoChunk = carregarVeiculosPadraoChunk;
 
       const PRODUTOS_PADRAO_FROTA = [
         { id: 'p_oleo_5w30', codigo: '01', nome: 'Óleo de Motor 5W30 Sintético', categoria: 'Óleo & Lubrificantes', unidade: 'L', preco_base: 45.00 },
@@ -2066,6 +68,7 @@
         veiculos: [],
         ocorrencias: [],
         agendamentos: [],
+        vendedores_rotas: [],
         aba: 'lancamentos',
         periodoQuick: 'todos',
         dataInicio: '',
@@ -2078,6 +81,9 @@
         galUploadsDraft: [],
         gastoAnexosDraft: []
       };
+      window.gastosState = gastosState;
+      window.PRODUTOS_PADRAO_FROTA = PRODUTOS_PADRAO_FROTA;
+      window.UNIDADE_LABELS = UNIDADE_LABELS;
 
       function garantirCodigosProdutos() {
         if (!Array.isArray(gastosState.produtos)) return;
@@ -2195,6 +201,14 @@
             if (Array.isArray(parsedAg)) gastosState.agendamentos = parsedAg;
           }
         } catch (e) { }
+
+        try {
+          const rawVr = localStorage.getItem(VENDEDORES_ROTAS_KEY);
+          if (rawVr) {
+            const parsedVr = JSON.parse(rawVr);
+            if (Array.isArray(parsedVr)) gastosState.vendedores_rotas = parsedVr;
+          }
+        } catch (e) { }
       }
 
       function salvarGastosLocalStorage() {
@@ -2207,210 +221,430 @@
           localStorage.setItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
           localStorage.setItem(OCORRENCIAS_FROTA_KEY, JSON.stringify(gastosState.ocorrencias || []));
           localStorage.setItem(AGENDAMENTOS_FROTA_KEY, JSON.stringify(gastosState.agendamentos || []));
+          localStorage.setItem(VENDEDORES_ROTAS_KEY, JSON.stringify(gastosState.vendedores_rotas || []));
         } catch (e) { }
+      }
+
+      const FROTA_ARRAY_COLECOES = ['produtos', 'lancamentos', 'galeria', 'veiculos', 'ocorrencias', 'agendamentos', 'vendedores_rotas'];
+      const _frotaSyncSnapshot = {
+        produtos: {},
+        lancamentos: {},
+        galeria: {},
+        veiculos: {},
+        ocorrencias: {},
+        agendamentos: {},
+        vendedores_rotas: {},
+        historico_manutencoes: {}
+      };
+
+      function _frotaRecId(col, item) {
+        if (!item || typeof item !== 'object') return '';
+        if (col === 'vendedores_rotas') return String(item.id || item.rota || item.nome || '').trim();
+        return String(item.id || item.placa || '').trim();
+      }
+
+      function _frotaStableHash(obj) {
+        if (obj === null || obj === undefined) return '';
+        try {
+          if (typeof obj === 'object' && !Array.isArray(obj)) {
+            const clone = { ...obj };
+            delete clone.updated_at;
+            return JSON.stringify(clone);
+          }
+          return JSON.stringify(obj);
+        } catch (e) {
+          return '';
+        }
+      }
+
+      function atualizarSnapshotFrota(apenasCol) {
+        const cols = apenasCol ? [apenasCol] : [...FROTA_ARRAY_COLECOES, 'historico_manutencoes'];
+        for (const col of cols) {
+          const nextMap = {};
+          if (col === 'historico_manutencoes') {
+            const m = gastosState.historico_manutencoes || {};
+            for (const placa of Object.keys(m)) {
+              if (!placa) continue;
+              nextMap[placa] = _frotaStableHash(m[placa]);
+            }
+          } else {
+            const arr = Array.isArray(gastosState[col]) ? gastosState[col] : [];
+            for (const item of arr) {
+              const id = _frotaRecId(col, item);
+              if (id) nextMap[id] = _frotaStableHash(item);
+            }
+          }
+          _frotaSyncSnapshot[col] = nextMap;
+        }
+      }
+
+      function diffFrotaSnapshotOps() {
+        const ops = [];
+        for (const col of FROTA_ARRAY_COLECOES) {
+          const prevMap = _frotaSyncSnapshot[col] || {};
+          const currArr = Array.isArray(gastosState[col]) ? gastosState[col] : [];
+          const seenIds = new Set();
+          for (const item of currArr) {
+            const id = _frotaRecId(col, item);
+            if (!id) continue;
+            seenIds.add(id);
+            const currHash = _frotaStableHash(item);
+            if (prevMap[id] !== currHash) {
+              ops.push({ colecao: col, op: 'upsert', id, data: item });
+            }
+          }
+          for (const oldId of Object.keys(prevMap)) {
+            if (!seenIds.has(oldId)) {
+              ops.push({ colecao: col, op: 'delete', id: oldId });
+            }
+          }
+        }
+        const prevHist = _frotaSyncSnapshot.historico_manutencoes || {};
+        const currHist = gastosState.historico_manutencoes || {};
+        const seenPlacas = new Set();
+        for (const placa of Object.keys(currHist)) {
+          if (!placa) continue;
+          seenPlacas.add(placa);
+          const h = _frotaStableHash(currHist[placa]);
+          if (prevHist[placa] !== h) {
+            ops.push({ colecao: 'historico_manutencoes', op: 'upsert', id: placa, data: currHist[placa] });
+          }
+        }
+        for (const oldPlaca of Object.keys(prevHist)) {
+          if (!seenPlacas.has(oldPlaca)) {
+            ops.push({ colecao: 'historico_manutencoes', op: 'delete', id: oldPlaca });
+          }
+        }
+        return ops;
+      }
+
+      function aplicarPendentesFrotaLocais() {
+        const queue = typeof window.getPendingFrotaQueue === 'function' ? window.getPendingFrotaQueue() : [];
+        if (!queue.length) return;
+        for (const entry of queue) {
+          if (!entry || !entry.colecao || !entry.id) continue;
+          const col = entry.colecao;
+          if (col === 'historico_manutencoes') {
+            if (!gastosState.historico_manutencoes || typeof gastosState.historico_manutencoes !== 'object') {
+              gastosState.historico_manutencoes = {};
+            }
+            if (entry.op === 'delete') delete gastosState.historico_manutencoes[entry.id];
+            else if (entry.data !== undefined) gastosState.historico_manutencoes[entry.id] = entry.data;
+            continue;
+          }
+          if (!Array.isArray(gastosState[col])) gastosState[col] = [];
+          const list = gastosState[col];
+          const idx = list.findIndex(x => _frotaRecId(col, x) === entry.id);
+          if (entry.op === 'delete') {
+            if (idx !== -1) list.splice(idx, 1);
+          } else if (entry.data && typeof entry.data === 'object') {
+            if (idx !== -1) list[idx] = entry.data;
+            else list.unshift(entry.data);
+          }
+        }
+      }
+
+      async function sincronizarFilaFrotaPendente() {
+        const queue = typeof window.getPendingFrotaQueue === 'function' ? window.getPendingFrotaQueue() : [];
+        if (!queue.length) {
+          if (typeof window.atualizarIndicadorSyncPendente === 'function') window.atualizarIndicadorSyncPendente();
+          return true;
+        }
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          if (typeof window.atualizarIndicadorSyncPendente === 'function') window.atualizarIndicadorSyncPendente();
+          return false;
+        }
+
+        const opsPayload = queue.map(item => ({
+          colecao: item.colecao,
+          op: item.op,
+          id: item.id,
+          data: item.data,
+          updated_at: item.updated_at
+        }));
+
+        try {
+          const res = await fetch('/api/frota-gastos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ops: opsPayload })
+          });
+          if (res.ok) {
+            if (typeof window.clearFrotaQueueItems === 'function') window.clearFrotaQueueItems(queue);
+            return true;
+          }
+        } catch (e) { }
+
+        // Fallback direto para registros individuais na tabela parametros do Supabase
+        try {
+          const upserts = [];
+          const deletes = [];
+          for (const opSpec of opsPayload) {
+            const recRowId = 'frota_rec:' + opSpec.colecao + ':' + opSpec.id;
+            if (opSpec.op === 'delete') {
+              deletes.push(recRowId);
+            } else {
+              const ts = opSpec.updated_at || new Date().toISOString();
+              const rowPayload = (opSpec.data && typeof opSpec.data === 'object' && !Array.isArray(opSpec.data))
+                ? { ...opSpec.data, _id: opSpec.id, _updated_at: ts }
+                : { _value: opSpec.data, _id: opSpec.id, _updated_at: ts };
+              upserts.push({
+                id: recRowId,
+                valor: Date.now(),
+                descricao: JSON.stringify(rowPayload)
+              });
+            }
+          }
+          let allOk = true;
+          if (upserts.length) {
+            const rUp = await fetch(SUPABASE_URL + '/rest/v1/parametros', {
+              method: 'POST',
+              headers: { ...authHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' },
+              body: JSON.stringify(upserts)
+            });
+            if (!rUp.ok) allOk = false;
+          }
+          for (const delId of deletes) {
+            const rDel = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=eq.' + encodeURIComponent(delId), {
+              method: 'DELETE',
+              headers: authHeaders()
+            });
+            if (!rDel.ok) allOk = false;
+          }
+          if (allOk) {
+            if (typeof window.clearFrotaQueueItems === 'function') window.clearFrotaQueueItems(queue);
+            return true;
+          }
+        } catch (e) { }
+
+        if (typeof window.atualizarIndicadorSyncPendente === 'function') window.atualizarIndicadorSyncPendente();
+        return false;
+      }
+      window.sincronizarFilaFrotaPendente = sincronizarFilaFrotaPendente;
+
+      async function salvarRegistroFrota(colecao, op, dataOrId) {
+        const opNorm = op === 'delete' ? 'delete' : 'upsert';
+        const id = (typeof dataOrId === 'string' || typeof dataOrId === 'number')
+          ? String(dataOrId).trim()
+          : _frotaRecId(colecao, dataOrId);
+
+        if (colecao === 'historico_manutencoes') {
+          if (!gastosState.historico_manutencoes || typeof gastosState.historico_manutencoes !== 'object') {
+            gastosState.historico_manutencoes = {};
+          }
+          if (opNorm === 'delete' && id) delete gastosState.historico_manutencoes[id];
+          else if (id && dataOrId !== undefined) gastosState.historico_manutencoes[id] = dataOrId;
+        } else if (Array.isArray(gastosState[colecao]) && id) {
+          const idx = gastosState[colecao].findIndex(x => _frotaRecId(colecao, x) === id);
+          if (opNorm === 'delete') {
+            if (idx !== -1) gastosState[colecao].splice(idx, 1);
+          } else if (dataOrId && typeof dataOrId === 'object') {
+            const rec = { ...dataOrId, updated_at: dataOrId.updated_at || new Date().toISOString() };
+            if (idx !== -1) gastosState[colecao][idx] = rec;
+            else gastosState[colecao].unshift(rec);
+            dataOrId = rec;
+          }
+        }
+
+        if (typeof window.enqueueFrotaRecordOp === 'function') {
+          window.enqueueFrotaRecordOp(colecao, opNorm, opNorm === 'delete' ? id : dataOrId);
+        }
+        salvarGastosLocalStorage();
+        atualizarSnapshotFrota(colecao);
+        return sincronizarFilaFrotaPendente();
+      }
+      window.salvarRegistroFrota = salvarRegistroFrota;
+
+      function aplicarPayloadServidorFrota(data) {
+        if (!data || typeof data !== 'object') return false;
+        let mudou = false;
+        if (Array.isArray(data.produtos) && data.produtos.length) {
+          gastosState.produtos = data.produtos;
+          garantirCodigosProdutos();
+          mudou = true;
+        }
+        if (Array.isArray(data.lancamentos) && (data.lancamentos.length || !gastosState.lancamentos.length)) {
+          gastosState.lancamentos = data.lancamentos;
+          mudou = true;
+        }
+        if (data.historico_manutencoes && typeof data.historico_manutencoes === 'object') {
+          gastosState.historico_manutencoes = { ...gastosState.historico_manutencoes, ...data.historico_manutencoes };
+          mudou = true;
+        }
+        if (Array.isArray(data.galeria) && (data.galeria.length || !gastosState.galeria.length)) {
+          gastosState.galeria = data.galeria;
+          mudou = true;
+        }
+        if (Array.isArray(data.veiculos) && (data.veiculos.length || !gastosState.veiculos.length)) {
+          gastosState.veiculos = data.veiculos;
+          mudou = true;
+        }
+        if (Array.isArray(data.ocorrencias) && (data.ocorrencias.length || !gastosState.ocorrencias.length)) {
+          gastosState.ocorrencias = data.ocorrencias;
+          mudou = true;
+        }
+        if (Array.isArray(data.agendamentos) && (data.agendamentos.length || !gastosState.agendamentos.length)) {
+          gastosState.agendamentos = data.agendamentos;
+          mudou = true;
+        }
+        if (Array.isArray(data.vendedores_rotas) && (data.vendedores_rotas.length || !gastosState.vendedores_rotas.length)) {
+          gastosState.vendedores_rotas = data.vendedores_rotas;
+          mudou = true;
+        }
+        if (data.permissoes && typeof data.permissoes === 'object') {
+          if (!window.state) window.state = {};
+          window.state.permissoes = { ...(window.state.permissoes || {}), ...data.permissoes };
+          try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(window.state.permissoes)); } catch (e) { }
+          if (typeof carregarPermissoesIniciais === 'function') carregarPermissoesIniciais();
+          if (typeof aplicarPermissoesUi === 'function') aplicarPermissoesUi();
+          if (typeof atualizarBadgeSyncSupabaseAdmin === 'function' && (window.state.visaoAtual === 'admin' || (window.__isLazyLoaded && window.__isLazyLoaded('admin')))) {
+            atualizarBadgeSyncSupabaseAdmin(true);
+          }
+          if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
+        }
+        return mudou;
       }
 
       async function sincronizarGastosComServidor(modo = 'pull') {
         if (modo === 'pull') {
+          // Antes de puxar dados novos do servidor, tenta despachar operações pendentes offline
+          if (typeof window.getPendingFrotaQueue === 'function' && window.getPendingFrotaQueue().length) {
+            await sincronizarFilaFrotaPendente();
+          }
           try {
             const res = await fetch('/api/frota-gastos', { cache: 'no-store' });
             if (res.ok) {
               const data = await res.json();
-              let mudou = false;
-              if (Array.isArray(data.produtos) && data.produtos.length) {
-                gastosState.produtos = data.produtos;
-                garantirCodigosProdutos();
-                mudou = true;
-              }
-              if (Array.isArray(data.lancamentos) && (data.lancamentos.length || !gastosState.lancamentos.length)) {
-                gastosState.lancamentos = data.lancamentos;
-                mudou = true;
-              }
-              if (data.historico_manutencoes && typeof data.historico_manutencoes === 'object') {
-                gastosState.historico_manutencoes = { ...gastosState.historico_manutencoes, ...data.historico_manutencoes };
-                mudou = true;
-              }
-              if (Array.isArray(data.galeria) && (data.galeria.length || !gastosState.galeria.length)) {
-                gastosState.galeria = data.galeria;
-                mudou = true;
-              }
-              if (Array.isArray(data.veiculos) && (data.veiculos.length || !gastosState.veiculos.length)) {
-                gastosState.veiculos = data.veiculos;
-                mudou = true;
-              }
-              if (Array.isArray(data.ocorrencias) && (data.ocorrencias.length || !gastosState.ocorrencias.length)) {
-                gastosState.ocorrencias = data.ocorrencias;
-                mudou = true;
-              }
-              if (Array.isArray(data.agendamentos) && (data.agendamentos.length || !gastosState.agendamentos.length)) {
-                gastosState.agendamentos = data.agendamentos;
-                mudou = true;
-              }
-              if (data.permissoes && typeof data.permissoes === 'object') {
-                if (!window.state) window.state = {};
-                window.state.permissoes = { ...(window.state.permissoes || {}), ...data.permissoes };
-                try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(window.state.permissoes)); } catch (e) { }
-                if (typeof carregarPermissoesIniciais === 'function') carregarPermissoesIniciais();
-                if (typeof aplicarPermissoesUi === 'function') aplicarPermissoesUi();
-                if (typeof atualizarBadgeSyncSupabaseAdmin === 'function') atualizarBadgeSyncSupabaseAdmin(true);
-                if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
-              }
+              const mudou = aplicarPayloadServidorFrota(data);
+              atualizarSnapshotFrota();
+              aplicarPendentesFrotaLocais();
               if (mudou) {
                 salvarGastosLocalStorage();
+                if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
                 renderGastosView();
-                if (typeof renderGaleriaView === 'function') renderGaleriaView();
+                if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+                  renderGaleriaView();
+                }
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
                 if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
                 if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
+                if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
+                  renderVendedoresView();
+                }
               }
               return true;
             }
           } catch (e) { }
 
-          // Fallback direto no Supabase (tabela parametros)
+          // Fallback direto no Supabase (tabela parametros + registros granulares)
           try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?id=in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_permissoes_usuarios_v1)&select=*', {
+            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?or=(id.in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_vendedores_rotas_v1,frota_permissoes_usuarios_v1,frota_tombstones_v2),id.like.frota_rec%3A*)&select=*', {
               headers: authHeaders(),
               cache: 'no-store'
             });
             if (r.ok) {
               const rows = await r.json();
               if (Array.isArray(rows) && rows.length) {
+                const legacyIdMap = {
+                  frota_catalogo_produtos_v1: 'produtos',
+                  frota_lancamentos_gastos_v1: 'lancamentos',
+                  frota_historico_manutencoes_v1: 'historico_manutencoes',
+                  frota_galeria_veiculos_v1: 'galeria',
+                  frota_cadastro_veiculos_v1: 'veiculos',
+                  frota_ocorrencias_v1: 'ocorrencias',
+                  frota_agendamentos_servicos_v1: 'agendamentos',
+                  frota_vendedores_rotas_v1: 'vendedores_rotas'
+                };
+                const mergedPayload = {};
+                const recRows = [];
+                let tombstones = {};
                 for (const row of rows) {
-                  if (row.id === 'frota_catalogo_produtos_v1' && row.descricao) {
-                    const p = JSON.parse(row.descricao);
-                    if (Array.isArray(p) && p.length) { gastosState.produtos = p; garantirCodigosProdutos(); }
-                  }
-                  if (row.id === 'frota_lancamentos_gastos_v1' && row.descricao) {
-                    const l = JSON.parse(row.descricao);
-                    if (Array.isArray(l)) gastosState.lancamentos = l;
-                  }
-                  if (row.id === 'frota_historico_manutencoes_v1' && row.descricao) {
-                    const m = JSON.parse(row.descricao);
-                    if (m && typeof m === 'object') gastosState.historico_manutencoes = m;
-                  }
-                  if (row.id === 'frota_galeria_veiculos_v1' && row.descricao) {
-                    const g = JSON.parse(row.descricao);
-                    if (Array.isArray(g)) gastosState.galeria = g;
-                  }
-                  if (row.id === 'frota_cadastro_veiculos_v1' && row.descricao) {
-                    const vc = JSON.parse(row.descricao);
-                    if (Array.isArray(vc)) gastosState.veiculos = vc;
-                  }
-                  if (row.id === 'frota_ocorrencias_v1' && row.descricao) {
-                    const oc = JSON.parse(row.descricao);
-                    if (Array.isArray(oc)) gastosState.ocorrencias = oc;
-                  }
-                  if (row.id === 'frota_agendamentos_servicos_v1' && row.descricao) {
-                    const ag = JSON.parse(row.descricao);
-                    if (Array.isArray(ag)) gastosState.agendamentos = ag;
-                  }
+                  if (!row || !row.id) continue;
                   if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                    try {
-                      const p = JSON.parse(row.descricao);
-                      if (p && typeof p === 'object') {
-                        if (!window.state) window.state = {};
-                        window.state.permissoes = { ...(window.state.permissoes || {}), ...p };
-                        try { localStorage.setItem('gomex_permissoes_v1', JSON.stringify(window.state.permissoes)); } catch (e) { }
-                        if (typeof carregarPermissoesIniciais === 'function') carregarPermissoesIniciais();
-                        if (typeof aplicarPermissoesUi === 'function') aplicarPermissoesUi();
-                        if (typeof atualizarBadgeSyncSupabaseAdmin === 'function') atualizarBadgeSyncSupabaseAdmin(true);
-                        if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
-                      }
-                    } catch (e) { }
+                    try { mergedPayload.permissoes = JSON.parse(row.descricao); } catch (e) { }
+                    continue;
+                  }
+                  if (row.id === 'frota_tombstones_v2' && row.descricao) {
+                    try { tombstones = JSON.parse(row.descricao) || {}; } catch (e) { }
+                    continue;
+                  }
+                  if (row.id.startsWith('frota_rec:')) {
+                    recRows.push(row);
+                    continue;
+                  }
+                  const colName = legacyIdMap[row.id];
+                  if (colName && row.descricao) {
+                    try { mergedPayload[colName] = JSON.parse(row.descricao); } catch (e) { }
                   }
                 }
+                for (const rr of recRows) {
+                  try {
+                    const parsed = JSON.parse(rr.descricao || '{}');
+                    const parts = String(rr.id || '').split(':');
+                    const col = parsed.colecao || parts[1];
+                    const id = String(parsed._id || parsed.id || parts.slice(2).join(':'));
+                    const val = Object.prototype.hasOwnProperty.call(parsed, '_value')
+                      ? parsed._value
+                      : (Object.prototype.hasOwnProperty.call(parsed, 'data') && parsed.colecao ? parsed.data : parsed);
+                    if (!col || !id) continue;
+                    if (col === 'historico_manutencoes') {
+                      if (!mergedPayload[col] || typeof mergedPayload[col] !== 'object') mergedPayload[col] = {};
+                      if (val !== undefined) mergedPayload[col][id] = val;
+                    } else if (val && typeof val === 'object') {
+                      if (!Array.isArray(mergedPayload[col])) mergedPayload[col] = [];
+                      const idx = mergedPayload[col].findIndex(x => _frotaRecId(col, x) === id);
+                      if (idx !== -1) mergedPayload[col][idx] = val;
+                      else mergedPayload[col].unshift(val);
+                    }
+                  } catch (e) { }
+                }
+                for (const [col, tMap] of Object.entries(tombstones || {})) {
+                  if (!tMap || typeof tMap !== 'object') continue;
+                  if (col === 'historico_manutencoes' && mergedPayload[col]) {
+                    for (const id of Object.keys(tMap)) delete mergedPayload[col][id];
+                  } else if (Array.isArray(mergedPayload[col])) {
+                    mergedPayload[col] = mergedPayload[col].filter(x => !tMap[_frotaRecId(col, x)]);
+                  }
+                }
+                aplicarPayloadServidorFrota(mergedPayload);
+                atualizarSnapshotFrota();
+                aplicarPendentesFrotaLocais();
                 salvarGastosLocalStorage();
+                if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
                 renderGastosView();
-                if (typeof renderGaleriaView === 'function') renderGaleriaView();
+                if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+                  renderGaleriaView();
+                }
                 if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
                 if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
                 if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
+                if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
+                  renderVendedoresView();
+                }
               }
             }
           } catch (e) { }
           return false;
         }
 
-        // PUSH (Salvar todas as coleções no servidor local e no Supabase)
-        salvarGastosLocalStorage();
-        try {
-          const res = await fetch('/api/frota-gastos', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              produtos: gastosState.produtos,
-              lancamentos: gastosState.lancamentos,
-              historico_manutencoes: gastosState.historico_manutencoes,
-              galeria: gastosState.galeria,
-              veiculos: gastosState.veiculos,
-              ocorrencias: gastosState.ocorrencias,
-              agendamentos: gastosState.agendamentos,
-              permissoes: (window.state && window.state.permissoes) ? window.state.permissoes : undefined
-            })
-          });
-          if (res.ok) return true;
-        } catch (e) { }
-
-        // Fallback direto no Supabase (tabela parametros)
-        try {
-          const totalInvestido = gastosState.lancamentos.reduce((acc, g) => acc + (Number(g.valor_total) || 0), 0);
-          const rowsToUpsert = [
-            {
-              id: 'frota_catalogo_produtos_v1',
-              valor: gastosState.produtos.length,
-              descricao: JSON.stringify(gastosState.produtos)
-            },
-            {
-              id: 'frota_lancamentos_gastos_v1',
-              valor: Number(totalInvestido.toFixed(2)),
-              descricao: JSON.stringify(gastosState.lancamentos)
-            },
-            {
-              id: 'frota_historico_manutencoes_v1',
-              valor: Object.keys(gastosState.historico_manutencoes || {}).length,
-              descricao: JSON.stringify(gastosState.historico_manutencoes || {})
-            },
-            {
-              id: 'frota_galeria_veiculos_v1',
-              valor: (gastosState.galeria || []).length,
-              descricao: JSON.stringify(gastosState.galeria || [])
-            },
-            {
-              id: 'frota_cadastro_veiculos_v1',
-              valor: (gastosState.veiculos || []).length,
-              descricao: JSON.stringify(gastosState.veiculos || [])
-            },
-            {
-              id: 'frota_ocorrencias_v1',
-              valor: (gastosState.ocorrencias || []).length,
-              descricao: JSON.stringify(gastosState.ocorrencias || [])
-            },
-            {
-              id: 'frota_agendamentos_servicos_v1',
-              valor: (gastosState.agendamentos || []).length,
-              descricao: JSON.stringify(gastosState.agendamentos || [])
-            }
-          ];
-          if (window.state && window.state.permissoes && typeof window.state.permissoes === 'object') {
-            rowsToUpsert.push({
-              id: 'frota_permissoes_usuarios_v1',
-              valor: Object.keys(window.state.permissoes).length,
-              descricao: JSON.stringify(window.state.permissoes)
-            });
+        // PUSH granular por registro alterado (evita sobrescrita concorrente e funciona offline)
+        const ops = diffFrotaSnapshotOps();
+        if (typeof window.enqueueFrotaRecordOp === 'function') {
+          for (const opSpec of ops) {
+            window.enqueueFrotaRecordOp(opSpec.colecao, opSpec.op, opSpec.op === 'delete' ? opSpec.id : opSpec.data);
           }
-          await fetch(SUPABASE_URL + '/rest/v1/parametros', {
-            method: 'POST',
-            headers: { ...authHeaders(), Prefer: 'resolution=merge-duplicates,return=representation' },
-            body: JSON.stringify(rowsToUpsert)
-          });
-          return true;
-        } catch (e) { }
-        return false;
+        }
+        salvarGastosLocalStorage();
+        atualizarSnapshotFrota();
+        return sincronizarFilaFrotaPendente();
       }
 
       carregarGastosLocalStorage();
+      atualizarSnapshotFrota();
+      aplicarPendentesFrotaLocais();
       window.sincronizarGastosComServidor = sincronizarGastosComServidor;
+      window.atualizarSnapshotFrota = atualizarSnapshotFrota;
+      window.salvarGastosLocalStorage = salvarGastosLocalStorage;
       setTimeout(() => sincronizarGastosComServidor('pull'), 400);
 
       function badgeCategoriaProduto(cat) {
@@ -2422,6 +656,11 @@
         else if (c.includes('Peça') || c.includes('Filtro') || c.includes('Freio')) cls = ' peca';
         return '<span class="badge-cat-prod' + cls + '">' + esc(c) + '</span>';
       }
+      window.fmtMoeda = fmtMoeda;
+      window.parseNumeroMoeda = parseNumeroMoeda;
+      window.garantirCodigosProdutos = garantirCodigosProdutos;
+      window.sugerirProximoCodigoProduto = sugerirProximoCodigoProduto;
+      window.badgeCategoriaProduto = badgeCategoriaProduto;
 
       function obterInfoPlacaNaFrota(placaRaw) {
         const p = (placaRaw || '').toUpperCase().trim();
@@ -2518,6 +757,9 @@
         });
         return Array.from(set).sort((a, b) => a.localeCompare(b, 'pt-BR'));
       }
+      window.obterInfoPlacaNaFrota = obterInfoPlacaNaFrota;
+      window.obterTodasPlacasConhecidas = obterTodasPlacasConhecidas;
+      window.obterTodosMotoristasConhecidos = obterTodosMotoristasConhecidos;
 
       // --- FILTROS DE DATA (LEVANTAMENTO DE X ATÉ Y) ---
       function aplicarPeriodoGastos(tipo) {
@@ -3175,6 +1417,7 @@
           dlMot.innerHTML = mots.map(m => '<option value="' + esc(m) + '">').join('');
         }
       }
+      window.popularDatalistEPlacasNoModalGasto = popularDatalistEPlacasNoModalGasto;
 
       function onDigitarPlacaNoModalGasto(placaRaw) {
         const p = (placaRaw || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
@@ -3722,7 +1965,9 @@
           await sincronizarGastosComServidor('push');
           fecharModalLancarGasto();
           renderGastosView();
-          if (typeof renderGaleriaView === 'function') renderGaleriaView();
+          if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+            renderGaleriaView();
+          }
           if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
           if (state.sel && (state.sel.placa || '').toUpperCase().trim() === placa) {
             carregarGastosPlacaNoDrawer(placa);
@@ -3807,146 +2052,26 @@
       }
       window.excluirLancamentoGasto = excluirLancamentoGasto;
 
-      // ==============================================================================
-      // MODAL 2: CATÁLOGO DE PRODUTOS, PEÇAS & INSUMOS DA FROTA (COM CÓDIGO)
-      // ==============================================================================
-      function abrirModalCatalogoProdutos() {
-        garantirCodigosProdutos();
-        limparFormCatalogoProduto();
-        renderTabelaCatalogoProdutos();
-        $('modalCatalogoProdutos').classList.add('open');
-      }
-      window.abrirModalCatalogoProdutos = abrirModalCatalogoProdutos;
-
-      function fecharModalCatalogoProdutos() {
-        $('modalCatalogoProdutos').classList.remove('open');
-      }
-      window.fecharModalCatalogoProdutos = fecharModalCatalogoProdutos;
-
-      function limparFormCatalogoProduto() {
-        $('catProdEditId').value = '';
-        if ($('catProdCodigo')) $('catProdCodigo').value = sugerirProximoCodigoProduto();
-        $('catProdNome').value = '';
-        $('catProdCategoria').value = 'Óleo & Lubrificantes';
-        $('catProdUnidade').value = 'L';
-        $('catProdPreco').value = '';
-        $('catFormTitle').textContent = 'Cadastrar Novo Produto / Peça';
-        $('btnSalvarCatProdLabel').textContent = 'Cadastrar';
-        $('btnCancelarEdicaoProd').hidden = true;
-      }
-      window.limparFormCatalogoProduto = limparFormCatalogoProduto;
-
-      async function salvarProdutoNoCatalogo() {
-        const nome = ($('catProdNome').value || '').trim();
-        if (!nome) {
-          toast('Informe o nome do produto ou peça.', 'error');
-          $('catProdNome').focus();
+      function renderResumoGaleriaNoModalHistorico(placa) {
+        const p = (placa || '').toUpperCase().trim();
+        const fotos = (gastosState.galeria || []).filter(f => (f.placa || '').toUpperCase().trim() === p);
+        if ($('histGaleriaCount')) $('histGaleriaCount').textContent = fotos.length;
+        const listEl = $('histGaleriaPlacaList');
+        if (!listEl) return;
+        if (!fotos.length) {
+          listEl.innerHTML = '<div class="muted" style="grid-column:1/-1;font-size:12px;padding:4px 0">Nenhuma foto enviada para a placa ' + esc(p) + ' ainda.</div>';
           return;
         }
-        const codigo = ($('catProdCodigo')?.value || '').trim() || sugerirProximoCodigoProduto();
-        const categoria = $('catProdCategoria').value || 'Outros';
-        const unidade = $('catProdUnidade').value || 'un';
-        const preco_base = parseNumeroMoeda($('catProdPreco').value);
-        const editId = $('catProdEditId').value;
-
-        if (editId) {
-          const idx = gastosState.produtos.findIndex(p => String(p.id) === String(editId));
-          if (idx !== -1) {
-            gastosState.produtos[idx] = { ...gastosState.produtos[idx], codigo, nome, categoria, unidade, preco_base };
-          }
-          toast('Produto [' + codigo + '] atualizado no catálogo!');
-        } else {
-          gastosState.produtos.push({
-            id: 'prod_' + Date.now(),
-            codigo,
-            nome,
-            categoria,
-            unidade,
-            preco_base
-          });
-          toast('Produto [' + codigo + '] "' + nome + '" adicionado ao catálogo!');
-        }
-
-        await sincronizarGastosComServidor('push');
-        limparFormCatalogoProduto();
-        renderTabelaCatalogoProdutos();
-        renderGastosView();
+        listEl.innerHTML = fotos.slice(0, 6).map(f =>
+          '<div style="cursor:pointer;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--raised)" data-action="abrirLightboxFoto" data-arg="' + esc(f.id) + '" title="' + esc(formatarData(f.data) + ' · ' + f.motorista) + '">' +
+          '<img src="' + esc(f.imagem) + '" alt="Foto" style="width:100%;height:74px;object-fit:cover;display:block">' +
+          '<div style="padding:4px 6px;font-size:10.5px;line-height:1.25">' +
+          '<strong style="color:var(--ink);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(f.motorista) + '</strong>' +
+          '<span style="color:var(--ink-3)">' + formatarData(f.data) + '</span>' +
+          '</div>' +
+          '</div>'
+        ).join('');
       }
-      window.salvarProdutoNoCatalogo = salvarProdutoNoCatalogo;
-
-      function editarProdutoCatalogo(id) {
-        const p = gastosState.produtos.find(x => String(x.id) === String(id));
-        if (!p) return;
-        $('catProdEditId').value = p.id;
-        if ($('catProdCodigo')) $('catProdCodigo').value = p.codigo || '';
-        $('catProdNome').value = p.nome || '';
-        $('catProdCategoria').value = p.categoria || 'Outros';
-        $('catProdUnidade').value = p.unidade || 'un';
-        $('catProdPreco').value = p.preco_base ? Number(p.preco_base).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '';
-        $('catFormTitle').textContent = 'Editando Produto [' + (p.codigo || '') + ']: ' + p.nome;
-        $('btnSalvarCatProdLabel').textContent = 'Salvar Alteração';
-        $('btnCancelarEdicaoProd').hidden = false;
-        $('catProdNome').focus();
-      }
-      window.editarProdutoCatalogo = editarProdutoCatalogo;
-
-      async function excluirProdutoCatalogo(id) {
-        const p = gastosState.produtos.find(x => String(x.id) === String(id));
-        if (!p) return;
-        const confirmado = await abrirConfirmacaoGlobal({
-          titulo: 'Remover Produto do Catálogo',
-          subtitulo: 'Catálogo de peças & insumos',
-          mensagem: `Deseja remover <strong>"[${esc(p.codigo || '')}] ${esc(p.nome)}"</strong> do catálogo fixo de produtos?`,
-          aviso: 'Os lançamentos já registrados no histórico não serão afetados.',
-          textoConfirmar: 'Remover Produto',
-          variante: 'perigo',
-          icone: 'trash'
-        });
-        if (!confirmado) return;
-        gastosState.produtos = gastosState.produtos.filter(x => String(x.id) !== String(id));
-        await sincronizarGastosComServidor('push');
-        renderTabelaCatalogoProdutos();
-        renderGastosView();
-        toast('Produto removido do catálogo.');
-      }
-      window.excluirProdutoCatalogo = excluirProdutoCatalogo;
-
-      function renderTabelaCatalogoProdutos() {
-        const tbody = $('catProdutosTableBody');
-        if (!tbody) return;
-        garantirCodigosProdutos();
-        const q = ($('catBuscaProd')?.value || '').toLowerCase().trim();
-
-        const filtrados = gastosState.produtos.filter(p => {
-          if (!q) return true;
-          return ((p.codigo || '') + ' ' + p.nome + ' ' + p.categoria + ' ' + p.unidade).toLowerCase().includes(q);
-        });
-
-        if ($('catTotalProdCount')) $('catTotalProdCount').textContent = gastosState.produtos.length;
-
-        if (!filtrados.length) {
-          tbody.innerHTML = '<tr><td colspan="7" class="muted" style="text-align:center;padding:20px">Nenhum produto encontrado no catálogo.</td></tr>';
-          return;
-        }
-
-        tbody.innerHTML = filtrados.map(p => {
-          const usos = gastosState.lancamentos.filter(g => g.produto_id === p.id || g.produto_nome === p.nome).length;
-          return '<tr>' +
-            '<td style="white-space:nowrap"><span class="prod-code-badge">' + esc(p.codigo || '—') + '</span></td>' +
-            '<td><strong style="color:var(--ink);font-size:13.5px">' + esc(p.nome) + '</strong></td>' +
-            '<td style="white-space:nowrap">' + badgeCategoriaProduto(p.categoria) + '</td>' +
-            '<td style="white-space:nowrap"><span class="badge-km" style="white-space:nowrap;padding:3px 8px">' + esc(UNIDADE_LABELS[p.unidade] || p.unidade) + '</span></td>' +
-            '<td style="font-weight:700;color:var(--ok);white-space:nowrap">' + (p.preco_base ? fmtMoeda(p.preco_base) : '—') + '</td>' +
-            '<td style="white-space:nowrap">' + usos + 'x</td>' +
-            '<td style="text-align:right;white-space:nowrap">' +
-            '<div style="display:inline-flex;gap:6px">' +
-            '<button type="button" class="btn btn-ghost btn-icon" style="height:30px;width:30px;color:var(--accent-hi)" onclick="editarProdutoCatalogo(\'' + esc(p.id) + '\')" title="Editar produto">' + icon('edit') + '</button>' +
-            '<button type="button" class="btn btn-ghost btn-icon" style="height:30px;width:30px;color:var(--bad)" onclick="excluirProdutoCatalogo(\'' + esc(p.id) + '\')" title="Excluir produto">' + icon('trash') + '</button>' +
-            '</div>' +
-            '</td>' +
-            '</tr>';
-        }).join('');
-      }
-      window.renderTabelaCatalogoProdutos = renderTabelaCatalogoProdutos;
-
+      window.renderResumoGaleriaNoModalHistorico = renderResumoGaleriaNoModalHistorico;
+      // Modal de Catálogo de Produtos carregado sob demanda (/chunks/catalogo.json)
       // ==============================================================================

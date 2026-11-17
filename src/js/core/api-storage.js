@@ -2,7 +2,9 @@
       // ==============================================================================
       const OFFLINE_CACHE_KEY = 'gomex_offline_cache_v1';
       const PENDING_SYNC_KEY = 'gomex_pending_sync_v1';
+      const FROTA_PENDING_KEY = 'gomex_frota_pending_v1';
       const authHeaders = () => ({ apikey: apiKey(), Authorization: 'Bearer ' + apiKey(), 'Content-Type': 'application/json' });
+      window.authHeaders = authHeaders;
 
       function getPendingSyncMap() {
         try {
@@ -18,6 +20,7 @@
           map[String(id)] = { ...(map[String(id)] || {}), ...patchFields, _ts: Date.now() };
           localStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(map));
         } catch (e) { }
+        atualizarIndicadorSyncPendente();
       }
 
       function clearPendingSyncItem(id) {
@@ -28,7 +31,78 @@
             localStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(map));
           }
         } catch (e) { }
+        atualizarIndicadorSyncPendente();
       }
+
+      function getPendingFrotaQueue() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(FROTA_PENDING_KEY) || '[]');
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function savePendingFrotaQueue(arr) {
+        try {
+          localStorage.setItem(FROTA_PENDING_KEY, JSON.stringify(Array.isArray(arr) ? arr : []));
+        } catch (e) { }
+        atualizarIndicadorSyncPendente();
+      }
+
+      function resolveFrotaOpId(colecao, dataOrId) {
+        if (typeof dataOrId === 'string' || typeof dataOrId === 'number') return String(dataOrId).trim();
+        if (!dataOrId || typeof dataOrId !== 'object') return '';
+        if (colecao === 'vendedores_rotas') return String(dataOrId.id || dataOrId.rota || dataOrId.nome || '').trim();
+        return String(dataOrId.id || dataOrId.placa || '').trim();
+      }
+
+      function enqueueFrotaRecordOp(colecao, op, dataOrId) {
+        const id = resolveFrotaOpId(colecao, dataOrId);
+        if (!colecao || !id) return;
+        const queue = getPendingFrotaQueue();
+        const key = colecao + ':' + id;
+        const ts = Date.now();
+        const updated_at = (dataOrId && typeof dataOrId === 'object' && dataOrId.updated_at) || new Date(ts).toISOString();
+        const entry = {
+          key,
+          colecao,
+          op: op === 'delete' ? 'delete' : 'upsert',
+          id,
+          data: op === 'delete' ? null : dataOrId,
+          updated_at,
+          ts
+        };
+        const filtered = queue.filter(x => x && x.key !== key);
+        filtered.push(entry);
+        savePendingFrotaQueue(filtered);
+        return entry;
+      }
+
+      function clearFrotaQueueItems(syncedEntries) {
+        if (!Array.isArray(syncedEntries) || !syncedEntries.length) return;
+        const doneTs = new Map();
+        syncedEntries.forEach(item => {
+          if (item && item.key) doneTs.set(item.key, item.ts);
+        });
+        const next = getPendingFrotaQueue().filter(item => {
+          if (!item || !item.key) return false;
+          if (!doneTs.has(item.key)) return true;
+          return item.ts !== doneTs.get(item.key);
+        });
+        savePendingFrotaQueue(next);
+      }
+
+      function countPendingSyncTotal() {
+        return Object.keys(getPendingSyncMap()).length + getPendingFrotaQueue().length;
+      }
+
+      window.FROTA_PENDING_KEY = FROTA_PENDING_KEY;
+      window.getPendingFrotaQueue = getPendingFrotaQueue;
+      window.savePendingFrotaQueue = savePendingFrotaQueue;
+      window.enqueueFrotaRecordOp = enqueueFrotaRecordOp;
+      window.clearFrotaQueueItems = clearFrotaQueueItems;
+      window.countPendingSyncTotal = countPendingSyncTotal;
 
       function salvarSnapshotLocal(rows) {
         try {
@@ -316,17 +390,93 @@
       const fetchList = () => getRows('/api/checklists?select=' + LIST_COLS, 'veiculo_checklists?select=' + LIST_COLS + '&order=id.desc&limit=500');
       const fetchSigs = id => { id = Number(id); return getRows('/api/checklists?id=' + id + '&select=' + SIG_COLS, 'veiculo_checklists?id=eq.' + id + '&select=' + SIG_COLS); };
 
-      function setSync(kind) { $('sync').dataset.state = kind; renderSyncText(); }
+      let _lastDesiredSyncState = 'loading';
+      function atualizarIndicadorSyncPendente() {
+        const elSync = $('sync');
+        if (!elSync) return;
+        const pending = countPendingSyncTotal();
+        const offline = (typeof navigator !== 'undefined' && navigator.onLine === false);
+        elSync.dataset.pending = String(pending);
+        elSync.dataset.hasPending = pending > 0 ? '1' : '0';
+
+        if (offline) {
+          elSync.dataset.state = 'offline';
+        } else if (_lastDesiredSyncState === 'loading') {
+          elSync.dataset.state = 'loading';
+        } else if (_lastDesiredSyncState === 'error' || state.error) {
+          elSync.dataset.state = 'error';
+        } else if (pending > 0) {
+          elSync.dataset.state = 'pending';
+        } else {
+          elSync.dataset.state = 'ok';
+        }
+        renderSyncText();
+      }
+      window.atualizarIndicadorSyncPendente = atualizarIndicadorSyncPendente;
+
+      function setSync(kind) {
+        _lastDesiredSyncState = kind;
+        atualizarIndicadorSyncPendente();
+      }
+
       function renderSyncText() {
-        const kind = $('sync').dataset.state;
+        const syncWrap = $('sync');
         const el = $('syncText');
-        if (kind === 'error') { el.textContent = 'Modo offline · dados salvos localmente'; return; }
-        if (kind === 'loading') { el.textContent = state.loaded ? 'Atualizando…' : 'Conectando…'; return; }
-        if (!state.lastSync) return;
+        if (!syncWrap || !el) return;
+        const kind = syncWrap.dataset.state;
+        const pending = Number(syncWrap.dataset.pending || 0);
+        const pendSuffix = pending > 0 ? ' · ' + pending + ' pend.' : '';
+
+        if (kind === 'offline') {
+          el.textContent = pending > 0 ? ('Sem internet · ' + pending + ' pendente(s)') : 'Sem internet · Salvo local';
+          return;
+        }
+        if (kind === 'error') {
+          el.textContent = pending > 0 ? ('Modo offline · ' + pending + ' pendente(s)') : 'Modo offline · dados salvos localmente';
+          return;
+        }
+        if (kind === 'loading') {
+          el.textContent = (state.loaded ? 'Atualizando…' : 'Conectando…') + pendSuffix;
+          return;
+        }
+        if (kind === 'pending' || pending > 0) {
+          el.textContent = pending + ' pendente(s) · Enviar';
+          return;
+        }
+        if (!state.lastSync) {
+          el.textContent = 'Conectado';
+          return;
+        }
         const s = Math.max(0, Math.round((Date.now() - state.lastSync) / 1000));
         el.textContent = s < 5 ? 'Sincronizado agora' : 'Sincronizado há ' + (s < 60 ? s + ' s' : Math.floor(s / 60) + ' min');
       }
       setInterval(renderSyncText, 1000);
+
+      async function sincronizarTudoManual() {
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+          atualizarIndicadorSyncPendente();
+          toast('Sem internet no momento. Seus dados continuam salvos localmente.', 'error');
+          return false;
+        }
+        setSync('loading');
+        await sincronizarPendentes();
+        if (typeof window.sincronizarFilaFrotaPendente === 'function') {
+          await window.sincronizarFilaFrotaPendente();
+        }
+        await load({ silent: true });
+        if (typeof window.sincronizarGastosComServidor === 'function') {
+          await window.sincronizarGastosComServidor('pull');
+        }
+        atualizarIndicadorSyncPendente();
+        const restam = countPendingSyncTotal();
+        if (restam === 0 && !state.error) {
+          toast('Painel sincronizado com o servidor.');
+        } else if (restam > 0) {
+          toast('Ainda há ' + restam + ' alteração(ões) aguardando conexão.', 'error');
+        }
+        return restam === 0;
+      }
+      window.sincronizarTudoManual = sincronizarTudoManual;
 
       async function load({ silent = false } = {}) {
         if (loading || !authed) return;
@@ -421,5 +571,32 @@
 
       $('btnRefresh').addEventListener('click', () => load());
       document.addEventListener('visibilitychange', () => { if (!document.hidden && authed) load({ silent: true }); });
+      if (typeof window !== 'undefined' && window.addEventListener) {
+        window.addEventListener('online', async () => {
+          atualizarIndicadorSyncPendente();
+          if (!authed) return;
+          await sincronizarPendentes();
+          if (typeof window.sincronizarFilaFrotaPendente === 'function') {
+            await window.sincronizarFilaFrotaPendente();
+          }
+          await load({ silent: true });
+          if (countPendingSyncTotal() === 0) {
+            toast('Conexão restabelecida · pendências sincronizadas!');
+          }
+        });
+        window.addEventListener('offline', () => {
+          atualizarIndicadorSyncPendente();
+          toast('Sem internet · suas alterações serão salvas localmente até reconectar.', 'error');
+        });
+      }
+      setInterval(async () => {
+        if (!authed) return;
+        if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+        if (countPendingSyncTotal() <= 0) return;
+        await sincronizarPendentes();
+        if (typeof window.sincronizarFilaFrotaPendente === 'function') {
+          await window.sincronizarFilaFrotaPendente();
+        }
+      }, 15000);
 
       // ==============================================================================
