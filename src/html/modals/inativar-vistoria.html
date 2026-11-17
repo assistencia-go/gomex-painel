@@ -4,19 +4,19 @@
   <div class="modal-overlay" id="modalInativar">
     <div class="modal-card" style="max-width:480px">
       <header class="modal-head" style="border-bottom:1px solid var(--line);padding:16px 20px">
-        <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
           <div
-            style="width:34px;height:34px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center">
+            style="width:34px;height:34px;border-radius:8px;background:rgba(250,138,138,0.15);color:var(--bad);display:grid;place-items:center;flex-shrink:0">
             <svg class="i" style="stroke-width:2.2">
               <use href="#i-archive" />
             </svg>
           </div>
-          <div>
+          <div style="min-width:0;flex:1">
             <h3 style="font-size:16px;font-weight:700" id="inativarModalTitle">Inativar Vistoria</h3>
             <p style="font-size:12px;color:var(--ink-3);margin-top:2px">Organização do painel operacional</p>
           </div>
         </div>
-        <button type="button" class="btn btn-ghost btn-icon" onclick="fecharModalInativar()"><svg class="i">
+        <button type="button" class="btn btn-ghost btn-icon" style="flex-shrink:0" onclick="fecharModalInativar()"><svg class="i">
             <use href="#i-x" />
           </svg></button>
       </header>
@@ -27,7 +27,7 @@
           organizado. Os dados permanecerão salvos na aba <em>"Inativas"</em>.
         </div>
 
-        <div
+        <div class="edit-grid-2"
           style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px;background:var(--raised);border-radius:8px;font-size:12.5px">
           <div><span style="color:var(--ink-3)">Veículo:</span> <strong id="inatVeicLabel">–</strong></div>
           <div><span style="color:var(--ink-3)">Placa:</span> <strong id="inatPlacaLabel">–</strong></div>
@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      <footer
+      <footer class="modal-foot"
         style="padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;background:var(--panel-2)">
         <button type="button" class="btn btn-ghost" onclick="fecharModalInativar()">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnConfirmarInativacao"
