@@ -31,4 +31,13 @@
        Qualquer inserção de emoji é bloqueada automaticamente pelo validate.mjs no pré-deploy.
        ============================================================================== -->
 
+  <!-- ==============================================================================
+       DIRETRIZ MOBILE OBRIGATÓRIA (POLÍTICA ZERO-SCROLL HORIZONTAL):
+       É TERMINANTEMENTE PROIBIDO QUE BLOCOS, CARDS, MODAIS, INPUTS, SELECTS OU
+       FILTROS EXIJAM ARRASTE LATERAL (SCROLL HORIZONTAL) EM DISPOSITIVOS MOBILE.
+       Todo bloco mobile deve caber integralmente em 100% da largura da tela usando
+       minmax(0, 1fr), min-width: 0, flex-wrap: wrap e overflow-x: hidden.
+       Regra monitorada e bloqueada automaticamente pelo validate.mjs no pré-deploy.
+       ============================================================================== -->
+
   <style>
