@@ -241,7 +241,7 @@
         }
 
         const vistorias = (state.all || [])
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
 
         state.histAtualPlaca = pNorm;
@@ -398,7 +398,7 @@
       function imprimirProntuarioVeiculo() {
         const placa = ($('histPlateTitle')?.textContent || '').toUpperCase().trim();
         if (!placa) return;
-        const vistorias = (state.all || []).filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === placa);
+        const vistorias = (state.all || []).filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === placa);
         const stOleo = calcularStatusOleoPorKm(placa);
         const info = obterInfoPlacaNaFrota(placa);
         const lancs = (gastosState.lancamentos || []).filter(g => (g.placa || '').toUpperCase().trim() === placa);

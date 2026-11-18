@@ -299,7 +299,7 @@
         if (!Array.isArray(rows)) return rows;
         const nomesPorPlaca = new Map();
         rows.forEach(it => {
-          if (!it || it.status === 'inativo') return;
+          if (!it || isVistoriaInativaOuTeste(it)) return;
           const p = String(it.placa || '').toUpperCase().trim();
           const m = String(it.motorista || '').trim();
           if (!p || !m || _tokensNomeVist(m).length < 2) return;
@@ -329,7 +329,7 @@
         const fonte = Array.isArray(rows) ? rows : (state.all || []);
         const porPlaca = new Map();
         fonte.forEach(it => {
-          if (!it || it.status === 'inativo') return;
+          if (!it || isVistoriaInativaOuTeste(it)) return;
           const p = String(it.placa || '').toUpperCase().trim();
           if (!p) return;
           if (!porPlaca.has(p)) porPlaca.set(p, []);

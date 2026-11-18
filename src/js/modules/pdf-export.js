@@ -39,10 +39,70 @@
         });
       }
 
+      async function carregarFotoParaPdf(src) {
+        if (!src || typeof src !== 'string') return null;
+        let objectUrl = null;
+        try {
+          let imgSrc = src;
+          if (!src.startsWith('data:')) {
+            const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+            const timer = ctrl ? setTimeout(() => { try { ctrl.abort(); } catch (e) { } }, 6000) : null;
+            try {
+              const res = await fetch(src, { mode: 'cors', signal: ctrl ? ctrl.signal : undefined });
+              if (res.ok) {
+                const blob = await res.blob();
+                objectUrl = URL.createObjectURL(blob);
+                imgSrc = objectUrl;
+              }
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
+          }
+
+          return await new Promise(resolve => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            const tmo = setTimeout(() => resolve(null), 6000);
+            img.onload = () => {
+              clearTimeout(tmo);
+              try {
+                const w0 = img.naturalWidth || img.width || 800;
+                const h0 = img.naturalHeight || img.height || 600;
+                const maxSide = 960;
+                const ratio = Math.min(1, maxSide / Math.max(w0, h0));
+                const cw = Math.max(1, Math.round(w0 * ratio));
+                const ch = Math.max(1, Math.round(h0 * ratio));
+                const cv = document.createElement('canvas');
+                cv.width = cw;
+                cv.height = ch;
+                const ctx = cv.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, cw, ch);
+                ctx.drawImage(img, 0, 0, cw, ch);
+                resolve({ dataUrl: cv.toDataURL('image/jpeg', 0.84), w: cw, h: ch });
+              } catch (e) {
+                resolve(null);
+              }
+            };
+            img.onerror = () => {
+              clearTimeout(tmo);
+              resolve(null);
+            };
+            img.src = imgSrc;
+          });
+        } catch (e) {
+          return null;
+        } finally {
+          if (objectUrl) {
+            try { URL.revokeObjectURL(objectUrl); } catch (e) { }
+          }
+        }
+      }
+
       // ==============================================================================
-      // GERADOR DE PDF OFICIAL COMPLETO (PADRÃO 1 PÁGINA A4 GOMEX FROTA)
+      // GERADOR DE PDF OFICIAL COMPLETO (GOMEX FROTA + ANEXO FOTOGRÁFICO OPCIONAL)
       // ==============================================================================
-      async function baixarPdfOficial(id, btn, isPrint = false) {
+      async function baixarPdfOficial(id, btn, isPrint = false, incluirFotosParam = null) {
         const d = state.all.find(c => String(c.id) === String(id));
         if (!d) return;
 
@@ -395,14 +455,106 @@
             }
           });
 
-          // --- 7. RODAPÉ ---
-          doc.setDrawColor(210, 210, 220);
-          doc.setLineWidth(0.2);
-          doc.line(M, 284, M + W, 284);
+          // --- 7. ANEXO FOTOGRÁFICO DA VISTORIA (OPCIONAL, PÁGINA 2+) ---
+          const incluirFotos = typeof incluirFotosParam === 'boolean'
+            ? incluirFotosParam
+            : Boolean(!$('drPdfIncludeFotos') || $('drPdfIncludeFotos').checked);
 
-          fonte(5.5, 'normal', CINZA);
-          doc.text('Gomex Distribuidora · Sistema Gomex Frota · Check-list Vistoria Veicular', M, 288);
-          doc.text('Vistoria Nº ' + d.numero + ' · Placa: ' + (d.placa || '').toUpperCase() + ' · Pág. 1/1', M + W, 288, { align: 'right' });
+          const fotosLista = (incluirFotos && typeof window.separarFotosDaVistoria === 'function')
+            ? (window.separarFotosDaVistoria(d).daVistoria || [])
+            : [];
+
+          if (fotosLista.length > 0) {
+            const imgsCarregadas = await Promise.all(
+              fotosLista.map(async (f) => {
+                const imgRes = await carregarFotoParaPdf(f.imagem);
+                return imgRes ? { meta: f, img: imgRes } : null;
+              })
+            );
+            const validas = imgsCarregadas.filter(Boolean);
+
+            if (validas.length > 0) {
+              const porPagina = 6;
+              const gapX = 4;
+              const gapY = 4;
+              const cardW = (W - gapX) / 2;
+              const cardH = 77;
+              const imgBoxW = cardW - 4;
+              const imgBoxH = 54;
+
+              for (let idx = 0; idx < validas.length; idx++) {
+                const posNaPag = idx % porPagina;
+                if (posNaPag === 0) {
+                  doc.addPage('a4', 'portrait');
+                  let yF = M;
+                  doc.setFillColor(...ROXO);
+                  doc.roundedRect(M, yF, 26, 10.5, 2, 2, 'F');
+                  fonte(8.0, 'bold', [255, 255, 255]);
+                  doc.text('GOMEX', M + 13, yF + 4.8, { align: 'center' });
+                  fonte(5.5, 'bold', [196, 210, 255]);
+                  doc.text('FROTA', M + 13, yF + 8.1, { align: 'center' });
+
+                  fonte(10.5, 'bold', ROXO);
+                  doc.text('ANEXO FOTOGRÁFICO DA VISTORIA', M + 30, yF + 4.4);
+                  fonte(6.5, 'normal', CINZA);
+                  doc.text('Vistoria Nº ' + (d.numero || '—') + ' · Placa: ' + (d.placa || '—').toUpperCase() + ' · Motorista: ' + (d.motorista || '—'), M + 30, yF + 8.3);
+
+                  doc.setFillColor(243, 244, 250);
+                  doc.rect(M, yF + 12.5, W, 5.0, 'F');
+                  fonte(7.0, 'bold', ROXO);
+                  doc.text('REGISTROS FOTOGRÁFICOS VINCULADOS (' + validas.length + (validas.length === 1 ? ' FOTO' : ' FOTOS') + ')', M + 2.5, yF + 16.1);
+                }
+
+                const col = posNaPag % 2;
+                const row = Math.floor(posNaPag / 2);
+                const cX = M + col * (cardW + gapX);
+                const cY = M + 20 + row * (cardH + gapY);
+
+                caixa(cX, cY, cardW, cardH);
+
+                // Fundo neutro da moldura da foto mantendo proporção real
+                doc.setFillColor(246, 247, 250);
+                doc.rect(cX + 2, cY + 2, imgBoxW, imgBoxH, 'F');
+                const entry = validas[idx];
+                const scale = Math.min(imgBoxW / entry.img.w, imgBoxH / entry.img.h);
+                const drawW = entry.img.w * scale;
+                const drawH = entry.img.h * scale;
+                const drawX = cX + 2 + (imgBoxW - drawW) / 2;
+                const drawY = cY + 2 + (imgBoxH - drawH) / 2;
+                try {
+                  doc.addImage(entry.img.dataUrl, 'JPEG', drawX, drawY, drawW, drawH);
+                } catch (e) { }
+
+                // Legenda abaixo da foto
+                const meta = entry.meta || {};
+                const capY = cY + 2 + imgBoxH + 4.2;
+                fonte(6.8, 'bold', ROXO);
+                doc.text(corta((meta.categoria || 'Vistoria') + ' · ' + dataBr(meta.data || d.data), cardW - 5), cX + 2.5, capY);
+
+                fonte(6.2, 'normal', [40, 40, 50]);
+                doc.text(corta('Motorista: ' + (meta.motorista || d.motorista || '—'), cardW - 5), cX + 2.5, capY + 4.2);
+
+                if (meta.obs) {
+                  fonte(5.8, 'normal', CINZA);
+                  const obsLinhasPdf = doc.splitTextToSize(String(meta.obs), cardW - 5);
+                  doc.text(obsLinhasPdf.slice(0, 2), cX + 2.5, capY + 8.3);
+                }
+              }
+            }
+          }
+
+          // --- 8. RODAPÉ PADRONIZADO EM TODAS AS PÁGINAS ---
+          const totalPages = doc.getNumberOfPages();
+          for (let p = 1; p <= totalPages; p++) {
+            doc.setPage(p);
+            doc.setDrawColor(210, 210, 220);
+            doc.setLineWidth(0.2);
+            doc.line(M, 284, M + W, 284);
+
+            fonte(5.5, 'normal', CINZA);
+            doc.text('Gomex Distribuidora · Sistema Gomex Frota · Check-list Vistoria Veicular', M, 288);
+            doc.text('Vistoria Nº ' + (d.numero || '—') + ' · Placa: ' + (d.placa || '').toUpperCase() + ' · Pág. ' + p + '/' + totalPages, M + W, 288, { align: 'right' });
+          }
 
           // Ação: Download ou Impressão
           const nomeArquivo = 'Vistoria_' + (d.numero || '000000') + '_' + (d.placa || '').toUpperCase() + '.pdf';

@@ -169,8 +169,8 @@
         if (!tbody) return;
         const itemsComManut = [];
 
-        // Apenas vistorias ativas (não inativadas) aparecem no acompanhamento operacional de manutenção
-        const ativos = state.all.filter(it => it.status !== 'inativo');
+        // Apenas vistorias ativas (não inativadas nem de teste) aparecem no acompanhamento operacional de manutenção
+        const ativos = state.all.filter(it => !isVistoriaInativaOuTeste(it));
 
         ativos.forEach(it => {
           const m = getManutencaoData(it);

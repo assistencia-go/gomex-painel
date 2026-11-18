@@ -70,7 +70,7 @@
 
         // Vistorias ativas desta placa ordenadas por data/hora decrescente
         const vistorias = (state.all || [])
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
         const recVist = vistorias[0] || null;
 
@@ -179,7 +179,7 @@
 
       function obterStatusMensalPorPlaca() {
         const mapa = new Map();
-        const ativos = state.all.filter(x => x.status !== 'inativo');
+        const ativos = state.all.filter(x => !isVistoriaInativaOuTeste(x));
         ativos.forEach(it => {
           const placa = (it.placa || '').toUpperCase().trim();
           if (!placa) return;
@@ -204,8 +204,8 @@
       // ==============================================================================
       function renderSummary() {
         const a = state.all;
-        const ativos = a.filter(x => x.status !== 'inativo');
-        const inativos = a.filter(x => x.status === 'inativo');
+        const ativos = a.filter(x => !isVistoriaInativaOuTeste(x));
+        const inativos = a.filter(x => isVistoriaInativaOuTeste(x));
         const total = ativos.length;
         const today = isoLocal(new Date()), month = today.slice(0, 7);
         const lib = ativos.filter(x => x.liberacao === 'Liberado').length;
@@ -423,7 +423,7 @@
           : { porVistoriaId: new Map(), latestChangedIds: new Set() };
 
         state.filtered = state.all.filter(it => {
-          const isInativo = it.status === 'inativo';
+          const isInativo = isVistoriaInativaOuTeste(it);
           if (state.status === 'Inativo') {
             if (!isInativo) return false;
           } else if (state.status === 'Em Manutenção') {
@@ -610,7 +610,7 @@
         const num = esc(it.numero || '—');
         const placaRaw = (it.placa || '').toUpperCase().trim();
         const placa = esc(placaRaw);
-        const isInat = it.status === 'inativo';
+        const isInat = isVistoriaInativaOuTeste(it);
 
         // Ciclo Mensal (30 dias) apenas para a vistoria mais recente de cada veículo ativo
         const mapaMensal = mapaMensalRef || obterStatusMensalPorPlaca();
@@ -678,7 +678,7 @@
           '</td>' +
           '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
           '<td class="c-status">' +
-          statusTag(it.liberacao, it.status) +
+          statusTag(it.liberacao, it.status, it) +
           (() => {
             const m = getManutencaoData(it);
             if (m && m.status === 'Em manutenção') {

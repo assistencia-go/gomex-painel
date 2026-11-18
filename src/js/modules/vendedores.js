@@ -207,7 +207,7 @@ function getVendedoresData() {
   const avulsosMap = new Map();
 
   (state.all || []).forEach(it => {
-    if (it.status === 'inativo') return;
+    if (isVistoriaInativaOuTeste(it)) return;
     const rawNome = (it.motorista || '').trim();
     const rotaDigits = String(it.rota || '').replace(/\D/g, '');
 
@@ -891,7 +891,7 @@ function getTransicoesCustodia(placaAlvo = null) {
   const veiculos = new Map();
 
   (state.all || []).forEach(it => {
-    if (it.status === 'inativo') return;
+    if (isVistoriaInativaOuTeste(it)) return;
     const placa = (it.placa || '').toUpperCase().trim();
     if (!placa) return;
     if (placaAlvo && placa !== placaAlvo.toUpperCase().trim()) return;
@@ -965,7 +965,7 @@ function getTransicoesCustodia(placaAlvo = null) {
 function abrirModalCustodia(placaPadrao = '') {
   const sel = $('selectCustodiaPlaca');
   if (sel) {
-    const placasUnicas = [...new Set((state.all || []).filter(it => it.status !== 'inativo' && it.placa).map(it => it.placa.toUpperCase().trim()))].sort();
+    const placasUnicas = [...new Set((state.all || []).filter(it => !isVistoriaInativaOuTeste(it) && it.placa).map(it => it.placa.toUpperCase().trim()))].sort();
     sel.innerHTML = '<option value="">Todos os Veículos (' + placasUnicas.length + ')</option>' +
       placasUnicas.map(p => '<option value="' + esc(p) + '" ' + (p === (placaPadrao || '').toUpperCase().trim() ? 'selected' : '') + '>' + esc(p) + '</option>').join('');
   }
@@ -1567,8 +1567,8 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('drPlate').textContent = (it.placa || '').toUpperCase();
         $('drPlate').onclick = () => abrirHistoricoVeiculo(it.placa);
 
-        const isInat = it.status === 'inativo';
-        $('drStatus').innerHTML = statusTag(it.liberacao, it.status);
+        const isInat = isVistoriaInativaOuTeste(it);
+        $('drStatus').innerHTML = statusTag(it.liberacao, it.status, it);
 
         // Diagnóstico de Alertas Operacionais da Vistoria
         const kmAtual = Number(it.km) || 0;

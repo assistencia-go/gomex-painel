@@ -1371,12 +1371,14 @@
       .dr-foot-actions {
         width: 100%;
         display: flex;
+        flex-wrap: wrap;
         gap: 6px;
       }
 
       .dr-foot>div .btn,
       .dr-foot-actions .btn {
-        flex: 1;
+        flex: 1 1 auto;
+        min-width: 96px;
         padding: 0 8px;
         font-size: 12px;
       }

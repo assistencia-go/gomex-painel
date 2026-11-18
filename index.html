@@ -2647,6 +2647,31 @@
     .dr-foot-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .dr-pdf-fotos-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 36px;
+      padding: 0 9px;
+      border-radius: 7px;
+      border: 1px solid var(--line-strong);
+      background: var(--bg);
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .dr-pdf-fotos-opt input {
+      accent-color: var(--accent-hi);
+      cursor: pointer;
+      margin: 0;
     }
 
     /* ============================================================================
@@ -7030,12 +7055,14 @@
       .dr-foot-actions {
         width: 100%;
         display: flex;
+        flex-wrap: wrap;
         gap: 6px;
       }
 
       .dr-foot>div .btn,
       .dr-foot-actions .btn {
-        flex: 1;
+        flex: 1 1 auto;
+        min-width: 96px;
         padding: 0 8px;
         font-size: 12px;
       }
@@ -9646,6 +9673,10 @@
         title="Editar dados da vistoria e rota"><svg class="i">
           <use href="#i-edit" />
         </svg> Editar Vistoria</button>
+      <label class="dr-pdf-fotos-opt" title="Incluir página extra com as fotos desta vistoria ao imprimir ou baixar PDF">
+        <input type="checkbox" id="drPdfIncludeFotos" checked>
+        <span>Com fotos</span>
+      </label>
       <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i">
           <use href="#i-printer" />
         </svg> Imprimir</button>
@@ -11546,7 +11577,23 @@
       const nokOf = it => itensOf(it).filter(x => x && x.valor === 'NOK');
       const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p.estado === 'Gasto');
 
-      function statusTag(raw, statusItem) {
+      function isVistoriaInativaOuTeste(it) {
+        if (!it || typeof it !== 'object') return false;
+        const st = String(it.status || '').toLowerCase();
+        if (st === 'inativo' || st === 'teste') return true;
+        if (String(it.numero || '').toUpperCase().startsWith('TESTE')) return true;
+        const v = String(it.veiculo || '').trim();
+        const vo = String(it.veiculo_outro || '').trim();
+        const pl = String(it.placa || '').trim();
+        const mot = String(it.motorista || '').trim();
+        return /\bteste\b/i.test(v) || /\bteste\b/i.test(vo) || /^teste/i.test(pl) || /^teste$/i.test(mot);
+      }
+      window.isVistoriaInativaOuTeste = isVistoriaInativaOuTeste;
+
+      function statusTag(raw, statusItem, itObj) {
+        if (statusItem === 'teste' || (itObj && String(itObj.numero || '').toUpperCase().startsWith('TESTE'))) {
+          return '<span class="tag tag-inativo"><i class="dot" style="background:#f59e0b"></i>Teste</span>';
+        }
         if (statusItem === 'inativo') {
           return '<span class="tag tag-inativo"><i class="dot" style="background:#94a3b8"></i>Inativa</span>';
         }
@@ -12561,7 +12608,7 @@
         if (!Array.isArray(rows)) return rows;
         const nomesPorPlaca = new Map();
         rows.forEach(it => {
-          if (!it || it.status === 'inativo') return;
+          if (!it || isVistoriaInativaOuTeste(it)) return;
           const p = String(it.placa || '').toUpperCase().trim();
           const m = String(it.motorista || '').trim();
           if (!p || !m || _tokensNomeVist(m).length < 2) return;
@@ -12591,7 +12638,7 @@
         const fonte = Array.isArray(rows) ? rows : (state.all || []);
         const porPlaca = new Map();
         fonte.forEach(it => {
-          if (!it || it.status === 'inativo') return;
+          if (!it || isVistoriaInativaOuTeste(it)) return;
           const p = String(it.placa || '').toUpperCase().trim();
           if (!p) return;
           if (!porPlaca.has(p)) porPlaca.set(p, []);
@@ -13286,7 +13333,7 @@
 
         // Vistorias ativas desta placa ordenadas por data/hora decrescente
         const vistorias = (state.all || [])
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
         const recVist = vistorias[0] || null;
 
@@ -13395,7 +13442,7 @@
 
       function obterStatusMensalPorPlaca() {
         const mapa = new Map();
-        const ativos = state.all.filter(x => x.status !== 'inativo');
+        const ativos = state.all.filter(x => !isVistoriaInativaOuTeste(x));
         ativos.forEach(it => {
           const placa = (it.placa || '').toUpperCase().trim();
           if (!placa) return;
@@ -13420,8 +13467,8 @@
       // ==============================================================================
       function renderSummary() {
         const a = state.all;
-        const ativos = a.filter(x => x.status !== 'inativo');
-        const inativos = a.filter(x => x.status === 'inativo');
+        const ativos = a.filter(x => !isVistoriaInativaOuTeste(x));
+        const inativos = a.filter(x => isVistoriaInativaOuTeste(x));
         const total = ativos.length;
         const today = isoLocal(new Date()), month = today.slice(0, 7);
         const lib = ativos.filter(x => x.liberacao === 'Liberado').length;
@@ -13639,7 +13686,7 @@
           : { porVistoriaId: new Map(), latestChangedIds: new Set() };
 
         state.filtered = state.all.filter(it => {
-          const isInativo = it.status === 'inativo';
+          const isInativo = isVistoriaInativaOuTeste(it);
           if (state.status === 'Inativo') {
             if (!isInativo) return false;
           } else if (state.status === 'Em Manutenção') {
@@ -13826,7 +13873,7 @@
         const num = esc(it.numero || '—');
         const placaRaw = (it.placa || '').toUpperCase().trim();
         const placa = esc(placaRaw);
-        const isInat = it.status === 'inativo';
+        const isInat = isVistoriaInativaOuTeste(it);
 
         // Ciclo Mensal (30 dias) apenas para a vistoria mais recente de cada veículo ativo
         const mapaMensal = mapaMensalRef || obterStatusMensalPorPlaca();
@@ -13894,7 +13941,7 @@
           '</td>' +
           '<td class="c-nok">' + (nok ? '<span class="txt-bad">' + nok + '</span>' : '<span class="muted">—</span>') + '</td>' +
           '<td class="c-status">' +
-          statusTag(it.liberacao, it.status) +
+          statusTag(it.liberacao, it.status, it) +
           (() => {
             const m = getManutencaoData(it);
             if (m && m.status === 'Em manutenção') {
@@ -14265,8 +14312,8 @@
         if (!tbody) return;
         const itemsComManut = [];
 
-        // Apenas vistorias ativas (não inativadas) aparecem no acompanhamento operacional de manutenção
-        const ativos = state.all.filter(it => it.status !== 'inativo');
+        // Apenas vistorias ativas (não inativadas nem de teste) aparecem no acompanhamento operacional de manutenção
+        const ativos = state.all.filter(it => !isVistoriaInativaOuTeste(it));
 
         ativos.forEach(it => {
           const m = getManutencaoData(it);
@@ -14770,6 +14817,7 @@
         outrasPlaca.sort(sortDesc);
         return { daVistoria, outrasPlaca };
       }
+      window.separarFotosDaVistoria = separarFotosDaVistoria;
 
       function renderCardFotoDrawer(f, isDaVistoria) {
         const fid = esc(f.id);
@@ -15829,7 +15877,7 @@ function getVendedoresData() {
   const avulsosMap = new Map();
 
   (state.all || []).forEach(it => {
-    if (it.status === 'inativo') return;
+    if (isVistoriaInativaOuTeste(it)) return;
     const rawNome = (it.motorista || '').trim();
     const rotaDigits = String(it.rota || '').replace(/\D/g, '');
 
@@ -16513,7 +16561,7 @@ function getTransicoesCustodia(placaAlvo = null) {
   const veiculos = new Map();
 
   (state.all || []).forEach(it => {
-    if (it.status === 'inativo') return;
+    if (isVistoriaInativaOuTeste(it)) return;
     const placa = (it.placa || '').toUpperCase().trim();
     if (!placa) return;
     if (placaAlvo && placa !== placaAlvo.toUpperCase().trim()) return;
@@ -16587,7 +16635,7 @@ function getTransicoesCustodia(placaAlvo = null) {
 function abrirModalCustodia(placaPadrao = '') {
   const sel = $('selectCustodiaPlaca');
   if (sel) {
-    const placasUnicas = [...new Set((state.all || []).filter(it => it.status !== 'inativo' && it.placa).map(it => it.placa.toUpperCase().trim()))].sort();
+    const placasUnicas = [...new Set((state.all || []).filter(it => !isVistoriaInativaOuTeste(it) && it.placa).map(it => it.placa.toUpperCase().trim()))].sort();
     sel.innerHTML = '<option value="">Todos os Veículos (' + placasUnicas.length + ')</option>' +
       placasUnicas.map(p => '<option value="' + esc(p) + '" ' + (p === (placaPadrao || '').toUpperCase().trim() ? 'selected' : '') + '>' + esc(p) + '</option>').join('');
   }
@@ -17189,8 +17237,8 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('drPlate').textContent = (it.placa || '').toUpperCase();
         $('drPlate').onclick = () => abrirHistoricoVeiculo(it.placa);
 
-        const isInat = it.status === 'inativo';
-        $('drStatus').innerHTML = statusTag(it.liberacao, it.status);
+        const isInat = isVistoriaInativaOuTeste(it);
+        $('drStatus').innerHTML = statusTag(it.liberacao, it.status, it);
 
         // Diagnóstico de Alertas Operacionais da Vistoria
         const kmAtual = Number(it.km) || 0;
@@ -17678,7 +17726,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         }
 
         const vistorias = (state.all || [])
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
 
         state.histAtualPlaca = pNorm;
@@ -17835,7 +17883,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
       function imprimirProntuarioVeiculo() {
         const placa = ($('histPlateTitle')?.textContent || '').toUpperCase().trim();
         if (!placa) return;
-        const vistorias = (state.all || []).filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === placa);
+        const vistorias = (state.all || []).filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === placa);
         const stOleo = calcularStatusOleoPorKm(placa);
         const info = obterInfoPlacaNaFrota(placa);
         const lancs = (gastosState.lancamentos || []).filter(g => (g.placa || '').toUpperCase().trim() === placa);
@@ -18662,7 +18710,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         const p = (placaRaw || '').toUpperCase().trim();
         if (!p) return { placa: '', veiculo: '', motorista: '', km: '' };
         const vistoriasPlaca = state.all
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === p)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === p)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
         if (vistoriasPlaca.length) {
           const rec = vistoriasPlaca[0];
@@ -18707,7 +18755,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
           map.set(p, { placa: p, veiculo: v.modelo || '', motorista: v.motorista || '' });
         });
         state.all.forEach(x => {
-          if (x.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(x)) return;
           const p = (x.placa || '').toUpperCase().trim();
           if (!p) return;
           if (!map.has(p)) {
@@ -18739,7 +18787,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
           if (m) set.add(m);
         });
         state.all.forEach(x => {
-          if (x.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(x)) return;
           const m = (x.motorista || '').trim();
           if (m) set.add(m);
         });
@@ -19033,7 +19081,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         // Incluir também custos de O.S. da aba de Manutenção nas placas (se dentro do filtro)
         let totalManutOSPeriodo = 0;
         state.all.forEach(it => {
-          if (it.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(it)) return;
           const m = getManutencaoData(it);
           if (!m || !m.custo) return;
           const custoOS = parseNumeroMoeda(m.custo);
@@ -20189,7 +20237,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         gastosState.veiculos.forEach(v => {
           const p = (v.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
           if (!p) return;
-          const rec = vistorias.find(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim() === p);
+          const rec = vistorias.find(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim() === p);
           if (rec && rec.motorista) {
             if (!v.motorista || v.motorista !== rec.motorista) {
               v.motorista = rec.motorista;
@@ -20259,7 +20307,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         const itensCalculados = lista.map(v => {
           const pNorm = (v.placa || '').toUpperCase().trim();
           const vistorias = (state.all || [])
-            .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+            .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
             .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
           const recVist = vistorias[0] || null;
 
@@ -20453,7 +20501,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         const rows = lista.map(v => {
           const pNorm = (v.placa || '').toUpperCase().trim();
           const vistorias = (state.all || [])
-            .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+            .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
             .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
           const recVist = vistorias[0] || null;
           const stOleo = calcularStatusOleoPorKm(pNorm);
@@ -20956,7 +21004,7 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
         const buscarRotaEmLista = (arr, campoPlaca, campoMot) => {
           if (!Array.isArray(arr)) return '';
           for (const rec of arr) {
-            if (rec.status === 'inativo') continue;
+            if (isVistoriaInativaOuTeste(rec)) continue;
             const recPlaca = String(rec[campoPlaca] || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
             const recRota = String(rec.rota || '').replace(/\D/g, '');
             if (!recRota) continue;
@@ -23465,10 +23513,70 @@ setInterval(() => {
         });
       }
 
+      async function carregarFotoParaPdf(src) {
+        if (!src || typeof src !== 'string') return null;
+        let objectUrl = null;
+        try {
+          let imgSrc = src;
+          if (!src.startsWith('data:')) {
+            const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+            const timer = ctrl ? setTimeout(() => { try { ctrl.abort(); } catch (e) { } }, 6000) : null;
+            try {
+              const res = await fetch(src, { mode: 'cors', signal: ctrl ? ctrl.signal : undefined });
+              if (res.ok) {
+                const blob = await res.blob();
+                objectUrl = URL.createObjectURL(blob);
+                imgSrc = objectUrl;
+              }
+            } finally {
+              if (timer) clearTimeout(timer);
+            }
+          }
+
+          return await new Promise(resolve => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            const tmo = setTimeout(() => resolve(null), 6000);
+            img.onload = () => {
+              clearTimeout(tmo);
+              try {
+                const w0 = img.naturalWidth || img.width || 800;
+                const h0 = img.naturalHeight || img.height || 600;
+                const maxSide = 960;
+                const ratio = Math.min(1, maxSide / Math.max(w0, h0));
+                const cw = Math.max(1, Math.round(w0 * ratio));
+                const ch = Math.max(1, Math.round(h0 * ratio));
+                const cv = document.createElement('canvas');
+                cv.width = cw;
+                cv.height = ch;
+                const ctx = cv.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, cw, ch);
+                ctx.drawImage(img, 0, 0, cw, ch);
+                resolve({ dataUrl: cv.toDataURL('image/jpeg', 0.84), w: cw, h: ch });
+              } catch (e) {
+                resolve(null);
+              }
+            };
+            img.onerror = () => {
+              clearTimeout(tmo);
+              resolve(null);
+            };
+            img.src = imgSrc;
+          });
+        } catch (e) {
+          return null;
+        } finally {
+          if (objectUrl) {
+            try { URL.revokeObjectURL(objectUrl); } catch (e) { }
+          }
+        }
+      }
+
       // ==============================================================================
-      // GERADOR DE PDF OFICIAL COMPLETO (PADRÃO 1 PÁGINA A4 GOMEX FROTA)
+      // GERADOR DE PDF OFICIAL COMPLETO (GOMEX FROTA + ANEXO FOTOGRÁFICO OPCIONAL)
       // ==============================================================================
-      async function baixarPdfOficial(id, btn, isPrint = false) {
+      async function baixarPdfOficial(id, btn, isPrint = false, incluirFotosParam = null) {
         const d = state.all.find(c => String(c.id) === String(id));
         if (!d) return;
 
@@ -23821,14 +23929,106 @@ setInterval(() => {
             }
           });
 
-          // --- 7. RODAPÉ ---
-          doc.setDrawColor(210, 210, 220);
-          doc.setLineWidth(0.2);
-          doc.line(M, 284, M + W, 284);
+          // --- 7. ANEXO FOTOGRÁFICO DA VISTORIA (OPCIONAL, PÁGINA 2+) ---
+          const incluirFotos = typeof incluirFotosParam === 'boolean'
+            ? incluirFotosParam
+            : Boolean(!$('drPdfIncludeFotos') || $('drPdfIncludeFotos').checked);
 
-          fonte(5.5, 'normal', CINZA);
-          doc.text('Gomex Distribuidora · Sistema Gomex Frota · Check-list Vistoria Veicular', M, 288);
-          doc.text('Vistoria Nº ' + d.numero + ' · Placa: ' + (d.placa || '').toUpperCase() + ' · Pág. 1/1', M + W, 288, { align: 'right' });
+          const fotosLista = (incluirFotos && typeof window.separarFotosDaVistoria === 'function')
+            ? (window.separarFotosDaVistoria(d).daVistoria || [])
+            : [];
+
+          if (fotosLista.length > 0) {
+            const imgsCarregadas = await Promise.all(
+              fotosLista.map(async (f) => {
+                const imgRes = await carregarFotoParaPdf(f.imagem);
+                return imgRes ? { meta: f, img: imgRes } : null;
+              })
+            );
+            const validas = imgsCarregadas.filter(Boolean);
+
+            if (validas.length > 0) {
+              const porPagina = 6;
+              const gapX = 4;
+              const gapY = 4;
+              const cardW = (W - gapX) / 2;
+              const cardH = 77;
+              const imgBoxW = cardW - 4;
+              const imgBoxH = 54;
+
+              for (let idx = 0; idx < validas.length; idx++) {
+                const posNaPag = idx % porPagina;
+                if (posNaPag === 0) {
+                  doc.addPage('a4', 'portrait');
+                  let yF = M;
+                  doc.setFillColor(...ROXO);
+                  doc.roundedRect(M, yF, 26, 10.5, 2, 2, 'F');
+                  fonte(8.0, 'bold', [255, 255, 255]);
+                  doc.text('GOMEX', M + 13, yF + 4.8, { align: 'center' });
+                  fonte(5.5, 'bold', [196, 210, 255]);
+                  doc.text('FROTA', M + 13, yF + 8.1, { align: 'center' });
+
+                  fonte(10.5, 'bold', ROXO);
+                  doc.text('ANEXO FOTOGRÁFICO DA VISTORIA', M + 30, yF + 4.4);
+                  fonte(6.5, 'normal', CINZA);
+                  doc.text('Vistoria Nº ' + (d.numero || '—') + ' · Placa: ' + (d.placa || '—').toUpperCase() + ' · Motorista: ' + (d.motorista || '—'), M + 30, yF + 8.3);
+
+                  doc.setFillColor(243, 244, 250);
+                  doc.rect(M, yF + 12.5, W, 5.0, 'F');
+                  fonte(7.0, 'bold', ROXO);
+                  doc.text('REGISTROS FOTOGRÁFICOS VINCULADOS (' + validas.length + (validas.length === 1 ? ' FOTO' : ' FOTOS') + ')', M + 2.5, yF + 16.1);
+                }
+
+                const col = posNaPag % 2;
+                const row = Math.floor(posNaPag / 2);
+                const cX = M + col * (cardW + gapX);
+                const cY = M + 20 + row * (cardH + gapY);
+
+                caixa(cX, cY, cardW, cardH);
+
+                // Fundo neutro da moldura da foto mantendo proporção real
+                doc.setFillColor(246, 247, 250);
+                doc.rect(cX + 2, cY + 2, imgBoxW, imgBoxH, 'F');
+                const entry = validas[idx];
+                const scale = Math.min(imgBoxW / entry.img.w, imgBoxH / entry.img.h);
+                const drawW = entry.img.w * scale;
+                const drawH = entry.img.h * scale;
+                const drawX = cX + 2 + (imgBoxW - drawW) / 2;
+                const drawY = cY + 2 + (imgBoxH - drawH) / 2;
+                try {
+                  doc.addImage(entry.img.dataUrl, 'JPEG', drawX, drawY, drawW, drawH);
+                } catch (e) { }
+
+                // Legenda abaixo da foto
+                const meta = entry.meta || {};
+                const capY = cY + 2 + imgBoxH + 4.2;
+                fonte(6.8, 'bold', ROXO);
+                doc.text(corta((meta.categoria || 'Vistoria') + ' · ' + dataBr(meta.data || d.data), cardW - 5), cX + 2.5, capY);
+
+                fonte(6.2, 'normal', [40, 40, 50]);
+                doc.text(corta('Motorista: ' + (meta.motorista || d.motorista || '—'), cardW - 5), cX + 2.5, capY + 4.2);
+
+                if (meta.obs) {
+                  fonte(5.8, 'normal', CINZA);
+                  const obsLinhasPdf = doc.splitTextToSize(String(meta.obs), cardW - 5);
+                  doc.text(obsLinhasPdf.slice(0, 2), cX + 2.5, capY + 8.3);
+                }
+              }
+            }
+          }
+
+          // --- 8. RODAPÉ PADRONIZADO EM TODAS AS PÁGINAS ---
+          const totalPages = doc.getNumberOfPages();
+          for (let p = 1; p <= totalPages; p++) {
+            doc.setPage(p);
+            doc.setDrawColor(210, 210, 220);
+            doc.setLineWidth(0.2);
+            doc.line(M, 284, M + W, 284);
+
+            fonte(5.5, 'normal', CINZA);
+            doc.text('Gomex Distribuidora · Sistema Gomex Frota · Check-list Vistoria Veicular', M, 288);
+            doc.text('Vistoria Nº ' + (d.numero || '—') + ' · Placa: ' + (d.placa || '').toUpperCase() + ' · Pág. ' + p + '/' + totalPages, M + W, 288, { align: 'right' });
+          }
 
           // Ação: Download ou Impressão
           const nomeArquivo = 'Vistoria_' + (d.numero || '000000') + '_' + (d.placa || '').toUpperCase() + '.pdf';

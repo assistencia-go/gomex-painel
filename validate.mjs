@@ -85,7 +85,8 @@ if (!fs.existsSync(indexPath)) {
     'sectionFrotaCadView',
     'drTabBtnFotos',
     'drPaneFotos',
-    'drFotosVistoriaList'
+    'drFotosVistoriaList',
+    'drPdfIncludeFotos'
   ];
 
   const missingIds = requiredIds.filter(id => !indexContent.includes(`id="${id}"`));
@@ -105,7 +106,9 @@ if (!fs.existsSync(indexPath)) {
     'renderOcorrencias',
     'renderDrawerFotos',
     'salvarFotosDrawer',
-    'podeGerenciarFotosVistoria'
+    'podeGerenciarFotosVistoria',
+    'carregarFotoParaPdf',
+    'isVistoriaInativaOuTeste'
   ];
   const missingJs = requiredJsTokens.filter(token => !indexContent.includes(token));
   if (missingJs.length > 0) {
@@ -461,7 +464,16 @@ try {
   } finally {
     global.fetch = origFetch;
   }
-  logPass('Repositório granular por ID (frota-repo.js) e Storage frota-galeria (+ fallback) validados.');
+  if (
+    !sandbox.window.isVistoriaInativaOuTeste({ veiculo: 'Outro', veiculo_outro: 'Teste' }) ||
+    !sandbox.window.isVistoriaInativaOuTeste({ placa: 'TESTE', veiculo: 'Transit' }) ||
+    !sandbox.window.isVistoriaInativaOuTeste({ status: 'teste', numero: 'TESTE-1234' }) ||
+    !sandbox.window.isVistoriaInativaOuTeste({ status: 'inativo' }) ||
+    sandbox.window.isVistoriaInativaOuTeste({ status: 'concluido', veiculo: 'Kombi', placa: 'IRX2C68', numero: '000026' })
+  ) {
+    throw new Error('Falha no filtro isVistoriaInativaOuTeste para vistorias de teste/inativas!');
+  }
+  logPass('Repositório granular por ID (frota-repo.js), Storage frota-galeria (+ fallback) e filtro Modo Teste validados.');
 
 } catch (err) {
   logFail(`Falha no Smoke Test de tempo de execução: ${err.message}`);
@@ -933,6 +945,49 @@ async function runMobileBrowserValidation() {
       if (lbInert) throw new Error('Lightbox de foto ficou inerte dentro de #app em ' + vp.label);
       await evalJs(`document.querySelector('#modalVerFotoGaleria [data-action="fecharLightboxFoto"]').click()`);
       await waitFor("!document.getElementById('modalVerFotoGaleria').classList.contains('open')", 'fechar lightbox de foto pela gaveta em ' + vp.label);
+
+      // Confirmar checkbox "Com fotos" e geracao de PDF com pagina extra (anexo fotografico real carregado)
+      const pdfCheck = await evalJs(`(async () => {
+        const chk = document.getElementById('drPdfIncludeFotos');
+        const chkOk = !!(chk && chk.checked === true);
+        let pagesDrawn = 1;
+        let imgsAdded = 0;
+        let savedFile = '';
+        const origJspdf = window.jspdf;
+        if (origJspdf && origJspdf.jsPDF) {
+          const OrigCtor = origJspdf.jsPDF;
+          window.jspdf = {
+            jsPDF: function(...a) {
+              const inst = new OrigCtor(...a);
+              const origAddPage = inst.addPage.bind(inst);
+              const origAddImg = inst.addImage.bind(inst);
+              inst.addPage = (...pa) => { pagesDrawn++; return origAddPage(...pa); };
+              inst.addImage = (...ia) => { imgsAdded++; return origAddImg(...ia); };
+              inst.save = (fn) => { savedFile = fn || ''; };
+              return inst;
+            }
+          };
+        } else {
+          window.jspdf = {
+            jsPDF: class {
+              setFont() {} setFontSize() {} setTextColor() {} setFillColor() {} setDrawColor() {} setLineWidth() {}
+              rect() {} roundedRect() {} line() {} text() {} splitTextToSize(t) { return [String(t || '')]; }
+              addPage() { pagesDrawn++; } addImage() { imgsAdded++; }
+              getNumberOfPages() { return pagesDrawn; } setPage() {}
+              save(fn) { savedFile = fn || ''; }
+            }
+          };
+        }
+        try {
+          await window.baixarPdfOficial(1001, null, false, true);
+        } finally {
+          window.jspdf = origJspdf;
+        }
+        return { chkOk, pagesDrawn, imgsAdded, savedFile };
+      })()`);
+      if (!pdfCheck.chkOk || pdfCheck.pagesDrawn < 2 || pdfCheck.imgsAdded < 1 || !pdfCheck.savedFile) {
+        throw new Error('Falha no PDF com anexo fotografico em ' + vp.label + ': ' + JSON.stringify(pdfCheck));
+      }
 
       await evalJs(`document.getElementById('drClose').click()`);
       await waitFor("!document.getElementById('drawer').classList.contains('open')", 'fechar drawer em ' + vp.label);

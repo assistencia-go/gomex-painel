@@ -318,7 +318,7 @@ window.aoMudarStatusOcorrencia = aoMudarStatusOcorrencia;
         const buscarRotaEmLista = (arr, campoPlaca, campoMot) => {
           if (!Array.isArray(arr)) return '';
           for (const rec of arr) {
-            if (rec.status === 'inativo') continue;
+            if (isVistoriaInativaOuTeste(rec)) continue;
             const recPlaca = String(rec[campoPlaca] || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
             const recRota = String(rec.rota || '').replace(/\D/g, '');
             if (!recRota) continue;

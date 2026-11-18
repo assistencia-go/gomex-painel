@@ -753,7 +753,7 @@
         const p = (placaRaw || '').toUpperCase().trim();
         if (!p) return { placa: '', veiculo: '', motorista: '', km: '' };
         const vistoriasPlaca = state.all
-          .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === p)
+          .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === p)
           .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
         if (vistoriasPlaca.length) {
           const rec = vistoriasPlaca[0];
@@ -798,7 +798,7 @@
           map.set(p, { placa: p, veiculo: v.modelo || '', motorista: v.motorista || '' });
         });
         state.all.forEach(x => {
-          if (x.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(x)) return;
           const p = (x.placa || '').toUpperCase().trim();
           if (!p) return;
           if (!map.has(p)) {
@@ -830,7 +830,7 @@
           if (m) set.add(m);
         });
         state.all.forEach(x => {
-          if (x.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(x)) return;
           const m = (x.motorista || '').trim();
           if (m) set.add(m);
         });
@@ -1124,7 +1124,7 @@
         // Incluir também custos de O.S. da aba de Manutenção nas placas (se dentro do filtro)
         let totalManutOSPeriodo = 0;
         state.all.forEach(it => {
-          if (it.status === 'inativo') return;
+          if (isVistoriaInativaOuTeste(it)) return;
           const m = getManutencaoData(it);
           if (!m || !m.custo) return;
           const custoOS = parseNumeroMoeda(m.custo);

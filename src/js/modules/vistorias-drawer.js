@@ -441,6 +441,7 @@
         outrasPlaca.sort(sortDesc);
         return { daVistoria, outrasPlaca };
       }
+      window.separarFotosDaVistoria = separarFotosDaVistoria;
 
       function renderCardFotoDrawer(f, isDaVistoria) {
         const fid = esc(f.id);

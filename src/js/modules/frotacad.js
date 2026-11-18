@@ -9,7 +9,7 @@
         gastosState.veiculos.forEach(v => {
           const p = (v.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
           if (!p) return;
-          const rec = vistorias.find(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim() === p);
+          const rec = vistorias.find(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim() === p);
           if (rec && rec.motorista) {
             if (!v.motorista || v.motorista !== rec.motorista) {
               v.motorista = rec.motorista;
@@ -79,7 +79,7 @@
         const itensCalculados = lista.map(v => {
           const pNorm = (v.placa || '').toUpperCase().trim();
           const vistorias = (state.all || [])
-            .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+            .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
             .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
           const recVist = vistorias[0] || null;
 
@@ -273,7 +273,7 @@
         const rows = lista.map(v => {
           const pNorm = (v.placa || '').toUpperCase().trim();
           const vistorias = (state.all || [])
-            .filter(x => x.status !== 'inativo' && (x.placa || '').toUpperCase().trim() === pNorm)
+            .filter(x => !isVistoriaInativaOuTeste(x) && (x.placa || '').toUpperCase().trim() === pNorm)
             .sort((a, b) => ((b.data || '') + ' ' + (b.hora || '')).localeCompare((a.data || '') + ' ' + (a.hora || '')));
           const recVist = vistorias[0] || null;
           const stOleo = calcularStatusOleoPorKm(pNorm);

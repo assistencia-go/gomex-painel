@@ -79,7 +79,23 @@
       const nokOf = it => itensOf(it).filter(x => x && x.valor === 'NOK');
       const pneuAlert = it => it.pneu_dano === 'Sim' || pneusOf(it).some(p => p.estado === 'Gasto');
 
-      function statusTag(raw, statusItem) {
+      function isVistoriaInativaOuTeste(it) {
+        if (!it || typeof it !== 'object') return false;
+        const st = String(it.status || '').toLowerCase();
+        if (st === 'inativo' || st === 'teste') return true;
+        if (String(it.numero || '').toUpperCase().startsWith('TESTE')) return true;
+        const v = String(it.veiculo || '').trim();
+        const vo = String(it.veiculo_outro || '').trim();
+        const pl = String(it.placa || '').trim();
+        const mot = String(it.motorista || '').trim();
+        return /\bteste\b/i.test(v) || /\bteste\b/i.test(vo) || /^teste/i.test(pl) || /^teste$/i.test(mot);
+      }
+      window.isVistoriaInativaOuTeste = isVistoriaInativaOuTeste;
+
+      function statusTag(raw, statusItem, itObj) {
+        if (statusItem === 'teste' || (itObj && String(itObj.numero || '').toUpperCase().startsWith('TESTE'))) {
+          return '<span class="tag tag-inativo"><i class="dot" style="background:#f59e0b"></i>Teste</span>';
+        }
         if (statusItem === 'inativo') {
           return '<span class="tag tag-inativo"><i class="dot" style="background:#94a3b8"></i>Inativa</span>';
         }

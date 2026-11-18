@@ -342,6 +342,31 @@
     .dr-foot-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .dr-pdf-fotos-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 36px;
+      padding: 0 9px;
+      border-radius: 7px;
+      border: 1px solid var(--line-strong);
+      background: var(--bg);
+      color: var(--ink-2);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .dr-pdf-fotos-opt input {
+      accent-color: var(--accent-hi);
+      cursor: pointer;
+      margin: 0;
     }
 
     /* ============================================================================
