@@ -392,6 +392,11 @@
         try {
           renderTable();
           load();
+          // DIRETRIZ DE SINCRONISMO: Ao entrar no app, atualizar também /api/frota-gastos
+          // para que fotos de vistorias recém-enviadas apareçam imediatamente na Galeria e na gaveta.
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 3000 });
+          }
         } catch (e) {
           console.error('Erro na renderização inicial pós-login:', e);
         }

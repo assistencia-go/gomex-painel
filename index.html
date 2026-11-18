@@ -298,8 +298,15 @@
       transition: background-color 200ms ease, color 200ms ease;
     }
 
+    /* Trava rolagem da página raiz (html + body) quando gaveta/modal estiver aberta,
+       impedindo barra dupla concorrente ou roubo de scroll no desktop/mobile. */
+    html.lock,
+    html:has(body.lock),
     body.lock {
-      overflow: hidden;
+      overflow: hidden !important;
+      overflow-x: hidden !important;
+      overflow-y: hidden !important;
+      overscroll-behavior: none !important;
     }
 
     ::selection {
@@ -2320,10 +2327,15 @@
       top: 0;
       right: 0;
       bottom: 0;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100vh;
+      max-height: 100dvh;
       z-index: 60;
       width: min(620px, 100vw);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
       background: var(--panel);
       border-left: 1px solid var(--line-strong);
       box-shadow: -24px 0 48px -20px rgba(0, 0, 0, 0.7);
@@ -2345,6 +2357,8 @@
       padding: 14px 16px 14px 20px;
       border-bottom: 1px solid var(--line);
       flex-wrap: wrap;
+      flex-shrink: 0;
+      min-width: 0;
     }
 
     .dr-head h2 {
@@ -2357,10 +2371,29 @@
       flex: 1;
     }
 
+    /* POLÍTICA OBRIGATÓRIA DE SCROLL DA GAVETA (PROIBIDO TRAVAR ROLAGEM VERTICAL):
+       #drBody (.dr-body) DEVE sempre ter flex: 1 1 auto + min-height: 0 + overflow-y: auto +
+       overscroll-behavior: contain + touch-action: pan-y, e .drawer DEVE ter altura limitada
+       a 100dvh com overflow: hidden. Nunca remover min-height: 0 ou travar scroll em .dr-body.
+       Regra validada automaticamente pelo validate.mjs em desktop e mobile. */
     .dr-body {
-      flex: 1;
+      flex: 1 1 auto;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
       overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
       padding: 4px 20px 24px;
+      box-sizing: border-box;
+    }
+
+    .dr-body > * {
+      min-width: 0;
+      max-width: 100%;
     }
 
     .sec {
@@ -2605,6 +2638,10 @@
       border-top: 1px solid var(--line);
       background: var(--panel-2);
       flex-wrap: wrap;
+      flex-shrink: 0;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .dr-foot-actions {
@@ -2878,29 +2915,174 @@
     }
 
     /* ============================================================================
-     ABAS DA GAVETA (VISTORIA vs MANUTENÇÃO) E WORKFLOW DE OFICINA
+     ABAS DA GAVETA (VISTORIA, FOTOS, EDITAR, MANUTENÇÃO) E WORKFLOW DE OFICINA
      ============================================================================ */
     .dr-tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 4px;
       padding: 0 20px;
       background: var(--panel-2);
       border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .dr-tab {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 16px;
+      gap: 6px;
+      padding: 11px 12px;
       border: none;
       background: transparent;
       color: var(--ink-3);
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 700;
       border-bottom: 2px solid transparent;
       cursor: pointer;
       transition: all 160ms ease;
+      white-space: nowrap;
+    }
+
+    /* Aba de Fotos dentro da Gaveta da Vistoria */
+    .dr-fotos-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .dr-fotos-dropzone {
+      border: 2px dashed var(--line-strong);
+      border-radius: 10px;
+      padding: 16px 14px;
+      text-align: center;
+      background: var(--bg);
+      cursor: pointer;
+      transition: border-color 150ms ease, background 150ms ease;
+    }
+
+    .dr-fotos-dropzone:hover,
+    .dr-fotos-dropzone.dragover {
+      border-color: var(--accent-hi);
+      background: var(--accent-tint);
+    }
+
+    .dr-fotos-draft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .dr-fotos-draft-item {
+      position: relative;
+      height: 78px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      background: #09090b;
+    }
+
+    .dr-fotos-draft-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dr-fotos-draft-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.92);
+      color: #ffffff;
+      border: 0;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .dr-fotos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (max-width: 480px) {
+      .dr-fotos-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .dr-foto-card {
+      background: var(--panel-2);
+      border: 1px solid var(--line-strong);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .dr-foto-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 150px;
+      background: #09090b;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .dr-foto-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dr-foto-badge-cat {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      background: rgba(9, 9, 11, 0.85);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dr-foto-body {
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--ink-2);
+      display: grid;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .dr-foto-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 6px 10px;
+      border-top: 1px solid var(--line);
+      background: var(--raised);
     }
 
     .dr-tab:hover {
@@ -6029,7 +6211,7 @@
         display: none;
       }
 
-      
+
       /* ==============================================================================
        CATÁLOGO DE PRODUTOS & CADASTRO RÁPIDO NO MOBILE
        ============================================================================== */
@@ -6041,7 +6223,7 @@
         box-sizing: border-box !important;
       }
 
-      .cat-prod-form-grid > div {
+      .cat-prod-form-grid>div {
         width: 100% !important;
         box-sizing: border-box !important;
       }
@@ -6142,7 +6324,7 @@
         justify-content: flex-end !important;
       }
 
-      #modalCatalogoProdutos table.grid tbody td:nth-child(7) > div {
+      #modalCatalogoProdutos table.grid tbody td:nth-child(7)>div {
         display: flex !important;
         gap: 8px !important;
         width: 100% !important;
@@ -6173,13 +6355,13 @@
         box-sizing: border-box !important;
       }
 
-      .rapido-prod-form-grid > div {
+      .rapido-prod-form-grid>div {
         width: 100% !important;
         box-sizing: border-box !important;
       }
 
-      .rapido-prod-form-grid > div input,
-      .rapido-prod-form-grid > div select {
+      .rapido-prod-form-grid>div input,
+      .rapido-prod-form-grid>div select {
         width: 100% !important;
         box-sizing: border-box !important;
       }
@@ -6392,7 +6574,7 @@
         justify-content: stretch;
       }
 
-      #cadFrotaTable tbody td:nth-child(8) > div {
+      #cadFrotaTable tbody td:nth-child(8)>div {
         display: grid !important;
         grid-template-columns: 1fr 36px 36px 36px 36px !important;
         gap: 6px !important;
@@ -6479,7 +6661,7 @@
         gap: 8px;
       }
 
-      .gastos-date-inputs > div:first-child {
+      .gastos-date-inputs>div:first-child {
         margin-bottom: 2px;
       }
 
@@ -6500,14 +6682,14 @@
         flex-shrink: 0;
       }
 
-      .gastos-period-bar > div:last-child {
+      .gastos-period-bar>div:last-child {
         width: 100%;
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
 
-      .gastos-period-bar > div:last-child .btn {
+      .gastos-period-bar>div:last-child .btn {
         width: 100%;
         justify-content: center;
         height: 40px;
@@ -6738,7 +6920,7 @@
 
       #sectionVendedoresView .panel-filters .search-wrap,
       #sectionVendedoresView .panel-filters .select,
-      #sectionVendedoresView .panel-filters > .btn {
+      #sectionVendedoresView .panel-filters>.btn {
         width: 100% !important;
         height: 38px !important;
         justify-content: center;
@@ -6785,12 +6967,12 @@
         align-items: stretch !important;
       }
 
-      #modalRelatorioSupervisores .modal-foot > button,
-      #modalRelatorioSupervisores .modal-foot > div {
+      #modalRelatorioSupervisores .modal-foot>button,
+      #modalRelatorioSupervisores .modal-foot>div {
         width: 100%;
       }
 
-      #modalRelatorioSupervisores .modal-foot > div {
+      #modalRelatorioSupervisores .modal-foot>div {
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -6903,10 +7085,10 @@
         flex-shrink: 0;
       }
 
-      .modal-body > *,
-      .playstore-block > *,
-      .ocr-hours-grid > *,
-      .ocr-rel-filters-grid > * {
+      .modal-body>*,
+      .playstore-block>*,
+      .ocr-hours-grid>*,
+      .ocr-rel-filters-grid>* {
         max-width: 100%;
         min-width: 0;
         box-sizing: border-box;
@@ -6929,11 +7111,30 @@
         white-space: nowrap !important;
       }
 
+      /* POLÍTICA OBRIGATÓRIA DE SCROLL DA GAVETA MOBILE (PROIBIDO TRAVAR ROLAGEM VERTICAL):
+         .dr-body DEVE manter flex: 1 1 auto + min-height: 0 + overflow-y: auto +
+         overscroll-behavior: contain + touch-action: pan-y (display: block evita travamento
+         de altura intrínseca de grid). Regra verificada automaticamente pelo validate.mjs. */
       .dr-body {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) !important;
-        align-content: start;
-        touch-action: pan-y;
+        display: block !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+        padding: 4px 14px 20px;
+        box-sizing: border-box !important;
+      }
+
+      .dr-body > * {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
       }
 
       #sectionOcorrenciasView .summary-grid-ocr {
@@ -6944,7 +7145,7 @@
         padding: 0 !important;
       }
 
-      #sectionOcorrenciasView .summary-grid-ocr > .stat {
+      #sectionOcorrenciasView .summary-grid-ocr>.stat {
         flex: none !important;
         border-radius: 12px !important;
         padding: 10px 12px !important;
@@ -6961,7 +7162,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       }
 
-      #modalRelatorioSupervisores .sup-rel-filters > div,
+      #modalRelatorioSupervisores .sup-rel-filters>div,
       #modalRelatorioSupervisores .sup-rel-filters .input-with-icon,
       #modalRelatorioSupervisores .sup-rel-filters select,
       #modalRelatorioSupervisores .sup-rel-filters .input {
@@ -6986,7 +7187,7 @@
         gap: 8px !important;
       }
 
-      .summary-grid > .stat:last-child:nth-child(odd) {
+      .summary-grid>.stat:last-child:nth-child(odd) {
         grid-column: 1 / -1;
       }
 
@@ -7080,7 +7281,7 @@
         font-size: 12px !important;
       }
 
-      #sectionVendedoresView .panel-filters > .btn {
+      #sectionVendedoresView .panel-filters>.btn {
         height: 40px !important;
       }
 
@@ -7088,7 +7289,7 @@
         width: 100%;
       }
 
-      .galeria-head-actions > .btn {
+      .galeria-head-actions>.btn {
         flex: 1 1 100%;
         justify-content: center;
         height: 40px;
@@ -7100,7 +7301,6 @@
         height: 40px;
       }
     }
-
   </style>
 </head>
 
@@ -8828,22 +9028,25 @@
         </div>
 
 <div id="sectionAdminPermissoesView" hidden data-chunk="admin"></div>
-  <!-- ========================================================================== -->
-  <!-- GAVETA: DETALHES DA VISTORIA & WORKFLOW DE APROVAÇÃO -->
-  <!-- ========================================================================== -->
-  <div class="scrim" id="scrim"></div>
+      </main>
+    </div>
+  </div>
+<!-- ========================================================================== -->
+<!-- GAVETA: DETALHES DA VISTORIA & WORKFLOW DE APROVAÇÃO -->
+<!-- ========================================================================== -->
+<div class="scrim" id="scrim"></div>
 
-  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true"
-    tabindex="-1">
-    <header class="dr-head">
-      <h2 id="drTitle">Vistoria</h2>
-      <span class="plate" id="drPlate" title="Clique para ver histórico completo deste veículo"></span>
-      <span id="drStatus"></span>
-      <span class="spacer"></span>
-      <button type="button" class="btn btn-ghost btn-icon" id="drClose" aria-label="Fechar detalhes"><svg class="i">
-          <use href="#i-x" />
-        </svg></button>
-    </header>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drTitle" aria-hidden="true"
+  tabindex="-1">
+  <header class="dr-head">
+    <h2 id="drTitle">Vistoria</h2>
+    <span class="plate" id="drPlate" title="Clique para ver histórico completo deste veículo"></span>
+    <span id="drStatus"></span>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-ghost btn-icon" id="drClose" aria-label="Fechar detalhes"><svg class="i">
+        <use href="#i-x" />
+      </svg></button>
+  </header>
 
     <!-- Abas de Navegação da Gaveta -->
     <div class="dr-tabs">
@@ -8851,6 +9054,12 @@
         <svg class="i">
           <use href="#i-truck" />
         </svg> <span>Vistoria & Check-list</span>
+      </button>
+      <button type="button" class="dr-tab" id="drTabBtnFotos" data-action="switchDrTab" data-arg="fotos">
+        <svg class="i">
+          <use href="#i-camera" />
+        </svg> <span>Fotos</span>
+        <span class="dr-tab-badge done" id="drTabBadgeFotos" hidden>0</span>
       </button>
       <button type="button" class="dr-tab" id="drTabBtnEditar" data-action="switchDrTab" data-arg="editar">
         <svg class="i">
@@ -8865,193 +9074,300 @@
       </button>
     </div>
 
-    <div class="dr-body" id="drBody">
-      <!-- ABA 1: CONTEÚDO DA VISTORIA -->
-      <div id="drPaneVistoria">
-        <!-- ALERTAS OPERACIONAIS CRÍTICOS -->
-        <div id="drOperationalAlerts" hidden></div>
+  <div class="dr-body" id="drBody">
+    <!-- ABA 1: CONTEÚDO DA VISTORIA -->
+    <div id="drPaneVistoria">
+      <!-- ALERTAS OPERACIONAIS CRÍTICOS -->
+      <div id="drOperationalAlerts" hidden></div>
 
-        <!-- BANNER DE VISTORIA INATIVADA -->
-        <div id="drInatBanner" hidden
-          style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-          <div>
-            <div style="font-weight:700;color:var(--bad);font-size:13px;display:flex;align-items:center;gap:6px">
-              <svg class="i" style="width:15px;height:15px;stroke-width:2.2">
-                <use href="#i-archive" />
-              </svg>
-              <span>Vistoria Inativada</span>
-            </div>
-            <div style="font-size:12px;color:var(--ink-2);margin-top:3px" id="drInatMotivo">Motivo: —</div>
-          </div>
-          <button type="button" class="btn btn-ghost" data-action="reativarVistoria" data-arg="__STATE_SEL__"
-            style="font-size:12px;height:30px;color:var(--ok);border-color:rgba(61,220,151,0.4)">
-            <svg class="i">
-              <use href="#i-refresh" />
-            </svg> Reativar
-          </button>
-        </div>
-
-        <!-- PARECER & GESTÃO ATIVA DE LIBERAÇÃO -->
-        <section class="sec">
-          <h3>Decisão & Liberação do Veículo <small>Ação da Gestão</small></h3>
-          <div class="approval-card">
-            <div class="approval-actions">
-              <button type="button" class="btn-decision" id="btnSetLiberado" data-action="selecionarDecisao" data-arg="Liberado">
-                <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--ok)">
-                  <use href="#i-shield-check" />
-                </svg>
-                <span>Liberar Veículo</span>
-              </button>
-              <button type="button" class="btn-decision" id="btnSetRessalva" data-action="selecionarDecisao" data-arg="Ressalva">
-                <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--warn)">
-                  <use href="#i-alert-triangle" />
-                </svg>
-                <span>Com Ressalva</span>
-              </button>
-              <button type="button" class="btn-decision" id="btnSetBloqueado"
-                data-action="selecionarDecisao" data-arg="Não liberado">
-                <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--bad)">
-                  <use href="#i-ban" />
-                </svg>
-                <span>Bloquear (Oficina)</span>
-              </button>
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Parecer do Gestor / Instruções Operacionais:
-              </label>
-              <textarea class="approval-textarea" id="drParecerInput"
-                placeholder="Ex: Veículo liberado para rota da manhã. Agendar troca de pneu para as 17h..."></textarea>
-            </div>
-            <div style="display:flex;justify-content:flex-end">
-              <button type="button" class="btn btn-primary" id="btnSalvarParecer" data-action="salvarDecisaoGestor">
-                <svg class="i">
-                  <use href="#i-check" />
-                </svg> Salvar Parecer
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- DADOS DA OPERAÇÃO -->
-        <section class="sec">
-          <h3>Operação & Identificação</h3>
-          <dl class="kv" id="drKv"></dl>
-        </section>
-
-        <!-- AVARIAS NA CARROCERIA (MAPA REAL) -->
-        <section class="sec">
-          <h3>Avarias na carroceria <small id="drAvCount"></small></h3>
-          <div class="map">
-            <svg id="modalVanSvg" viewBox="0 0 300 182">
-              <defs>
-                <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                  <path
-                    d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z"
-                    fill="#fafafa" />
-                  <path d="M64,20 L46,42 L92,42 L92,20 Z" fill="#e8eef4" />
-                  <line x1="96" y1="16" x2="96" y2="82" />
-                  <line x1="134" y1="16" x2="134" y2="82" />
-                  <line x1="192" y1="14" x2="192" y2="82" stroke-width="1" />
-                  <rect x="84" y="48" width="8" height="2.5" rx="1" />
-                  <rect x="124" y="48" width="8" height="2.5" rx="1" />
-                  <circle cx="46" cy="83" r="14" fill="#444" />
-                  <circle cx="46" cy="83" r="6" fill="#bbb" />
-                  <circle cx="162" cy="83" r="14" fill="#444" />
-                  <circle cx="162" cy="83" r="6" fill="#bbb" />
-                </g>
-                <g id="mvfront" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                  <rect x="10" y="68" width="14" height="12" rx="2" fill="#444" />
-                  <rect x="66" y="68" width="14" height="12" rx="2" fill="#444" />
-                  <path d="M8,70 L8,30 Q10,6 30,4 L60,4 Q80,6 82,30 L82,70 Z" fill="#fafafa" />
-                  <path d="M16,30 L22,10 L68,10 L74,30 Z" fill="#e8eef4" />
-                  <rect x="10" y="38" width="17" height="8" rx="2" fill="#fff3c4" />
-                  <rect x="63" y="38" width="17" height="8" rx="2" fill="#fff3c4" />
-                  <rect x="30" y="37" width="30" height="13" rx="2" />
-                  <rect x="6" y="56" width="78" height="10" rx="3" />
-                </g>
-                <g id="mvrear" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                  <rect x="10" y="68" width="14" height="12" rx="2" fill="#444" />
-                  <rect x="66" y="68" width="14" height="12" rx="2" fill="#444" />
-                  <path d="M8,70 L8,14 Q8,4 18,4 L72,4 Q82,4 82,14 L82,70 Z" fill="#fafafa" />
-                  <line x1="45" y1="8" x2="45" y2="56" />
-                  <rect x="15" y="12" width="26" height="14" rx="2" fill="#e8eef4" />
-                  <rect x="49" y="12" width="26" height="14" rx="2" fill="#e8eef4" />
-                  <rect x="6" y="56" width="78" height="10" rx="3" />
-                </g>
-                <g id="mvtop" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
-                  <path d="M4,12 Q4,5 14,5 L152,5 Q158,5 158,12 L158,58 Q158,65 152,65 L14,65 Q4,65 4,58 Z"
-                    fill="#fafafa" />
-                  <path d="M18,10 L36,14 L36,56 L18,60 Z" fill="#e8eef4" />
-                  <rect x="40" y="10" width="114" height="50" rx="4" />
-                </g>
-              </defs>
-              <rect width="300" height="182" fill="#ffffff" />
-              <use href="#mvside" transform="translate(4,6) scale(.68)" />
-              <use href="#mvside" transform="translate(296,6) scale(-.68,.68)" />
-              <use href="#mvfront" transform="translate(6,104) scale(.78)" />
-              <use href="#mvtop" transform="translate(88,110) scale(.78)" />
-              <use href="#mvrear" transform="translate(222,104) scale(.78)" />
-              <g font-size="7.5" fill="#64748b" text-anchor="middle" font-weight="700">
-                <text x="74" y="86">ESQ. (MOTORISTA)</text>
-                <text x="226" y="86">DIR. (PASSAGEIRO)</text>
-                <text x="41" y="174">FRENTE</text>
-                <text x="151" y="174">TETO</text>
-                <text x="257" y="174">TRASEIRA</text>
-              </g>
-              <g id="modalVanMarksLayer"></g>
+      <!-- BANNER DE VISTORIA INATIVADA -->
+      <div id="drInatBanner" hidden
+        style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);padding:12px 14px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font-weight:700;color:var(--bad);font-size:13px;display:flex;align-items:center;gap:6px">
+            <svg class="i" style="width:15px;height:15px;stroke-width:2.2">
+              <use href="#i-archive" />
             </svg>
+            <span>Vistoria Inativada</span>
           </div>
-          <p class="legend">A amassado · R risco · Q quebrado · T trincado · F faltando</p>
-        </section>
+          <div style="font-size:12px;color:var(--ink-2);margin-top:3px" id="drInatMotivo">Motivo: —</div>
+        </div>
+        <button type="button" class="btn btn-ghost" data-action="reativarVistoria" data-arg="__STATE_SEL__"
+          style="font-size:12px;height:30px;color:var(--ok);border-color:rgba(61,220,151,0.4)">
+          <svg class="i">
+            <use href="#i-refresh" />
+          </svg> Reativar
+        </button>
+      </div>
 
-        <!-- PNEUS -->
-        <section class="sec">
-          <h3>Pneus & Calibragem</h3>
-          <table class="mini">
-            <thead>
-              <tr>
-                <th>Posição</th>
-                <th>Estado</th>
-                <th>PSI</th>
-                <th>Observação</th>
-              </tr>
-            </thead>
-            <tbody id="drTires"></tbody>
-          </table>
-        </section>
-
-        <!-- ITENS REPROVADOS -->
-        <section class="sec">
-          <h3>Itens reprovados <small id="drNokCount"></small></h3>
-          <div id="drNok"></div>
-        </section>
-
-        <!-- OBSERVAÇÕES -->
-        <section class="sec" id="drNotesSec">
-          <h3>Observações do Vistoriador</h3>
-          <p class="notes" id="drNotes"></p>
-        </section>
-
-        <!-- ASSINATURAS COLETADAS -->
-        <section class="sec">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <h3>Assinaturas Digitais</h3>
-            <button type="button" class="btn btn-ghost" id="drDownloadAllSigs"
-              data-action="baixarTodasAssinaturas" data-arg="__STATE_SEL__" style="font-size:12px;height:28px;padding:0 10px"
-              title="Baixar todas as assinaturas desta vistoria">
-              <svg class="i" style="width:13px;height:13px">
-                <use href="#i-download" />
+      <!-- PARECER & GESTÃO ATIVA DE LIBERAÇÃO -->
+      <section class="sec">
+        <h3>Decisão & Liberação do Veículo <small>Ação da Gestão</small></h3>
+        <div class="approval-card">
+          <div class="approval-actions">
+            <button type="button" class="btn-decision" id="btnSetLiberado" data-action="selecionarDecisao"
+              data-arg="Liberado">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--ok)">
+                <use href="#i-shield-check" />
               </svg>
-              <span>Baixar Assinaturas</span>
+              <span>Liberar Veículo</span>
+            </button>
+            <button type="button" class="btn-decision" id="btnSetRessalva" data-action="selecionarDecisao"
+              data-arg="Ressalva">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--warn)">
+                <use href="#i-alert-triangle" />
+              </svg>
+              <span>Com Ressalva</span>
+            </button>
+            <button type="button" class="btn-decision" id="btnSetBloqueado" data-action="selecionarDecisao"
+              data-arg="Não liberado">
+              <svg class="i" style="width:18px;height:18px;stroke-width:2.2;color:var(--bad)">
+                <use href="#i-ban" />
+              </svg>
+              <span>Bloquear (Oficina)</span>
             </button>
           </div>
-          <div class="sigs" id="drSigs"></div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Parecer do Gestor / Instruções Operacionais:
+            </label>
+            <textarea class="approval-textarea" id="drParecerInput"
+              placeholder="Ex: Veículo liberado para rota da manhã. Agendar troca de pneu para as 17h..."></textarea>
+          </div>
+          <div style="display:flex;justify-content:flex-end">
+            <button type="button" class="btn btn-primary" id="btnSalvarParecer" data-action="salvarDecisaoGestor">
+              <svg class="i">
+                <use href="#i-check" />
+              </svg> Salvar Parecer
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- DADOS DA OPERAÇÃO -->
+      <section class="sec">
+        <h3>Operação & Identificação</h3>
+        <dl class="kv" id="drKv"></dl>
+      </section>
+
+      <!-- AVARIAS NA CARROCERIA (MAPA REAL) -->
+      <section class="sec">
+        <h3>Avarias na carroceria <small id="drAvCount"></small></h3>
+        <div class="map">
+          <svg id="modalVanSvg" viewBox="0 0 300 182">
+            <defs>
+              <g id="mvside" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <path
+                  d="M8,82 L6,64 Q6,58 12,56 L34,48 Q40,46 44,40 L62,18 Q66,14 74,14 L188,12 Q196,12 196,20 L198,82 L180,82 A18,18 0 0 0 144,82 L64,82 A18,18 0 0 0 28,82 Z"
+                  fill="#fafafa" />
+                <path d="M64,20 L46,42 L92,42 L92,20 Z" fill="#e8eef4" />
+                <line x1="96" y1="16" x2="96" y2="82" />
+                <line x1="134" y1="16" x2="134" y2="82" />
+                <line x1="192" y1="14" x2="192" y2="82" stroke-width="1" />
+                <rect x="84" y="48" width="8" height="2.5" rx="1" />
+                <rect x="124" y="48" width="8" height="2.5" rx="1" />
+                <circle cx="46" cy="83" r="14" fill="#444" />
+                <circle cx="46" cy="83" r="6" fill="#bbb" />
+                <circle cx="162" cy="83" r="14" fill="#444" />
+                <circle cx="162" cy="83" r="6" fill="#bbb" />
+              </g>
+              <g id="mvfront" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444" />
+                <rect x="66" y="68" width="14" height="12" rx="2" fill="#444" />
+                <path d="M8,70 L8,30 Q10,6 30,4 L60,4 Q80,6 82,30 L82,70 Z" fill="#fafafa" />
+                <path d="M16,30 L22,10 L68,10 L74,30 Z" fill="#e8eef4" />
+                <rect x="10" y="38" width="17" height="8" rx="2" fill="#fff3c4" />
+                <rect x="63" y="38" width="17" height="8" rx="2" fill="#fff3c4" />
+                <rect x="30" y="37" width="30" height="13" rx="2" />
+                <rect x="6" y="56" width="78" height="10" rx="3" />
+              </g>
+              <g id="mvrear" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <rect x="10" y="68" width="14" height="12" rx="2" fill="#444" />
+                <rect x="66" y="68" width="14" height="12" rx="2" fill="#444" />
+                <path d="M8,70 L8,14 Q8,4 18,4 L72,4 Q82,4 82,14 L82,70 Z" fill="#fafafa" />
+                <line x1="45" y1="8" x2="45" y2="56" />
+                <rect x="15" y="12" width="26" height="14" rx="2" fill="#e8eef4" />
+                <rect x="49" y="12" width="26" height="14" rx="2" fill="#e8eef4" />
+                <rect x="6" y="56" width="78" height="10" rx="3" />
+              </g>
+              <g id="mvtop" fill="none" stroke="#222" stroke-width="1.6" stroke-linejoin="round">
+                <path d="M4,12 Q4,5 14,5 L152,5 Q158,5 158,12 L158,58 Q158,65 152,65 L14,65 Q4,65 4,58 Z"
+                  fill="#fafafa" />
+                <path d="M18,10 L36,14 L36,56 L18,60 Z" fill="#e8eef4" />
+                <rect x="40" y="10" width="114" height="50" rx="4" />
+              </g>
+            </defs>
+            <rect width="300" height="182" fill="#ffffff" />
+            <use href="#mvside" transform="translate(4,6) scale(.68)" />
+            <use href="#mvside" transform="translate(296,6) scale(-.68,.68)" />
+            <use href="#mvfront" transform="translate(6,104) scale(.78)" />
+            <use href="#mvtop" transform="translate(88,110) scale(.78)" />
+            <use href="#mvrear" transform="translate(222,104) scale(.78)" />
+            <g font-size="7.5" fill="#64748b" text-anchor="middle" font-weight="700">
+              <text x="74" y="86">ESQ. (MOTORISTA)</text>
+              <text x="226" y="86">DIR. (PASSAGEIRO)</text>
+              <text x="41" y="174">FRENTE</text>
+              <text x="151" y="174">TETO</text>
+              <text x="257" y="174">TRASEIRA</text>
+            </g>
+            <g id="modalVanMarksLayer"></g>
+          </svg>
+        </div>
+        <p class="legend">A amassado · R risco · Q quebrado · T trincado · F faltando</p>
+      </section>
+
+      <!-- PNEUS -->
+      <section class="sec">
+        <h3>Pneus & Calibragem</h3>
+        <table class="mini">
+          <thead>
+            <tr>
+              <th>Posição</th>
+              <th>Estado</th>
+              <th>PSI</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody id="drTires"></tbody>
+        </table>
+      </section>
+
+      <!-- ITENS REPROVADOS -->
+      <section class="sec">
+        <h3>Itens reprovados <small id="drNokCount"></small></h3>
+        <div id="drNok"></div>
+      </section>
+
+      <!-- OBSERVAÇÕES -->
+      <section class="sec" id="drNotesSec">
+        <h3>Observações do Vistoriador</h3>
+        <p class="notes" id="drNotes"></p>
+      </section>
+
+      <!-- ASSINATURAS COLETADAS -->
+      <section class="sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h3>Assinaturas Digitais</h3>
+          <button type="button" class="btn btn-ghost" id="drDownloadAllSigs" data-action="baixarTodasAssinaturas"
+            data-arg="__STATE_SEL__" style="font-size:12px;height:28px;padding:0 10px"
+            title="Baixar todas as assinaturas desta vistoria">
+            <svg class="i" style="width:13px;height:13px">
+              <use href="#i-download" />
+            </svg>
+            <span>Baixar Assinaturas</span>
+          </button>
+        </div>
+        <div class="sigs" id="drSigs"></div>
+      </section>
+    </div>
+
+      <!-- ====================================================================== -->
+      <!-- ABA FOTOS: VISUALIZAR E ANEXAR FOTOS MANUALMENTE NA VISTORIA           -->
+      <!-- ====================================================================== -->
+      <div id="drPaneFotos" hidden>
+        <div class="maint-card" id="drFotosUploadCard">
+          <div class="dr-fotos-head">
+            <div>
+              <h3 style="margin:0;font-size:14px;color:var(--ink);font-weight:700">Adicionar Fotos nesta Vistoria</h3>
+              <p style="font-size:12px;color:var(--ink-3);margin-top:2px">
+                Envie manualmente fotos enviadas pelo motorista (WhatsApp, galeria ou computador). Elas ficam salvas na vistoria e na Galeria da frota.
+              </p>
+            </div>
+            <span id="drFotosVistBadge" class="plate" style="font-size:12px"></span>
+          </div>
+
+          <input type="file" id="drFotoFileInput" accept="image/*" multiple hidden
+            data-change="onSelecionarFotosDrawer" data-pass="files">
+
+          <div class="dr-fotos-dropzone" id="drFotosDropzone" data-action="acionarSeletorFotosDrawer">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--accent-tint);color:var(--accent-hi);display:grid;place-items:center;margin:0 auto 8px">
+              <svg class="i" style="width:20px;height:20px">
+                <use href="#i-camera" />
+              </svg>
+            </div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">Clique para escolher fotos (ou arraste / cole com Ctrl + V)</div>
+            <div style="font-size:11.5px;color:var(--ink-3);margin-top:3px">Aceita 1 ou várias imagens JPG, PNG ou WEBP</div>
+            <div style="margin-top:10px">
+              <button type="button" class="btn btn-primary" style="height:32px;font-size:12px;padding:0 14px"
+                data-stop="1" data-action="acionarSeletorFotosDrawer">
+                <svg class="i" style="width:14px;height:14px">
+                  <use href="#i-plus" />
+                </svg>
+                <span id="drFotosBtnEscolherLbl">Escolher Fotos</span>
+              </button>
+            </div>
+
+            <div id="drFotosDraftStatus" hidden data-stop="1"
+              style="display:none;align-items:center;justify-content:space-between;gap:8px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line-strong);flex-wrap:wrap">
+              <span id="drFotosDraftCount" style="font-size:12px;font-weight:700;color:var(--ok)">0 fotos prontas</span>
+              <div style="display:flex;gap:6px">
+                <button type="button" class="btn" style="height:28px;font-size:11.5px;padding:0 10px"
+                  data-stop="1" data-action="acionarSeletorFotosDrawer">
+                  <svg class="i" style="width:12px;height:12px"><use href="#i-plus" /></svg>
+                  <span>Mais fotos</span>
+                </button>
+                <button type="button" class="btn btn-ghost" style="height:28px;font-size:11.5px;padding:0 8px;color:var(--bad)"
+                  data-stop="1" data-action="limparDraftFotosDrawer">
+                  Limpar
+                </button>
+              </div>
+            </div>
+
+            <div class="dr-fotos-draft-grid" id="drFotosDraftGrid" hidden data-stop="1" style="display:none"></div>
+          </div>
+
+          <div class="edit-grid-2">
+            <div>
+              <label for="drFotoCategoria" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Categoria da Foto:</label>
+              <select class="input" id="drFotoCategoria" style="height:38px">
+                <option value="Avaria / Carroceria">Avaria / Carroceria</option>
+                <option value="Pneus / Calibragem">Pneus / Calibragem</option>
+                <option value="Estado Geral / Vistoria">Estado Geral / Vistoria</option>
+                <option value="Painel / Hodômetro (KM)">Painel / Hodômetro (KM)</option>
+                <option value="Saída / Retorno de Rota">Saída / Retorno de Rota</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div>
+              <label for="drFotoObs" style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Observação (opcional):</label>
+              <input type="text" class="input" id="drFotoObs" placeholder="Ex: Foto recebida no WhatsApp" style="height:38px">
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-primary" id="btnSalvarFotosDrawer" data-action="salvarFotosDrawer">
+              <svg class="i">
+                <use href="#i-check" />
+              </svg>
+              <span>Salvar Fotos na Vistoria</span>
+            </button>
+          </div>
+        </div>
+
+        <section class="sec" style="border-top:none;padding-top:4px">
+          <h3>
+            <span>Fotos desta Vistoria</span>
+            <small id="drFotosVistoriaCount">0 fotos</small>
+          </h3>
+          <div id="drFotosVistoriaList" class="dr-fotos-grid"></div>
+        </section>
+
+        <section class="sec">
+          <h3>
+            <span>Outras Fotos desta Placa</span>
+            <button type="button" class="btn btn-ghost" id="drBtnAbrirGaleriaPlaca"
+              style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)"
+              data-action="drawerIrParaGaleriaPlaca">
+              <svg class="i" style="width:12px;height:12px"><use href="#i-image" /></svg>
+              <span>Ver Galeria Completa</span>
+            </button>
+          </h3>
+          <div id="drFotosPlacaList" class="dr-fotos-grid"></div>
         </section>
       </div>
 
       <!-- ====================================================================== -->
-      <!-- ABA 2: CONTROLE DE MANUTENÇÃO & OBSERVAÇÕES DA OFICINA -->
+      <!-- ABA MANUTENÇÃO: CONTROLE DE MANUTENÇÃO & OBSERVAÇÕES DA OFICINA -->
       <!-- ====================================================================== -->
       <div id="drPaneManut" hidden>
         <div class="maint-card">
@@ -9069,22 +9385,22 @@
               Situação de Manutenção do Veículo:
             </label>
             <div class="maint-status-grid">
-              <button type="button" class="btn-maint-status" id="btnMaintStatusNenhuma"
-                data-action="setMaintStatus" data-arg="Nenhuma">
+              <button type="button" class="btn-maint-status" id="btnMaintStatusNenhuma" data-action="setMaintStatus"
+                data-arg="Nenhuma">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2">
                   <use href="#i-circle-dot" />
                 </svg>
                 <span>Sem Manutenção</span>
               </button>
-              <button type="button" class="btn-maint-status" id="btnMaintStatusEm"
-                data-action="setMaintStatus" data-arg="Em manutenção">
+              <button type="button" class="btn-maint-status" id="btnMaintStatusEm" data-action="setMaintStatus"
+                data-arg="Em manutenção">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#f59e0b">
                   <use href="#i-tool" />
                 </svg>
                 <span>Está em Manutenção</span>
               </button>
-              <button type="button" class="btn-maint-status" id="btnMaintStatusJa"
-                data-action="setMaintStatus" data-arg="Já foi para manutenção">
+              <button type="button" class="btn-maint-status" id="btnMaintStatusJa" data-action="setMaintStatus"
+                data-arg="Já foi para manutenção">
                 <svg class="i" style="width:18px;height:18px;stroke-width:2;color:#10b981">
                   <use href="#i-badge-check" />
                 </svg>
@@ -9093,262 +9409,252 @@
             </div>
           </div>
 
-          <!-- Campos de Manutenção -->
-          <div class="maint-fields-grid">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Oficina / Mecânica / Prestador:
-              </label>
-              <input type="text" class="input" id="maintOficina" placeholder="Informe o nome da oficina ou prestador"
-                style="height:38px">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Tipo de Serviço / Reparo:
-              </label>
-              <input type="text" class="input" id="maintTipo" placeholder="Ex: Freios, Suspensão, Pneus, Revisão..."
-                style="height:38px">
-            </div>
-          </div>
-
-          <div class="maint-fields-grid">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Data de Ida / Entrada:
-              </label>
-              <input type="date" class="input" id="maintDataEntrada" style="height:38px">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Data de Retorno / Previsão:
-              </label>
-              <input type="date" class="input" id="maintDataRetorno" style="height:38px">
-            </div>
-          </div>
-
-          <div class="maint-fields-grid">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Custo Estimado / Real (R$):
-              </label>
-              <input type="text" class="input" id="maintCusto" placeholder="Ex: 650,00" style="height:38px">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
-                Nº O.S. / Nota Fiscal:
-              </label>
-              <input type="text" class="input" id="maintOS" placeholder="Ex: OS 1042 / NF 5892" style="height:38px">
-            </div>
-          </div>
-
-          <!-- Campo Principal de Observações -->
           <div>
-            <label
-              style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:flex;justify-content:space-between">
-              <span>Observações de Manutenção do Veículo:</span>
-              <span style="font-weight:400;color:var(--ink-3)">Detalhes, peças e parecer</span>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Tipo de Serviço / Reparo:
             </label>
-            <textarea class="approval-textarea" id="maintObsTexto" style="min-height:95px"
-              placeholder="Insira as observações sobre a manutenção: peças trocadas, garantia, motivo do envio à oficina, reparos pendentes ou parecer de liberação..."></textarea>
+            <input type="text" class="input" id="maintTipo" placeholder="Ex: Freios, Suspensão, Pneus, Revisão..."
+              style="height:38px">
           </div>
 
-          <div
-            style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;flex-wrap:wrap;gap:8px">
-            <span style="font-size:12px;color:var(--ink-3)" id="maintLastSavedInfo"></span>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <button type="button" class="btn"
-                data-action="drawerGastoSel">
-                <svg class="i">
-                  <use href="#i-plus" />
-                </svg> Lançar Peça / Óleo nesta Placa
-              </button>
-              <button type="button" class="btn btn-primary" id="btnSalvarManutencao"
-                data-action="salvarObservacoesManutencao">
-                <svg class="i">
-                  <use href="#i-check" />
-                </svg> Salvar Observações de Manutenção
-              </button>
-            </div>
+        <div class="maint-fields-grid">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Data de Ida / Entrada:
+            </label>
+            <input type="date" class="input" id="maintDataEntrada" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Data de Retorno / Previsão:
+            </label>
+            <input type="date" class="input" id="maintDataRetorno" style="height:38px">
           </div>
         </div>
 
-        <!-- Peças e Gastos Lançados nesta Placa -->
-        <section class="sec" style="border-top:none;padding-top:0;margin-bottom:14px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-            <h3 style="margin:0">Peças, Óleo & Gastos desta Placa <small id="maintGastosPlacaTotal"
-                style="color:var(--ok);font-weight:700">R$ 0,00</small></h3>
-            <button type="button" class="btn btn-ghost"
-              style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)"
-              data-action="drawerVerGastosSel">
-              <svg class="i" style="width:12px;height:12px"><use href="#i-receipt" /></svg> Ver Extrato Completo
-            </button>
-          </div>
-          <div class="maint-history-list" id="maintGastosPlacaList">
-            <p class="muted" style="font-size:12.5px">Nenhum produto ou peça lançado nesta placa ainda.</p>
-          </div>
-        </section>
-
-        <!-- Histórico de Manutenções Registradas para o Veículo -->
-        <section class="sec" style="border-top:none;padding-top:0">
-          <h3 style="margin-bottom:10px">Histórico de Observações deste Veículo <small id="maintHistCount">0
-              registros</small></h3>
-          <div class="maint-history-list" id="maintHistoryList">
-            <p class="muted">Nenhuma observação de manutenção registrada para este veículo ainda.</p>
-          </div>
-        </section>
-      </div>
-
-      <!-- ====================================================================== -->
-      <!-- ABA 3: EDIÇÃO DA VISTORIA & ROTA -->
-      <!-- ====================================================================== -->
-      <div id="drPaneEditar" hidden>
-        <div class="maint-card">
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <h3 style="margin:0;font-size:14px;color:var(--ink);font-weight:700">Editar Vistoria & Rota Operacional</h3>
-            <span id="drEditNumeroBadge" class="plate" style="font-size:12px"></span>
-          </div>
-          <p style="font-size:12.5px;color:var(--ink-3);margin-top:-6px">
-            Atualize a rota do vendedor, motorista, placa, quilometragem ou parecer desta vistoria.
-          </p>
-
-          <!-- Destaque Rota -->
-          <div class="rota-highlight-box">
-            <label for="drEditRota"
-              style="font-size:12.5px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
-              <span>Rota do Vendedor:</span>
-            </label>
-            <input type="text" class="input" id="drEditRota"
-              style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
-          </div>
-
-          <div class="edit-grid-2">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Motorista
-                / Vendedor:</label>
-              <input type="text" class="input" id="drEditMotorista" style="height:38px">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Placa do
-                Veículo:</label>
-              <input type="text" class="input" id="drEditPlaca"
-                style="height:38px;font-weight:700;text-transform:uppercase" maxlength="8">
-            </div>
-          </div>
-
-          <div class="edit-grid-2">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Modelo do
-                Veículo:</label>
-              <input type="text" class="input" id="drEditVeiculo" style="height:38px">
-            </div>
-            <div>
-              <label
-                style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Quilometragem
-                (KM):</label>
-              <input type="number" class="input" id="drEditKm" style="height:38px">
-            </div>
-          </div>
-
-          <div class="edit-grid-2">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Data da
-                Vistoria:</label>
-              <input type="date" class="input" id="drEditData" style="height:38px">
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Hora da
-                Vistoria:</label>
-              <input type="time" class="input" id="drEditHora" style="height:38px">
-            </div>
-          </div>
-
-          <div class="edit-grid-2">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Tipo de
-                Vistoria:</label>
-              <select class="input" id="drEditTipo" style="height:38px">
-                <option value="Saída">Saída</option>
-                <option value="Retorno">Retorno</option>
-                <option value="Periódica">Periódica</option>
-              </select>
-            </div>
-            <div>
-              <label
-                style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Combustível:</label>
-              <select class="input" id="drEditCombustivel" style="height:38px">
-                <option value="Reserva">Reserva</option>
-                <option value="1/4">1/4</option>
-                <option value="1/2">1/2</option>
-                <option value="3/4">3/4</option>
-                <option value="Cheio">Cheio</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="edit-grid-2">
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Situação
-                / Liberação:</label>
-              <select class="input" id="drEditLiberacao" style="height:38px;font-weight:700">
-                <option value="Liberado">Liberado</option>
-                <option value="Ressalva">Com Ressalva</option>
-                <option value="Não liberado">Não Liberado (Bloqueado)</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Condição
-                do Motorista:</label>
-              <select class="input" id="drEditCondicao" style="height:38px">
-                <option value="Apto">Apto</option>
-                <option value="Cansado">Cansado</option>
-              </select>
-            </div>
-          </div>
-
+        <div class="maint-fields-grid">
           <div>
-            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Observações
-              Gerais / Parecer:</label>
-            <textarea class="approval-textarea" id="drEditObs" style="min-height:75px"></textarea>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Custo Estimado / Real (R$):
+            </label>
+            <input type="text" class="input" id="maintCusto" placeholder="Ex: 650,00" style="height:38px">
           </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">
+              Nº O.S. / Nota Fiscal:
+            </label>
+            <input type="text" class="input" id="maintOS" placeholder="Ex: OS 1042 / NF 5892" style="height:38px">
+          </div>
+        </div>
 
-          <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:6px">
-            <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" data-action="salvarEdicaoVistoria" data-args='[true]'>
+        <!-- Campo Principal de Observações -->
+        <div>
+          <label
+            style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:flex;justify-content:space-between">
+            <span>Observações de Manutenção do Veículo:</span>
+            <span style="font-weight:400;color:var(--ink-3)">Detalhes, peças e parecer</span>
+          </label>
+          <textarea class="approval-textarea" id="maintObsTexto" style="min-height:95px"
+            placeholder="Insira as observações sobre a manutenção: peças trocadas, garantia, motivo do envio à oficina, reparos pendentes ou parecer de liberação..."></textarea>
+        </div>
+
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;padding-top:4px;flex-wrap:wrap;gap:8px">
+          <span style="font-size:12px;color:var(--ink-3)" id="maintLastSavedInfo"></span>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn" data-action="drawerGastoSel">
+              <svg class="i">
+                <use href="#i-plus" />
+              </svg> Lançar Peça / Óleo nesta Placa
+            </button>
+            <button type="button" class="btn btn-primary" id="btnSalvarManutencao"
+              data-action="salvarObservacoesManutencao">
               <svg class="i">
                 <use href="#i-check" />
-              </svg> Salvar Alterações
+              </svg> Salvar Observações de Manutenção
             </button>
           </div>
+        </div>
+      </div>
+
+      <!-- Peças e Gastos Lançados nesta Placa -->
+      <section class="sec" style="border-top:none;padding-top:0;margin-bottom:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <h3 style="margin:0">Peças, Óleo & Gastos desta Placa <small id="maintGastosPlacaTotal"
+              style="color:var(--ok);font-weight:700">R$ 0,00</small></h3>
+          <button type="button" class="btn btn-ghost"
+            style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)" data-action="drawerVerGastosSel">
+            <svg class="i" style="width:12px;height:12px">
+              <use href="#i-receipt" />
+            </svg> Ver Extrato Completo
+          </button>
+        </div>
+        <div class="maint-history-list" id="maintGastosPlacaList">
+          <p class="muted" style="font-size:12.5px">Nenhum produto ou peça lançado nesta placa ainda.</p>
+        </div>
+      </section>
+
+      <!-- Histórico de Manutenções Registradas para o Veículo -->
+      <section class="sec" style="border-top:none;padding-top:0">
+        <h3 style="margin-bottom:10px">Histórico de Observações deste Veículo <small id="maintHistCount">0
+            registros</small></h3>
+        <div class="maint-history-list" id="maintHistoryList">
+          <p class="muted">Nenhuma observação de manutenção registrada para este veículo ainda.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- ABA 3: EDIÇÃO DA VISTORIA & ROTA -->
+    <!-- ====================================================================== -->
+    <div id="drPaneEditar" hidden>
+      <div class="maint-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <h3 style="margin:0;font-size:14px;color:var(--ink);font-weight:700">Editar Vistoria & Rota Operacional</h3>
+          <span id="drEditNumeroBadge" class="plate" style="font-size:12px"></span>
+        </div>
+        <p style="font-size:12.5px;color:var(--ink-3);margin-top:-6px">
+          Atualize a rota do vendedor, motorista, placa, quilometragem ou parecer desta vistoria.
+        </p>
+
+        <!-- Destaque Rota -->
+        <div class="rota-highlight-box">
+          <label for="drEditRota"
+            style="font-size:12.5px;font-weight:700;color:var(--accent-hi);display:flex;align-items:center;gap:6px">
+            <span>Rota do Vendedor:</span>
+          </label>
+          <input type="text" class="input" id="drEditRota"
+            style="height:38px;font-weight:700;font-size:13.5px;background:var(--bg)">
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Motorista
+              / Vendedor:</label>
+            <input type="text" class="input" id="drEditMotorista" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Placa do
+              Veículo:</label>
+            <input type="text" class="input" id="drEditPlaca"
+              style="height:38px;font-weight:700;text-transform:uppercase" maxlength="8">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Modelo do
+              Veículo:</label>
+            <input type="text" class="input" id="drEditVeiculo" style="height:38px">
+          </div>
+          <div>
+            <label
+              style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Quilometragem
+              (KM):</label>
+            <input type="number" class="input" id="drEditKm" style="height:38px">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Data da
+              Vistoria:</label>
+            <input type="date" class="input" id="drEditData" style="height:38px">
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Hora da
+              Vistoria:</label>
+            <input type="time" class="input" id="drEditHora" style="height:38px">
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Tipo de
+              Vistoria:</label>
+            <select class="input" id="drEditTipo" style="height:38px">
+              <option value="Saída">Saída</option>
+              <option value="Retorno">Retorno</option>
+              <option value="Periódica">Periódica</option>
+            </select>
+          </div>
+          <div>
+            <label
+              style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Combustível:</label>
+            <select class="input" id="drEditCombustivel" style="height:38px">
+              <option value="Reserva">Reserva</option>
+              <option value="1/4">1/4</option>
+              <option value="1/2">1/2</option>
+              <option value="3/4">3/4</option>
+              <option value="Cheio">Cheio</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="edit-grid-2">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Situação
+              / Liberação:</label>
+            <select class="input" id="drEditLiberacao" style="height:38px;font-weight:700">
+              <option value="Liberado">Liberado</option>
+              <option value="Ressalva">Com Ressalva</option>
+              <option value="Não liberado">Não Liberado (Bloqueado)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Condição
+              do Motorista:</label>
+            <select class="input" id="drEditCondicao" style="height:38px">
+              <option value="Apto">Apto</option>
+              <option value="Cansado">Cansado</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:4px;display:block">Observações
+            Gerais / Parecer:</label>
+          <textarea class="approval-textarea" id="drEditObs" style="min-height:75px"></textarea>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:6px">
+          <button type="button" class="btn btn-primary" id="btnSalvarDrEdicao" data-action="salvarEdicaoVistoria"
+            data-args='[true]'>
+            <svg class="i">
+              <use href="#i-check" />
+            </svg> Salvar Alterações
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <footer class="dr-foot">
-      <div style="display:flex;align-items:center;gap:8px">
-        <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
-        <button type="button" class="btn btn-ghost" id="drBtnInativar"
-          style="color:var(--bad);border-color:rgba(250,138,138,0.35)" data-action="abrirModalInativar" data-arg="__STATE_SEL__"
-          title="Inativar vistoria com justificativa">
-          <svg class="i">
-            <use href="#i-archive" />
-          </svg>
-          <span id="drBtnInativarLabel">Inativar Vistoria</span>
-        </button>
-      </div>
-      <div class="dr-foot-actions">
-        <button type="button" class="btn" id="drBtnEditar" data-action="abrirModalEditarVistoria" data-arg="__STATE_SEL__"
-          title="Editar dados da vistoria e rota"><svg class="i">
-            <use href="#i-edit" />
-          </svg> Editar Vistoria</button>
-        <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i">
-            <use href="#i-printer" />
-          </svg> Imprimir</button>
-        <button type="button" class="btn btn-primary" id="drPdf" title="Baixar PDF Oficial"><svg class="i">
-            <use href="#i-download" />
-          </svg> Baixar PDF</button>
-      </div>
-    </footer>
-  </aside>
-
+  <footer class="dr-foot">
+    <div style="display:flex;align-items:center;gap:8px">
+      <button type="button" class="btn btn-ghost" id="drCloseFoot">Fechar</button>
+      <button type="button" class="btn btn-ghost" id="drBtnInativar"
+        style="color:var(--bad);border-color:rgba(250,138,138,0.35)" data-action="abrirModalInativar"
+        data-arg="__STATE_SEL__" title="Inativar vistoria com justificativa">
+        <svg class="i">
+          <use href="#i-archive" />
+        </svg>
+        <span id="drBtnInativarLabel">Inativar Vistoria</span>
+      </button>
+    </div>
+    <div class="dr-foot-actions">
+      <button type="button" class="btn" id="drBtnEditar" data-action="abrirModalEditarVistoria" data-arg="__STATE_SEL__"
+        title="Editar dados da vistoria e rota"><svg class="i">
+          <use href="#i-edit" />
+        </svg> Editar Vistoria</button>
+      <button type="button" class="btn" id="drPrint" title="Imprimir 2ª Via Oficial"><svg class="i">
+          <use href="#i-printer" />
+        </svg> Imprimir</button>
+      <button type="button" class="btn btn-primary" id="drPdf" title="Baixar PDF Oficial"><svg class="i">
+          <use href="#i-download" />
+        </svg> Baixar PDF</button>
+    </div>
+  </footer>
+</aside>
   <!-- ========================================================================== -->
   <!-- MODAL DE HISTÓRICO COMPLETO DA PLACA (PRONTUÁRIO DO VEÍCULO) -->
   <!-- ========================================================================== -->
@@ -11813,6 +12119,11 @@
         try {
           renderTable();
           load();
+          // DIRETRIZ DE SINCRONISMO: Ao entrar no app, atualizar também /api/frota-gastos
+          // para que fotos de vistorias recém-enviadas apareçam imediatamente na Galeria e na gaveta.
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 3000 });
+          }
         } catch (e) {
           console.error('Erro na renderização inicial pós-login:', e);
         }
@@ -12516,11 +12827,22 @@
           }
           dispararNotificacaoNativa(fresh[0], fresh.length);
           notificarServidorNovaVistoria(fresh[0], fresh.length);
+          // Sempre que chegar nova vistoria, sincroniza também a Galeria para trazer as fotos
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull');
+          }
         }
         setTimeout(() => state.fresh.clear(), 2600);
       }
 
-      $('btnRefresh').addEventListener('click', () => load());
+      // DIRETRIZ DE SINCRONISMO: O botão "Atualizar" (#btnRefresh) deve sincronizar tanto
+      // vistorias quanto fotos/gastos/ocorrências (/api/frota-gastos).
+      $('btnRefresh').addEventListener('click', () => {
+        load();
+        if (typeof window.sincronizarGastosComServidor === 'function') {
+          window.sincronizarGastosComServidor('pull');
+        }
+      });
       document.addEventListener('visibilitychange', () => { if (!document.hidden && authed) load({ silent: true }); });
       if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('online', async () => {
@@ -13886,24 +14208,40 @@
         }
         state.activeDrTab = tab;
         const isVistoria = tab === 'vistoria';
+        const isFotos = tab === 'fotos';
         const isEditar = tab === 'editar';
         const isManut = tab === 'manut';
 
         const tabVistoria = $('drTabBtnVistoria');
+        const tabFotos = $('drTabBtnFotos');
         const tabEditar = $('drTabBtnEditar');
         const tabManut = $('drTabBtnManut');
         const paneVistoria = $('drPaneVistoria');
+        const paneFotos = $('drPaneFotos');
         const paneEditar = $('drPaneEditar');
         const paneManut = $('drPaneManut');
 
         if (tabVistoria) tabVistoria.classList.toggle('active', isVistoria);
+        if (tabFotos) tabFotos.classList.toggle('active', isFotos);
         if (tabEditar) tabEditar.classList.toggle('active', isEditar);
         if (tabManut) tabManut.classList.toggle('active', isManut);
 
         if (paneVistoria) paneVistoria.hidden = !isVistoria;
+        if (paneFotos) paneFotos.hidden = !isFotos;
         if (paneEditar) paneEditar.hidden = !isEditar;
         if (paneManut) paneManut.hidden = !isManut;
 
+        const drBodyEl = $('drBody');
+        if (drBodyEl) drBodyEl.scrollTop = 0;
+
+        if (isFotos) {
+          if (state.sel && typeof window.renderDrawerFotos === 'function') {
+            window.renderDrawerFotos(state.sel);
+          }
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 8000 });
+          }
+        }
         if (isEditar && state.sel) {
           povoarFormEdicaoDrawer(state.sel);
         }
@@ -14352,6 +14690,418 @@
       window.salvarObservacoesManutencao = salvarObservacoesManutencao;
 
       // ==============================================================================
+      // ABA FOTOS DA GAVETA DE VISTORIA (ANEXO MANUAL + FOTOS DO CHECK-LIST)
+      // ==============================================================================
+      let _drawerFotosDraft = [];
+      let _drawerFotosEventosLigados = false;
+
+      function normalizarPlacaFoto(p) {
+        return String(p || '').toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+      }
+
+      function normalizarNumVistoriaFoto(n) {
+        const raw = String(n == null ? '' : n).toUpperCase().trim();
+        if (!raw) return '';
+        const mVst = raw.match(/^(?:VST[-\s]*)?0*(\d+)$/);
+        if (mVst) return mVst[1];
+        return raw.replace(/^0+([1-9])/, '$1');
+      }
+
+      function normalizarDataIsoFoto(d) {
+        const s = String(d || '').trim();
+        if (!s) return '';
+        if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+        const mBr = s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+        if (mBr) return mBr[3] + '-' + mBr[2] + '-' + mBr[1];
+        return s.slice(0, 10);
+      }
+
+      function extrairNumVistoriaDaFoto(f) {
+        if (!f || typeof f !== 'object') return '';
+        if (f.vistoria_numero !== undefined && f.vistoria_numero !== null && String(f.vistoria_numero).trim() !== '') {
+          return normalizarNumVistoriaFoto(f.vistoria_numero);
+        }
+        const obs = String(f.obs || '');
+        const m = obs.match(/(?:Check-?list|Vistoria)\s*(?:N[º°o.]?|#)?\s*([A-Z0-9-]+)/i);
+        return m ? normalizarNumVistoriaFoto(m[1]) : '';
+      }
+
+      function podeGerenciarFotosVistoria() {
+        if (typeof window.podeEditar !== 'function') return true;
+        return Boolean(window.podeEditar('galeria') || window.podeEditar('vistorias'));
+      }
+      window.podeGerenciarFotosVistoria = podeGerenciarFotosVistoria;
+
+      function separarFotosDaVistoria(it) {
+        if (!it) return { daVistoria: [], outrasPlaca: [] };
+        const todos = (window.gastosState && Array.isArray(window.gastosState.galeria)) ? window.gastosState.galeria : [];
+        const placaAlvo = normalizarPlacaFoto(it.placa);
+        const numPrimario = normalizarNumVistoriaFoto(it.numero);
+        const numAlvos = new Set([numPrimario || normalizarNumVistoriaFoto(it.id)].filter(Boolean));
+        const dataAlvo = normalizarDataIsoFoto(it.data);
+
+        const daVistoria = [];
+        const outrasPlaca = [];
+
+        for (const f of todos) {
+          if (!f || !f.imagem) continue;
+          const numFoto = extrairNumVistoriaDaFoto(f);
+          const placaFoto = normalizarPlacaFoto(f.placa);
+          const mesmaPlaca = Boolean(placaAlvo && placaFoto === placaAlvo);
+
+          if (numFoto && numAlvos.has(numFoto) && (!placaFoto || !placaAlvo || mesmaPlaca)) {
+            daVistoria.push(f);
+          } else if (mesmaPlaca) {
+            const dataFoto = normalizarDataIsoFoto(f.data);
+            if (!numFoto && dataAlvo && dataFoto === dataAlvo) {
+              daVistoria.push(f);
+            } else {
+              outrasPlaca.push(f);
+            }
+          }
+        }
+
+        const sortDesc = (a, b) => {
+          const ta = Number(a.created_ts) || Date.parse(a.updated_at || a.data || '') || 0;
+          const tb = Number(b.created_ts) || Date.parse(b.updated_at || b.data || '') || 0;
+          return tb - ta;
+        };
+        daVistoria.sort(sortDesc);
+        outrasPlaca.sort(sortDesc);
+        return { daVistoria, outrasPlaca };
+      }
+
+      function renderCardFotoDrawer(f, isDaVistoria) {
+        const fid = esc(f.id);
+        const numFoto = f.vistoria_numero || extrairNumVistoriaDaFoto(f);
+        const podeExcluir = typeof window.podeEditar === 'function'
+          ? (window.podeEditar('galeria') || (Boolean(isDaVistoria || f.vistoria_numero) && window.podeEditar('vistorias')))
+          : true;
+
+        return '<article class="dr-foto-card">' +
+          '<div class="dr-foto-img-wrap" data-action="abrirLightboxFoto" data-arg="' + fid + '" title="Clique para ampliar">' +
+          '<img src="' + esc(f.imagem) + '" alt="Foto ' + esc(f.placa || '') + '" decoding="async">' +
+          '<span class="dr-foto-badge-cat">' + esc(f.categoria || 'Vistoria') + '</span>' +
+          '</div>' +
+          '<div class="dr-foto-body">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px">' +
+          '<strong style="color:var(--ink);font-size:12px">' + esc(formatarData(f.data)) + '</strong>' +
+          (numFoto ? '<span class="tag tag-info" style="font-size:10.5px;padding:1px 6px">Nº ' + esc(String(numFoto).padStart(6, '0')) + '</span>' : '') +
+          '</div>' +
+          '<div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Mot.: <strong>' + esc(f.motorista || 'Não informado') + '</strong></div>' +
+          (f.obs ? '<div style="font-size:11px;color:var(--ink-3);line-height:1.35;word-break:break-word">' + esc(f.obs) + '</div>' : '') +
+          '</div>' +
+          '<div class="dr-foto-foot">' +
+          '<button type="button" class="btn btn-ghost" style="height:26px;padding:0 8px;font-size:11.5px;color:var(--accent-hi)" data-action="abrirLightboxFoto" data-arg="' + fid + '">' +
+          icon('eye') + ' <span>Ampliar</span>' +
+          '</button>' +
+          '<div style="display:flex;gap:4px">' +
+          '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px" data-action="baixarFotoGaleria" data-arg="' + fid + '" title="Baixar foto">' + icon('download') + '</button>' +
+          (podeExcluir
+            ? '<button type="button" class="btn btn-ghost btn-icon" style="height:26px;width:26px;color:var(--bad)" data-action="excluirFotoGaleria" data-arg="' + fid + '" title="Excluir foto">' + icon('trash') + '</button>'
+            : '') +
+          '</div>' +
+          '</div>' +
+          '</article>';
+      }
+
+      function ligarEventosUploadDrawer() {
+        if (_drawerFotosEventosLigados) return;
+        const drop = $('drFotosDropzone');
+        if (drop) {
+          _drawerFotosEventosLigados = true;
+          drop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            drop.classList.add('dragover');
+          });
+          drop.addEventListener('dragleave', () => {
+            drop.classList.remove('dragover');
+          });
+          drop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            drop.classList.remove('dragover');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+              onSelecionarFotosDrawer(e.dataTransfer.files);
+            }
+          });
+          document.addEventListener('paste', (e) => {
+            const dr = $('drawer');
+            if (!dr || !dr.classList.contains('open')) return;
+            if (!window.state || window.state.activeDrTab !== 'fotos') return;
+            if (!podeGerenciarFotosVistoria()) return;
+            const items = e.clipboardData && e.clipboardData.items;
+            if (!items) return;
+            const imgFiles = [];
+            for (let i = 0; i < items.length; i++) {
+              if (items[i].type && items[i].type.indexOf('image') !== -1) {
+                const file = items[i].getAsFile();
+                if (file) imgFiles.push(file);
+              }
+            }
+            if (imgFiles.length) {
+              onSelecionarFotosDrawer(imgFiles);
+              toast(imgFiles.length + (imgFiles.length === 1 ? ' foto colada!' : ' fotos coladas!'));
+            }
+          });
+        }
+      }
+
+      function renderDraftFotosDrawer() {
+        const grid = $('drFotosDraftGrid');
+        const statusEl = $('drFotosDraftStatus');
+        const countEl = $('drFotosDraftCount');
+        const lblEl = $('drFotosBtnEscolherLbl');
+        const btnSalvar = $('btnSalvarFotosDrawer');
+        if (!grid) return;
+
+        const list = _drawerFotosDraft || [];
+        if (!list.length) {
+          grid.hidden = true;
+          grid.style.display = 'none';
+          grid.innerHTML = '';
+          if (statusEl) {
+            statusEl.hidden = true;
+            statusEl.style.display = 'none';
+          }
+          if (lblEl) lblEl.textContent = 'Escolher Fotos';
+          if (btnSalvar && !btnSalvar.disabled) {
+            btnSalvar.innerHTML = icon('check') + ' <span>Salvar Fotos na Vistoria</span>';
+          }
+          return;
+        }
+
+        grid.hidden = false;
+        grid.style.display = 'grid';
+        if (statusEl) {
+          statusEl.hidden = false;
+          statusEl.style.display = 'flex';
+        }
+        if (countEl) {
+          countEl.textContent = list.length + (list.length === 1 ? ' foto pronta para salvar' : ' fotos prontas para salvar');
+        }
+        if (lblEl) lblEl.textContent = 'Adicionar Mais Fotos';
+        if (btnSalvar && !btnSalvar.disabled) {
+          btnSalvar.innerHTML = icon('check') + ' <span>Salvar ' + list.length + (list.length === 1 ? ' Foto' : ' Fotos') + ' na Vistoria</span>';
+        }
+
+        grid.innerHTML = list.map((u, idx) =>
+          '<div class="dr-fotos-draft-item" title="' + esc(u.nome || ('Foto ' + (idx + 1))) + '">' +
+          '<img src="' + u.dataUrl + '" alt="Prévia da foto">' +
+          '<button type="button" class="dr-fotos-draft-remove" data-stop="1" data-action="removerUploadDraftDrawer" data-arg="' + idx + '" title="Remover foto da fila">x</button>' +
+          '</div>'
+        ).join('');
+      }
+
+      function acionarSeletorFotosDrawer() {
+        if (!podeGerenciarFotosVistoria()) {
+          if (typeof window.mostrarToastBloqueioEdicao === 'function') window.mostrarToastBloqueioEdicao('Vistorias');
+          return;
+        }
+        const inp = $('drFotoFileInput');
+        if (inp) inp.click();
+      }
+      window.acionarSeletorFotosDrawer = acionarSeletorFotosDrawer;
+
+      async function onSelecionarFotosDrawer(fileList) {
+        if (!fileList || !fileList.length) return;
+        const files = Array.from(fileList).filter(f => f.type && f.type.startsWith('image/'));
+        if (!files.length) {
+          toast('Selecione arquivos de imagem válidos (JPG, PNG ou WEBP).', 'error');
+          return;
+        }
+        let adicionadas = 0;
+        for (const f of files) {
+          try {
+            const dataUrl = await comprimirImagemParaDataUrl(f);
+            _drawerFotosDraft.push({
+              uid: 'drf_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+              nome: f.name || 'Foto',
+              dataUrl
+            });
+            adicionadas++;
+          } catch (err) { }
+        }
+        const inp = $('drFotoFileInput');
+        if (inp) inp.value = '';
+        renderDraftFotosDrawer();
+        if (adicionadas > 0) {
+          toast(adicionadas + (adicionadas === 1 ? ' foto selecionada! Clique em Salvar Fotos na Vistoria.' : ' fotos selecionadas! Clique em Salvar Fotos na Vistoria.'));
+        }
+      }
+      window.onSelecionarFotosDrawer = onSelecionarFotosDrawer;
+
+      function removerUploadDraftDrawer(idx) {
+        const i = Number(idx);
+        if (!Number.isNaN(i) && i >= 0 && i < _drawerFotosDraft.length) {
+          _drawerFotosDraft.splice(i, 1);
+          renderDraftFotosDrawer();
+        }
+      }
+      window.removerUploadDraftDrawer = removerUploadDraftDrawer;
+
+      function limparDraftFotosDrawer(rerender = true) {
+        _drawerFotosDraft = [];
+        const inp = $('drFotoFileInput');
+        if (inp) inp.value = '';
+        const obsEl = $('drFotoObs');
+        if (obsEl) obsEl.value = '';
+        if (rerender !== false) renderDraftFotosDrawer();
+      }
+      window.limparDraftFotosDrawer = limparDraftFotosDrawer;
+
+      async function salvarFotosDrawer() {
+        if (!podeGerenciarFotosVistoria()) {
+          if (typeof window.mostrarToastBloqueioEdicao === 'function') window.mostrarToastBloqueioEdicao('Vistorias');
+          return;
+        }
+        const it = window.state && window.state.sel;
+        if (!it) {
+          toast('Nenhuma vistoria selecionada.', 'error');
+          return;
+        }
+        if (!_drawerFotosDraft.length) {
+          toast('Escolha, arraste ou cole ao menos 1 foto antes de salvar.', 'error');
+          return;
+        }
+
+        const btn = $('btnSalvarFotosDrawer');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = 'Salvando fotos...';
+        }
+
+        try {
+          if (!window.gastosState || typeof window.gastosState !== 'object') {
+            window.gastosState = {};
+          }
+          if (!Array.isArray(window.gastosState.galeria)) {
+            window.gastosState.galeria = [];
+          }
+
+          const placa = normalizarPlacaFoto(it.placa) || 'SEMPLACA';
+          const veiculo = (it.veiculo || '').trim() || 'Veículo da Frota';
+          const motorista = (it.motorista || '').trim() || 'Não informado';
+          const data = normalizarDataIsoFoto(it.data) || (typeof isoLocal === 'function' ? isoLocal(new Date()) : new Date().toISOString().slice(0, 10));
+          const km = it.km ? Number(it.km) : null;
+          const numBruto = String(it.numero || it.id || '').trim();
+          const numVist = normalizarNumVistoriaFoto(it.numero || it.id);
+          const categoria = ($('drFotoCategoria')?.value || 'Estado Geral / Vistoria').trim();
+          const obsDigitada = ($('drFotoObs')?.value || '').trim();
+          const obsPrefix = numBruto ? ('Vistoria Nº ' + numBruto) : '';
+          const obs = obsPrefix ? (obsDigitada ? obsPrefix + ' — ' + obsDigitada : obsPrefix) : obsDigitada;
+          const usuarioLogado = ($('userNameLabel')?.textContent || (window.state && window.state.currentUser) || 'gomex').trim();
+
+          const baseTs = Date.now();
+          const total = _drawerFotosDraft.length;
+          const novosRegistros = _drawerFotosDraft.map((u, idx) => ({
+            id: 'foto_' + (baseTs + idx) + '_' + Math.random().toString(36).slice(2, 6),
+            created_ts: baseTs + idx,
+            placa,
+            veiculo,
+            data,
+            motorista,
+            categoria,
+            km,
+            obs,
+            imagem: u.dataUrl,
+            vistoria_numero: numVist || numBruto || '',
+            registrado_por: usuarioLogado
+          }));
+
+          // DIRETRIZ PERMANENTE: Sempre usar persistencia granular por registro (frota_rec:galeria:<id>),
+          // evitando leitura/reescrita do blob completo frota_galeria_veiculos_v1.
+          if (typeof window.salvarRegistroFrota === 'function') {
+            for (const rec of novosRegistros) {
+              await window.salvarRegistroFrota('galeria', 'upsert', rec);
+            }
+          } else {
+            for (let i = novosRegistros.length - 1; i >= 0; i--) {
+              window.gastosState.galeria.unshift(novosRegistros[i]);
+            }
+            if (typeof window.sincronizarGastosComServidor === 'function') {
+              await window.sincronizarGastosComServidor('push');
+            }
+          }
+
+          limparDraftFotosDrawer(true);
+          renderDrawerFotos(it);
+          if (typeof window.renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+            window.renderGaleriaView();
+          }
+          toast(total + (total === 1 ? ' foto salva' : ' fotos salvas') + ' na vistoria!');
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = icon('check') + ' <span>Salvar Fotos na Vistoria</span>';
+          }
+        }
+      }
+      window.salvarFotosDrawer = salvarFotosDrawer;
+
+      function drawerIrParaGaleriaPlaca() {
+        const it = window.state && window.state.sel;
+        const placa = normalizarPlacaFoto(it && it.placa);
+        if (typeof window.closeDrawer === 'function') window.closeDrawer();
+        if (placa && typeof window.irParaGaleriaDaPlaca === 'function') {
+          window.irParaGaleriaDaPlaca(placa);
+        } else if (typeof window.alternarVisaoPrincipal === 'function') {
+          window.alternarVisaoPrincipal('galeria');
+        }
+      }
+      window.drawerIrParaGaleriaPlaca = drawerIrParaGaleriaPlaca;
+
+      function renderDrawerFotos(it) {
+        if (!it) return;
+        ligarEventosUploadDrawer();
+
+        const uploadCard = $('drFotosUploadCard');
+        if (uploadCard) uploadCard.style.display = podeGerenciarFotosVistoria() ? '' : 'none';
+
+        const vistBadge = $('drFotosVistBadge');
+        if (vistBadge) {
+          const numTxt = it.numero ? ('Nº ' + it.numero) : (it.id ? ('#' + it.id) : '');
+          vistBadge.textContent = [normalizarPlacaFoto(it.placa) || it.placa || '—', numTxt].filter(Boolean).join(' · ');
+        }
+
+        const { daVistoria, outrasPlaca } = separarFotosDaVistoria(it);
+
+        const tabBadge = $('drTabBadgeFotos');
+        if (tabBadge) {
+          tabBadge.textContent = String(daVistoria.length);
+          tabBadge.hidden = daVistoria.length === 0;
+        }
+
+        const vistCountEl = $('drFotosVistoriaCount');
+        if (vistCountEl) {
+          vistCountEl.textContent = daVistoria.length + (daVistoria.length === 1 ? ' foto' : ' fotos');
+        }
+
+        const vistListEl = $('drFotosVistoriaList');
+        if (vistListEl) {
+          if (!daVistoria.length) {
+            vistListEl.innerHTML = '<div style="grid-column:1/-1;padding:14px;border-radius:8px;border:1px dashed var(--line-strong);background:var(--panel-2);font-size:12.5px;color:var(--ink-3);text-align:center">Nenhuma foto vinculada a esta vistoria até o momento. Utilize a área acima para anexar fotos manualmente.</div>';
+          } else {
+            vistListEl.innerHTML = daVistoria.map(f => renderCardFotoDrawer(f, true)).join('');
+          }
+        }
+
+        const btnGal = $('drBtnAbrirGaleriaPlaca');
+        if (btnGal) btnGal.hidden = !(normalizarPlacaFoto(it.placa));
+
+        const placaListEl = $('drFotosPlacaList');
+        if (placaListEl) {
+          if (!outrasPlaca.length) {
+            placaListEl.innerHTML = '<div style="grid-column:1/-1;padding:12px;border-radius:8px;background:var(--panel-2);font-size:12px;color:var(--ink-3);text-align:center">Nenhuma outra foto anterior registrada para esta placa.</div>';
+          } else {
+            placaListEl.innerHTML = outrasPlaca.slice(0, 12).map(f => renderCardFotoDrawer(f, false)).join('');
+          }
+        }
+
+        renderDraftFotosDrawer();
+      }
+      window.renderDrawerFotos = renderDrawerFotos;
+
+      // ==============================================================================
       // ROTEAMENTO DINÂMICO SPA (URLs LIMPAS: /vistoria, /manutencao, /custos, etc.)
       // ==============================================================================
       const ROUTE_MAP = {
@@ -14539,8 +15289,16 @@
           if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
         } else if (isGastos) {
           if (typeof renderGastosView === 'function') renderGastosView();
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 15000 });
+          }
         } else if (isGaleria) {
           if (typeof renderGaleriaView === 'function') renderGaleriaView();
+          // DIRETRIZ DE SINCRONISMO: Ao abrir a Galeria, sincroniza /api/frota-gastos para
+          // garantir exibição de fotos recém-enviadas pelo Check-list sem exigir F5.
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 8000 });
+          }
         } else if (isVend) {
           renderVendedoresView();
         } else if (isFrotaCad) {
@@ -14812,11 +15570,18 @@ function aplicarPermissoesUi() {
   const btnTopCadVeic = $('btnTopCadastrarVeiculo');
   if (btnTopCadVeic) btnTopCadVeic.style.display = podeEditarFrota ? '' : 'none';
 
-  // Galeria
+  // Galeria e Aba de Fotos da Vistoria
   ['btnAdicionarFotosGaleria', 'btnAdicionarFotosPasta'].forEach((galBtnId) => {
     const galBtn = $(galBtnId);
     if (galBtn) galBtn.style.display = podeEditarGal ? '' : 'none';
   });
+  const uploadFotosDrawer = $('drFotosUploadCard');
+  if (uploadFotosDrawer) {
+    uploadFotosDrawer.style.display = (podeEditarGal || podeEditarVist) ? '' : 'none';
+  }
+  if (state.sel && typeof window.renderDrawerFotos === 'function') {
+    window.renderDrawerFotos(state.sel);
+  }
 
   // Exportação global
   const btnExp = $('btnExport');
@@ -16587,6 +17352,12 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
 
         // Carregar dados de manutenção do veículo
         carregarDadosManutencaoNoDrawer(it);
+        if (typeof window.limparDraftFotosDrawer === 'function') {
+          window.limparDraftFotosDrawer(false);
+        }
+        if (typeof window.renderDrawerFotos === 'function') {
+          window.renderDrawerFotos(it);
+        }
       }
 
       async function openDrawer(id, trigger, initialTab = 'vistoria') {
@@ -16602,9 +17373,14 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('scrim').classList.add('open');
         $('drawer').classList.add('open');
         $('drawer').setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('lock');
         document.body.classList.add('lock');
         $('app').inert = true;
         $('drClose').focus();
+
+        if (typeof window.sincronizarGastosComServidor === 'function') {
+          window.sincronizarGastosComServidor('pull', { minIntervalMs: 10000 });
+        }
 
         if (!state.sigCache[it.id]) {
           const rows = await fetchSigs(it.id);
@@ -16620,6 +17396,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('scrim').classList.remove('open');
         $('drawer').classList.remove('open');
         $('drawer').setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('lock');
         document.body.classList.remove('lock');
         $('app').inert = false;
         state.sel = null;
@@ -17634,22 +18411,47 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
           }
           if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
         }
-        return mudou;
+          if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+            window.renderDrawerFotos(window.state.sel);
+          }
+          return mudou;
+        }
+
+      let _lastFrotaPullTs = 0;
+      let _frotaPullPromise = null;
+
+      async function sincronizarGastosComServidor(modo = 'pull', opts = {}) {
+        if (modo === 'pull') {
+          const minIntervalMs = Number(opts && opts.minIntervalMs) || 0;
+          if (minIntervalMs > 0 && _lastFrotaPullTs && (Date.now() - _lastFrotaPullTs) < minIntervalMs) {
+            return true;
+          }
+          if (_frotaPullPromise) return _frotaPullPromise;
+          _frotaPullPromise = _executarPullFrotaServidor().finally(() => {
+            _frotaPullPromise = null;
+          });
+          return _frotaPullPromise;
+        }
+        return _executarPushFrotaServidor();
       }
 
-      async function sincronizarGastosComServidor(modo = 'pull') {
-        if (modo === 'pull') {
-          // Antes de puxar dados novos do servidor, tenta despachar operações pendentes offline
-          if (typeof window.getPendingFrotaQueue === 'function' && window.getPendingFrotaQueue().length) {
-            await sincronizarFilaFrotaPendente();
-          }
-          try {
-            const res = await fetch('/api/frota-gastos', { cache: 'no-store' });
-            if (res.ok) {
-              const data = await res.json();
+      async function _executarPullFrotaServidor() {
+        // Antes de puxar dados novos do servidor, tenta despachar operações pendentes offline
+        if (typeof window.getPendingFrotaQueue === 'function' && window.getPendingFrotaQueue().length) {
+          await sincronizarFilaFrotaPendente();
+        }
+        try {
+          const res = await fetch('/api/frota-gastos', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.ok !== false) {
+              _lastFrotaPullTs = Date.now();
               const mudou = aplicarPayloadServidorFrota(data);
               atualizarSnapshotFrota();
               aplicarPendentesFrotaLocais();
+              if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+                window.renderDrawerFotos(window.state.sel);
+              }
               if (mudou) {
                 salvarGastosLocalStorage();
                 if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
@@ -17666,100 +18468,112 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
               }
               return true;
             }
-          } catch (e) { }
+          }
+        } catch (e) { }
 
-          // Fallback direto no Supabase (tabela parametros + registros granulares)
-          try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?or=(id.in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_vendedores_rotas_v1,frota_permissoes_usuarios_v1,frota_tombstones_v2),id.like.frota_rec%3A*)&select=*', {
-              headers: authHeaders(),
-              cache: 'no-store'
-            });
-            if (r.ok) {
-              const rows = await r.json();
-              if (Array.isArray(rows) && rows.length) {
-                const legacyIdMap = {
-                  frota_catalogo_produtos_v1: 'produtos',
-                  frota_lancamentos_gastos_v1: 'lancamentos',
-                  frota_historico_manutencoes_v1: 'historico_manutencoes',
-                  frota_galeria_veiculos_v1: 'galeria',
-                  frota_cadastro_veiculos_v1: 'veiculos',
-                  frota_ocorrencias_v1: 'ocorrencias',
-                  frota_agendamentos_servicos_v1: 'agendamentos',
-                  frota_vendedores_rotas_v1: 'vendedores_rotas'
-                };
-                const mergedPayload = {};
-                const recRows = [];
-                let tombstones = {};
-                for (const row of rows) {
-                  if (!row || !row.id) continue;
-                  if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                    try { mergedPayload.permissoes = JSON.parse(row.descricao); } catch (e) { }
-                    continue;
-                  }
-                  if (row.id === 'frota_tombstones_v2' && row.descricao) {
-                    try { tombstones = JSON.parse(row.descricao) || {}; } catch (e) { }
-                    continue;
-                  }
-                  if (row.id.startsWith('frota_rec:')) {
-                    recRows.push(row);
-                    continue;
-                  }
-                  const colName = legacyIdMap[row.id];
-                  if (colName && row.descricao) {
-                    try { mergedPayload[colName] = JSON.parse(row.descricao); } catch (e) { }
-                  }
+        // Fallback direto no Supabase (tabela parametros + registros granulares)
+        try {
+          const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?or=(id.in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_vendedores_rotas_v1,frota_permissoes_usuarios_v1,frota_tombstones_v2),id.like.frota_rec%3A*)&select=*', {
+            headers: authHeaders(),
+            cache: 'no-store'
+          });
+          if (r.ok) {
+            const rows = await r.json();
+            if (Array.isArray(rows) && rows.length) {
+              const legacyIdMap = {
+                frota_catalogo_produtos_v1: 'produtos',
+                frota_lancamentos_gastos_v1: 'lancamentos',
+                frota_historico_manutencoes_v1: 'historico_manutencoes',
+                frota_galeria_veiculos_v1: 'galeria',
+                frota_cadastro_veiculos_v1: 'veiculos',
+                frota_ocorrencias_v1: 'ocorrencias',
+                frota_agendamentos_servicos_v1: 'agendamentos',
+                frota_vendedores_rotas_v1: 'vendedores_rotas'
+              };
+              const mergedPayload = {};
+              const recRows = [];
+              let tombstones = {};
+              for (const row of rows) {
+                if (!row || !row.id) continue;
+                if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
+                  try { mergedPayload.permissoes = JSON.parse(row.descricao); } catch (e) { }
+                  continue;
                 }
-                for (const rr of recRows) {
-                  try {
-                    const parsed = JSON.parse(rr.descricao || '{}');
-                    const parts = String(rr.id || '').split(':');
-                    const col = parsed.colecao || parts[1];
-                    const id = String(parsed._id || parsed.id || parts.slice(2).join(':'));
-                    const val = Object.prototype.hasOwnProperty.call(parsed, '_value')
-                      ? parsed._value
-                      : (Object.prototype.hasOwnProperty.call(parsed, 'data') && parsed.colecao ? parsed.data : parsed);
-                    if (!col || !id) continue;
-                    if (col === 'historico_manutencoes') {
-                      if (!mergedPayload[col] || typeof mergedPayload[col] !== 'object') mergedPayload[col] = {};
-                      if (val !== undefined) mergedPayload[col][id] = val;
-                    } else if (val && typeof val === 'object') {
-                      if (!Array.isArray(mergedPayload[col])) mergedPayload[col] = [];
-                      const idx = mergedPayload[col].findIndex(x => _frotaRecId(col, x) === id);
-                      if (idx !== -1) mergedPayload[col][idx] = val;
-                      else mergedPayload[col].unshift(val);
-                    }
-                  } catch (e) { }
+                if (row.id === 'frota_tombstones_v2' && row.descricao) {
+                  try { tombstones = JSON.parse(row.descricao) || {}; } catch (e) { }
+                  continue;
                 }
-                for (const [col, tMap] of Object.entries(tombstones || {})) {
-                  if (!tMap || typeof tMap !== 'object') continue;
-                  if (col === 'historico_manutencoes' && mergedPayload[col]) {
-                    for (const id of Object.keys(tMap)) delete mergedPayload[col][id];
-                  } else if (Array.isArray(mergedPayload[col])) {
-                    mergedPayload[col] = mergedPayload[col].filter(x => !tMap[_frotaRecId(col, x)]);
-                  }
+                if (row.id.startsWith('frota_rec:')) {
+                  recRows.push(row);
+                  continue;
                 }
-                aplicarPayloadServidorFrota(mergedPayload);
-                atualizarSnapshotFrota();
-                aplicarPendentesFrotaLocais();
-                salvarGastosLocalStorage();
-                if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
-                renderGastosView();
-                if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
-                  renderGaleriaView();
-                }
-                if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
-                if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
-                if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
-                if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
-                  renderVendedoresView();
+                const colName = legacyIdMap[row.id];
+                if (colName && row.descricao) {
+                  try { mergedPayload[colName] = JSON.parse(row.descricao); } catch (e) { }
                 }
               }
+              for (const rr of recRows) {
+                try {
+                  const parsed = JSON.parse(rr.descricao || '{}');
+                  const parts = String(rr.id || '').split(':');
+                  const col = parsed.colecao || parts[1];
+                  const id = String(parsed._id || parsed.id || parts.slice(2).join(':'));
+                  const val = Object.prototype.hasOwnProperty.call(parsed, '_value')
+                    ? parsed._value
+                    : (Object.prototype.hasOwnProperty.call(parsed, 'data') && parsed.colecao ? parsed.data : parsed);
+                  if (!col || !id) continue;
+                  if (col === 'historico_manutencoes') {
+                    if (!mergedPayload[col] || typeof mergedPayload[col] !== 'object') mergedPayload[col] = {};
+                    if (val !== undefined) mergedPayload[col][id] = val;
+                  } else if (val && typeof val === 'object') {
+                    if (!Array.isArray(mergedPayload[col])) mergedPayload[col] = [];
+                    const idx = mergedPayload[col].findIndex(x => _frotaRecId(col, x) === id);
+                    if (idx !== -1) mergedPayload[col][idx] = val;
+                    else mergedPayload[col].unshift(val);
+                  }
+                } catch (e) { }
+              }
+              for (const [col, tMap] of Object.entries(tombstones || {})) {
+                if (!tMap || typeof tMap !== 'object') continue;
+                if (col === 'historico_manutencoes' && mergedPayload[col]) {
+                  for (const id of Object.keys(tMap)) delete mergedPayload[col][id];
+                } else if (Array.isArray(mergedPayload[col])) {
+                  mergedPayload[col] = mergedPayload[col].filter(x => !tMap[_frotaRecId(col, x)]);
+                }
+              }
+              if (Array.isArray(mergedPayload.galeria)) {
+                mergedPayload.galeria.sort((a, b) => {
+                  const ta = Number(a && a.created_ts) || Date.parse((a && (a.updated_at || a._updated_at || a.data)) || '') || 0;
+                  const tb = Number(b && b.created_ts) || Date.parse((b && (b.updated_at || b._updated_at || b.data)) || '') || 0;
+                  if (tb !== ta) return tb - ta;
+                  return String((b && b.data) || '').localeCompare(String((a && a.data) || ''));
+                });
+              }
+              _lastFrotaPullTs = Date.now();
+              aplicarPayloadServidorFrota(mergedPayload);
+              atualizarSnapshotFrota();
+              aplicarPendentesFrotaLocais();
+              salvarGastosLocalStorage();
+              if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
+              renderGastosView();
+              if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+                renderGaleriaView();
+              }
+              if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
+              if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
+              if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
+              if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
+                renderVendedoresView();
+              }
+              return true;
             }
-          } catch (e) { }
-          return false;
-        }
+          }
+        } catch (e) { }
+        return false;
+      }
 
-        // PUSH granular por registro alterado (evita sobrescrita concorrente e funciona offline)
+      async function _executarPushFrotaServidor() {
+        // DIRETRIZ PERMANENTE: PUSH granular por registro alterado (PROIBIDO sobrescrever frota_galeria_veiculos_v1 inteiro).
         const ops = diffFrotaSnapshotOps();
         if (typeof window.enqueueFrotaRecordOp === 'function') {
           for (const opSpec of ops) {

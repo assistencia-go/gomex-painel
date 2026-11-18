@@ -82,7 +82,10 @@ if (!fs.existsSync(indexPath)) {
     'sectionGastosView',
     'sectionGaleriaView',
     'sectionVendedoresView',
-    'sectionFrotaCadView'
+    'sectionFrotaCadView',
+    'drTabBtnFotos',
+    'drPaneFotos',
+    'drFotosVistoriaList'
   ];
 
   const missingIds = requiredIds.filter(id => !indexContent.includes(`id="${id}"`));
@@ -90,7 +93,7 @@ if (!fs.existsSync(indexPath)) {
     logFail(`Módulos obrigatórios ausentes no HTML: ${missingIds.join(', ')}`);
     hasError = true;
   } else {
-    logPass('Todos os 7 módulos principais estão presentes no HTML.');
+    logPass('Todos os 7 módulos principais e Aba Fotos da gaveta estão presentes no HTML.');
   }
 
   // Verificação de lógica JS no index.html
@@ -99,7 +102,10 @@ if (!fs.existsSync(indexPath)) {
     'ROUTE_MAP',
     'VALID_USERS',
     'renderTable',
-    'renderOcorrencias'
+    'renderOcorrencias',
+    'renderDrawerFotos',
+    'salvarFotosDrawer',
+    'podeGerenciarFotosVistoria'
   ];
   const missingJs = requiredJsTokens.filter(token => !indexContent.includes(token));
   if (missingJs.length > 0) {
@@ -147,6 +153,28 @@ if (!fs.existsSync(indexPath)) {
     hasError = true;
   } else {
     logPass('Política Mobile Zero-Scroll Horizontal 100% ativa no CSS (proibido arraste lateral de blocos).');
+  }
+
+  // DIRETRIZ ESTRITA DA GAVETA DE VISTORIA · SCROLL VERTICAL GARANTIDO + SINCRONIZAÇÃO DE FOTOS
+  const drawerScrollGuards = [
+    'POLÍTICA OBRIGATÓRIA DE SCROLL DA GAVETA',
+    'overscroll-behavior: contain',
+    'html.lock',
+    'min-height: 0'
+  ];
+  const missingDrawerGuards = drawerScrollGuards.filter(g => !indexContent.includes(g));
+  if (missingDrawerGuards.length > 0) {
+    logFail(`POLÍTICA DE SCROLL DA GAVETA VIOLADA: diretrizes ausentes no index.html: ${missingDrawerGuards.join(', ')}`);
+    hasError = true;
+  } else {
+    logPass('Política de Scroll Vertical da Gaveta e bloqueio de rolagem dupla 100% ativos no CSS.');
+  }
+
+  if (!indexContent.includes("sincronizarGastosComServidor('pull')") || !indexContent.includes('frota_rec:')) {
+    logFail('POLÍTICA DE SINCRONIZAÇÃO DE FOTOS VIOLADA: index.html precisa manter pull em atualizações e persistência granular frota_rec.');
+    hasError = true;
+  } else {
+    logPass('Diretriz de sincronização de fotos/frota e persistência granular confirmada no index.html.');
   }
 
   // DIRETRIZ ARQUITETURAL · ZERO HANDLERS INLINE EM SRC/HTML
@@ -249,6 +277,19 @@ for (const file of jsFilesToCheck) {
     console.error(err.stderr ? err.stderr.toString() : err.message);
     hasError = true;
   }
+}
+
+try {
+  const workerContent = fs.readFileSync(path.join(__dirname, 'worker.js'), 'utf8');
+  if (!workerContent.includes('{ ok: false, error:') || !workerContent.includes('status: 500')) {
+    logFail('POLÍTICA DO WORKER VIOLADA: GET /api/frota-gastos deve retornar HTTP 500 { ok: false, error } no catch em vez de 200 vazio.');
+    hasError = true;
+  } else {
+    logPass('Política do Worker /api/frota-gastos confirmada: erros retornam HTTP 500 sem mascarar galeria vazia.');
+  }
+} catch (err) {
+  logFail(`Erro inspecionando worker.js: ${err.message}`);
+  hasError = true;
 }
 
 // ------------------------------------------------------------------------------
@@ -459,7 +500,10 @@ async function runMobileBrowserValidation() {
     produtos: [{ id: 'p_oleo_5w30', codigo: '01', nome: 'Oleo 5W30', categoria: 'Oleo & Lubrificantes', unidade: 'L', preco_base: 45 }],
     lancamentos: [{ id: 'g_1', placa: 'ARS6B73', veiculo: 'KOMBI', motorista: 'Jackson', data: hojeIso, produto_id: 'p_oleo_5w30', produto_nome: 'Oleo 5W30', categoria: 'Oleo & Lubrificantes', quantidade: 4, valor_unitario: 45, valor_total: 180 }],
     historico_manutencoes: {},
-    galeria: [{ id: 'foto_1', placa: 'ARS6B73', veiculo: 'KOMBI', data: hojeIso, motorista: 'Jackson', categoria: 'Estado Geral', imagem: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' }],
+    galeria: [
+      { id: 'foto_1', placa: 'ARS6B73', veiculo: 'KOMBI', data: hojeIso, motorista: 'Jackson', categoria: 'Avaria / Carroceria', vistoria_numero: '001001', obs: 'Check-list Nº VST-1001 (Avaria / Carroceria)', registrado_por: 'Check-list App (Jackson)', imagem: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' },
+      { id: 'foto_2', placa: 'ARS6B73', veiculo: 'KOMBI', data: '2026-10-01', motorista: 'Jackson', categoria: 'Pneus / Calibragem', vistoria_numero: '000999', obs: 'Check-list Nº 000999 (Pneus / Calibragem)', registrado_por: 'Check-list App (Jackson)', imagem: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' }
+    ],
     veiculos: [],
     ocorrencias: [
       { id: 'ocr_1', motorista: 'Eduardo Machado da Silva', vendedor: 'Eduardo Machado da Silva', rota: '201', placa: 'IPV0C73', data: hojeIso, hora_inicio: '08:00', hora_fim: '', tempo_medio: 45, motivo: 'Troca de Oleo / Filtro', local: 'Oficina Central', status: 'em_andamento', tipo: 'pausa', responsavel: 'Hendreo', despesa: 120 },
@@ -738,10 +782,136 @@ async function runMobileBrowserValidation() {
       throw new Error('Indicador mobile de pendencia offline nao ficou visivel: ' + JSON.stringify(syncUiCheck));
     }
 
+    // 6) Gaveta da Vistoria (#drawer): Scroll vertical destravado e Aba Fotos (600x900 e 360x800)
+    await evalJs(`document.getElementById('btnViewVistorias').click()`);
+    await waitFor("document.getElementById('sectionVistoriasView').hidden === false", 'voltar para vistorias');
+
+    for (const vp of [
+      { label: 'tablet-600x900', width: 600, height: 900, mobile: false, hasTouch: false },
+      { label: 'mobile-360x800', width: 360, height: 800, mobile: true, hasTouch: true }
+    ]) {
+      await sendCdp('Emulation.setDeviceMetricsOverride', {
+        width: vp.width, height: vp.height, deviceScaleFactor: 2, mobile: vp.mobile, hasTouch: vp.hasTouch
+      });
+      await evalJs(`window.scrollTo(0, 0); window.openDrawer(1001)`);
+      await waitFor("document.getElementById('drawer').classList.contains('open')", 'abrir drawer em ' + vp.label);
+      await new Promise(r => setTimeout(r, 120));
+
+      const outerBefore = await evalJs(`document.documentElement.scrollTop || document.body.scrollTop || 0`);
+      const wheelX = Math.max(80, vp.width - 140);
+      await sendCdp('Input.dispatchMouseEvent', {
+        type: 'mouseWheel',
+        x: wheelX,
+        y: 360,
+        deltaX: 0,
+        deltaY: 420
+      });
+      await new Promise(r => setTimeout(r, 180));
+
+      const drCheck = await evalJs(`(() => {
+        const body = document.getElementById('drBody');
+        const dr = document.getElementById('drawer');
+        const htmlLocked = document.documentElement.classList.contains('lock');
+        const bodyLocked = document.body.classList.contains('lock');
+        const htmlOverflow = getComputedStyle(document.documentElement).overflowY;
+        const bodyOverflow = getComputedStyle(document.body).overflowY;
+        const drCs = getComputedStyle(dr);
+        const drBodyCs = getComputedStyle(body);
+        const wheelAfter = body ? body.scrollTop : -1;
+        if (body) body.scrollTop = 420;
+        const progAfter = body ? body.scrollTop : -1;
+        const outerAfter = document.documentElement.scrollTop || document.body.scrollTop || 0;
+        return {
+          sw: document.documentElement.scrollWidth,
+          cw: document.documentElement.clientWidth,
+          htmlLocked,
+          bodyLocked,
+          htmlOverflow,
+          bodyOverflow,
+          drHeight: dr ? dr.getBoundingClientRect().height : 0,
+          drOverflow: drCs.overflowY,
+          bodyOverflowY: drBodyCs.overflowY,
+          bodyOverscroll: drBodyCs.overscrollBehaviorY,
+          bodyFlexShrink: drBodyCs.flexShrink,
+          bodyMinH: drBodyCs.minHeight,
+          scrollH: body ? body.scrollHeight : 0,
+          clientH: body ? body.clientHeight : 0,
+          wheelAfter,
+          progAfter,
+          outerAfter
+        };
+      })()`);
+
+      if (
+        !drCheck.htmlLocked ||
+        !drCheck.bodyLocked ||
+        drCheck.htmlOverflow !== 'hidden' ||
+        drCheck.bodyOverflow !== 'hidden' ||
+        drCheck.bodyOverflowY !== 'auto' ||
+        drCheck.bodyOverscroll !== 'contain' ||
+        drCheck.sw > drCheck.cw ||
+        drCheck.clientH <= 0 ||
+        (drCheck.scrollH > drCheck.clientH && (drCheck.wheelAfter <= 0 || drCheck.progAfter <= 0)) ||
+        drCheck.outerAfter > outerBefore
+      ) {
+        throw new Error('Falha no scroll vertical da gaveta em ' + vp.label + ' (outerBefore=' + outerBefore + '): ' + JSON.stringify(drCheck));
+      }
+
+      // Alternar para Aba Fotos e conferir visibilidade, fotos vinculadas do checklist, area de upload manual e ausencia de overflow
+      await evalJs(`document.getElementById('drTabBtnFotos').click()`);
+      await waitFor("!document.getElementById('drPaneFotos').hidden", 'abrir aba fotos na gaveta em ' + vp.label);
+      await new Promise(r => setTimeout(r, 80));
+      const fotosTabCheck = await evalJs(`(() => {
+        const pane = document.getElementById('drPaneFotos');
+        const vist = document.getElementById('drPaneVistoria');
+        const card = document.getElementById('drFotosUploadCard');
+        const body = document.getElementById('drBody');
+        const badge = document.getElementById('drTabBadgeFotos');
+        const cardsVist = document.querySelectorAll('#drFotosVistoriaList .dr-foto-card').length;
+        const cardsPlaca = document.querySelectorAll('#drFotosPlacaList .dr-foto-card').length;
+        return {
+          paneHidden: pane ? pane.hidden : true,
+          vistHidden: vist ? vist.hidden : false,
+          cardDisp: card ? getComputedStyle(card).display : 'none',
+          scrollTopReset: body ? body.scrollTop : -1,
+          badgeText: badge ? badge.textContent : '',
+          badgeHidden: badge ? badge.hidden : true,
+          cardsVist,
+          cardsPlaca,
+          sw: document.documentElement.scrollWidth,
+          cw: document.documentElement.clientWidth
+        };
+      })()`);
+
+      if (
+        fotosTabCheck.paneHidden ||
+        !fotosTabCheck.vistHidden ||
+        fotosTabCheck.cardDisp === 'none' ||
+        fotosTabCheck.cardsVist !== 1 ||
+        fotosTabCheck.cardsPlaca !== 1 ||
+        fotosTabCheck.badgeHidden ||
+        fotosTabCheck.badgeText !== '1' ||
+        fotosTabCheck.sw > fotosTabCheck.cw
+      ) {
+        throw new Error('Falha na Aba Fotos da gaveta em ' + vp.label + ': ' + JSON.stringify(fotosTabCheck));
+      }
+
+      // Confirmar que ampliar foto do check-list dentro da gaveta abre lightbox acima do drawer sem ficar inerte
+      await evalJs(`document.querySelector('#drFotosVistoriaList [data-action="abrirLightboxFoto"]').click()`);
+      await waitFor("document.getElementById('modalVerFotoGaleria')?.classList.contains('open')", 'abrir lightbox de foto pela gaveta em ' + vp.label);
+      const lbInert = await evalJs(`!!document.getElementById('modalVerFotoGaleria')?.closest('[inert]')`);
+      if (lbInert) throw new Error('Lightbox de foto ficou inerte dentro de #app em ' + vp.label);
+      await evalJs(`document.querySelector('#modalVerFotoGaleria [data-action="fecharLightboxFoto"]').click()`);
+      await waitFor("!document.getElementById('modalVerFotoGaleria').classList.contains('open')", 'fechar lightbox de foto pela gaveta em ' + vp.label);
+
+      await evalJs(`document.getElementById('drClose').click()`);
+      await waitFor("!document.getElementById('drawer').classList.contains('open')", 'fechar drawer em ' + vp.label);
+    }
+
     if (runtimeErrors.length > 0) {
       throw new Error('Erros de runtime no navegador: ' + runtimeErrors.join(' | '));
     }
-    logPass('Modais mobile (Admin, Vendedor, Catalogo lazy, Relatorio scroll vertical) e indicador offline validados em 360x800 com ZERO erros!');
+    logPass('Modais e Gaveta (Scroll Vertical + Aba Fotos em 600x900/360x800) e indicador offline validados com ZERO erros!');
   } finally {
     try { if (ws) ws.close(); } catch (e) { }
     try { if (proc) proc.kill(); } catch (e) { }

@@ -112,24 +112,40 @@
         }
         state.activeDrTab = tab;
         const isVistoria = tab === 'vistoria';
+        const isFotos = tab === 'fotos';
         const isEditar = tab === 'editar';
         const isManut = tab === 'manut';
 
         const tabVistoria = $('drTabBtnVistoria');
+        const tabFotos = $('drTabBtnFotos');
         const tabEditar = $('drTabBtnEditar');
         const tabManut = $('drTabBtnManut');
         const paneVistoria = $('drPaneVistoria');
+        const paneFotos = $('drPaneFotos');
         const paneEditar = $('drPaneEditar');
         const paneManut = $('drPaneManut');
 
         if (tabVistoria) tabVistoria.classList.toggle('active', isVistoria);
+        if (tabFotos) tabFotos.classList.toggle('active', isFotos);
         if (tabEditar) tabEditar.classList.toggle('active', isEditar);
         if (tabManut) tabManut.classList.toggle('active', isManut);
 
         if (paneVistoria) paneVistoria.hidden = !isVistoria;
+        if (paneFotos) paneFotos.hidden = !isFotos;
         if (paneEditar) paneEditar.hidden = !isEditar;
         if (paneManut) paneManut.hidden = !isManut;
 
+        const drBodyEl = $('drBody');
+        if (drBodyEl) drBodyEl.scrollTop = 0;
+
+        if (isFotos) {
+          if (state.sel && typeof window.renderDrawerFotos === 'function') {
+            window.renderDrawerFotos(state.sel);
+          }
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 8000 });
+          }
+        }
         if (isEditar && state.sel) {
           povoarFormEdicaoDrawer(state.sel);
         }

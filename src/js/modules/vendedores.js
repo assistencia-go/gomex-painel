@@ -1730,6 +1730,12 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
 
         // Carregar dados de manutenção do veículo
         carregarDadosManutencaoNoDrawer(it);
+        if (typeof window.limparDraftFotosDrawer === 'function') {
+          window.limparDraftFotosDrawer(false);
+        }
+        if (typeof window.renderDrawerFotos === 'function') {
+          window.renderDrawerFotos(it);
+        }
       }
 
       async function openDrawer(id, trigger, initialTab = 'vistoria') {
@@ -1745,9 +1751,14 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('scrim').classList.add('open');
         $('drawer').classList.add('open');
         $('drawer').setAttribute('aria-hidden', 'false');
+        document.documentElement.classList.add('lock');
         document.body.classList.add('lock');
         $('app').inert = true;
         $('drClose').focus();
+
+        if (typeof window.sincronizarGastosComServidor === 'function') {
+          window.sincronizarGastosComServidor('pull', { minIntervalMs: 10000 });
+        }
 
         if (!state.sigCache[it.id]) {
           const rows = await fetchSigs(it.id);
@@ -1763,6 +1774,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         $('scrim').classList.remove('open');
         $('drawer').classList.remove('open');
         $('drawer').setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('lock');
         document.body.classList.remove('lock');
         $('app').inert = false;
         state.sel = null;

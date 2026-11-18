@@ -502,22 +502,47 @@
           }
           if (typeof renderAdminPermissoes === 'function' && window.state.visaoAtual === 'admin') renderAdminPermissoes();
         }
-        return mudou;
+          if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+            window.renderDrawerFotos(window.state.sel);
+          }
+          return mudou;
+        }
+
+      let _lastFrotaPullTs = 0;
+      let _frotaPullPromise = null;
+
+      async function sincronizarGastosComServidor(modo = 'pull', opts = {}) {
+        if (modo === 'pull') {
+          const minIntervalMs = Number(opts && opts.minIntervalMs) || 0;
+          if (minIntervalMs > 0 && _lastFrotaPullTs && (Date.now() - _lastFrotaPullTs) < minIntervalMs) {
+            return true;
+          }
+          if (_frotaPullPromise) return _frotaPullPromise;
+          _frotaPullPromise = _executarPullFrotaServidor().finally(() => {
+            _frotaPullPromise = null;
+          });
+          return _frotaPullPromise;
+        }
+        return _executarPushFrotaServidor();
       }
 
-      async function sincronizarGastosComServidor(modo = 'pull') {
-        if (modo === 'pull') {
-          // Antes de puxar dados novos do servidor, tenta despachar operações pendentes offline
-          if (typeof window.getPendingFrotaQueue === 'function' && window.getPendingFrotaQueue().length) {
-            await sincronizarFilaFrotaPendente();
-          }
-          try {
-            const res = await fetch('/api/frota-gastos', { cache: 'no-store' });
-            if (res.ok) {
-              const data = await res.json();
+      async function _executarPullFrotaServidor() {
+        // Antes de puxar dados novos do servidor, tenta despachar operações pendentes offline
+        if (typeof window.getPendingFrotaQueue === 'function' && window.getPendingFrotaQueue().length) {
+          await sincronizarFilaFrotaPendente();
+        }
+        try {
+          const res = await fetch('/api/frota-gastos', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.ok !== false) {
+              _lastFrotaPullTs = Date.now();
               const mudou = aplicarPayloadServidorFrota(data);
               atualizarSnapshotFrota();
               aplicarPendentesFrotaLocais();
+              if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+                window.renderDrawerFotos(window.state.sel);
+              }
               if (mudou) {
                 salvarGastosLocalStorage();
                 if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
@@ -534,100 +559,112 @@
               }
               return true;
             }
-          } catch (e) { }
+          }
+        } catch (e) { }
 
-          // Fallback direto no Supabase (tabela parametros + registros granulares)
-          try {
-            const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?or=(id.in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_vendedores_rotas_v1,frota_permissoes_usuarios_v1,frota_tombstones_v2),id.like.frota_rec%3A*)&select=*', {
-              headers: authHeaders(),
-              cache: 'no-store'
-            });
-            if (r.ok) {
-              const rows = await r.json();
-              if (Array.isArray(rows) && rows.length) {
-                const legacyIdMap = {
-                  frota_catalogo_produtos_v1: 'produtos',
-                  frota_lancamentos_gastos_v1: 'lancamentos',
-                  frota_historico_manutencoes_v1: 'historico_manutencoes',
-                  frota_galeria_veiculos_v1: 'galeria',
-                  frota_cadastro_veiculos_v1: 'veiculos',
-                  frota_ocorrencias_v1: 'ocorrencias',
-                  frota_agendamentos_servicos_v1: 'agendamentos',
-                  frota_vendedores_rotas_v1: 'vendedores_rotas'
-                };
-                const mergedPayload = {};
-                const recRows = [];
-                let tombstones = {};
-                for (const row of rows) {
-                  if (!row || !row.id) continue;
-                  if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
-                    try { mergedPayload.permissoes = JSON.parse(row.descricao); } catch (e) { }
-                    continue;
-                  }
-                  if (row.id === 'frota_tombstones_v2' && row.descricao) {
-                    try { tombstones = JSON.parse(row.descricao) || {}; } catch (e) { }
-                    continue;
-                  }
-                  if (row.id.startsWith('frota_rec:')) {
-                    recRows.push(row);
-                    continue;
-                  }
-                  const colName = legacyIdMap[row.id];
-                  if (colName && row.descricao) {
-                    try { mergedPayload[colName] = JSON.parse(row.descricao); } catch (e) { }
-                  }
+        // Fallback direto no Supabase (tabela parametros + registros granulares)
+        try {
+          const r = await fetch(SUPABASE_URL + '/rest/v1/parametros?or=(id.in.(frota_catalogo_produtos_v1,frota_lancamentos_gastos_v1,frota_historico_manutencoes_v1,frota_galeria_veiculos_v1,frota_cadastro_veiculos_v1,frota_ocorrencias_v1,frota_agendamentos_servicos_v1,frota_vendedores_rotas_v1,frota_permissoes_usuarios_v1,frota_tombstones_v2),id.like.frota_rec%3A*)&select=*', {
+            headers: authHeaders(),
+            cache: 'no-store'
+          });
+          if (r.ok) {
+            const rows = await r.json();
+            if (Array.isArray(rows) && rows.length) {
+              const legacyIdMap = {
+                frota_catalogo_produtos_v1: 'produtos',
+                frota_lancamentos_gastos_v1: 'lancamentos',
+                frota_historico_manutencoes_v1: 'historico_manutencoes',
+                frota_galeria_veiculos_v1: 'galeria',
+                frota_cadastro_veiculos_v1: 'veiculos',
+                frota_ocorrencias_v1: 'ocorrencias',
+                frota_agendamentos_servicos_v1: 'agendamentos',
+                frota_vendedores_rotas_v1: 'vendedores_rotas'
+              };
+              const mergedPayload = {};
+              const recRows = [];
+              let tombstones = {};
+              for (const row of rows) {
+                if (!row || !row.id) continue;
+                if (row.id === 'frota_permissoes_usuarios_v1' && row.descricao) {
+                  try { mergedPayload.permissoes = JSON.parse(row.descricao); } catch (e) { }
+                  continue;
                 }
-                for (const rr of recRows) {
-                  try {
-                    const parsed = JSON.parse(rr.descricao || '{}');
-                    const parts = String(rr.id || '').split(':');
-                    const col = parsed.colecao || parts[1];
-                    const id = String(parsed._id || parsed.id || parts.slice(2).join(':'));
-                    const val = Object.prototype.hasOwnProperty.call(parsed, '_value')
-                      ? parsed._value
-                      : (Object.prototype.hasOwnProperty.call(parsed, 'data') && parsed.colecao ? parsed.data : parsed);
-                    if (!col || !id) continue;
-                    if (col === 'historico_manutencoes') {
-                      if (!mergedPayload[col] || typeof mergedPayload[col] !== 'object') mergedPayload[col] = {};
-                      if (val !== undefined) mergedPayload[col][id] = val;
-                    } else if (val && typeof val === 'object') {
-                      if (!Array.isArray(mergedPayload[col])) mergedPayload[col] = [];
-                      const idx = mergedPayload[col].findIndex(x => _frotaRecId(col, x) === id);
-                      if (idx !== -1) mergedPayload[col][idx] = val;
-                      else mergedPayload[col].unshift(val);
-                    }
-                  } catch (e) { }
+                if (row.id === 'frota_tombstones_v2' && row.descricao) {
+                  try { tombstones = JSON.parse(row.descricao) || {}; } catch (e) { }
+                  continue;
                 }
-                for (const [col, tMap] of Object.entries(tombstones || {})) {
-                  if (!tMap || typeof tMap !== 'object') continue;
-                  if (col === 'historico_manutencoes' && mergedPayload[col]) {
-                    for (const id of Object.keys(tMap)) delete mergedPayload[col][id];
-                  } else if (Array.isArray(mergedPayload[col])) {
-                    mergedPayload[col] = mergedPayload[col].filter(x => !tMap[_frotaRecId(col, x)]);
-                  }
+                if (row.id.startsWith('frota_rec:')) {
+                  recRows.push(row);
+                  continue;
                 }
-                aplicarPayloadServidorFrota(mergedPayload);
-                atualizarSnapshotFrota();
-                aplicarPendentesFrotaLocais();
-                salvarGastosLocalStorage();
-                if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
-                renderGastosView();
-                if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
-                  renderGaleriaView();
-                }
-                if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
-                if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
-                if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
-                if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
-                  renderVendedoresView();
+                const colName = legacyIdMap[row.id];
+                if (colName && row.descricao) {
+                  try { mergedPayload[colName] = JSON.parse(row.descricao); } catch (e) { }
                 }
               }
+              for (const rr of recRows) {
+                try {
+                  const parsed = JSON.parse(rr.descricao || '{}');
+                  const parts = String(rr.id || '').split(':');
+                  const col = parsed.colecao || parts[1];
+                  const id = String(parsed._id || parsed.id || parts.slice(2).join(':'));
+                  const val = Object.prototype.hasOwnProperty.call(parsed, '_value')
+                    ? parsed._value
+                    : (Object.prototype.hasOwnProperty.call(parsed, 'data') && parsed.colecao ? parsed.data : parsed);
+                  if (!col || !id) continue;
+                  if (col === 'historico_manutencoes') {
+                    if (!mergedPayload[col] || typeof mergedPayload[col] !== 'object') mergedPayload[col] = {};
+                    if (val !== undefined) mergedPayload[col][id] = val;
+                  } else if (val && typeof val === 'object') {
+                    if (!Array.isArray(mergedPayload[col])) mergedPayload[col] = [];
+                    const idx = mergedPayload[col].findIndex(x => _frotaRecId(col, x) === id);
+                    if (idx !== -1) mergedPayload[col][idx] = val;
+                    else mergedPayload[col].unshift(val);
+                  }
+                } catch (e) { }
+              }
+              for (const [col, tMap] of Object.entries(tombstones || {})) {
+                if (!tMap || typeof tMap !== 'object') continue;
+                if (col === 'historico_manutencoes' && mergedPayload[col]) {
+                  for (const id of Object.keys(tMap)) delete mergedPayload[col][id];
+                } else if (Array.isArray(mergedPayload[col])) {
+                  mergedPayload[col] = mergedPayload[col].filter(x => !tMap[_frotaRecId(col, x)]);
+                }
+              }
+              if (Array.isArray(mergedPayload.galeria)) {
+                mergedPayload.galeria.sort((a, b) => {
+                  const ta = Number(a && a.created_ts) || Date.parse((a && (a.updated_at || a._updated_at || a.data)) || '') || 0;
+                  const tb = Number(b && b.created_ts) || Date.parse((b && (b.updated_at || b._updated_at || b.data)) || '') || 0;
+                  if (tb !== ta) return tb - ta;
+                  return String((b && b.data) || '').localeCompare(String((a && a.data) || ''));
+                });
+              }
+              _lastFrotaPullTs = Date.now();
+              aplicarPayloadServidorFrota(mergedPayload);
+              atualizarSnapshotFrota();
+              aplicarPendentesFrotaLocais();
+              salvarGastosLocalStorage();
+              if (typeof aplicarVendedoresRotas === 'function') aplicarVendedoresRotas();
+              renderGastosView();
+              if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+                renderGaleriaView();
+              }
+              if (typeof atualizarPaineisFrota === 'function') atualizarPaineisFrota();
+              if (typeof renderOcorrenciasView === 'function') renderOcorrenciasView();
+              if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
+              if (typeof renderVendedoresView === 'function' && window.state && window.state.visaoAtual === 'vendedores') {
+                renderVendedoresView();
+              }
+              return true;
             }
-          } catch (e) { }
-          return false;
-        }
+          }
+        } catch (e) { }
+        return false;
+      }
 
-        // PUSH granular por registro alterado (evita sobrescrita concorrente e funciona offline)
+      async function _executarPushFrotaServidor() {
+        // DIRETRIZ PERMANENTE: PUSH granular por registro alterado (PROIBIDO sobrescrever frota_galeria_veiculos_v1 inteiro).
         const ops = diffFrotaSnapshotOps();
         if (typeof window.enqueueFrotaRecordOp === 'function') {
           for (const opSpec of ops) {

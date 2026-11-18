@@ -565,11 +565,22 @@
           }
           dispararNotificacaoNativa(fresh[0], fresh.length);
           notificarServidorNovaVistoria(fresh[0], fresh.length);
+          // Sempre que chegar nova vistoria, sincroniza também a Galeria para trazer as fotos
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull');
+          }
         }
         setTimeout(() => state.fresh.clear(), 2600);
       }
 
-      $('btnRefresh').addEventListener('click', () => load());
+      // DIRETRIZ DE SINCRONISMO: O botão "Atualizar" (#btnRefresh) deve sincronizar tanto
+      // vistorias quanto fotos/gastos/ocorrências (/api/frota-gastos).
+      $('btnRefresh').addEventListener('click', () => {
+        load();
+        if (typeof window.sincronizarGastosComServidor === 'function') {
+          window.sincronizarGastosComServidor('pull');
+        }
+      });
       document.addEventListener('visibilitychange', () => { if (!document.hidden && authed) load({ silent: true }); });
       if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('online', async () => {

@@ -552,7 +552,7 @@
         display: none;
       }
 
-      
+
       /* ==============================================================================
        CATÁLOGO DE PRODUTOS & CADASTRO RÁPIDO NO MOBILE
        ============================================================================== */
@@ -564,7 +564,7 @@
         box-sizing: border-box !important;
       }
 
-      .cat-prod-form-grid > div {
+      .cat-prod-form-grid>div {
         width: 100% !important;
         box-sizing: border-box !important;
       }
@@ -665,7 +665,7 @@
         justify-content: flex-end !important;
       }
 
-      #modalCatalogoProdutos table.grid tbody td:nth-child(7) > div {
+      #modalCatalogoProdutos table.grid tbody td:nth-child(7)>div {
         display: flex !important;
         gap: 8px !important;
         width: 100% !important;
@@ -696,13 +696,13 @@
         box-sizing: border-box !important;
       }
 
-      .rapido-prod-form-grid > div {
+      .rapido-prod-form-grid>div {
         width: 100% !important;
         box-sizing: border-box !important;
       }
 
-      .rapido-prod-form-grid > div input,
-      .rapido-prod-form-grid > div select {
+      .rapido-prod-form-grid>div input,
+      .rapido-prod-form-grid>div select {
         width: 100% !important;
         box-sizing: border-box !important;
       }
@@ -915,7 +915,7 @@
         justify-content: stretch;
       }
 
-      #cadFrotaTable tbody td:nth-child(8) > div {
+      #cadFrotaTable tbody td:nth-child(8)>div {
         display: grid !important;
         grid-template-columns: 1fr 36px 36px 36px 36px !important;
         gap: 6px !important;
@@ -1002,7 +1002,7 @@
         gap: 8px;
       }
 
-      .gastos-date-inputs > div:first-child {
+      .gastos-date-inputs>div:first-child {
         margin-bottom: 2px;
       }
 
@@ -1023,14 +1023,14 @@
         flex-shrink: 0;
       }
 
-      .gastos-period-bar > div:last-child {
+      .gastos-period-bar>div:last-child {
         width: 100%;
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
 
-      .gastos-period-bar > div:last-child .btn {
+      .gastos-period-bar>div:last-child .btn {
         width: 100%;
         justify-content: center;
         height: 40px;
@@ -1261,7 +1261,7 @@
 
       #sectionVendedoresView .panel-filters .search-wrap,
       #sectionVendedoresView .panel-filters .select,
-      #sectionVendedoresView .panel-filters > .btn {
+      #sectionVendedoresView .panel-filters>.btn {
         width: 100% !important;
         height: 38px !important;
         justify-content: center;
@@ -1308,12 +1308,12 @@
         align-items: stretch !important;
       }
 
-      #modalRelatorioSupervisores .modal-foot > button,
-      #modalRelatorioSupervisores .modal-foot > div {
+      #modalRelatorioSupervisores .modal-foot>button,
+      #modalRelatorioSupervisores .modal-foot>div {
         width: 100%;
       }
 
-      #modalRelatorioSupervisores .modal-foot > div {
+      #modalRelatorioSupervisores .modal-foot>div {
         display: flex;
         flex-direction: column;
         gap: 8px;
@@ -1426,10 +1426,10 @@
         flex-shrink: 0;
       }
 
-      .modal-body > *,
-      .playstore-block > *,
-      .ocr-hours-grid > *,
-      .ocr-rel-filters-grid > * {
+      .modal-body>*,
+      .playstore-block>*,
+      .ocr-hours-grid>*,
+      .ocr-rel-filters-grid>* {
         max-width: 100%;
         min-width: 0;
         box-sizing: border-box;
@@ -1452,11 +1452,30 @@
         white-space: nowrap !important;
       }
 
+      /* POLÍTICA OBRIGATÓRIA DE SCROLL DA GAVETA MOBILE (PROIBIDO TRAVAR ROLAGEM VERTICAL):
+         .dr-body DEVE manter flex: 1 1 auto + min-height: 0 + overflow-y: auto +
+         overscroll-behavior: contain + touch-action: pan-y (display: block evita travamento
+         de altura intrínseca de grid). Regra verificada automaticamente pelo validate.mjs. */
       .dr-body {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) !important;
-        align-content: start;
-        touch-action: pan-y;
+        display: block !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        overscroll-behavior: contain !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+        padding: 4px 14px 20px;
+        box-sizing: border-box !important;
+      }
+
+      .dr-body > * {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
       }
 
       #sectionOcorrenciasView .summary-grid-ocr {
@@ -1467,7 +1486,7 @@
         padding: 0 !important;
       }
 
-      #sectionOcorrenciasView .summary-grid-ocr > .stat {
+      #sectionOcorrenciasView .summary-grid-ocr>.stat {
         flex: none !important;
         border-radius: 12px !important;
         padding: 10px 12px !important;
@@ -1484,7 +1503,7 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       }
 
-      #modalRelatorioSupervisores .sup-rel-filters > div,
+      #modalRelatorioSupervisores .sup-rel-filters>div,
       #modalRelatorioSupervisores .sup-rel-filters .input-with-icon,
       #modalRelatorioSupervisores .sup-rel-filters select,
       #modalRelatorioSupervisores .sup-rel-filters .input {
@@ -1509,7 +1528,7 @@
         gap: 8px !important;
       }
 
-      .summary-grid > .stat:last-child:nth-child(odd) {
+      .summary-grid>.stat:last-child:nth-child(odd) {
         grid-column: 1 / -1;
       }
 
@@ -1603,7 +1622,7 @@
         font-size: 12px !important;
       }
 
-      #sectionVendedoresView .panel-filters > .btn {
+      #sectionVendedoresView .panel-filters>.btn {
         height: 40px !important;
       }
 
@@ -1611,7 +1630,7 @@
         width: 100%;
       }
 
-      .galeria-head-actions > .btn {
+      .galeria-head-actions>.btn {
         flex: 1 1 100%;
         justify-content: center;
         height: 40px;

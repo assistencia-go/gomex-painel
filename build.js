@@ -160,6 +160,9 @@ function buildIndexHtml() {
     }
     if (htmlFile === '__SHELL_ADMIN__') {
       parts.push('<div id="sectionAdminPermissoesView" hidden data-chunk="admin"></div>');
+      // DIRETRIZ PERMANENTE DE DOM: </main>, .app-main e #app DEVEM fechar antes da gaveta (#drawer) e modais.
+      // Caso contrario, $('app').inert = true deixa #drawer e #lazyModalsMount inertes (travando mouse wheel, toque e foco).
+      parts.push('      </main>\n    </div>\n  </div>');
       continue;
     }
     if (htmlFile === '__LAZY_MODALS_MOUNT__') {

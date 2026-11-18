@@ -223,6 +223,9 @@
           await sincronizarGastosComServidor('push');
           fecharModalSubirFoto();
           renderGaleriaView();
+          if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+            window.renderDrawerFotos(window.state.sel);
+          }
           toast(qtdFotos + (qtdFotos === 1 ? ' foto salva' : ' fotos salvas') + ' na galeria da placa ' + placa + '!');
         } finally {
           if (btn) {
@@ -552,11 +555,18 @@
       window.baixarFotoGaleria = baixarFotoGaleria;
 
       async function excluirFotoGaleria(id) {
-        if (typeof podeEditar === 'function' && !podeEditar('galeria')) {
+        const f = (gastosState.galeria || []).find(x => String(x.id) === String(id));
+        const contextoDrawerVistoria = Boolean(
+          (f && f.vistoria_numero) ||
+          (window.state && window.state.sel && window.state.activeDrTab === 'fotos')
+        );
+        const temPerm = typeof podeEditar === 'function'
+          ? (podeEditar('galeria') || (contextoDrawerVistoria && podeEditar('vistorias')))
+          : true;
+        if (!temPerm) {
           if (typeof mostrarToastBloqueioEdicao === 'function') mostrarToastBloqueioEdicao('Galeria de Fotos');
           return;
         }
-        const f = (gastosState.galeria || []).find(x => String(x.id) === String(id));
         if (!f) return;
         const confirmado = await abrirConfirmacaoGlobal({
           titulo: 'Excluir Foto da Galeria',
@@ -571,6 +581,9 @@
         gastosState.galeria = (gastosState.galeria || []).filter(x => String(x.id) !== String(id));
         await sincronizarGastosComServidor('push');
         renderGaleriaView();
+        if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+          window.renderDrawerFotos(window.state.sel);
+        }
         toast('Foto excluída da galeria.');
       }
       window.excluirFotoGaleria = excluirFotoGaleria;

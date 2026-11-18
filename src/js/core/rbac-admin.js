@@ -251,11 +251,18 @@ function aplicarPermissoesUi() {
   const btnTopCadVeic = $('btnTopCadastrarVeiculo');
   if (btnTopCadVeic) btnTopCadVeic.style.display = podeEditarFrota ? '' : 'none';
 
-  // Galeria
+  // Galeria e Aba de Fotos da Vistoria
   ['btnAdicionarFotosGaleria', 'btnAdicionarFotosPasta'].forEach((galBtnId) => {
     const galBtn = $(galBtnId);
     if (galBtn) galBtn.style.display = podeEditarGal ? '' : 'none';
   });
+  const uploadFotosDrawer = $('drFotosUploadCard');
+  if (uploadFotosDrawer) {
+    uploadFotosDrawer.style.display = (podeEditarGal || podeEditarVist) ? '' : 'none';
+  }
+  if (state.sel && typeof window.renderDrawerFotos === 'function') {
+    window.renderDrawerFotos(state.sel);
+  }
 
   // Exportação global
   const btnExp = $('btnExport');

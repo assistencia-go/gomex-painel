@@ -185,8 +185,16 @@
           if (typeof renderAgendamentosView === 'function') renderAgendamentosView();
         } else if (isGastos) {
           if (typeof renderGastosView === 'function') renderGastosView();
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 15000 });
+          }
         } else if (isGaleria) {
           if (typeof renderGaleriaView === 'function') renderGaleriaView();
+          // DIRETRIZ DE SINCRONISMO: Ao abrir a Galeria, sincroniza /api/frota-gastos para
+          // garantir exibição de fotos recém-enviadas pelo Check-list sem exigir F5.
+          if (typeof window.sincronizarGastosComServidor === 'function') {
+            window.sincronizarGastosComServidor('pull', { minIntervalMs: 8000 });
+          }
         } else if (isVend) {
           renderVendedoresView();
         } else if (isFrotaCad) {

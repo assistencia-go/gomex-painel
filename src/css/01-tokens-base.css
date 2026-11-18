@@ -255,8 +255,15 @@
       transition: background-color 200ms ease, color 200ms ease;
     }
 
+    /* Trava rolagem da página raiz (html + body) quando gaveta/modal estiver aberta,
+       impedindo barra dupla concorrente ou roubo de scroll no desktop/mobile. */
+    html.lock,
+    html:has(body.lock),
     body.lock {
-      overflow: hidden;
+      overflow: hidden !important;
+      overflow-x: hidden !important;
+      overflow-y: hidden !important;
+      overscroll-behavior: none !important;
     }
 
     ::selection {

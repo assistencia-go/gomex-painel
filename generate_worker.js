@@ -433,14 +433,16 @@ export default {
       if (request.method === 'GET') {
         try {
           const out = await frotaRepo.fetchAllMerged(supabaseUrl, supabaseKey, null);
-          return new Response(JSON.stringify(out), {
+          return new Response(JSON.stringify({ ok: true, ...out }), {
             status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         } catch (err) {
-          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [], vendedores_rotas: null }), {
-            status: 200,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          // DIRETRIZ PERMANENTE: Nunca retornar HTTP 200 com coleções vazias no catch
+          // (isso mascara falhas e impede o fallback direto no Supabase pelo cliente).
+          return new Response(JSON.stringify({ ok: false, error: err && err.message ? err.message : 'Falha ao consultar repositório' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         }
       }

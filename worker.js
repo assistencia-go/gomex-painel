@@ -292,19 +292,34 @@
         }
       }
       for (const [rid, it] of recMaps[col].entries()) {
+        if (tombCol[rid]) continue;
         itemMap.set(rid, it);
       }
       const dedRows = dedicatedByCol && dedicatedByCol[col];
       if (Array.isArray(dedRows)) {
         for (const dr of dedRows) {
           if (dr && dr.id && dr.payload && typeof dr.payload === 'object') {
-            itemMap.set(String(dr.id), { ...dr.payload, id: dr.payload.id || dr.id, updated_at: dr.updated_at || dr.payload.updated_at });
+            const drId = String(dr.id);
+            if (tombCol[drId]) continue;
+            itemMap.set(drId, { ...dr.payload, id: dr.payload.id || drId, updated_at: dr.updated_at || dr.payload.updated_at });
           }
         }
       }
 
       if (itemMap.size > 0 || Array.isArray(legArr)) {
-        out[col] = Array.from(itemMap.values());
+        const listOut = Array.from(itemMap.values());
+        // DIRETRIZ DE ORDENAÇÃO: Fotos granulares (frota_rec:galeria:*) chegam depois
+        // do array legado no Map; ordenar por created_ts/data desc garante que as mais
+        // recentes apareçam sempre no topo da Galeria e da aba Fotos da Vistoria.
+        if (col === 'galeria') {
+          listOut.sort((a, b) => {
+            const ta = Number(a && a.created_ts) || Date.parse((a && (a.updated_at || a._updated_at || a.data)) || '') || 0;
+            const tb = Number(b && b.created_ts) || Date.parse((b && (b.updated_at || b._updated_at || b.data)) || '') || 0;
+            if (tb !== ta) return tb - ta;
+            return String((b && b.data) || '').localeCompare(String((a && a.data) || ''));
+          });
+        }
+        out[col] = listOut;
       } else if (col === 'produtos' || col === 'vendedores_rotas') {
         out[col] = null;
       }
@@ -756,14 +771,16 @@ export default {
       if (request.method === 'GET') {
         try {
           const out = await frotaRepo.fetchAllMerged(supabaseUrl, supabaseKey, null);
-          return new Response(JSON.stringify(out), {
+          return new Response(JSON.stringify({ ok: true, ...out }), {
             status: 200,
             headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         } catch (err) {
-          return new Response(JSON.stringify({ produtos: null, lancamentos: [], historico_manutencoes: {}, galeria: [], veiculos: [], ocorrencias: [], agendamentos: [], vendedores_rotas: null }), {
-            status: 200,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }
+          // DIRETRIZ PERMANENTE: Nunca retornar HTTP 200 com coleções vazias no catch
+          // (isso mascara falhas e impede o fallback direto no Supabase pelo cliente).
+          return new Response(JSON.stringify({ ok: false, error: err && err.message ? err.message : 'Falha ao consultar repositório' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
           });
         }
       }
