@@ -445,7 +445,7 @@
               'onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();abrirPastaGaleria(\'' + esc(p.placa) + '\')}">' +
               '<div class="pasta-capa-wrap">' +
               (capa.imagem
-                ? '<img src="' + capa.imagem + '" alt="Capa da pasta ' + esc(p.placa) + '" decoding="async">'
+                ? '<img src="' + capa.imagem + '" alt="Capa da pasta ' + esc(p.placa) + '" loading="lazy" decoding="async">'
                 : '<div class="pasta-capa-empty"><svg class="i"><use href="#i-camera"/></svg></div>') +
               '<div class="pasta-badge-icon"><svg class="i"><use href="#i-folder"/></svg></div>' +
               '<div class="pasta-badge-qtd">' + p.fotos.length + (p.fotos.length === 1 ? ' foto' : ' fotos') + '</div>' +
@@ -487,7 +487,7 @@
         grid.innerHTML = filtradas.map(f => {
           return '<article class="galeria-card">' +
             '<div class="galeria-img-wrap" onclick="abrirLightboxFoto(\'' + esc(f.id) + '\')">' +
-            '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" decoding="async">' +
+            '<img src="' + f.imagem + '" alt="Foto ' + esc(f.placa) + '" loading="lazy" decoding="async">' +
             '<div class="galeria-img-badges">' +
             '<span class="plate galeria-plate-badge" style="font-size:11px">' + esc(f.placa) + '</span>' +
             '<span class="badge-cat-prod" style="background:rgba(9,9,11,0.82);color:#fff;border-color:rgba(255,255,255,0.2)">' + esc(f.categoria || 'Vistoria') + '</span>' +
@@ -544,13 +544,32 @@
       }
       window.fecharLightboxFoto = fecharLightboxFoto;
 
-      function baixarFotoGaleria(id) {
+      async function baixarFotoGaleria(id) {
         const f = (gastosState.galeria || []).find(x => String(x.id) === String(id));
         if (!f || !f.imagem) return;
-        const a = document.createElement('a');
-        a.href = f.imagem;
-        a.download = 'Foto_' + (f.placa || 'Veiculo') + '_' + (f.data || isoLocal(new Date())) + '_' + (f.motorista || 'Motorista').replace(/\s+/g, '_') + '.jpg';
-        a.click();
+        const nomeArquivo = 'Foto_' + (f.placa || 'Veiculo') + '_' + (f.data || isoLocal(new Date())) + '_' + (f.motorista || 'Motorista').replace(/\s+/g, '_') + '.jpg';
+        if (String(f.imagem).startsWith('data:')) {
+          const a = document.createElement('a');
+          a.href = f.imagem;
+          a.download = nomeArquivo;
+          a.click();
+          return;
+        }
+        try {
+          const res = await fetch(f.imagem, { mode: 'cors' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const blob = await res.blob();
+          const objUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = objUrl;
+          a.download = nomeArquivo;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => { try { URL.revokeObjectURL(objUrl); } catch (e) { } }, 5000);
+        } catch (err) {
+          window.open(f.imagem, '_blank', 'noopener');
+        }
       }
       window.baixarFotoGaleria = baixarFotoGaleria;
 

@@ -439,8 +439,12 @@ const server = http.createServer((req, res) => {
           if (Array.isArray(payload.ops) && payload.ops.length) {
             const results = [];
             for (const opSpec of payload.ops) {
-              frotaRepo.applyLocalRecordOp(current, opSpec);
-              results.push(await frotaRepo.saveGranularRecord(SUPABASE_URL, SUPABASE_KEY, opSpec));
+              const saved = await frotaRepo.saveGranularRecord(SUPABASE_URL, SUPABASE_KEY, opSpec);
+              const localOp = (saved && saved.imagem && opSpec.data && typeof opSpec.data === 'object')
+                ? { ...opSpec, data: { ...opSpec.data, imagem: saved.imagem, storage_bucket: saved.storage_bucket, storage_path: saved.storage_path } }
+                : opSpec;
+              frotaRepo.applyLocalRecordOp(current, localOp);
+              results.push(saved);
             }
             salvarGastosLocais(current);
             const allOk = results.every(r => r && r.ok);
@@ -629,9 +633,9 @@ const server = http.createServer((req, res) => {
           if (row.id === 'frota_galeria_veiculos_v1') {
             try {
               const arr = JSON.parse(row.descricao || '[]');
-              if (Array.isArray(arr)) galeriaFotos = arr.length;
+              if (Array.isArray(arr)) galeriaFotos += arr.length;
             } catch (e) {
-              galeriaFotos = Number(row.valor) || 0;
+              galeriaFotos += Number(row.valor) || 0;
             }
           } else {
             galeriaFotos++;

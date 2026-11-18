@@ -170,11 +170,11 @@ if (!fs.existsSync(indexPath)) {
     logPass('Política de Scroll Vertical da Gaveta e bloqueio de rolagem dupla 100% ativos no CSS.');
   }
 
-  if (!indexContent.includes("sincronizarGastosComServidor('pull')") || !indexContent.includes('frota_rec:')) {
-    logFail('POLÍTICA DE SINCRONIZAÇÃO DE FOTOS VIOLADA: index.html precisa manter pull em atualizações e persistência granular frota_rec.');
+  if (!indexContent.includes("sincronizarGastosComServidor('pull')") || !indexContent.includes('frota_rec:') || !indexContent.includes('_safeLocalSetItem')) {
+    logFail('POLÍTICA DE SINCRONIZAÇÃO DE FOTOS VIOLADA: index.html precisa manter pull em atualizações, persistência granular frota_rec e isolamento _safeLocalSetItem.');
     hasError = true;
   } else {
-    logPass('Diretriz de sincronização de fotos/frota e persistência granular confirmada no index.html.');
+    logPass('Diretriz de sincronização de fotos/frota, persistência granular e cache local seguro confirmada no index.html.');
   }
 
   // DIRETRIZ ARQUITETURAL · ZERO HANDLERS INLINE EM SRC/HTML
@@ -438,7 +438,30 @@ try {
   if (!Array.isArray(mergedTest.ocorrencias) || mergedTest.ocorrencias.length !== 1 || mergedTest.ocorrencias[0].vendedor !== 'B2') {
     throw new Error('Falha no merge granular do frota-repo: ' + JSON.stringify(mergedTest.ocorrencias));
   }
-  logPass('Repositório granular por ID (frota-repo.js) validado: override + tombstone sem perda concorrente.');
+
+  // Teste de upload para Supabase Storage ('frota-galeria') + fallback automatico
+  const origFetch = global.fetch;
+  try {
+    const sampleImg = { id: 'f_unit_1', data: '2026-11-18', placa: 'ARS6B73', imagem: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==' };
+    global.fetch = async (u, opts) => {
+      if (String(u).includes('/storage/v1/object/frota-galeria/')) {
+        return { ok: true, status: 200, text: async () => '{}' };
+      }
+      return { ok: true, status: 200, json: async () => [] };
+    };
+    const upOk = await frotaRepo.uploadGaleriaImageToStorage('https://example.supabase.co', 'k', 'f_unit_1', sampleImg);
+    if (!String(upOk.imagem || '').startsWith('https://example.supabase.co/storage/v1/object/public/frota-galeria/2026-11/f_unit_1.png') || upOk.storage_bucket !== 'frota-galeria') {
+      throw new Error('Falha no uploadGaleriaImageToStorage (URL esperada nao gerada): ' + JSON.stringify(upOk));
+    }
+    global.fetch = async () => ({ ok: false, status: 503, text: async () => 'offline' });
+    const upFallback = await frotaRepo.uploadGaleriaImageToStorage('https://example.supabase.co', 'k', 'f_unit_1', sampleImg);
+    if (upFallback.imagem !== sampleImg.imagem) {
+      throw new Error('Fallback sem Storage falhou — dataUrl precisa ser preservado!');
+    }
+  } finally {
+    global.fetch = origFetch;
+  }
+  logPass('Repositório granular por ID (frota-repo.js) e Storage frota-galeria (+ fallback) validados.');
 
 } catch (err) {
   logFail(`Falha no Smoke Test de tempo de execução: ${err.message}`);
@@ -501,7 +524,7 @@ async function runMobileBrowserValidation() {
     lancamentos: [{ id: 'g_1', placa: 'ARS6B73', veiculo: 'KOMBI', motorista: 'Jackson', data: hojeIso, produto_id: 'p_oleo_5w30', produto_nome: 'Oleo 5W30', categoria: 'Oleo & Lubrificantes', quantidade: 4, valor_unitario: 45, valor_total: 180 }],
     historico_manutencoes: {},
     galeria: [
-      { id: 'foto_1', placa: 'ARS6B73', veiculo: 'KOMBI', data: hojeIso, motorista: 'Jackson', categoria: 'Avaria / Carroceria', vistoria_numero: '001001', obs: 'Check-list Nº VST-1001 (Avaria / Carroceria)', registrado_por: 'Check-list App (Jackson)', imagem: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' },
+      { id: 'foto_1', placa: 'ARS6B73', veiculo: 'KOMBI', data: hojeIso, motorista: 'Jackson', categoria: 'Avaria / Carroceria', vistoria_numero: '001001', obs: 'Check-list Nº VST-1001 (Avaria / Carroceria)', registrado_por: 'Check-list App (Jackson)', imagem: '/mock-storage/frota-galeria/test.png' },
       { id: 'foto_2', placa: 'ARS6B73', veiculo: 'KOMBI', data: '2026-10-01', motorista: 'Jackson', categoria: 'Pneus / Calibragem', vistoria_numero: '000999', obs: 'Check-list Nº 000999 (Pneus / Calibragem)', registrado_por: 'Check-list App (Jackson)', imagem: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' }
     ],
     veiculos: [],
@@ -547,6 +570,12 @@ async function runMobileBrowserValidation() {
     if (cleanUrl === '/api/supabase-storage-stats') {
       res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
       res.end(JSON.stringify({ ok: true, exactPgSize: false, dbBytesUsed: 204800, dbBreakdown: { checklistsBytes: 102400, checklistsCount: 1, galeriaBytes: 2048, galeriaFotos: 1, gastosBytes: 4096, ocorrenciasBytes: 4096, outrosParametrosBytes: 8192 }, storage: { bytesUsed: 0, bucketsCount: 0, filesCount: 0 } }));
+      return;
+    }
+    if (cleanUrl === '/mock-storage/frota-galeria/test.png') {
+      const pngBuf = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+      res.writeHead(200, { 'Content-Type': 'image/png', 'Access-Control-Allow-Origin': '*' });
+      res.end(pngBuf);
       return;
     }
     if (cleanUrl.startsWith('/api/')) {
@@ -896,7 +925,8 @@ async function runMobileBrowserValidation() {
         throw new Error('Falha na Aba Fotos da gaveta em ' + vp.label + ': ' + JSON.stringify(fotosTabCheck));
       }
 
-      // Confirmar que ampliar foto do check-list dentro da gaveta abre lightbox acima do drawer sem ficar inerte
+      // Confirmar carregamento real da imagem URL (naturalWidth > 0) e abertura do lightbox acima do drawer sem ficar inerte
+      await waitFor("(() => { const img = document.querySelector('#drFotosVistoriaList img'); return !!(img && img.complete && img.naturalWidth > 0); })()", 'carregar imagem Storage na gaveta em ' + vp.label);
       await evalJs(`document.querySelector('#drFotosVistoriaList [data-action="abrirLightboxFoto"]').click()`);
       await waitFor("document.getElementById('modalVerFotoGaleria')?.classList.contains('open')", 'abrir lightbox de foto pela gaveta em ' + vp.label);
       const lbInert = await evalJs(`!!document.getElementById('modalVerFotoGaleria')?.closest('[inert]')`);

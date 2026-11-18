@@ -613,9 +613,9 @@ export default {
             if (row.id === 'frota_galeria_veiculos_v1') {
               try {
                 const arr = JSON.parse(row.descricao || '[]');
-                if (Array.isArray(arr)) galeriaFotos = arr.length;
+                if (Array.isArray(arr)) galeriaFotos += arr.length;
               } catch (e) {
-                galeriaFotos = Number(row.valor) || 0;
+                galeriaFotos += Number(row.valor) || 0;
               }
             } else {
               galeriaFotos++;

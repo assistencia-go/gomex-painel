@@ -28,6 +28,7 @@
   };
 
   const TOMBSTONES_PARAM_ID = 'frota_tombstones_v2';
+  const GALERIA_STORAGE_BUCKET = 'frota-galeria';
   const LEGACY_PARAM_IDS = [
     ...Object.values(COLECAO_META).map(m => m.legacyId),
     'frota_permissoes_usuarios_v1',
@@ -36,6 +37,127 @@
 
   let _dedicatedCheckTs = 0;
   let _dedicatedTablesReady = false;
+  let _bucketReadyPromise = null;
+
+  function decodeImageDataUrl(dataUrl) {
+    if (typeof dataUrl !== 'string') return null;
+    const m = dataUrl.match(/^data:(image\/(?:jpeg|jpg|png|webp|gif));base64,([A-Za-z0-9+/=\r\n]+)$/i);
+    if (!m) return null;
+    const rawMime = m[1].toLowerCase();
+    const mime = rawMime === 'image/jpg' ? 'image/jpeg' : rawMime;
+    const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+    const ext = extMap[mime] || 'jpg';
+    const b64 = m[2].replace(/\s+/g, '');
+    let bytes;
+    if (typeof Buffer !== 'undefined' && typeof Buffer.from === 'function') {
+      bytes = new Uint8Array(Buffer.from(b64, 'base64'));
+    } else if (typeof atob === 'function') {
+      const bin = atob(b64);
+      bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    } else {
+      return null;
+    }
+    if (!bytes || !bytes.length) return null;
+    return { mime, ext, bytes };
+  }
+
+  async function ensureGaleriaBucket(supabaseUrl, supabaseKey) {
+    if (_bucketReadyPromise) return _bucketReadyPromise;
+    _bucketReadyPromise = (async () => {
+      try {
+        const hdrs = { 'apikey': supabaseKey, 'Authorization': 'Bearer ' + supabaseKey };
+        const rGet = await fetch(`${supabaseUrl}/storage/v1/bucket/${GALERIA_STORAGE_BUCKET}`, { headers: hdrs });
+        if (rGet.ok) return true;
+        const rCreate = await fetch(`${supabaseUrl}/storage/v1/bucket`, {
+          method: 'POST',
+          headers: { ...hdrs, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: GALERIA_STORAGE_BUCKET, name: GALERIA_STORAGE_BUCKET, public: true })
+        });
+        return Boolean(rCreate.ok || rCreate.status === 409);
+      } catch (e) {
+        return false;
+      } finally {
+        _bucketReadyPromise = null;
+      }
+    })();
+    return _bucketReadyPromise;
+  }
+
+  async function uploadGaleriaImageToStorage(supabaseUrl, supabaseKey, recId, item) {
+    // DIRETRIZ DE ARMAZENAMENTO: Imagens em data URL da colecao 'galeria' devem ser gravadas
+    // no bucket publico Supabase Storage ('frota-galeria') e salvas no banco apenas como link URL,
+    // preservando fallback automatico para data URL em caso de indisponibilidade do Storage.
+    if (!item || typeof item !== 'object' || typeof item.imagem !== 'string' || !item.imagem.startsWith('data:image/')) {
+      return item;
+    }
+    const parsed = decodeImageDataUrl(item.imagem);
+    if (!parsed) return item;
+
+    const rawData = String(item.data || '');
+    const folderMatch = rawData.match(/^(\d{4}-\d{2})/);
+    const folder = folderMatch ? folderMatch[1] : new Date().toISOString().slice(0, 7);
+    const safeId = String(recId || item.id || ('foto_' + Date.now())).replace(/[^A-Za-z0-9._-]/g, '_');
+    const objectPath = `${folder}/${safeId}.${parsed.ext}`;
+    const uploadUrl = `${supabaseUrl}/storage/v1/object/${GALERIA_STORAGE_BUCKET}/${objectPath}`;
+    const hdrs = {
+      'apikey': supabaseKey,
+      'Authorization': 'Bearer ' + supabaseKey,
+      'Content-Type': parsed.mime,
+      'Cache-Control': '31536000',
+      'x-upsert': 'true'
+    };
+
+    try {
+      let rUp = await fetch(uploadUrl, { method: 'POST', headers: hdrs, body: parsed.bytes });
+      if (!rUp.ok && (rUp.status === 400 || rUp.status === 404)) {
+        const ensured = await ensureGaleriaBucket(supabaseUrl, supabaseKey);
+        if (ensured) {
+          rUp = await fetch(uploadUrl, { method: 'POST', headers: hdrs, body: parsed.bytes });
+        }
+      }
+      if (!rUp.ok) return item;
+
+      const publicUrl = `${supabaseUrl}/storage/v1/object/public/${GALERIA_STORAGE_BUCKET}/${objectPath}`;
+      return {
+        ...item,
+        imagem: publicUrl,
+        storage_bucket: GALERIA_STORAGE_BUCKET,
+        storage_path: objectPath,
+        storage_migrated_at: new Date().toISOString()
+      };
+    } catch (e) {
+      return item;
+    }
+  }
+
+  async function removeGaleriaImageFromStorage(supabaseUrl, supabaseKey, rowId, explicitPath) {
+    try {
+      let objectPath = explicitPath || '';
+      if (!objectPath && rowId) {
+        const rGet = await fetch(`${supabaseUrl}/rest/v1/parametros?id=eq.${encodeURIComponent(rowId)}&select=descricao`, {
+          headers: makeSupabaseHeaders(supabaseKey)
+        });
+        if (rGet.ok) {
+          const rows = await rGet.json().catch(() => []);
+          if (Array.isArray(rows) && rows[0] && rows[0].descricao) {
+            const parsed = JSON.parse(rows[0].descricao);
+            if (parsed && parsed.storage_path) objectPath = String(parsed.storage_path);
+            else if (parsed && typeof parsed.imagem === 'string') {
+              const idx = parsed.imagem.indexOf(`/storage/v1/object/public/${GALERIA_STORAGE_BUCKET}/`);
+              if (idx !== -1) objectPath = parsed.imagem.slice(idx + (`/storage/v1/object/public/${GALERIA_STORAGE_BUCKET}/`).length);
+            }
+          }
+        }
+      }
+      if (!objectPath) return;
+      await fetch(`${supabaseUrl}/storage/v1/object/${GALERIA_STORAGE_BUCKET}`, {
+        method: 'DELETE',
+        headers: makeSupabaseHeaders(supabaseKey),
+        body: JSON.stringify({ prefixes: [objectPath] })
+      });
+    } catch (e) { }
+  }
 
   function makeSupabaseHeaders(supabaseKey, prefer) {
     const h = {
@@ -152,6 +274,11 @@
     const op = opSpec.op === 'delete' ? 'delete' : 'upsert';
     const ts = opSpec.updated_at || new Date().toISOString();
 
+    let dataForSave = opSpec.data;
+    if (op !== 'delete' && opSpec.colecao === 'galeria' && dataForSave && typeof dataForSave === 'object') {
+      dataForSave = await uploadGaleriaImageToStorage(supabaseUrl, supabaseKey, id, dataForSave);
+    }
+
     const useTables = await hasDedicatedTables(supabaseUrl, supabaseKey);
     if (useTables) {
       if (op === 'delete') {
@@ -161,18 +288,29 @@
         });
         return { ok: rDel.ok, mode: 'tables', colecao: opSpec.colecao, op, id, updated_at: ts };
       }
-      const payload = opSpec.data && typeof opSpec.data === 'object' ? { ...opSpec.data, updated_at: ts } : { valor: opSpec.data, updated_at: ts };
+      const payload = dataForSave && typeof dataForSave === 'object' ? { ...dataForSave, updated_at: ts } : { valor: dataForSave, updated_at: ts };
       const rUp = await fetch(`${supabaseUrl}/rest/v1/${meta.table}`, {
         method: 'POST',
         headers: makeSupabaseHeaders(supabaseKey, 'resolution=merge-duplicates,return=representation'),
         body: JSON.stringify([{ id, updated_at: ts, payload }])
       });
-      return { ok: rUp.ok, mode: 'tables', colecao: opSpec.colecao, op, id, updated_at: ts };
+      return {
+        ok: rUp.ok,
+        mode: 'tables',
+        colecao: opSpec.colecao,
+        op,
+        id,
+        updated_at: ts,
+        ...(opSpec.colecao === 'galeria' && payload ? { imagem: payload.imagem, storage_bucket: payload.storage_bucket, storage_path: payload.storage_path } : {})
+      };
     }
 
     // Modo granular imediato na tabela parametros (1 linha por registro, zero sobrescrita concorrente)
     const rowId = meta.prefix + id;
     if (op === 'delete') {
+      if (opSpec.colecao === 'galeria') {
+        await removeGaleriaImageFromStorage(supabaseUrl, supabaseKey, rowId, opSpec.data && opSpec.data.storage_path);
+      }
       const rDel = await fetch(`${supabaseUrl}/rest/v1/parametros?id=eq.${encodeURIComponent(rowId)}`, {
         method: 'DELETE',
         headers: makeSupabaseHeaders(supabaseKey)
@@ -184,9 +322,9 @@
       return { ok: rDel.ok, mode: 'parametros_granular', colecao: opSpec.colecao, op, id, updated_at: ts };
     }
 
-    const rowPayload = opSpec.data && typeof opSpec.data === 'object'
-      ? { ...opSpec.data, _id: id, _updated_at: ts }
-      : { _value: opSpec.data, _id: id, _updated_at: ts };
+    const rowPayload = dataForSave && typeof dataForSave === 'object'
+      ? { ...dataForSave, _id: id, _updated_at: ts }
+      : { _value: dataForSave, _id: id, _updated_at: ts };
     const rUp = await fetch(`${supabaseUrl}/rest/v1/parametros`, {
       method: 'POST',
       headers: makeSupabaseHeaders(supabaseKey, 'resolution=merge-duplicates,return=representation'),
@@ -206,7 +344,15 @@
       }
     } catch (e) {}
 
-    return { ok: rUp.ok, mode: 'parametros_granular', colecao: opSpec.colecao, op, id, updated_at: ts };
+    return {
+      ok: rUp.ok,
+      mode: 'parametros_granular',
+      colecao: opSpec.colecao,
+      op,
+      id,
+      updated_at: ts,
+      ...(opSpec.colecao === 'galeria' && rowPayload ? { imagem: rowPayload.imagem, storage_bucket: rowPayload.storage_bucket, storage_path: rowPayload.storage_path } : {})
+    };
   }
 
   function mergeCollectionsFromRows({ paramRows, dedicatedByCol, baseLocal }) {
@@ -370,11 +516,14 @@
 
   return {
     COLECAO_META,
+    GALERIA_STORAGE_BUCKET,
     LEGACY_PARAM_IDS,
     TOMBSTONES_PARAM_ID,
     extractRecordId,
     applyLocalRecordOp,
     hasDedicatedTables,
+    ensureGaleriaBucket,
+    uploadGaleriaImageToStorage,
     saveGranularRecord,
     fetchAllMerged,
     mergeCollectionsFromRows,
@@ -951,9 +1100,9 @@ export default {
             if (row.id === 'frota_galeria_veiculos_v1') {
               try {
                 const arr = JSON.parse(row.descricao || '[]');
-                if (Array.isArray(arr)) galeriaFotos = arr.length;
+                if (Array.isArray(arr)) galeriaFotos += arr.length;
               } catch (e) {
-                galeriaFotos = Number(row.valor) || 0;
+                galeriaFotos += Number(row.valor) || 0;
               }
             } else {
               galeriaFotos++;

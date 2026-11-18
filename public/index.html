@@ -14780,7 +14780,7 @@
 
         return '<article class="dr-foto-card">' +
           '<div class="dr-foto-img-wrap" data-action="abrirLightboxFoto" data-arg="' + fid + '" title="Clique para ampliar">' +
-          '<img src="' + esc(f.imagem) + '" alt="Foto ' + esc(f.placa || '') + '" decoding="async">' +
+          '<img src="' + esc(f.imagem) + '" alt="Foto ' + esc(f.placa || '') + '" loading="lazy" decoding="async">' +
           '<span class="dr-foto-badge-cat">' + esc(f.categoria || 'Vistoria') + '</span>' +
           '</div>' +
           '<div class="dr-foto-body">' +
@@ -18120,18 +18120,41 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         } catch (e) { }
       }
 
-      function salvarGastosLocalStorage() {
+      function _safeLocalSetItem(key, val) {
         try {
-          garantirCodigosProdutos();
-          localStorage.setItem(GASTOS_CATALOGO_KEY, JSON.stringify(gastosState.produtos));
-          localStorage.setItem(GASTOS_LANCAMENTOS_KEY, JSON.stringify(gastosState.lancamentos));
-          localStorage.setItem(HIST_MANUT_ALL_KEY, JSON.stringify(gastosState.historico_manutencoes || {}));
-          localStorage.setItem(GALERIA_VEICULOS_KEY, JSON.stringify(gastosState.galeria || []));
-          localStorage.setItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
-          localStorage.setItem(OCORRENCIAS_FROTA_KEY, JSON.stringify(gastosState.ocorrencias || []));
-          localStorage.setItem(AGENDAMENTOS_FROTA_KEY, JSON.stringify(gastosState.agendamentos || []));
-          localStorage.setItem(VENDEDORES_ROTAS_KEY, JSON.stringify(gastosState.vendedores_rotas || []));
-        } catch (e) { }
+          localStorage.setItem(key, val);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function salvarGastosLocalStorage() {
+        try { garantirCodigosProdutos(); } catch (e) { }
+        // DIRETRIZ PERMANENTE: Nunca gravar múltiplos keys em um único try/catch (evita que QuotaExceededError
+        // na galeria bloqueie veiculos, ocorrencias e rotas) e limitar blobs base64 em cache local.
+        _safeLocalSetItem(GASTOS_CATALOGO_KEY, JSON.stringify(gastosState.produtos || []));
+        _safeLocalSetItem(GASTOS_LANCAMENTOS_KEY, JSON.stringify(gastosState.lancamentos || []));
+        _safeLocalSetItem(HIST_MANUT_ALL_KEY, JSON.stringify(gastosState.historico_manutencoes || {}));
+        _safeLocalSetItem(FROTA_VEICULOS_KEY, JSON.stringify(gastosState.veiculos || []));
+        _safeLocalSetItem(OCORRENCIAS_FROTA_KEY, JSON.stringify(gastosState.ocorrencias || []));
+        _safeLocalSetItem(AGENDAMENTOS_FROTA_KEY, JSON.stringify(gastosState.agendamentos || []));
+        _safeLocalSetItem(VENDEDORES_ROTAS_KEY, JSON.stringify(gastosState.vendedores_rotas || []));
+
+        const allGal = Array.isArray(gastosState.galeria) ? gastosState.galeria : [];
+        let dataUrlBudget = 1800000;
+        const galeriaCompacta = [];
+        for (const item of allGal) {
+          if (!item || typeof item !== 'object') continue;
+          const img = typeof item.imagem === 'string' ? item.imagem : '';
+          if (!img.startsWith('data:')) {
+            galeriaCompacta.push(item);
+          } else if (img.length <= dataUrlBudget) {
+            galeriaCompacta.push(item);
+            dataUrlBudget -= img.length;
+          }
+        }
+        _safeLocalSetItem(GALERIA_VEICULOS_KEY, JSON.stringify(galeriaCompacta));
       }
 
       const FROTA_ARRAY_COLECOES = ['produtos', 'lancamentos', 'galeria', 'veiculos', 'ocorrencias', 'agendamentos', 'vendedores_rotas'];
@@ -18279,6 +18302,33 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
             body: JSON.stringify({ ops: opsPayload })
           });
           if (res.ok) {
+            try {
+              const respJson = await res.json();
+              if (respJson && Array.isArray(respJson.results) && Array.isArray(gastosState.galeria)) {
+                let atualizouUrl = false;
+                for (const r of respJson.results) {
+                  if (r && r.colecao === 'galeria' && r.op === 'upsert' && r.id && r.imagem && !String(r.imagem).startsWith('data:')) {
+                    const localItem = gastosState.galeria.find(x => _frotaRecId('galeria', x) === String(r.id));
+                    if (localItem && localItem.imagem !== r.imagem) {
+                      localItem.imagem = r.imagem;
+                      if (r.storage_bucket) localItem.storage_bucket = r.storage_bucket;
+                      if (r.storage_path) localItem.storage_path = r.storage_path;
+                      atualizouUrl = true;
+                    }
+                  }
+                }
+                if (atualizouUrl) {
+                  salvarGastosLocalStorage();
+                  atualizarSnapshotFrota('galeria');
+                  if (window.state && window.state.sel && typeof window.renderDrawerFotos === 'function') {
+                    window.renderDrawerFotos(window.state.sel);
+                  }
+                  if (typeof renderGaleriaView === 'function' && ((window.state && window.state.visaoAtual === 'galeria') || (window.__isLazyLoaded && window.__isLazyLoaded('galeria')))) {
+                    renderGaleriaView();
+                  }
+                }
+              }
+            } catch (parseErr) { }
             if (typeof window.clearFrotaQueueItems === 'function') window.clearFrotaQueueItems(queue);
             return true;
           }
@@ -20010,7 +20060,7 @@ window.gerarRelatorioPdfVendedoresSupervisor = gerarRelatorioPdfVendedoresSuperv
         }
         listEl.innerHTML = fotos.slice(0, 6).map(f =>
           '<div style="cursor:pointer;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--raised)" data-action="abrirLightboxFoto" data-arg="' + esc(f.id) + '" title="' + esc(formatarData(f.data) + ' · ' + f.motorista) + '">' +
-          '<img src="' + esc(f.imagem) + '" alt="Foto" style="width:100%;height:74px;object-fit:cover;display:block">' +
+          '<img src="' + esc(f.imagem) + '" alt="Foto" loading="lazy" decoding="async" style="width:100%;height:74px;object-fit:cover;display:block">' +
           '<div style="padding:4px 6px;font-size:10.5px;line-height:1.25">' +
           '<strong style="color:var(--ink);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(f.motorista) + '</strong>' +
           '<span style="color:var(--ink-3)">' + formatarData(f.data) + '</span>' +

@@ -451,7 +451,7 @@
 
         return '<article class="dr-foto-card">' +
           '<div class="dr-foto-img-wrap" data-action="abrirLightboxFoto" data-arg="' + fid + '" title="Clique para ampliar">' +
-          '<img src="' + esc(f.imagem) + '" alt="Foto ' + esc(f.placa || '') + '" decoding="async">' +
+          '<img src="' + esc(f.imagem) + '" alt="Foto ' + esc(f.placa || '') + '" loading="lazy" decoding="async">' +
           '<span class="dr-foto-badge-cat">' + esc(f.categoria || 'Vistoria') + '</span>' +
           '</div>' +
           '<div class="dr-foto-body">' +
