@@ -159,25 +159,27 @@
         </div>
       </div>
 
-      <!-- Bloco 3: Data, Horários e Tempo Médio (Controle Inteligente) -->
+      <!-- Bloco 3: Datas, Horários e Tempo Médio (Controle Inteligente) -->
       <div class="playstore-block">
-        <div class="playstore-block-title">
-          <svg class="i" style="width:14px;height:14px">
-            <use href="#i-clock" />
-          </svg>
-          <span>Data, Horários & Tempo Médio</span>
-        </div>
-
-        <div class="ocr-form-field">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-            <label for="ocrInputData" class="gasto-field-lbl" style="margin:0">Data do Serviço / Ocorrência</label>
-            <span id="ocrDataHintBadge" style="font-size:11px;font-weight:700;color:var(--accent-hi)"></span>
-          </div>
-          <input type="date" id="ocrInputData" class="input" style="font-weight:700"
-            data-change="aoMudarDataOuHoraOcorrencia">
+        <div class="playstore-block-title" style="justify-content:space-between;flex-wrap:wrap;gap:6px">
+          <span style="display:inline-flex;align-items:center;gap:6px">
+            <svg class="i" style="width:14px;height:14px">
+              <use href="#i-clock" />
+            </svg>
+            <span>Datas, Horários & Tempo Médio</span>
+          </span>
+          <span id="ocrDataHintBadge" style="font-size:11px;font-weight:700;color:var(--accent-hi);text-transform:none;letter-spacing:0"></span>
         </div>
 
         <div class="ocr-hours-grid">
+          <div class="ocr-form-field">
+            <div class="ocr-label-with-btn">
+              <label for="ocrInputData" class="gasto-field-lbl" style="margin:0">Data Início *</label>
+            </div>
+            <input type="date" id="ocrInputData" class="input" style="font-weight:700"
+              data-change="aoMudarDataOuHoraOcorrencia">
+          </div>
+
           <div class="ocr-form-field">
             <div class="ocr-label-with-btn">
               <label for="ocrInputHoraInicio" class="gasto-field-lbl" style="margin:0">Hora Início *</label>
@@ -186,6 +188,18 @@
             </div>
             <input type="time" id="ocrInputHoraInicio" class="input" style="font-weight:700"
               data-input="aoMudarDataOuHoraOcorrencia">
+          </div>
+        </div>
+
+        <div class="ocr-hours-grid">
+          <div class="ocr-form-field">
+            <div class="ocr-label-with-btn">
+              <label for="ocrInputDataFim" class="gasto-field-lbl" style="margin:0">Data Retorno / Fim</label>
+              <button type="button" class="btn-agora"
+                data-action="ocrHoraAgoraEAtualizar" data-arg="ocrInputDataFim">Hoje</button>
+            </div>
+            <input type="date" id="ocrInputDataFim" class="input" style="font-weight:700"
+              data-change="aoMudarDataOuHoraOcorrencia">
           </div>
 
           <div class="ocr-form-field">
