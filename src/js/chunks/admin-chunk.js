@@ -78,15 +78,17 @@
         if ($('adminDbPctText')) $('adminDbPctText').textContent = `${dbPct.toFixed(1).replace('.', ',')}%`;
         aplicarCorBarraStorage($('adminDbBarFill'), dbPct);
 
-        // Galeria (limite rotativo JSON atual 8,5 MB e 200 fotos)
+        // Galeria (metadados e links no banco; imagens ficam no bucket Supabase Storage)
         const bd = stats.dbBreakdown || {};
         const galBytes = Number(bd.galeriaBytes) || 0;
         const galFotos = Number(bd.galeriaFotos) || 0;
-        const galLimitBytes = 8500000;
-        const galPct = Math.min(100, Math.max((galBytes / galLimitBytes) * 100, (galFotos / 200) * 100));
-        if ($('adminGalQuotaText')) $('adminGalQuotaText').textContent = `${formatarBytesAmigavel(galBytes)} / 8,5 MB`;
-        if ($('adminGalFreeText')) $('adminGalFreeText').textContent = `Fotos: ${galFotos} / 200`;
-        if ($('adminGalPctText')) $('adminGalPctText').textContent = `${galPct.toFixed(1).replace('.', ',')}%`;
+        const galPct = Math.min(100, (galBytes / dbLimitBytes) * 100);
+        const galPctText = (galPct > 0 && galPct < 0.01)
+          ? '< 0,01%'
+          : `${(galPct > 0 && galPct < 0.1 ? galPct.toFixed(2) : galPct.toFixed(1)).replace('.', ',')}%`;
+        if ($('adminGalQuotaText')) $('adminGalQuotaText').textContent = `${formatarBytesAmigavel(galBytes)} / ${plan === 'pro' ? '8 GB' : '500 MB'}`;
+        if ($('adminGalFreeText')) $('adminGalFreeText').textContent = `Fotos: ${galFotos} (links no Storage)`;
+        if ($('adminGalPctText')) $('adminGalPctText').textContent = galPctText;
         aplicarCorBarraStorage($('adminGalBarFill'), galPct);
 
         // Storage Buckets
@@ -106,7 +108,7 @@
         if ($('adminStorageBreakdown')) {
           $('adminStorageBreakdown').innerHTML = [
             `<span class="admin-storage-chip">Check-lists & Assinaturas (${bd.checklistsCount || 0}): <strong>${formatarBytesAmigavel(bd.checklistsBytes || 0)}</strong></span>`,
-            `<span class="admin-storage-chip">Galeria JSON (${galFotos} fotos): <strong>${formatarBytesAmigavel(galBytes)}</strong></span>`,
+            `<span class="admin-storage-chip">Galeria Links (${galFotos} fotos): <strong>${formatarBytesAmigavel(galBytes)}</strong></span>`,
             `<span class="admin-storage-chip">Custos & Peças: <strong>${formatarBytesAmigavel(bd.gastosBytes || 0)}</strong></span>`,
             `<span class="admin-storage-chip">Ocorrências & Agend.: <strong>${formatarBytesAmigavel(bd.ocorrenciasBytes || 0)}</strong></span>`,
             `<span class="admin-storage-chip">Frota, Usuários & Push: <strong>${formatarBytesAmigavel(bd.outrosParametrosBytes || 0)}</strong></span>`
